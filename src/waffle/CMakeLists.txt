@@ -20,6 +20,18 @@ if(waffle_has_x11)
         )
 endif(waffle_has_x11)
 
+if(waffle_has_x11_egl)
+    list(APPEND waffle_sources
+        x11_egl/xegl_config.c
+        x11_egl/xegl_context.c
+        x11_egl/xegl_display.c
+        x11_egl/xegl_gl_misc.c
+        x11_egl/xegl_platform.c
+        x11_egl/xegl_priv_egl.c
+        x11_egl/xegl_window.c
+    )
+endif(waffle_has_x11_egl)
+
 add_library(waffle SHARED ${waffle_sources})
 
 if(waffle_has_egl)
