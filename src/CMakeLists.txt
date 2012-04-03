@@ -1,1 +1,1 @@
-# empty
+add_subdirectory(waffle)
