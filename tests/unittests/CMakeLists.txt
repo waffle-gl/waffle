@@ -4,6 +4,8 @@
 
 add_executable(waffle-unittest
     waffle-unittest.c
+
+    waffle/core/wcore_error_unittest.c
     )
 
 target_link_libraries(waffle-unittest

@@ -14,7 +14,10 @@
 
 #include <waffle_test/waffle_test.h>
 
+void testsuite_wcore_error(void);
+
 static void (*test_suites[])(void) = {
+    testsuite_wcore_error,
     0,
 };
 
