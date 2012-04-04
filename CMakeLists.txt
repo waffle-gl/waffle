@@ -84,6 +84,25 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
            ${waffle_has_x11_egl_default})
 endif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
 
+#
+# Set internal option waffle_has_egl.
+#
+
+if(waffle_has_x11_egl)
+    set(waffle_has_egl TRUE)
+else(waffle_has_x11_egl)
+    set(waffle_has_egl FALSE)
+endif(waffle_has_x11_egl)
+
+#
+# Set internal option waffle_has_x11.
+#
+
+if(waffle_has_x11_egl)
+    set(waffle_has_x11 TRUE)
+else(waffle_has_x11_egl)
+    set(waffle_has_x11 FALSE)
+endif(waffle_has_x11_egl)
 
 # ----------------------------------------------
 # Validate waffle options
