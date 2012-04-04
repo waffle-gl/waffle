@@ -3,6 +3,7 @@
 # ----------------------------------------------------------------------------
 
 set(waffle_sources
+    api/waffle_attrib_list.c
     core/wcore_error.c
     )
 
