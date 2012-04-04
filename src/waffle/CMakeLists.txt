@@ -7,6 +7,13 @@ set(waffle_sources
     core/wcore_error.c
     )
 
+if(waffle_has_egl)
+    list(APPEND waffle_sources
+        egl/egl_choose_config.c
+        egl/egl_no_native.c
+        )
+endif(waffle_has_egl)
+
 if(waffle_has_x11)
     list(APPEND waffle_sources
         x11/x11.c
