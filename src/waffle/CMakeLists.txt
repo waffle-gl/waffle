@@ -5,6 +5,7 @@
 set(waffle_sources
     api/waffle_attrib_list.c
     core/wcore_error.c
+    core/wcore_platform.c
     )
 
 if(waffle_has_egl)
