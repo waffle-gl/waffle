@@ -23,6 +23,8 @@
 #include <stdint.h>
 #include <EGL/egl.h>
 
+struct wcore_config_attrs;
+
 /// @brief Sets the waffle error with info from eglGetError().
 /// @param egl_func_call Examples are "eglMakeCurrent()" and
 ///     "eglBindAPI(EGL_OPENGL_API)".
@@ -35,7 +37,7 @@ egl_terminate(EGLDisplay dpy);
 EGLConfig
 egl_choose_config(
         EGLDisplay dpy,
-        const int32_t waffle_config_attrib_list[],
+        const struct wcore_config_attrs *attrs,
         int32_t waffle_gl_api);
 
 bool
@@ -77,5 +79,5 @@ egl_swap_buffers(
 /// @return True on success.
 bool
 egl_get_render_buffer_attrib(
-        const int32_t waffle_config_attrib_list[],
+        const struct wcore_config_attrs *attrs,
         EGLint *egl_render_buffer_attrib);

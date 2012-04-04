@@ -18,6 +18,8 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+struct wcore_config_attrs;
+
 #define NATIVE_UNION(name) \
     struct droid_##name; \
     struct glx_##name; \
@@ -69,7 +71,7 @@ struct native_dispatch {
     union native_config*
     (*config_choose)(
             union native_display *dpy,
-            const int32_t attrib_list[]);
+            const struct wcore_config_attrs *attrs);
 
     bool
     (*config_destroy)(union native_config *self);

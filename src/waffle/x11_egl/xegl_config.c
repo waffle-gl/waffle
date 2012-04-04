@@ -27,7 +27,7 @@
 union native_config*
 xegl_config_choose(
         union native_display *dpy,
-        const int32_t attrib_list[])
+        const struct wcore_config_attrs *attrs)
 {
     union native_platform *platform = dpy->xegl->platform;
     bool ok = true;
@@ -41,13 +41,14 @@ xegl_config_choose(
 
     self->xegl->display = dpy;
 
-    ok &= egl_get_render_buffer_attrib(attrib_list,
-                                       &self->xegl->egl_render_buffer);
-    if (!ok) goto error;
+    ok &= egl_get_render_buffer_attrib(attrs, &self->xegl->egl_render_buffer);
+    if (!ok)
+        goto error;
     self->xegl->egl_config = egl_choose_config(dpy->xegl->egl_display,
-                                               attrib_list,
+                                               attrs,
                                                platform->xegl->gl_api);
-    if (!self->xegl->egl_config) goto error;
+    if (!self->xegl->egl_config)
+        goto error;
     ok &= eglGetConfigAttrib(dpy->xegl->egl_display,
                              self->xegl->egl_config,
                              EGL_NATIVE_VISUAL_ID,

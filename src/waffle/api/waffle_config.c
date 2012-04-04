@@ -17,6 +17,7 @@
 #include <stdlib.h>
 
 #include <waffle/native.h>
+#include <waffle/core/wcore_config_attrs.h>
 #include <waffle/core/wcore_error.h>
 #include <waffle/core/wcore_platform.h>
 
@@ -27,7 +28,9 @@ waffle_config_choose(
         struct waffle_display *dpy,
         const int32_t attrib_list[])
 {
-    struct waffle_config *self;
+    struct waffle_config *self = NULL;
+    struct wcore_config_attrs attrs;
+    bool ok = true;
 
     const struct api_object *obj_list[] = {
         waffle_display_cast_to_api_object(dpy),
@@ -42,16 +45,21 @@ waffle_config_choose(
         return NULL;
     }
 
+    ok = wcore_config_attrs_parse(attrib_list, &attrs);
+    if (!ok)
+        goto error;
+
     self->api.platform_id = api_current_platform->id;
     self->native = api_current_platform->dispatch->
-                        config_choose(dpy->native, attrib_list);
-
-    if (!self->native) {
-        free(self);
-        return NULL;
-    }
+                        config_choose(dpy->native, &attrs);
+    if (!self->native)
+        goto error;
 
     return self;
+
+error:
+    free(self);
+    return NULL;
 }
 
 bool

@@ -19,7 +19,6 @@ set(waffle_sources
 
 if(waffle_has_egl)
     list(APPEND waffle_sources
-        egl/egl_choose_config.c
         egl/egl_no_native.c
         )
 endif(waffle_has_egl)

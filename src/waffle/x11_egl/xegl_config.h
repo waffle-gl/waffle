@@ -17,13 +17,14 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+struct wcore_config_attrs;
 union native_config;
 union native_display;
 
 union native_config*
 xegl_config_choose(
         union native_display *dpy,
-        const int32_t attrib_list[]);
+        const struct wcore_config_attrs *attrs);
 
 bool
 xegl_config_destroy(union native_config *self);

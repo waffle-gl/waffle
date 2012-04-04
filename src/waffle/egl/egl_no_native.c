@@ -19,6 +19,7 @@
 
 #include <waffle/waffle_enum.h>
 #include <waffle/waffle_attrib_list.h>
+#include <waffle/core/wcore_config_attrs.h>
 #include <waffle/core/wcore_error.h>
 
 void
@@ -65,6 +66,66 @@ egl_terminate(EGLDisplay dpy)
     if (!ok)
         egl_get_error("eglTerminate");
     return ok;
+}
+
+EGLConfig
+egl_choose_config(
+        EGLDisplay dpy,
+        const struct wcore_config_attrs *attrs,
+        int32_t waffle_gl_api)
+{
+    bool ok = true;
+
+    // WARNING: If you resize attrib_list, then update renderable_index.
+    const int renderable_index = 19;
+
+    EGLint attrib_list[] = {
+        EGL_BUFFER_SIZE,            attrs->color_buffer_size,
+        EGL_RED_SIZE,               attrs->red_size,
+        EGL_BLUE_SIZE,              attrs->blue_size,
+        EGL_GREEN_SIZE,             attrs->green_size,
+        EGL_ALPHA_SIZE,             attrs->alpha_size,
+
+        EGL_DEPTH_SIZE,             attrs->depth_size,
+        EGL_STENCIL_SIZE,           attrs->stencil_size,
+
+        EGL_SAMPLE_BUFFERS,         attrs->sample_buffers,
+        EGL_SAMPLES,                attrs->samples,
+
+        EGL_RENDERABLE_TYPE,        31415926,
+
+        // According to the EGL 1.4 spec Table 3.4, the default value of
+        // EGL_SURFACE_BIT is EGL_WINDOW_BIT.  Explicitly set the default here for
+        // the sake of self-documentation.
+        EGL_SURFACE_TYPE,           EGL_WINDOW_BIT,
+        EGL_NONE,
+    };
+
+    switch (waffle_gl_api) {
+        case WAFFLE_GL:     attrib_list[renderable_index] = EGL_OPENGL_BIT;       break;
+        case WAFFLE_GLES1:  attrib_list[renderable_index] = EGL_OPENGL_ES_BIT;    break;
+        case WAFFLE_GLES2:  attrib_list[renderable_index] = EGL_OPENGL_ES2_BIT;   break;
+        default:
+            wcore_error_internal("gl_api has bad value 0x%x", waffle_gl_api);
+            goto end;
+    }
+
+    EGLConfig config = NULL;
+    EGLint num_configs = 0;
+    ok &= eglChooseConfig(dpy, attrib_list, &config, 1, &num_configs);
+    if (!ok) {
+        egl_get_error("eglChooseConfig");
+        goto end;
+    }
+    else if (num_configs == 0) {
+        ok = false;
+        wcore_errorf(WAFFLE_UNKNOWN_ERROR,
+                     "eglChooseConfig found no matching configs");
+        goto end;
+    }
+
+end:
+    return config;
 }
 
 bool
@@ -172,22 +233,18 @@ egl_swap_buffers(
 
 bool
 egl_get_render_buffer_attrib(
-        const int32_t waffle_config_attrib_list[],
+        const struct wcore_config_attrs *attrs,
         EGLint *egl_render_buffer_attrib)
 {
-    int32_t w_value;
-    waffle_attrib_list_get_with_default(waffle_config_attrib_list,
-                                        WAFFLE_DOUBLE_BUFFERED,
-                                        &w_value,
-                                        true);
-
-    switch (w_value) {
-        case 0: *egl_render_buffer_attrib = EGL_SINGLE_BUFFER;  return true;
-        case 1: *egl_render_buffer_attrib = EGL_BACK_BUFFER;    return true;
-
+    switch (attrs->double_buffered) {
+        case true:
+            *egl_render_buffer_attrib = EGL_BACK_BUFFER;
+            return true;
+        case false:
+            *egl_render_buffer_attrib = EGL_SINGLE_BUFFER;
+            return true;
         default:
-            wcore_errorf(WAFFLE_BAD_ATTRIBUTE,
-                         "WAFFLE_DOUBLE_BUFFERED has bad value 0x%x", w_value);
+            wcore_error_internal("%s", "attrs->double_buffered has bad value");
             return false;
     }
 }
