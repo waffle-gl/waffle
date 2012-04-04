@@ -14,7 +14,44 @@
 
 #pragma once
 
+#include <stdbool.h>
+#include <stddef.h>
+
+struct api_object;
 struct wcore_platform;
 
 /// @brief Managed by waffle_init() and waffle_finish().
 extern struct wcore_platform *api_current_platform;
+
+/// @defgroup API Types
+/// @{
+
+struct api_object {
+    size_t platform_id;
+};
+
+#define API_TYPE(name) \
+    union native_##name;                                                    \
+                                                                            \
+    struct waffle_##name {                                                  \
+        struct api_object api;                                              \
+        union native_##name *native;                                        \
+    };                                                                      \
+                                                                            \
+    static inline struct api_object*                                        \
+    waffle_##name##_cast_to_api_object(struct waffle_##name *x)             \
+    {                                                                       \
+        if (x)                                                              \
+            return &x->api;                                                 \
+        else                                                                \
+            return NULL;                                                    \
+    }
+
+API_TYPE(display)
+API_TYPE(config)
+API_TYPE(context)
+API_TYPE(window)
+
+#undef API_TYPE
+
+/// @}
