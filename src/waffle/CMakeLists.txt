@@ -22,11 +22,12 @@ endif(waffle_has_x11)
 
 add_library(waffle SHARED ${waffle_sources})
 
+if(waffle_has_egl)
+  target_link_libraries(waffle ${waffle_EGL_library})
+endif(waffle_has_egl)
+
 if(waffle_has_x11_egl)
-    target_link_libraries(waffle
-        ${waffle_EGL_library}
-        ${waffle_X11-xcb_library}
-        )
+  target_link_libraries(waffle ${waffle_X11-xcb_library})
 endif(waffle_has_x11_egl)
 
 # The version scheme for libwaffle.so follows the libtool guidelines
