@@ -37,6 +37,11 @@ extern "C" {
 #   define WAFFLE_API
 #endif
 
+/// @def WAFFLE_APIENTRY
+///
+/// Used only on Windows.
+#define WAFFLE_APIENTRY
+
 #ifdef __cplusplus
 } // end extern "C"
 #endif

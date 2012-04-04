@@ -5,6 +5,7 @@
 add_executable(waffle-unittest
     waffle-unittest.c
 
+    waffle/api/waffle_attrib_list_unittest.c
     waffle/core/wcore_error_unittest.c
     )
 
