@@ -7,6 +7,12 @@ set(waffle_sources
     core/wcore_error.c
     )
 
+if(waffle_has_x11)
+    list(APPEND waffle_sources
+        x11/x11.c
+        )
+endif(waffle_has_x11)
+
 add_library(waffle SHARED ${waffle_sources})
 
 if(waffle_has_x11_egl)
