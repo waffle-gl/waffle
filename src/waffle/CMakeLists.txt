@@ -12,6 +12,7 @@ set(waffle_sources
     api/waffle_gl_misc.c
     api/waffle_init.c
     api/waffle_window.c
+    core/wcore_config_attrs.c
     core/wcore_error.c
     core/wcore_platform.c
     )
