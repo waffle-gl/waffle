@@ -23,14 +23,13 @@
 
 bool
 xegl_make_current(
+        union native_display *dpy,
         union native_window *window,
         union native_context *ctx)
 {
-    union native_display *dpy = window->xegl->display;
-    bool ok = egl_make_current(dpy->xegl->egl_display,
-                               window->xegl->egl_surface,
-                               ctx->xegl->egl_context);
-    return ok;
+    return egl_make_current(dpy->xegl->egl_display,
+                            window ? window->xegl->egl_surface : 0,
+                            ctx ? ctx->xegl->egl_context : 0);
 }
 
 void*

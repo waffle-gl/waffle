@@ -23,19 +23,30 @@
 
 bool
 waffle_make_current(
+        struct waffle_display *dpy,
         struct waffle_window *window,
         struct waffle_context *ctx)
 {
+    int obj_list_length = 1;
+
     const struct api_object *obj_list[] = {
-        waffle_window_cast_to_api_object(window),
-        waffle_context_cast_to_api_object(ctx),
+        waffle_display_cast_to_api_object(dpy),
+        0,
+        0,
     };
 
-    if (!api_check_entry(obj_list, 2))
+    if (window)
+        obj_list[obj_list_length++] = waffle_window_cast_to_api_object(window);
+    if (ctx)
+        obj_list[obj_list_length++] = waffle_context_cast_to_api_object(ctx);
+
+    if (!api_check_entry(obj_list, obj_list_length))
         return false;
 
     return api_current_platform->dispatch->
-            make_current(window->native, ctx->native);
+                make_current(dpy->native,
+                             window ? window->native :NULL,
+                             ctx ? ctx->native : NULL);
 }
 
 void*

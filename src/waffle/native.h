@@ -110,6 +110,7 @@ struct native_dispatch {
 
     bool
     (*make_current)(
+            union native_display *dpy,
             union native_window *window,
             union native_context *ctx);
 

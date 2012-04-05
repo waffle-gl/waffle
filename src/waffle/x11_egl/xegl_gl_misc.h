@@ -23,6 +23,7 @@ union native_context;
 
 bool
 xegl_make_current(
+        union native_display *dpy,
         union native_window *window,
         union native_context *ctx);
 

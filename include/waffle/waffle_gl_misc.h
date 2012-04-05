@@ -23,10 +23,12 @@ extern "C" {
 #endif
 
 struct waffle_context;
+struct waffle_display;
 struct waffle_window;
 
 WAFFLE_API bool
 waffle_make_current(
+        struct waffle_display *dpy,
         struct waffle_window *window,
         struct waffle_context *ctx);
 
