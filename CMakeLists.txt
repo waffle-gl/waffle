@@ -49,6 +49,15 @@ endif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
 option(waffle_build_tests "Build tests" ON)
 option(waffle_build_examples "Build examples" ON)
 
+set(waffle_install_includedir "${CMAKE_INSTALL_PREFIX}/include"
+    CACHE PATH "Directory where header files will be installed")
+
+set(waffle_install_libdir "${CMAKE_INSTALL_PREFIX}/lib"
+    CACHE PATH "Directory where libraries will be installed")
+
+set(waffle_install_docdir "${CMAKE_INSTALL_PREFIX}/share/doc/waffle"
+    CACHE PATH "Directory where documentation will be installed")
+
 #
 # Set waffle_default_platform.
 #
@@ -245,4 +254,9 @@ message("    cc: ${CMAKE_C_COMPILER}")
 message("    CFLAGS_base: ${CMAKE_C_FLAGS}")
 message("    CFLAGS_debug: ${CMAKE_C_FLAGS_DEBUG}")
 message("    CFLAGS_release: ${CMAKE_C_FLAGS_RELEASE}")
+message("")
+message("Install paths:")
+message("    includedir: ${waffle_install_libdir}")
+message("    libdir: ${waffle_install_libdir}")
+message("    docdir: ${waffle_install_docdir}")
 message("-----------------------------------------------")
