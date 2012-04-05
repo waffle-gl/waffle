@@ -44,6 +44,11 @@ api_new_object_id(void);
 struct api_object {
     size_t platform_id;
     size_t object_id;
+
+    /// @brief Display to which object belongs.
+    ///
+    /// This is identical to object_id for waffle_display.
+    size_t display_id;
 };
 
 #define API_TYPE(name) \
