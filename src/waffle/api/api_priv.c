@@ -12,6 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "api_priv.h"
 
 #include <waffle/core/wcore_error.h>
@@ -42,4 +45,17 @@ api_check_entry(const struct api_object *obj_list[], int length)
     }
 
     return true;
+}
+
+size_t
+api_new_object_id(void)
+{
+    static size_t counter = 1;
+
+    if (counter == 0) {
+        fprintf(stderr, "waffle: error: internal counter wrapped to 0\n");
+        abort();
+    }
+
+    return counter++;
 }

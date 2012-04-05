@@ -34,11 +34,16 @@ extern struct wcore_platform *api_current_platform;
 bool
 api_check_entry(const struct api_object *obj_list[], int length);
 
+/// @brief Create a unique id.
+size_t
+api_new_object_id(void);
+
 /// @defgroup API Types
 /// @{
 
 struct api_object {
     size_t platform_id;
+    size_t object_id;
 };
 
 #define API_TYPE(name) \

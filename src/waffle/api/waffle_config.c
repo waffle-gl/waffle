@@ -50,6 +50,8 @@ waffle_config_choose(
         goto error;
 
     self->api.platform_id = api_current_platform->id;
+    self->api.object_id = api_new_object_id();
+
     self->native = api_current_platform->dispatch->
                         config_choose(dpy->native, &attrs);
     if (!self->native)

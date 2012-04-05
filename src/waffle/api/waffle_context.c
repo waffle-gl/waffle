@@ -50,6 +50,8 @@ waffle_context_create(
     }
 
     self->api.platform_id = api_current_platform->id;
+    self->api.object_id = api_new_object_id();
+
     self->native = api_current_platform->dispatch->
                         context_create(config->native,
                                        shared_ctx ? shared_ctx->native : NULL);
