@@ -14,14 +14,3 @@ target_link_libraries(waffle-unittest
     waffle
     waffle_test
     )
-
-# ----------------------------------------------------------------------------
-# Target: waffle-check
-# ----------------------------------------------------------------------------
-
-add_custom_target(waffle-check
-    DEPENDS waffle-unittest
-    COMMAND ${CMAKE_CURRENT_BINARY_DIR}/waffle-unittest
-    )
-
-add_dependencies(check waffle-check)

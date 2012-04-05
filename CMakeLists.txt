@@ -180,15 +180,6 @@ if(waffle_has_x11_egl)
 endif(waffle_has_x11_egl)
 
 # ------------------------------------------------------------------------------
-# Target: check
-# ------------------------------------------------------------------------------
-
-if(waffle_build_tests)
-    # Subdirectories should add dependencies.
-    add_custom_target(check)
-endif(waffle_build_tests)
-
-# ------------------------------------------------------------------------------
 # Add subdirectories
 # ------------------------------------------------------------------------------
 
@@ -203,6 +194,20 @@ endif(waffle_build_tests)
 if(waffle_build_examples)
     add_subdirectory(examples)
 endif(waffle_build_examples)
+
+# ------------------------------------------------------------------------------
+# Target: check
+# ------------------------------------------------------------------------------
+
+# The unit tests are ran first. If they fail, then no subsequent tests are ran.
+
+if(waffle_build_tests)
+    add_custom_target(check
+        DEPENDS waffle-unittest gl_basic_test
+        COMMAND ${CMAKE_BINARY_DIR}/tests/unittests/waffle-unittest
+        COMMAND ${CMAKE_BINARY_DIR}/tests/functional/gl_basic_test
+        )
+endif(waffle_build_tests)
 
 # ------------------------------------------------------------------------------
 # Print summary
