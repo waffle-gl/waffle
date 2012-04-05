@@ -195,6 +195,7 @@ endif(waffle_has_x11_egl)
 include_directories(include src)
 
 add_subdirectory(src)
+add_subdirectory(include)
 
 if(waffle_build_tests)
     add_subdirectory(tests)

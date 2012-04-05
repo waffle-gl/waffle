@@ -57,3 +57,6 @@ set_target_properties(waffle
     PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib
     SOVERSION 0.0.0)
+
+install(TARGETS waffle
+    LIBRARY DESTINATION ${waffle_install_libdir})
