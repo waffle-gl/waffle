@@ -42,6 +42,10 @@ api_check_entry(const struct api_object *obj_list[], int length)
             wcore_error(WAFFLE_OLD_OBJECT);
             return false;
         }
+
+        if (obj_list[i]->display_id != obj_list[0]->display_id) {
+            wcore_error(WAFFLE_BAD_DISPLAY_MATCH);
+        }
     }
 
     return true;
