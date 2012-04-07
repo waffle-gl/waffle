@@ -5,6 +5,7 @@
 set(waffle_sources
     api/api_priv.c
     api/waffle_attrib_list.c
+    api/waffle_display.c
     api/waffle_init.c
     core/wcore_error.c
     core/wcore_platform.c
