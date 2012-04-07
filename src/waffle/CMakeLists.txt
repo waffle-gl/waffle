@@ -8,6 +8,7 @@ set(waffle_sources
     api/waffle_config.c
     api/waffle_context.c
     api/waffle_display.c
+    api/waffle_gl_misc.c
     api/waffle_window.c
     api/waffle_init.c
     core/wcore_error.c
