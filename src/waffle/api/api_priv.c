@@ -14,4 +14,32 @@
 
 #include "api_priv.h"
 
+#include <waffle/core/wcore_error.h>
+#include <waffle/core/wcore_platform.h>
+
 struct wcore_platform *api_current_platform = 0;
+
+bool
+api_check_entry(const struct api_object *obj_list[], int length)
+{
+    int i;
+
+    if (!api_current_platform) {
+        wcore_error(WAFFLE_NOT_INITIALIZED);
+        return false;
+    }
+
+    for (i = 0; i < length; ++i) {
+        if (obj_list[i] == NULL) {
+            wcore_errorf(WAFFLE_BAD_PARAMETER, "null pointer");
+            return false;
+        }
+
+        if (obj_list[i]->platform_id != api_current_platform->id) {
+            wcore_error(WAFFLE_OLD_OBJECT);
+            return false;
+        }
+    }
+
+    return true;
+}
