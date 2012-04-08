@@ -25,7 +25,7 @@ extern "C" {
 
 /// @brief Convert a waffle_enum to a string.
 ///
-/// For example, convert @c WAFFLE_GL to @c "WAFFLE_GL" .
+/// For example, convert @c WAFFLE_OPENGL to @c "WAFFLE_OPENGL" .
 ///
 /// @return null if enum is invalid.
 WAFFLE_API const char*
@@ -48,10 +48,10 @@ enum waffle_enum {
         WAFFLE_PLATFORM_WAYLAND         = 0x0014,
         WAFFLE_PLATFORM_X11_EGL         = 0x0015,
 
-    WAFFLE_GL_API                       = 0x0100,
-        WAFFLE_GL                       = 0x0101,
-        WAFFLE_GLES1                    = 0x0102,
-        WAFFLE_GLES2                    = 0x0103,
+    WAFFLE_OPENGL_API                   = 0x0100,
+        WAFFLE_OPENGL                   = 0x0101,
+        WAFFLE_OPENGL_ES1               = 0x0102,
+        WAFFLE_OPENGL_ES2               = 0x0103,
 
     /// @}
     /// @defgroup enums for waffle_config_choose()

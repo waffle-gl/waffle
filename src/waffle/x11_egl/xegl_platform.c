@@ -61,9 +61,9 @@ xegl_platform_create(
     self->xegl->gl_api = gl_api;
 
     switch (gl_api) {
-        case WAFFLE_GL:     self->xegl->libgl_name = "libGL.so";        break;
-        case WAFFLE_GLES1:  self->xegl->libgl_name = "libGLESv1_CM.so"; break;
-        case WAFFLE_GLES2:  self->xegl->libgl_name = "libGLESv2.so";    break;
+        case WAFFLE_OPENGL:      self->xegl->libgl_name = "libGL.so";        break;
+        case WAFFLE_OPENGL_ES1:  self->xegl->libgl_name = "libGLESv1_CM.so"; break;
+        case WAFFLE_OPENGL_ES2:  self->xegl->libgl_name = "libGLESv2.so";    break;
         default:
             wcore_error_internal("gl_api has bad value 0x%x", gl_api);
             goto error;

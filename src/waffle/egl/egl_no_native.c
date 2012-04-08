@@ -102,9 +102,15 @@ egl_choose_config(
     };
 
     switch (waffle_gl_api) {
-        case WAFFLE_GL:     attrib_list[renderable_index] = EGL_OPENGL_BIT;       break;
-        case WAFFLE_GLES1:  attrib_list[renderable_index] = EGL_OPENGL_ES_BIT;    break;
-        case WAFFLE_GLES2:  attrib_list[renderable_index] = EGL_OPENGL_ES2_BIT;   break;
+        case WAFFLE_OPENGL:
+            attrib_list[renderable_index] = EGL_OPENGL_BIT;
+            break;
+        case WAFFLE_OPENGL_ES1:
+            attrib_list[renderable_index] = EGL_OPENGL_ES_BIT;
+            break;
+        case WAFFLE_OPENGL_ES2:
+            attrib_list[renderable_index] = EGL_OPENGL_ES2_BIT;
+            break;
         default:
             wcore_error_internal("gl_api has bad value 0x%x", waffle_gl_api);
             goto end;
@@ -145,11 +151,11 @@ egl_bind_api(int32_t waffle_gl_api)
     bool ok = true;
 
     switch (waffle_gl_api) {
-        case WAFFLE_GL:
+        case WAFFLE_OPENGL:
             ok &= eglBindAPI(EGL_OPENGL_API);
             break;
-        case WAFFLE_GLES1:
-        case WAFFLE_GLES2:
+        case WAFFLE_OPENGL_ES1:
+        case WAFFLE_OPENGL_ES2:
             ok &= eglBindAPI(EGL_OPENGL_ES_API);
             break;
         default:
@@ -172,15 +178,15 @@ egl_create_context(
     EGLint attrib_list[3];
 
     switch (waffle_gl_api) {
-        case WAFFLE_GL:
+        case WAFFLE_OPENGL:
             attrib_list[0] = EGL_NONE;
             break;
-        case WAFFLE_GLES1:
+        case WAFFLE_OPENGL_ES1:
             attrib_list[0] = EGL_CONTEXT_CLIENT_VERSION;
             attrib_list[1] = 1;
             attrib_list[2] = EGL_NONE;
             break;
-        case WAFFLE_GLES2:
+        case WAFFLE_OPENGL_ES2:
             attrib_list[0] = EGL_CONTEXT_CLIENT_VERSION;
             attrib_list[1] = 2;
             attrib_list[2] = EGL_NONE;

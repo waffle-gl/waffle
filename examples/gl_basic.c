@@ -129,9 +129,9 @@ static const struct enum_map platform_map[] = {
 };
 
 static const struct enum_map gl_api_map[] = {
-    {WAFFLE_GL,                 "gl"            },
-    {WAFFLE_GLES1,              "gles1"         },
-    {WAFFLE_GLES2,              "gles2"         },
+    {WAFFLE_OPENGL,             "gl"            },
+    {WAFFLE_OPENGL_ES1,         "gles1"         },
+    {WAFFLE_OPENGL_ES2,         "gles2"         },
     {0,                         0               },
 };
 
@@ -215,7 +215,7 @@ make_waffle_attrib_list(int platform, int gl_api)
 
     result[0] = WAFFLE_PLATFORM;
     result[1] = platform;
-    result[2] = WAFFLE_GL_API;
+    result[2] = WAFFLE_OPENGL_API;
     result[3] = gl_api;
     result[4] = 0;
 

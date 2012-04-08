@@ -57,13 +57,13 @@ TEST(wcore_config_attrs, empty_attrib_list)
 TEST(wcore_config_attrs, bad_attr)
 {
     const int32_t attrib_list[] = {
-        WAFFLE_GL_API,  WAFFLE_GLES2,
+        WAFFLE_OPENGL_API,  WAFFLE_OPENGL_ES2,
         0,
     };
 
     ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
     EXPECT_TRUE(wcore_error_get_code() == WAFFLE_BAD_ATTRIBUTE);
-    EXPECT_TRUE(strstr(wcore_error_get_message(), "WAFFLE_GL_API")
+    EXPECT_TRUE(strstr(wcore_error_get_message(), "WAFFLE_OPENGL_API")
                 || strstr(wcore_error_get_message(), "0x10"));
 }
 

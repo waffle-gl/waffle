@@ -48,7 +48,7 @@ extern "C" {
 /// @par Required Attributes
 ///
 ///     - WAFFLE_PLATFORM
-///     - WAFFLE_GL_API
+///     - WAFFLE_OPENGL_API
 ///
 /// @par Example: Invalid Attribute List
 ///
@@ -57,8 +57,8 @@ extern "C" {
 ///     WAFFLE_INCOMPATIBLE_ATTRIBUTES error.
 ///         @code
 ///             {
-///               WAFFLE_PLATFORM, WAFFLE_PLATFORM_ANDROID,
-///               WAFFLE_GL_API,   WAFFLE_GL,
+///               WAFFLE_PLATFORM,      WAFFLE_PLATFORM_ANDROID,
+///               WAFFLE_OPENGL_API,    WAFFLE_OPENGL,
 ///               0,
 ///             }
 ///         @endcode

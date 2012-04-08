@@ -133,7 +133,7 @@ gl_basic(int32_t platform, int32_t gl_api)
 {
     const int32_t init_attrib_list[] = {
         WAFFLE_PLATFORM,        platform,
-        WAFFLE_GL_API,          gl_api,
+        WAFFLE_OPENGL_API,      gl_api,
         0,
     };
 
@@ -192,17 +192,17 @@ gl_basic(int32_t platform, int32_t gl_api)
 #ifdef WAFFLE_HAS_X11_EGL
 TEST(gl_basic, x11_egl_gl)
 {
-    gl_basic(WAFFLE_PLATFORM_X11_EGL, WAFFLE_GL);
+    gl_basic(WAFFLE_PLATFORM_X11_EGL, WAFFLE_OPENGL);
 }
 
 TEST(gl_basic, x11_egl_gles1)
 {
-    gl_basic(WAFFLE_PLATFORM_X11_EGL, WAFFLE_GLES1);
+    gl_basic(WAFFLE_PLATFORM_X11_EGL, WAFFLE_OPENGL_ES1);
 }
 
 TEST(gl_basic, x11_egl_gles2)
 {
-    gl_basic(WAFFLE_PLATFORM_X11_EGL, WAFFLE_GLES1);
+    gl_basic(WAFFLE_PLATFORM_X11_EGL, WAFFLE_OPENGL_ES2);
 }
 #endif
 

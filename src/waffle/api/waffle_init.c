@@ -63,17 +63,17 @@ waffle_init_parse_attrib_list(
                 }
 
                 break;
-            case WAFFLE_GL_API:
+            case WAFFLE_OPENGL_API:
                 switch (value) {
-                    case WAFFLE_GL:
-                    case WAFFLE_GLES1:
-                    case WAFFLE_GLES2:
+                    case WAFFLE_OPENGL:
+                    case WAFFLE_OPENGL_ES1:
+                    case WAFFLE_OPENGL_ES2:
                         found_gl_api = true;
                         *gl_api = value;
                         break;
                     default:
                         wcore_errorf(WAFFLE_BAD_ATTRIBUTE,
-                                     "WAFFLE_GL_API has bad value 0x%x",
+                                     "WAFFLE_OPENGL_API has bad value 0x%x",
                                      value);
                         return false;
                 }
@@ -93,7 +93,7 @@ waffle_init_parse_attrib_list(
 
     if (!found_gl_api) {
         wcore_errorf(WAFFLE_BAD_ATTRIBUTE,
-                     "attribute list is missing WAFFLE_GL_API");
+                     "attribute list is missing WAFFLE_OPENGL_API");
         return false;
     }
 
