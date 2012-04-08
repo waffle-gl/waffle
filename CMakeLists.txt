@@ -144,6 +144,15 @@ if(waffle_build_tests)
 endif(waffle_build_tests)
 
 # ------------------------------------------------------------------------------
+# Install: waffle.pc
+# ------------------------------------------------------------------------------
+
+configure_file(waffle.pc.in waffle.pc @ONLY)
+
+install(FILES ${CMAKE_BINARY_DIR}/waffle.pc
+        DESTINATION ${waffle_install_libdir}/pkgconfig)
+
+# ------------------------------------------------------------------------------
 # Print summary
 # ------------------------------------------------------------------------------
 
