@@ -23,6 +23,22 @@
 static struct wcore_config_attrs actual_attrs;
 static struct wcore_config_attrs expect_attrs;
 
+static const struct wcore_config_attrs default_attrs = {
+    .color_buffer_size      = 0,
+    .red_size               = WAFFLE_DONT_CARE,
+    .green_size             = WAFFLE_DONT_CARE,
+    .blue_size              = WAFFLE_DONT_CARE,
+    .alpha_size             = WAFFLE_DONT_CARE,
+
+    .depth_size             = WAFFLE_DONT_CARE,
+    .stencil_size           = WAFFLE_DONT_CARE,
+
+    .sample_buffers         = 0,
+    .samples                = 0,
+
+    .double_buffered        = true,
+};
+
 static void
 testgroup_wcore_config_attrs_setup(void)
 {
@@ -30,8 +46,7 @@ testgroup_wcore_config_attrs_setup(void)
     memset(&actual_attrs, 0x99, sizeof(actual_attrs));
 
     // Set expect_attrs to defaults.
-    memset(&expect_attrs, 0, sizeof(expect_attrs));
-    expect_attrs.double_buffered = true;
+    memcpy(&expect_attrs, &default_attrs, sizeof(expect_attrs));
 }
 
 static void

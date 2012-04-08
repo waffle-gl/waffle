@@ -37,7 +37,7 @@ waffle_enum_to_string(int32_t e);
 /// enables better error detection at API entry points.
 enum waffle_enum {
     WAFFLE_LIST_END                     = 0x0000,
-    WAFFLE_DONT_CARE                    = 0x0001,
+    WAFFLE_DONT_CARE                    = 0x7777,
 
     /// @defgroup enums for waffle_init()
     /// @{
@@ -58,7 +58,8 @@ enum waffle_enum {
     /// @defgroup enums for waffle_config_choose()
     ///
     /// Choices for @c WAFFLE_DOUBLE_BUFFERED are 0 and 1; the default is 1.
-    /// For all other attributes, the default is 0.
+    /// The default value of WAFFLE_SAMPLE_BUFFERS and WAFFLE_SAMPLES is 0.
+    /// The default value of all other attributes is WAFFLE_DONT_CARE.
     /// @{
 
     WAFFLE_RED_SIZE                     = 0x0201,

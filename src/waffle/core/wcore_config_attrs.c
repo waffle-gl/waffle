@@ -20,6 +20,22 @@
 #include <waffle/waffle_enum.h>
 #include <waffle/core/wcore_error.h>
 
+static const struct wcore_config_attrs wcore_config_attrs_default = {
+    .color_buffer_size      = 0,
+    .red_size               = WAFFLE_DONT_CARE,
+    .green_size             = WAFFLE_DONT_CARE,
+    .blue_size              = WAFFLE_DONT_CARE,
+    .alpha_size             = WAFFLE_DONT_CARE,
+
+    .depth_size             = WAFFLE_DONT_CARE,
+    .stencil_size           = WAFFLE_DONT_CARE,
+
+    .sample_buffers         = 0,
+    .samples                = 0,
+
+    .double_buffered        = true,
+};
+
 bool
 wcore_config_attrs_parse(
       const int32_t waffle_attrib_list[],
@@ -27,9 +43,7 @@ wcore_config_attrs_parse(
 {
     const int32_t *i;
 
-    // Set defaults.
-    memset(attrs, 0, sizeof(*attrs));
-    attrs->double_buffered = true;
+    memcpy(attrs, &wcore_config_attrs_default, sizeof(*attrs));
 
     if (!waffle_attrib_list) {
         // Nothing to parse. Just return defaults.
@@ -88,10 +102,15 @@ wcore_config_attrs_parse(
         }
     }
 
-    attrs->color_buffer_size = attrs->red_size
-                             + attrs->green_size
-                             + attrs->blue_size
-                             + attrs->alpha_size;
+    attrs->color_buffer_size = 0;
+    if (attrs->red_size != WAFFLE_DONT_CARE)
+        attrs->color_buffer_size += attrs->red_size;
+    if (attrs->green_size != WAFFLE_DONT_CARE)
+        attrs->color_buffer_size += attrs->green_size;
+    if (attrs->blue_size != WAFFLE_DONT_CARE)
+        attrs->color_buffer_size += attrs->blue_size;
+    if (attrs->alpha_size != WAFFLE_DONT_CARE)
+        attrs->color_buffer_size += attrs->alpha_size;
 
     return attrs;
 }
