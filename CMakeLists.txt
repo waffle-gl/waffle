@@ -59,26 +59,6 @@ set(waffle_install_docdir "${CMAKE_INSTALL_PREFIX}/share/doc/waffle"
     CACHE PATH "Directory where documentation will be installed")
 
 #
-# Set waffle_default_platform.
-#
-
-if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-    set(waffle_default_platform_choices "x11_egl (just one choice for now)")
-    set(waffle_default_platform_regex "x11_egl")
-    set(waffle_default_platform "NOTFOUND"
-        CACHE STRING "One of ${waffle_default_platform_choices}")
-endif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-
-#
-# Set waffle_default_gl_api.
-#
-
-set(waffle_default_gl_api_choices "gl, gles1, gles2")
-set(waffle_default_gl_api_regex "gl|gles1|gles2")
-set(waffle_default_gl_api "NOTFOUND"
-    CACHE STRING "One of ${waffle_default_gl_api_choices}")
-
-#
 # Set waffle_has_{platform}.
 #
 
@@ -113,33 +93,6 @@ else(waffle_has_x11_egl)
     set(waffle_has_x11 FALSE)
 endif(waffle_has_x11_egl)
 
-# ----------------------------------------------
-# Validate waffle options
-# ----------------------------------------------
-
-#
-# Validate waffle_default_platform.
-#
-
-if(NOT DEFINED waffle_default_platform)
-    message(FATAL_ERROR "Option waffle_default_platform is not defined. Must be one of ${waffle_default_platform_choices}.")
-endif(NOT DEFINED waffle_default_platform)
-
-if(NOT waffle_default_platform MATCHES ${waffle_default_platform_regex})
-    message(FATAL_ERROR "Option waffle_default_platform has bad value '${waffle_default_platform}'. Must be one of ${waffle_default_platform_choices}.")
-endif(NOT waffle_default_platform MATCHES ${waffle_default_platform_regex})
-
-#
-# Validate waffle_default_gl_api.
-#
-
-if(NOT DEFINED waffle_default_gl_api)
-    message(FATAL_ERROR "Option waffle_default_gl_api is not defined. Must be one of ${waffle_default_gl_api_choices}.")
-endif(NOT DEFINED waffle_default_gl_api)
-
-if(NOT waffle_default_gl_api MATCHES ${waffle_default_gl_api_regex})
-    message(FATAL_ERROR "Option waffle_default_gl_api has bad value '${waffle_default_gl_api}'. Must be one of ${waffle_default_gl_api_choices}.")
-endif(NOT waffle_default_gl_api MATCHES ${waffle_default_gl_api_regex})
 
 # ------------------------------------------------------------------------------
 # Compiler Flags
@@ -153,30 +106,6 @@ set(CMAKE_C_FLAGS_DEBUG "-g3 -O0 -DDEBUG")
 # Produce enough debug info for generating backtraces, but not
 # single-stepping.
 set(CMAKE_C_FLAGS_RELEASE "-g1 -02 -DNDEBUG")
-
-#
-# Define WAFFLE_PLATFORM_DEFAULT.
-#
-
-if(waffle_default_platform STREQUAL "glx")
-    add_definitions(-DWAFFLE_PLATFORM_DEFAULT=WAFFLE_PLATFORM_GLX)
-elseif(waffle_default_platform STREQUAL "wayland")
-    add_definitions(-DWAFFLE_PLATFORM_DEFAULT=WAFFLE_PLATFORM_WAYLAND)
-elseif(waffle_default_platform STREQUAL "x11_egl")
-    add_definitions(-DWAFFLE_PLATFORM_DEFAULT=WAFFLE_PLATFORM_X11_EGL)
-endif(waffle_default_platform STREQUAL "glx")
-
-#
-# Define macro WAFFLE_GL_API_DEFAULT.
-#
-
-if(waffle_default_gl_api STREQUAL "gl")
-    add_definitions(-DWAFFLE_GL_API_DEFAULT=WAFFLE_GL)
-elseif(waffle_default_gl_api STREQUAL "gles1")
-    add_definitions(-DWAFFLE_GL_API_DEFAULT=WAFFLE_GLES1)
-elseif(waffle_default_gl_api STREQUAL "gles2")
-    add_definitions(-DWAFFLE_GL_API_DEFAULT=WAFFLE_GLES2)
-endif(waffle_default_gl_api STREQUAL "gl")
 
 #
 # Define macros WAFFLE_HAS_{PLATFORM}.
@@ -242,10 +171,6 @@ endif(DEFINED waffle_EGL_library)
 if(DEFINED waffle_X11-xcb_library)
     message("    X11-xcb: ${waffle_X11-xcb_library}")
 endif(DEFINED waffle_X11-xcb_library)
-message("")
-message("Defaults:")
-message("    default platform: ${waffle_default_platform}")
-message("    default GL API: ${waffle_default_gl_api}")
 message("")
 message("Build type:")
 message("    ${CMAKE_BUILD_TYPE}")

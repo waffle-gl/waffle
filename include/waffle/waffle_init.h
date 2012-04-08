@@ -45,6 +45,11 @@ extern "C" {
 ///     inherently invalid due to platform or API incompatibilities; for
 ///     example, desktop OpenGL is not available on Android.
 ///
+/// @par Required Attributes
+///
+///     - WAFFLE_PLATFORM
+///     - WAFFLE_GL_API
+///
 /// @par Example: Invalid Attribute List
 ///
 ///     The following is an invalid attribute list because desktop OpenGL is not
@@ -65,7 +70,8 @@ extern "C" {
 ///         to waffle_init(), but has not been reset with waffle_finish().
 ///
 ///     - WAFFLE_BAD_ATTRIBUTE @n
-///         An item in @a attrib_list is unrecognized or has an invalid value.
+///         An item in @a attrib_list is unrecognized, missing, or has an
+///         invalid value.
 ///
 ///     - WAFFLE_INCOMPATIBLE_ATTRIBUTES @n
 ///         The attribute list contains attributes that conflict with each

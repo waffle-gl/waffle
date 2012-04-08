@@ -27,10 +27,8 @@ waffle_init_parse_attrib_list(
         int *gl_api)
 {
     const int32_t *i;
-
-    // Set defaults.
-    *platform = WAFFLE_PLATFORM_DEFAULT;
-    *gl_api = WAFFLE_GL_API_DEFAULT;
+    bool found_platform = false;
+    bool found_gl_api = false;
 
     for (i = attrib_list; *i != 0; i += 2) {
         const int32_t attr = i[0];
@@ -54,6 +52,7 @@ waffle_init_parse_attrib_list(
 #ifdef WAFFLE_HAS_X11_EGL
                     case WAFFLE_PLATFORM_X11_EGL:
 #endif
+                        found_platform = true;
                         *platform = value;
                         break;
                     default:
@@ -69,6 +68,7 @@ waffle_init_parse_attrib_list(
                     case WAFFLE_GL:
                     case WAFFLE_GLES1:
                     case WAFFLE_GLES2:
+                        found_gl_api = true;
                         *gl_api = value;
                         break;
                     default:
@@ -83,6 +83,18 @@ waffle_init_parse_attrib_list(
                 return false;
                 break;
         }
+    }
+
+    if (!found_platform) {
+        wcore_errorf(WAFFLE_BAD_ATTRIBUTE,
+                     "attribute list is missing WAFFLE_PLATFORM");
+        return false;
+    }
+
+    if (!found_gl_api) {
+        wcore_errorf(WAFFLE_BAD_ATTRIBUTE,
+                     "attribute list is missing WAFFLE_GL_API");
+        return false;
     }
 
     return true;
