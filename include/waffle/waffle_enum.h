@@ -37,6 +37,7 @@ waffle_enum_to_string(int32_t e);
 /// enables better error detection at API entry points.
 enum waffle_enum {
     WAFFLE_LIST_END                     = 0x0000,
+    WAFFLE_DONT_CARE                    = 0x0001,
 
     /// @defgroup enums for waffle_init()
     /// @{

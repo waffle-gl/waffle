@@ -20,6 +20,7 @@ waffle_enum_to_string(int32_t e)
     switch (e) {
 #define CASE(x) case x: return #x
         CASE(WAFFLE_LIST_END);
+        CASE(WAFFLE_DONT_CARE);
         CASE(WAFFLE_PLATFORM);
         CASE(WAFFLE_PLATFORM_ANDROID);
         CASE(WAFFLE_PLATFORM_COCOA);
