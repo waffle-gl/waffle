@@ -17,25 +17,6 @@ set(waffle_version 0.0)
 cmake_minimum_required(VERSION 2.8)
 
 # ------------------------------------------------------------------------------
-# Find Libraries
-# ------------------------------------------------------------------------------
-
-function(waffle_find_library var name)
-    find_library("${var}" "${name}")
-
-    if("${var}")
-        message(STATUS "Library ${name} found: ${${var}}")
-    else("${var}")
-        message(STATUS "Library ${name} not found")
-    endif("${var}")
-endfunction(waffle_find_library)
-
-if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-    waffle_find_library(waffle_EGL_library EGL)
-    waffle_find_library(waffle_X11-xcb_library X11-xcb)
-endif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-
-# ------------------------------------------------------------------------------
 # Waffle Options
 # ------------------------------------------------------------------------------
 
@@ -49,6 +30,8 @@ endif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
 option(waffle_build_tests "Build tests" ON)
 option(waffle_build_examples "Build examples" ON)
 
+option(waffle_has_x11_egl "Build support for X11/EGL" OFF)
+
 set(waffle_install_includedir "${CMAKE_INSTALL_PREFIX}/include"
     CACHE PATH "Directory where header files will be installed")
 
@@ -59,22 +42,7 @@ set(waffle_install_docdir "${CMAKE_INSTALL_PREFIX}/share/doc/waffle"
     CACHE PATH "Directory where documentation will be installed")
 
 #
-# Set waffle_has_{platform}.
-#
-
-if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-    # Set waffle_has_x11_egl.
-    set(waffle_has_x11_egl_default OFF)
-    if(waffle_EGL_library AND waffle_X11-xcb_library)
-        set(waffle_has_x11_egl_default ON)
-    endif(waffle_EGL_library AND waffle_X11-xcb_library)
-    option(waffle_has_x11_egl
-           "Build support for X11/EGL"
-           ${waffle_has_x11_egl_default})
-endif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-
-#
-# Set internal option waffle_has_egl.
+# Set internal options.
 #
 
 if(waffle_has_x11_egl)
@@ -83,15 +51,34 @@ else(waffle_has_x11_egl)
     set(waffle_has_egl FALSE)
 endif(waffle_has_x11_egl)
 
-#
-# Set internal option waffle_has_x11.
-#
-
 if(waffle_has_x11_egl)
     set(waffle_has_x11 TRUE)
 else(waffle_has_x11_egl)
     set(waffle_has_x11 FALSE)
 endif(waffle_has_x11_egl)
+
+
+# ------------------------------------------------------------------------------
+# Find Libraries
+# ------------------------------------------------------------------------------
+
+function(waffle_find_library var name)
+    find_library("${var}" "${name}")
+
+    if("${var}")
+        message(STATUS "Library ${name} found: ${${var}}")
+    else("${var}")
+        message(STATUS "Library ${name} not found")
+    endif("${var}")
+endfunction(waffle_find_library)
+
+if(waffle_has_egl)
+    waffle_find_library(waffle_EGL_library EGL)
+endif(waffle_has_egl)
+
+if(waffle_has_x11)
+    waffle_find_library(waffle_X11-xcb_library X11-xcb)
+endif(waffle_has_x11)
 
 
 # ------------------------------------------------------------------------------
