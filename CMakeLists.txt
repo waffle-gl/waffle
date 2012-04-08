@@ -57,6 +57,14 @@ else(waffle_has_x11_egl)
     set(waffle_has_x11 FALSE)
 endif(waffle_has_x11_egl)
 
+# ----------------------------------------------
+# Validate waffle options
+# ----------------------------------------------
+
+if(NOT waffle_has_x11_egl)
+    message(FATAL_ERROR "Must enable at least one of: waffle_has_x11_egl. (currently there is only one choice)")
+endif(NOT waffle_has_x11_egl)
+
 
 # ------------------------------------------------------------------------------
 # Find Libraries
