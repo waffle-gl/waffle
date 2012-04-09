@@ -24,6 +24,17 @@ if(waffle_has_egl)
         )
 endif(waffle_has_egl)
 
+if(waffle_has_glx)
+    list(APPEND waffle_sources
+        glx/glx_config.c
+        glx/glx_context.c
+        glx/glx_display.c
+        glx/glx_gl_misc.c
+        glx/glx_platform.c
+        glx/glx_window.c
+        )
+endif(waffle_has_glx)
+
 if(waffle_has_x11)
     list(APPEND waffle_sources
         x11/x11.c
