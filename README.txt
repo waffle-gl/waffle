@@ -95,6 +95,7 @@ example, see `/examples/gl_basic.c` [3].
         waffle_window_swap_buffers(window);
 
         // Teardown waffle.
+        waffle_make_current(dpy, NULL, NULL);
         waffle_window_destroy(window);
         waffle_context_destroy(ctx);
         waffle_config_destroy(config);
