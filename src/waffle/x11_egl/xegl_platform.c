@@ -14,6 +14,8 @@
 
 #include "xegl_platform.h"
 
+#define _POSIX_C_SOURCE 200112 // glib feature macro for unsetenv()
+
 #include <dlfcn.h>
 #include <stdlib.h>
 
@@ -69,6 +71,7 @@ xegl_platform_create(
             goto error;
     }
 
+    setenv("EGL_PLATFORM", "x11", true);
     ok &= egl_bind_api(gl_api);
     if (!ok)
         goto error;
@@ -97,6 +100,8 @@ xegl_platform_destroy(union native_platform *self)
 
     if (!self)
         return true;
+
+    unsetenv("EGL_PLATFORM");
 
     if (self->xegl->libgl) {
         error |= dlclose(self->xegl->libgl);
