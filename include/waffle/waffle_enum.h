@@ -36,8 +36,8 @@ waffle_enum_to_string(int32_t e);
 /// All enums are placed in one list so that each has a distinct value. This
 /// enables better error detection at API entry points.
 enum waffle_enum {
-    WAFFLE_LIST_END                     = 0x0000,
-    WAFFLE_DONT_CARE                    = 0x7777,
+    WAFFLE_LIST_END                     =  0,
+    WAFFLE_DONT_CARE                    = -1,
 
     /// @defgroup enums for waffle_init()
     /// @{
