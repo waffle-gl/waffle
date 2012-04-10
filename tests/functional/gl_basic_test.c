@@ -144,6 +144,15 @@ gl_basic(int32_t platform, int32_t gl_api)
 
     ASSERT_TRUE(waffle_init(init_attrib_list));
 
+    // Check that we've set the EGL_PLATFORM environment variable for Mesa.
+    //
+    // If Mesa's libEGL is built with support for multiple platforms, then the
+    // environment variable EGL_PLATFORM must be set before the first EGL
+    // call. Otherwise, libEGL may initialize itself with the incorrect
+    // platform. In my experiments, first calling eglGetProcAddress will
+    // produce a segfault in eglInitialize.
+    waffle_get_proc_address("glClear");
+
     // Create objects.
     ASSERT_TRUE(dpy = waffle_display_connect(NULL));
     ASSERT_TRUE(config = waffle_config_choose(dpy, config_attrib_list));
