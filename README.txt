@@ -1,13 +1,5 @@
 Waffle - a library for selecting GL API and window system at runtime
 
-homepage:       http://people.freedesktop.org/~chadversary/waffle
-mailing-list:   TODO
-maintainer:     Chad Versace <chad@chad.versace@linux.intel.com>
-source:         git://people.freedesktop.org/~chadversary/waffle.git
-gitweb:         http://cgit.freedesktop.org/~chadversary/waffle
-license:        Apache 2.0
-
-
 Summary
 =======
 
@@ -26,6 +18,17 @@ system.
 
 [1] http://cgit.freedesktop.org/piglit/tree/README
 [2] http://github.com/apitrace/apitrace#readme
+
+
+Links
+=====
+
+homepage:       http://people.freedesktop.org/~chadversary/waffle
+mailing-list:   TODO
+maintainer:     Chad Versace <chad@chad.versace@linux.intel.com>
+source:         git://people.freedesktop.org/~chadversary/waffle.git
+gitweb:         http://cgit.freedesktop.org/~chadversary/waffle
+license:        Apache 2.0
 
 
 Features
