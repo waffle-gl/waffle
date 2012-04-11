@@ -31,7 +31,7 @@ struct wcore_config_attrs;
         struct droid_##name *droid; \
         struct glx_##name *glx; \
         struct mac_##name *mac; \
-        struct wayland_##name *wayland; \
+        struct wayland_##name *wl; \
         struct xegl_##name *xegl; \
     }
 
@@ -44,7 +44,7 @@ NATIVE_UNION(window);
 /// @brief Allocate a `union native_?`.
 ///
 /// @param x must have type `union native_?`.
-/// @param platform is one of droid, glx, mac, wayland, xegl.
+/// @param platform is one of droid, glx, mac, wl, xegl.
 #define NATIVE_ALLOC(x, platform) \
     do { \
         x = calloc(1, sizeof(*x) + sizeof(*x->platform)); \
