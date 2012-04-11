@@ -22,16 +22,6 @@
 #include <waffle/core/wcore_config_attrs.h>
 #include <waffle/core/wcore_error.h>
 
-static EGLint
-egl_translate_attr_value(int32_t waffle_attr_value)
-{
-    switch(waffle_attr_value) {
-        case WAFFLE_DONT_CARE:      return EGL_DONT_CARE;
-        default:                    return waffle_attr_value;
-    }
-}
-
-
 void
 egl_get_error(const char *egl_func_call)
 {
@@ -90,17 +80,17 @@ egl_choose_config(
     const int renderable_index = 19;
 
     EGLint attrib_list[] = {
-        EGL_BUFFER_SIZE,            egl_translate_attr_value(attrs->color_buffer_size),
-        EGL_RED_SIZE,               egl_translate_attr_value(attrs->red_size),
-        EGL_BLUE_SIZE,              egl_translate_attr_value(attrs->blue_size),
-        EGL_GREEN_SIZE,             egl_translate_attr_value(attrs->green_size),
-        EGL_ALPHA_SIZE,             egl_translate_attr_value(attrs->alpha_size),
+        EGL_BUFFER_SIZE,            attrs->color_buffer_size,
+        EGL_RED_SIZE,               attrs->red_size,
+        EGL_GREEN_SIZE,             attrs->green_size,
+        EGL_BLUE_SIZE,              attrs->blue_size,
+        EGL_ALPHA_SIZE,             attrs->alpha_size,
 
-        EGL_DEPTH_SIZE,             egl_translate_attr_value(attrs->depth_size),
-        EGL_STENCIL_SIZE,           egl_translate_attr_value(attrs->stencil_size),
+        EGL_DEPTH_SIZE,             attrs->depth_size,
+        EGL_STENCIL_SIZE,           attrs->stencil_size,
 
-        EGL_SAMPLE_BUFFERS,         egl_translate_attr_value(attrs->sample_buffers),
-        EGL_SAMPLES,                egl_translate_attr_value(attrs->samples),
+        EGL_SAMPLE_BUFFERS,         attrs->sample_buffers,
+        EGL_SAMPLES,                attrs->samples,
 
         EGL_RENDERABLE_TYPE,        31415926,
 
