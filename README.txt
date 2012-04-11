@@ -114,8 +114,7 @@ Below is a full description of Waffle's configuration options. If CMake scares
 you and you don't like reading, just do this:
     cmake \
         -DCMAKE_LIBRARY_PATH=$(echo $LIBRARY_PATH | sed 's/:/;/g') \
-        -Dwaffle_default_platform=x11_egl \
-        -Dwaffle_default_api=gl \
+        -Dwaffle_has_x11_egl=1 \
         $WAFFLE_SOURCE_DIR
     make
     make check
