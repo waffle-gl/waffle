@@ -39,6 +39,7 @@ set(waffle_so_version "0.0.0")
 option(waffle_build_tests "Build tests" ON)
 option(waffle_build_examples "Build examples" ON)
 
+option(waffle_has_glx "Build support for GLX" OFF)
 option(waffle_has_x11_egl "Build support for X11/EGL" OFF)
 
 set(waffle_install_includedir "${CMAKE_INSTALL_PREFIX}/include"
@@ -60,19 +61,21 @@ else(waffle_has_x11_egl)
     set(waffle_has_egl FALSE)
 endif(waffle_has_x11_egl)
 
-if(waffle_has_x11_egl)
+if(waffle_has_glx OR waffle_has_x11_egl)
     set(waffle_has_x11 TRUE)
-else(waffle_has_x11_egl)
+else(waffle_has_glx OR waffle_has_x11_egl)
     set(waffle_has_x11 FALSE)
-endif(waffle_has_x11_egl)
+endif(waffle_has_glx OR waffle_has_x11_egl)
 
 # ----------------------------------------------
 # Validate waffle options
 # ----------------------------------------------
 
-if(NOT waffle_has_x11_egl)
-    message(FATAL_ERROR "Must enable at least one of: waffle_has_x11_egl. (currently there is only one choice)")
-endif(NOT waffle_has_x11_egl)
+if(NOT waffle_has_glx
+   AND NOT waffle_has_x11_egl)
+    message(FATAL_ERROR "Must enable at least one of: waffle_has_glx, waffle_has_x11_egl.")
+endif(NOT waffle_has_glx
+      AND NOT waffle_has_x11_egl)
 
 
 # ------------------------------------------------------------------------------
@@ -92,6 +95,10 @@ endfunction(waffle_find_library)
 if(waffle_has_egl)
     waffle_find_library(waffle_EGL_library EGL)
 endif(waffle_has_egl)
+
+if(waffle_has_glx)
+    waffle_find_library(waffle_GL_library GL)
+endif(waffle_has_glx)
 
 if(waffle_has_x11)
     waffle_find_library(waffle_X11-xcb_library X11-xcb)
@@ -116,6 +123,10 @@ set(CMAKE_C_FLAGS_RELEASE "-g1 -02 -DNDEBUG")
 #
 # Android is not in this list because it uses a separate build system.
 #
+
+if(waffle_has_glx)
+    add_definitions(-DWAFFLE_HAS_GLX)
+endif(waffle_has_glx)
 
 if(waffle_has_x11_egl)
     add_definitions(-DWAFFLE_HAS_X11_EGL)
@@ -173,6 +184,9 @@ message("")
 message("Waffle configuration summary")
 message("")
 message("Supported platforms: ")
+if(waffle_has_glx)
+    message("    glx")
+endif(waffle_has_glx)
 if(waffle_has_x11_egl)
     message("    x11_egl")
 endif(waffle_has_x11_egl)
@@ -181,6 +195,9 @@ message("Libraries:")
 if(DEFINED waffle_EGL_library)
     message("    EGL: ${waffle_EGL_library}")
 endif(DEFINED waffle_EGL_library)
+if(DEFINED waffle_GL_library)
+    message("    GL: ${waffle_GL_library}")
+endif(DEFINED waffle_GL_library)
 if(DEFINED waffle_X11-xcb_library)
     message("    X11-xcb: ${waffle_X11-xcb_library}")
 endif(DEFINED waffle_X11-xcb_library)
