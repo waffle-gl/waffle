@@ -198,6 +198,58 @@ gl_basic(int32_t platform, int32_t gl_api)
     ABORT_IF(!waffle_finish());
 }
 
+#ifdef WAFFLE_HAS_GLX
+TEST(gl_basic, glx_gl)
+{
+    gl_basic(WAFFLE_PLATFORM_GLX, WAFFLE_OPENGL);
+}
+
+// Check that waffle_init() fails on WAFFLE_OPENGL_ES1. Mesa has not yet
+// implemented the necessary GLX extension.
+TEST(gl_basic, glx_gles1)
+{
+    const int32_t attrib_list[] = {
+        WAFFLE_PLATFORM,        WAFFLE_PLATFORM_GLX,
+        WAFFLE_OPENGL_API,      WAFFLE_OPENGL_ES1,
+        0,
+    };
+
+    int32_t error_code;
+    char error_message[1024];
+    size_t error_message_length;
+
+    ASSERT_TRUE(!waffle_init(attrib_list));
+
+    error_code = waffle_get_error_m(error_message, 1024, &error_message_length);
+    ASSERT_TRUE(error_code == WAFFLE_BAD_ATTRIBUTE);
+    ASSERT_TRUE(error_message_length > 0);
+    ASSERT_TRUE(strstr(error_message, "WAFFLE_OPENGL_ES1"));
+
+}
+
+// Check that waffle_init() fails on WAFFLE_OPENGL_ES1. Mesa has not yet
+// implemented the necessary GLX extension.
+TEST(gl_basic, glx_gles2)
+{
+    const int32_t attrib_list[] = {
+        WAFFLE_PLATFORM,        WAFFLE_PLATFORM_GLX,
+        WAFFLE_OPENGL_API,      WAFFLE_OPENGL_ES1,
+        0,
+    };
+
+    int32_t error_code;
+    char error_message[1024];
+    size_t error_message_length;
+
+    ASSERT_TRUE(!waffle_init(attrib_list));
+
+    error_code = waffle_get_error_m(error_message, 1024, &error_message_length);
+    ASSERT_TRUE(error_code == WAFFLE_BAD_ATTRIBUTE);
+    ASSERT_TRUE(error_message_length > 0);
+    ASSERT_TRUE(strstr(error_message, "WAFFLE_OPENGL_ES1"));
+}
+#endif
+
 #ifdef WAFFLE_HAS_X11_EGL
 TEST(gl_basic, x11_egl_gl)
 {
@@ -218,6 +270,11 @@ TEST(gl_basic, x11_egl_gles2)
 static void
 testsuite_gl_basic(void)
 {
+#ifdef WAFFLE_HAS_GLX
+    TEST_RUN(gl_basic, glx_gl);
+    TEST_RUN(gl_basic, glx_gles1);
+    TEST_RUN(gl_basic, glx_gles2);
+#endif
 #ifdef WAFFLE_HAS_X11_EGL
     TEST_RUN(gl_basic, x11_egl_gl);
     TEST_RUN(gl_basic, x11_egl_gles1);
