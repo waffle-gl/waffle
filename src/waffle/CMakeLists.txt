@@ -35,6 +35,18 @@ if(waffle_has_glx)
         )
 endif(waffle_has_glx)
 
+if(waffle_has_wayland)
+    list(APPEND waffle_sources
+        wayland/wayland_config.c
+        wayland/wayland_context.c
+        wayland/wayland_display.c
+        wayland/wayland_gl_misc.c
+        wayland/wayland_platform.c
+        wayland/wayland_priv_egl.c
+        wayland/wayland_window.c
+    )
+endif(waffle_has_wayland)
+
 if(waffle_has_x11)
     list(APPEND waffle_sources
         x11/x11.c
