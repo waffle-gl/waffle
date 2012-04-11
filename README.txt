@@ -43,8 +43,8 @@ Waffle supports, or has planned support, for the following window systems:
     - Android   (planned)
     - Apple/GLX (planned)
     - Apple/CGL (planned)
-    - GLX       (planned, coming next)
-    - Wayland   (planned, after GLX)
+    - GLX       (complete)
+    - Wayland   (planned, coming next)
     - Windows   (planned)
     - X11/EGL   (complete)
 
@@ -114,6 +114,7 @@ Below is a full description of Waffle's configuration options. If CMake scares
 you and you don't like reading, just do this:
     cmake \
         -DCMAKE_LIBRARY_PATH=$(echo $LIBRARY_PATH | sed 's/:/;/g') \
+        -Dwaffle_has_glx=1 \
         -Dwaffle_has_x11_egl=1 \
         $WAFFLE_SOURCE_DIR
     make
@@ -157,8 +158,12 @@ CMake options:
 
 Platform options:
 
+    - waffle_has_glx
+        [default=0] [choices=0,1]
+        Build Waffle with support for GLX.
+
     - waffle_has_x11_egl
-        [default=1 if libraries are autodetected] [choices=0,1]
+        [default=0] [choices=0,1]
         Build Waffle with support for X11/EGL.
 
 Install options:
