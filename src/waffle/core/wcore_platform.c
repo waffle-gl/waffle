@@ -21,6 +21,7 @@
 
 #include <waffle/waffle_enum.h>
 #include <waffle/glx/glx_platform.h>
+#include <waffle/wayland/wayland_platform.h>
 #include <waffle/x11_egl/xegl_platform.h>
 
 #include "wcore_error.h"
@@ -49,6 +50,11 @@ wcore_platform_create(int platform, int gl_api)
     switch (platform) {
         case WAFFLE_PLATFORM_GLX:
             self->native = glx_platform_create(gl_api, &self->dispatch);
+            if (!self->native)
+                goto error;
+            break;
+        case WAFFLE_PLATFORM_WAYLAND:
+            self->native = wayland_platform_create(gl_api, &self->dispatch);
             if (!self->native)
                 goto error;
             break;
@@ -84,6 +90,9 @@ wcore_platform_destroy(struct wcore_platform *self)
     switch (self->native_tag) {
         case WAFFLE_PLATFORM_GLX:
             ok &= glx_platform_destroy(self->native);
+            break;
+        case WAFFLE_PLATFORM_WAYLAND:
+            ok &= wayland_platform_destroy(self->native);
             break;
         case WAFFLE_PLATFORM_X11_EGL:
             ok &= xegl_platform_destroy(self->native);
