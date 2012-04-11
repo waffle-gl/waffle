@@ -63,6 +63,13 @@ if(waffle_has_glx)
     target_link_libraries(waffle ${waffle_GL_library})
 endif(waffle_has_glx)
 
+if(waffle_has_wayland)
+    target_link_libraries(waffle
+        ${waffle_wayland-client_library}
+        ${waffle_wayland-egl_library}
+        )
+endif(waffle_has_wayland)
+
 if(waffle_has_x11_egl)
   target_link_libraries(waffle ${waffle_X11-xcb_library})
 endif(waffle_has_x11_egl)
