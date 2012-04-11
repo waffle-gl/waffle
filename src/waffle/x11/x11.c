@@ -59,13 +59,6 @@ x11_window_create(
         int width,
         int height)
 {
-    const uint32_t attrib_mask = XCB_CW_EVENT_MASK;
-    const uint32_t attrib_list[] = {
-        XCB_EVENT_MASK_BUTTON_PRESS
-        | XCB_EVENT_MASK_EXPOSURE
-        | XCB_EVENT_MASK_KEY_PRESS,
-    };
-
     const xcb_setup_t *setup = xcb_get_setup(conn);
     if (!setup){
         wcore_errorf(WAFFLE_UNKNOWN_ERROR, "xcb_get_setup() failed");
@@ -78,11 +71,25 @@ x11_window_create(
         goto error;
     }
 
+    xcb_colormap_t colormap = xcb_generate_id(conn);
     xcb_window_t window = xcb_generate_id(conn);
-    if (window <= 0) {
+    if (colormap <= 0 || window <= 0) {
         wcore_errorf(WAFFLE_UNKNOWN_ERROR, "xcb_generate_id() failed");
         goto error;
     }
+
+    xcb_void_cookie_t colormap_cookie = xcb_create_colormap_checked(
+                                            conn,
+                                            XCB_COLORMAP_ALLOC_NONE,
+                                            colormap,
+                                            screen->root,
+                                            visual_id);
+
+    const uint32_t event_mask = XCB_EVENT_MASK_BUTTON_PRESS
+                               | XCB_EVENT_MASK_EXPOSURE
+                               | XCB_EVENT_MASK_KEY_PRESS;
+    const uint32_t attrib_mask = XCB_CW_EVENT_MASK | XCB_CW_COLORMAP;
+    const uint32_t attrib_list[] = {event_mask, colormap, 0};
 
     xcb_void_cookie_t create_cookie = xcb_create_window_checked(
             conn,
@@ -101,6 +108,13 @@ x11_window_create(
 
     // Check errors.
     xcb_generic_error_t *error;
+    error = xcb_request_check(conn, colormap_cookie);
+    if (error) {
+        wcore_errorf(WAFFLE_UNKNOWN_ERROR,
+                     "xcb_create_colormap() failed on visual_id=0x%x with "
+                     "error=0x%x\n", visual_id, error->error_code);
+        goto error;
+    }
     error = xcb_request_check(conn, create_cookie);
     if (error) {
         wcore_errorf(WAFFLE_UNKNOWN_ERROR,
@@ -116,12 +130,18 @@ x11_window_create(
         goto error;
     }
 
-    return window;
+    goto end;
 
 error:
+    xcb_free_colormap(conn, colormap);
+
     if (window)
         xcb_destroy_window(conn, window);
-    return 0;
+    window = 0;
+
+end:
+
+    return window;
 }
 
 bool
