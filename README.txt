@@ -107,11 +107,11 @@ example, see `/examples/gl_basic.c` [3].
 -----------------------------
 
 
-Building
-========
+Installing
+==========
 
-Below is a full description of Waffle's configuration options. If CMake scares
-you and you don't like reading, just do this:
+On Linux, you likely want to do this:
+
     cmake \
         -DCMAKE_LIBRARY_PATH=$(echo $LIBRARY_PATH | sed 's/:/;/g') \
         -Dwaffle_has_glx=1 \
@@ -121,77 +121,8 @@ you and you don't like reading, just do this:
     make check
     make install
 
-
-Configuration Options
----------------------
-
-Options are given in -Dname=value format.
-
-CMake options:
-    Unlike Autoconf, CMake doesn't detect environment variables like
-    LIBRARY_PATH and CFLAGS. You need to set some of the options below to get
-    that behavior.
-
-    - CMAKE_BUILD_TYPE
-        [default=?; choices=debug,release]
-        This affects CFLAGS.
-
-    - CMAKE_C_FLAGS
-        [default="--std=c99 -Wall -Werror"]
-
-    - CMAKE_C_FLAGS_DEBUG
-        [default="-g3 -O0 -DDEBUG"]
-        Flags to append to CMAKE_C_FLAGS when CMAKE_BUILD_TYPE=debug.
-
-    - CMAKE_C_FLAGS_RELEASE
-        [default="-g1 -O2 -DNEDEBUG"]
-        Flags to append to CMAKE_C_FLAGS when CMAKE_BUILD_TYPE=release.
-
-    - CMAKE_LIBRARY_PATH
-        [default=none]
-        A semicolon-separated list of directories in which to search for
-        libraries.
-
-    - CMAKE_INSTALL_PREFIX
-        [default=/usr/local]
-        Equivalent to autoconf's --prefix.
-
-Platform options:
-
-    - waffle_has_glx
-        [default=0] [choices=0,1]
-        Build Waffle with support for GLX.
-
-    - waffle_has_wayland
-        [default=0] [choices=0,1]
-        Build Waffle with support for Wayland.
-
-    - waffle_has_x11_egl
-        [default=0] [choices=0,1]
-        Build Waffle with support for X11/EGL.
-
-Install options:
-    - waffle_install_includedir
-        [default=${CMAKE_INSTALL_PREFIX}/include]
-        Directory where libraries will be instaled.
-
-    - waffle_install_libdir
-        [default=${CMAKE_INSTALL_PREFIX}/lib]
-        Directory where libraries will be installed.
-
-    - waffle_install_docdir
-        [default=${CMAKE_INSTALL_PREFIX}/share/doc/waffle]
-        Directory where documentation will be instaled.
-
-Miscellaneous options:
-
-    - waffle_build_tests
-        [default=1; choices=0,1]
-        Build the unit tests and functional tests ran by `make check`.
-
-    - waffle_build_examples
-        [default=1; choices=0,1]
-        Build the stuff in the /examples directory.
+For full details on configuring, building, and installing Waffle, see
+/doc/building.txt.
 
 
 License

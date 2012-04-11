@@ -1,0 +1,144 @@
+Quickstart
+===========
+
+On Linux, this likely what you want:
+
+    cmake \
+        -DCMAKE_LIBRARY_PATH=$(echo $LIBRARY_PATH | sed 's/:/;/g') \
+        -Dwaffle_has_glx=1 \
+        -Dwaffle_has_x11_egl=1 \
+        $WAFFLE_SOURCE_DIR
+    make
+    make check
+    make install
+
+
+Configuration
+=============
+
+To configure Waffle, invoke CMake as `cmake [options] $WAFFLE_SOURCE_DIR`.
+Options are given in form `-Dname=value`. CMake stores its configuration in a
+top-level file named CMakeCache.txt. To edit cached variables, either edit the
+file by hand or call `make edit_cache`.
+
+CMake builtin options:
+
+    CMake has many builtin options. Here is a small subset of important
+    options that affect Waffle.
+
+    Unlike Autoconf, CMake doesn't detect environment variables like
+    LIBRARY_PATH and CFLAGS. You need to set some of the options below to get
+    that behavior.
+
+    - CMAKE_BUILD_TYPE
+        [default=?; choices=debug,release]
+        This affects compilation flags.
+
+    - CMAKE_C_FLAGS
+        [default="--std=c99 -Wall -Werror"]
+
+    - CMAKE_C_FLAGS_DEBUG
+        [default="-g3 -O0 -DDEBUG"]
+        Flags to append to CMAKE_C_FLAGS when CMAKE_BUILD_TYPE=debug.
+
+    - CMAKE_C_FLAGS_RELEASE
+        [default="-g1 -O2 -DNEDEBUG"]
+        Flags to append to CMAKE_C_FLAGS when CMAKE_BUILD_TYPE=release.
+
+    - CMAKE_LIBRARY_PATH
+        [default=none]
+        A semicolon-separated list of directories in which to search for
+        libraries.
+
+    - CMAKE_INSTALL_PREFIX
+        [default=/usr/local]
+        Equivalent to autoconf's --prefix.
+
+Platform options;
+
+    - waffle_has_glx
+        [default=0] [choices=0,1]
+        Build Waffle with support for GLX.
+
+    - waffle_has_wayland
+        [default=0] [choices=0,1]
+        Build Waffle with support for Wayland.
+
+    - waffle_has_x11_egl
+        [default=0] [choices=0,1]
+        Build Waffle with support for X11/EGL.
+
+Install options:
+
+    - waffle_install_includedir
+        [default=${CMAKE_INSTALL_PREFIX}/include]
+        Directory where libraries will be instaled.
+
+    - waffle_install_libdir
+        [default=${CMAKE_INSTALL_PREFIX}/lib]
+        Directory where libraries will be installed.
+
+    - waffle_install_docdir
+        [default=${CMAKE_INSTALL_PREFIX}/share/doc/waffle]
+        Directory where documentation will be instaled.
+
+Miscellaneous options:
+
+    - waffle_build_tests
+        [default=1; choices=0,1]
+        Build the unit tests and functional tests ran by `make check`.
+
+    - waffle_build_examples
+        [default=1; choices=0,1]
+        Build the stuff in the /examples directory.
+
+
+Building and Installing
+=======================
+
+To build and install Waffle:
+
+    make
+    make install
+
+I strongly recommend you run `make check` before installing.
+
+What follows is a list of significant build targets.
+
+Generic targets:
+
+    - all
+        Build everything.
+
+    - check
+        Run all tests, unit tests and functional tests.
+
+    - install
+        Install libraries and headers.
+
+Libraries:
+
+    - waffle
+        Waffle's main library.
+
+    - waffle_test
+        Waffle's test framework.
+
+Test programs:
+
+    - waffle-unittest
+    - gl_basic_test
+
+Example programs:
+
+    - gl_basic
+
+CMake targets:
+
+    - help
+        List all make targets.
+
+    - edit_cache
+        Edit CMakeCache.txt.
+
+    - rebuild_cache
