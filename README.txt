@@ -42,9 +42,9 @@ that's on the short todo list.
 Waffle supports, or has planned support, for the following window systems:
     - Android   (planned)
     - Apple/GLX (planned)
-    - Apple/CGL (planned)
+    - Apple/CGL (planned, coming next)
     - GLX       (complete)
-    - Wayland   (planned, coming next)
+    - Wayland   (complete)
     - Windows   (planned)
     - X11/EGL   (complete)
 
@@ -161,6 +161,10 @@ Platform options:
     - waffle_has_glx
         [default=0] [choices=0,1]
         Build Waffle with support for GLX.
+
+    - waffle_has_wayland
+        [default=0] [choices=0,1]
+        Build Waffle with support for Wayland.
 
     - waffle_has_x11_egl
         [default=0] [choices=0,1]
