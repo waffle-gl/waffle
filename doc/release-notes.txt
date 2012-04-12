@@ -1,3 +1,24 @@
+Version 0.2 - 11 Apr 2012
+=========================
+
+New Features
+------------
+- Support for GLX.
+- Support for Wayland.
+
+Changes
+-------
+- Changed value of WAFFLE_DONT_CARE to -1, to match EGL_DONT_CARE and
+  GLX_DONT_CARE.
+
+Bug Fixes
+---------
+- Set environment variable EGL_PLATFORM during initialization in order to
+  avoid problems when Mesa's libEGL is built with support for multiple
+  platforms.
+- Fix creation of X windows. Provide a colormap to xcb_window_create.
+
+
 Version 0.1 - 9 Apr 2012
 ========================
 
