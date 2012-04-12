@@ -23,9 +23,13 @@
 ///     4. Verify the window contents with glReadPixels.
 ///     5. Tear down all waffle state.
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+
+#include <sys/types.h>
+#include <sys/wait.h>
 
 #include <waffle/waffle.h>
 #include <waffle_test/waffle_test.h>
@@ -248,7 +252,15 @@ TEST(gl_basic, glx_gles2)
     ASSERT_TRUE(error_message_length > 0);
     ASSERT_TRUE(strstr(error_message, "WAFFLE_OPENGL_ES1"));
 }
-#endif
+
+static void
+testsuite_glx(void)
+{
+    TEST_RUN(gl_basic, glx_gl);
+    TEST_RUN(gl_basic, glx_gles1);
+    TEST_RUN(gl_basic, glx_gles2);
+}
+#endif // WAFFLE_HAS_GLX
 
 #ifdef WAFFLE_HAS_X11_EGL
 TEST(gl_basic, x11_egl_gl)
@@ -265,30 +277,73 @@ TEST(gl_basic, x11_egl_gles2)
 {
     gl_basic(WAFFLE_PLATFORM_X11_EGL, WAFFLE_OPENGL_ES2);
 }
-#endif
 
 static void
-testsuite_gl_basic(void)
+testsuite_x11_egl(void)
 {
-#ifdef WAFFLE_HAS_GLX
-    TEST_RUN(gl_basic, glx_gl);
-    TEST_RUN(gl_basic, glx_gles1);
-    TEST_RUN(gl_basic, glx_gles2);
-#endif
-#ifdef WAFFLE_HAS_X11_EGL
     TEST_RUN(gl_basic, x11_egl_gl);
     TEST_RUN(gl_basic, x11_egl_gles1);
     TEST_RUN(gl_basic, x11_egl_gles2);
-#endif
+}
+#endif // WAFFLE_HAS_X11_EGL
+
+
+static void
+usage_error(void)
+{
+    fprintf(stderr, "gl_basic_test: usage error\n");
+    exit(1);
 }
 
-static void (*test_suites[])(void) = {
-    testsuite_gl_basic,
-    0,
-};
+/// Run the testsuite in a separate process. If the testsuite fails, then exit
+/// immediately.
+static void
+run_testsuite(void (*testsuite)(void))
+{
+    pid_t pid = fork();
+    int status;
+
+    if (pid > 0) {
+        waitpid(pid, &status, 0);
+        int exit_status = WEXITSTATUS(status);
+        // exit_status is number of failures.
+        if (exit_status == 0) {
+            // All tests passed.
+            return;
+        }
+        else if (exit_status > 0) {
+            // Some tests failed. Don't run any more tests.
+            exit(exit_status);
+        }
+        else {
+            fprintf(stderr, "gl_basic_test: error: child process aborted\n");
+            abort();
+        }
+    }
+    else if (pid == 0) {
+        void (*testsuites[])(void) = {testsuite, 0};
+        int argc = 0;
+        int num_failures = wt_main(&argc, NULL, testsuites);
+        exit(num_failures);
+    }
+    else {
+        fprintf(stderr, "gl_basic_test: error: fork failed\n");
+        abort();
+    }
+}
 
 int
 main(int argc, char *argv[])
 {
-    return wt_main(&argc, argv, test_suites);
+    if (argc != 1)
+        usage_error();
+
+#ifdef WAFFLE_HAS_GLX
+    run_testsuite(testsuite_glx);
+#endif
+#ifdef WAFFLE_HAS_X11_EGL
+    run_testsuite(testsuite_x11_egl);
+#endif
+
+   return 0;
 }
