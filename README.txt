@@ -61,7 +61,6 @@ example, see `/examples/gl_basic.c` [3].
 
 [3] http://cgit.freedesktop.org/~chadversary/waffle/tree/gl_basic.c.
 
------------------------------
     #include <waffle/waffle.h>
 
     // Declare function pointers and enums for glClear, glClearColor.
@@ -107,7 +106,6 @@ example, see `/examples/gl_basic.c` [3].
 
         return 0;
     }
------------------------------
 
 
 Installing
