@@ -262,6 +262,31 @@ testsuite_glx(void)
 }
 #endif // WAFFLE_HAS_GLX
 
+#ifdef WAFFLE_HAS_WAYLAND
+TEST(gl_basic, wayland_gl)
+{
+    gl_basic(WAFFLE_PLATFORM_WAYLAND, WAFFLE_OPENGL);
+}
+
+TEST(gl_basic, wayland_gles1)
+{
+    gl_basic(WAFFLE_PLATFORM_WAYLAND, WAFFLE_OPENGL_ES1);
+}
+
+TEST(gl_basic, wayland_gles2)
+{
+    gl_basic(WAFFLE_PLATFORM_WAYLAND, WAFFLE_OPENGL_ES2);
+}
+
+static void
+testsuite_wayland(void)
+{
+    TEST_RUN(gl_basic, wayland_gl);
+    TEST_RUN(gl_basic, wayland_gles1);
+    TEST_RUN(gl_basic, wayland_gles2);
+}
+#endif // WAFFLE_HAS_WAYLAND
+
 #ifdef WAFFLE_HAS_X11_EGL
 TEST(gl_basic, x11_egl_gl)
 {
@@ -340,6 +365,9 @@ main(int argc, char *argv[])
 
 #ifdef WAFFLE_HAS_GLX
     run_testsuite(testsuite_glx);
+#endif
+#ifdef WAFFLE_HAS_WAYLAND
+    run_testsuite(testsuite_wayland);
 #endif
 #ifdef WAFFLE_HAS_X11_EGL
     run_testsuite(testsuite_x11_egl);
