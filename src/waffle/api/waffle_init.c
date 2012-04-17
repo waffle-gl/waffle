@@ -105,7 +105,7 @@ waffle_init(const int32_t *attrib_list)
 {
     bool ok = true;
     int platform;
-    int gl_api;
+    int gl_api = 0;
 
     if (api_current_platform) {
         wcore_error(WAFFLE_ALREADY_INITIALIZED);
