@@ -60,6 +60,8 @@ x11_window_create(
         int height)
 {
     const xcb_setup_t *setup = xcb_get_setup(conn);
+    xcb_colormap_t colormap = 0;
+    xcb_window_t window = 0;
     if (!setup){
         wcore_errorf(WAFFLE_UNKNOWN_ERROR, "xcb_get_setup() failed");
         goto error;
@@ -71,8 +73,8 @@ x11_window_create(
         goto error;
     }
 
-    xcb_colormap_t colormap = xcb_generate_id(conn);
-    xcb_window_t window = xcb_generate_id(conn);
+    colormap = xcb_generate_id(conn);
+    window = xcb_generate_id(conn);
     if (colormap <= 0 || window <= 0) {
         wcore_errorf(WAFFLE_UNKNOWN_ERROR, "xcb_generate_id() failed");
         goto error;
