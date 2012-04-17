@@ -56,7 +56,7 @@ static void
 error_usage(void)
 {
     fprintf(stderr, "usage error\n\n");
-    fprintf(stderr, usage_message);
+    fprintf(stderr, "%s", usage_message);
     exit(EXIT_FAILURE);
 }
 
