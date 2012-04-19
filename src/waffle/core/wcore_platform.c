@@ -48,21 +48,27 @@ wcore_platform_create(int platform, int gl_api)
     self->gl_api = gl_api;
 
     switch (platform) {
+#ifdef WAFFLE_HAS_GLX
         case WAFFLE_PLATFORM_GLX:
             self->native = glx_platform_create(gl_api, &self->dispatch);
             if (!self->native)
                 goto error;
             break;
+#endif
+#ifdef WAFFLE_HAS_WAYLAND
         case WAFFLE_PLATFORM_WAYLAND:
             self->native = wayland_platform_create(gl_api, &self->dispatch);
             if (!self->native)
                 goto error;
             break;
+#endif
+#ifdef WAFFLE_HAS_X11_EGL
         case WAFFLE_PLATFORM_X11_EGL:
             self->native = xegl_platform_create(gl_api, &self->dispatch);
             if (!self->native)
                 goto error;
             break;
+#endif
         default:
             wcore_error_internal("bad value for platform (0x%x)", platform);
             goto error;
@@ -88,15 +94,21 @@ wcore_platform_destroy(struct wcore_platform *self)
         return true;
 
     switch (self->native_tag) {
+#ifdef WAFFLE_HAS_GLX
         case WAFFLE_PLATFORM_GLX:
             ok &= glx_platform_destroy(self->native);
             break;
+#endif
+#ifdef WAFFLE_HAS_WAYLAND
         case WAFFLE_PLATFORM_WAYLAND:
             ok &= wayland_platform_destroy(self->native);
             break;
+#endif
+#ifdef WAFFLE_HAS_X11_EGL
         case WAFFLE_PLATFORM_X11_EGL:
             ok &= xegl_platform_destroy(self->native);
             break;
+#endif
         default:
             ok = false;
             wcore_error_internal("bad value for wcore_platform._native_tag "
