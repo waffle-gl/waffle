@@ -36,11 +36,16 @@ waffle_enum_to_string(int32_t e);
 /// All enums are placed in one list so that each has a distinct value. This
 /// enables better error detection at API entry points.
 enum waffle_enum {
+    // -----------------------------------------
+    // Generic
+    // -----------------------------------------
+
     WAFFLE_LIST_END                     =  0,
     WAFFLE_DONT_CARE                    = -1,
 
-    /// @defgroup enums for waffle_init()
-    /// @{
+    // -----------------------------------------
+    // For waffle_init()
+    // -----------------------------------------
 
     WAFFLE_PLATFORM                     = 0x0010,
         WAFFLE_PLATFORM_ANDROID         = 0x0011,
@@ -54,13 +59,9 @@ enum waffle_enum {
         WAFFLE_OPENGL_ES1               = 0x0102,
         WAFFLE_OPENGL_ES2               = 0x0103,
 
-    /// @}
-    /// @defgroup enums for waffle_config_choose()
-    ///
-    /// Choices for @c WAFFLE_DOUBLE_BUFFERED are 0 and 1; the default is 1.
-    /// The default value of WAFFLE_SAMPLE_BUFFERS and WAFFLE_SAMPLES is 0.
-    /// The default value of all other attributes is WAFFLE_DONT_CARE.
-    /// @{
+    // -----------------------------------------
+    // For waffle_config_choose()
+    // -----------------------------------------
 
     WAFFLE_RED_SIZE                     = 0x0201,
     WAFFLE_GREEN_SIZE                   = 0x0202,
@@ -74,8 +75,6 @@ enum waffle_enum {
     WAFFLE_SAMPLES                      = 0x0208,
 
     WAFFLE_DOUBLE_BUFFERED              = 0x0209,
-
-    /// @}
 };
 
 #ifdef __cplusplus
