@@ -26,8 +26,52 @@ extern "C" {
 struct waffle_config;
 struct waffle_display;
 
-/// If a config is found that satisfies @a attrib_list, return it. Else,
-/// return null.
+/// @brief Choose a config satisfying some attributes.
+///
+///
+/// ### Attributes ###
+///
+/// Argument @a attrib_list specifies a list of attributes, described in the
+/// table below, that the returned config must satisfy. The list consists of
+/// a zero-terminated sequence of name/value pairs. If an attribute is absent
+/// from the list, then the attribute assumes its default value. If @a
+/// attrib_list is null or empty, then all attributes assume their default
+/// values.
+///
+/// | Name                                    | Type | Default          |
+/// |:----------------------------------------|-----:|-----------------:|
+/// | WAFFLE_RED_SIZE                         |  int | WAFFLE_DONT_CARE |
+/// | WAFFLE_GREEN_SIZE                       |  int | WAFFLE_DONT_CARE |
+/// | WAFFLE_BLUE_SIZE                        |  int | WAFFLE_DONT_CARE |
+/// | WAFFLE_ALPHA_SIZE                       |  int | WAFFLE_DONT_CARE |
+/// | .                                       |    . |                . |
+/// | WAFFLE_DEPTH_SIZE                       |  int | WAFFLE_DONT_CARE |
+/// | WAFFLE_STENCIL_SIZE                     |  int | WAFFLE_DONT_CARE |
+/// | .                                       |    . |                . |
+/// | WAFFLE_SAMPLE_BUFFERS                   | bool |            false |
+/// | WAFFLE_SAMPLES                          |  int |                0 |
+/// | .                                       |    . |                . |
+/// | WAFFLE_DOUBLE_BUFFERED                  | bool |             true |
+///
+///
+/// ### Example Attribute Lists ###
+///
+/// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.c}
+/// const int32_t empty_list[] = {0};
+///
+/// const int32_t rgb565[] = {
+///     WAFFLE_RED_SIZE,    5,
+///     WAFFLE_GREEN_SIZE,  6,
+///     WAFFLE_BLUE_SIZE,   5,
+///     0,
+/// };
+/// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+///
+///
+/// @return A config that satisfies @a attrib_list. If no such config is
+///     found, return null.
+/// @see waffle_enum
+///
 WAFFLE_API struct waffle_config*
 waffle_config_choose(struct waffle_display *dpy, const int32_t attrib_list[]);
 
