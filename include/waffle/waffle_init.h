@@ -30,55 +30,78 @@ extern "C" {
 ///
 /// This function must be called before calling any other waffle functions
 /// (except waffle_finish()). If waffle is already initialized, then calling
-/// waffle_init() produces an error. To reset waffle's global state, call
-/// waffle_finish(). After calling waffle_finish(), it is safe to reinitialize
-/// the library with a new set of attributes.
+/// waffle_init() produces the error @c WAFFLE_ALREADY_INITIALIZED. To reset
+/// waffle's global state, call waffle_finish(). After calling
+/// waffle_finish(), it is safe to reinitialize the library with a new set of
+/// attributes.
 ///
-/// @par Initialization Attributes
 ///
-///     Argument @a attrib_list is a null-terminated list of attributes with
-///     which to initialize the waffle library. Each attribute consists of a
-///     key/value pair. If an attribute is omitted, a default value is chosen.
-///     Supplying a null pointer for @a attrib_list produces the same behavior
-///     as supplying the empty list.  The attributes and their valid values
-///     are listed in `enum waffle_enum`.  Some attribute combinations are
-///     inherently invalid due to platform or API incompatibilities; for
-///     example, desktop OpenGL is not available on Android.
+/// ### Attributes ###
 ///
-/// @par Required Attributes
+/// Argument @a attrib_list specifies a list of attributes, described in the
+/// table below, with which to initialize the waffle library. The list consists
+/// of a zero-terminated sequence of name/value pairs. If an attribute is
+/// absent from the list, then the attribute assumes its default value. If @a
+/// attrib_list is null or empty, then all attributes assume their default
+/// values.
 ///
-///     - WAFFLE_PLATFORM
-///     - WAFFLE_OPENGL_API
+/// Some attribute combinations are inherently invalid due to platform or API
+/// incompatibilities. For example, desktop OpenGL is not available on
+/// Android. Providing such an attribute list produces the error
+/// @c WAFFLE_INCOMPATIBLE_ATTRIBUTES.
 ///
-/// @par Example: Invalid Attribute List
+/// |Name                                    | Required | Type | Default | Choices                      |
+/// |:---------------------------------------|:--------:|-----:|--------:|:-----------------------------|
+/// | WAFFLE_PLATFORM                        |   yes    | enum |    none | WAFFLE_PLATFORM_ANDROID      |
+/// | .                                      |     .    |    . |       . | WAFFLE_PLATFORM_COCOA        |
+/// | .                                      |     .    |    . |       . | WAFFLE_PLATFORM_GLX          |
+/// | .                                      |     .    |    . |       . | WAFFLE_PLATFORM_WAYLAND      |
+/// | .                                      |     .    |    . |       . | WAFFLE_PLATFORM_X11_EGL      |
+/// | .                                      |     .    |    . |       . | .                            |
+/// | WAFFLE_OPENGL_API                      |   yes    | enum |    none | WAFFLE_OPENGL                |
+/// | .                                      |     .    |    . |       . | WAFFLE_OPENGL_ES1            |
+/// | .                                      |     .    |    . |       . | WAFFLE_OPENGL_ES2            |
 ///
-///     The following is an invalid attribute list because desktop OpenGL is not
-///     availabe on Android.  Passing it to waffle_init() will produce the @c
-///     WAFFLE_INCOMPATIBLE_ATTRIBUTES error.
-///         @code
-///             {
-///               WAFFLE_PLATFORM,      WAFFLE_PLATFORM_ANDROID,
-///               WAFFLE_OPENGL_API,    WAFFLE_OPENGL,
-///               0,
-///             }
-///         @endcode
 ///
-/// @par Errors
+/// ### Example Attribute Lists ###
 ///
-///     - WAFFLE_ALREADY_INITIALIZED @n
-///         The library's global state has already been initialized with a call
-///         to waffle_init(), but has not been reset with waffle_finish().
+/// Below is a valid attribute list for Android.
 ///
-///     - WAFFLE_BAD_ATTRIBUTE @n
-///         An item in @a attrib_list is unrecognized, missing, or has an
-///         invalid value.
+/// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.c}
+/// const int32_t android_good[] = {
+///   WAFFLE_PLATFORM,      WAFFLE_PLATFORM_ANDROID,
+///   WAFFLE_OPENGL_API,    WAFFLE_OPENGL_ES2,
+///   0,
+/// }
+/// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ///
-///     - WAFFLE_INCOMPATIBLE_ATTRIBUTES @n
-///         The attribute list contains attributes that conflict with each
-///         other.
+/// Below is an invalid attribute list because desktop OpenGL is not availabe
+/// on Android.  Passing it to waffle_init() will produce the error
+/// @c WAFFLE_INCOMPATIBLE_ATTRIBUTES.
 ///
-/// @param attrib_list is a null-terminated list of key/value pairs that may be
-///     null.
+/// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.c}
+/// const int32_t android_bad[] = {
+///   WAFFLE_PLATFORM,      WAFFLE_PLATFORM_ANDROID,
+///   WAFFLE_OPENGL_API,    WAFFLE_OPENGL,
+///   0,
+/// }
+/// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+///
+///
+/// ### Errors ###
+///
+/// - WAFFLE_ALREADY_INITIALIZED @n
+///     The library's global state has already been initialized with a call
+///     to waffle_init(), but has not been reset with waffle_finish().
+///
+/// - WAFFLE_BAD_ATTRIBUTE @n
+///     An item in @a attrib_list is unrecognized, missing, or has an
+///     invalid value.
+///
+/// - WAFFLE_INCOMPATIBLE_ATTRIBUTES @n
+///     The attribute list contains attributes that conflict with each
+///     other.
+///
 /// @see waffle_enum
 ///
 WAFFLE_API bool
