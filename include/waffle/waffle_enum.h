@@ -69,6 +69,18 @@ enum waffle_enum {
     // For waffle_config_choose()
     // -----------------------------------------
 
+    WAFFLE_CONTEXT_API                                          = 0x020a,
+        WAFFLE_CONTEXT_OPENGL                                   = 0x020b,
+        WAFFLE_CONTEXT_OPENGL_ES1                               = 0x020c,
+        WAFFLE_CONTEXT_OPENGL_ES2                               = 0x020d,
+
+    WAFFLE_CONTEXT_MAJOR_VERSION                                = 0x020e,
+    WAFFLE_CONTEXT_MINOR_VERSION                                = 0x020f,
+
+    WAFFLE_CONTEXT_PROFILE                                      = 0x0210,
+        WAFFLE_CONTEXT_CORE_PROFILE                             = 0x0211,
+        WAFFLE_CONTEXT_COMPATIBILITY_PROFILE                    = 0x0212,
+
     WAFFLE_RED_SIZE                     = 0x0201,
     WAFFLE_GREEN_SIZE                   = 0x0202,
     WAFFLE_BLUE_SIZE                    = 0x0203,
