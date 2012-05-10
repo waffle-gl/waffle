@@ -108,6 +108,14 @@ enum waffle_error {
 
     /// @brief You passed objects to waffle that belong to different displays.
     WAFFLE_BAD_DISPLAY_MATCH            = 0x11,
+
+    /// @brief Requested action is unsupported on the current platform.
+    ///
+    /// For example, on GLX it is not possible to create an OpenGL ES1 context.
+    WAFFLE_UNSUPPORTED_ON_PLATFORM      = 0x12,
+
+    /// @brief You found a feature whose implementation is incomplete.
+    WAFFLE_NOT_IMPLEMENTED              = 0x13,
 };
 
 #ifdef __cplusplus
