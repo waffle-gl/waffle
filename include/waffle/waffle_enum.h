@@ -40,8 +40,8 @@ enum waffle_enum {
     // Generic
     // -----------------------------------------
 
-    WAFFLE_LIST_END                     =  0,
     WAFFLE_DONT_CARE                    = -1,
+    WAFFLE_NONE                         =  0,
 
     // -----------------------------------------
     // For waffle_init()
