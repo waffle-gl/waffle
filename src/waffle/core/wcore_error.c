@@ -20,12 +20,12 @@
 #include <stdlib.h>
 
 enum {
-    MESSAGE_MAX = 1023,
+    WCORE_ERROR_MESSAGE_BUFSIZE = 1024,
 };
 
 static bool wcore_error_is_enabled = true;
 static int wcore_error_code = WAFFLE_NO_ERROR;
-static char wcore_error_message[MESSAGE_MAX + 1]; // +1 for null
+static char wcore_error_message[WCORE_ERROR_MESSAGE_BUFSIZE];
 
 void
 _wcore_error_enable(void)
@@ -59,7 +59,7 @@ wcore_errorf(int error, const char *format, ...)
 
     wcore_error_code = error;
     va_start(ap, format);
-    vsnprintf(wcore_error_message, MESSAGE_MAX, format, ap);
+    vsnprintf(wcore_error_message, WCORE_ERROR_MESSAGE_BUFSIZE - 1, format, ap);
     va_end(ap);
 }
 
