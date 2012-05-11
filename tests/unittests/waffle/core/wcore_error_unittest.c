@@ -12,9 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#define _XOPEN_SOURCE 600
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include <pthread.h>
 
 #include <waffle/core/wcore_error.h>
 #include <waffle_test/waffle_test.h>
@@ -100,6 +104,76 @@ TEST(wcore_error, disable_then_error_internal)
     EXPECT_TRUE(wcore_error_get_code() == WAFFLE_NOT_INITIALIZED);
 }
 
+struct thread_arg {
+    int thread_id;
+    pthread_mutex_t *mutex;
+    pthread_barrier_t *barrier;
+};
+
+static bool
+thread_start(struct thread_arg *a)
+{
+    static const int error_codes[] = {
+        WAFFLE_BAD_ATTRIBUTE,
+        WAFFLE_UNKNOWN_ERROR,
+        WAFFLE_ALREADY_INITIALIZED,
+    };
+
+    bool ok = true;
+    int error_code = error_codes[a->thread_id];
+
+    // Each thread begins in an error-free state.
+    ok &= wcore_error_get_code() == WAFFLE_NO_ERROR;
+
+    // Each thread sets its error code.
+    wcore_error(error_code);
+
+    // Wait for all threads to set their error codes, thus giving
+    // the threads opportunity to clobber each other's error codes.
+    pthread_barrier_wait(a->barrier);
+
+    // Verify that the threads did not clobber each other's
+    // error codes.
+    ok &= wcore_error_get_code() == error_code;
+
+    return ok;
+}
+
+// Test that threads do not clobber each other's error codes.
+TEST(wcore_error, thread_local)
+{
+    pthread_mutex_t mutex;
+    pthread_barrier_t barrier;
+
+    pthread_t threads[3];
+    struct thread_arg thread_args[3];
+    bool exit_codes[3];
+
+    pthread_mutex_init(&mutex, NULL);
+    pthread_barrier_init(&barrier, NULL, 4);
+
+    for (intptr_t i = 0; i < 3; ++i) {
+        struct thread_arg *a = &thread_args[i];
+        a->thread_id = i;
+        a->mutex = &mutex;
+        a->barrier = &barrier;
+
+        pthread_create(&threads[i], NULL,
+                      (void* (*)(void*)) thread_start,
+                      (void*) a);
+    }
+
+    pthread_barrier_wait(&barrier);
+
+    for (int i = 0; i < 3; ++i) {
+        pthread_join(threads[i], (void**) &exit_codes[i]);
+        EXPECT_TRUE(exit_codes[i] == true);
+    }
+
+    pthread_barrier_destroy(&barrier);
+    pthread_mutex_destroy(&mutex);
+}
+
 void
 testsuite_wcore_error(void)
 {
@@ -113,4 +187,5 @@ testsuite_wcore_error(void)
     TEST_RUN(wcore_error, disable_then_error);
     TEST_RUN(wcore_error, disable_then_errorf);
     TEST_RUN(wcore_error, disable_then_error_internal);
+    TEST_RUN(wcore_error, thread_local);
 }
