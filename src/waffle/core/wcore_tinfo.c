@@ -47,24 +47,39 @@ static pthread_key_t wcore_tinfo_key;
 ///
 /// [2] Ulrich Drepper. "Elf Handling For Thread Local Storage".
 ///     http://people.redhat.com/drepper/tls.pdf
+
 static __thread
     struct wcore_tinfo *wcore_tinfo_tl_singleton
     __attribute__((tls_model("initial-exec")));
+
+static void
+wcore_tinfo_destroy(struct wcore_tinfo *self)
+{
+    if (!self)
+        return;
+
+    if (self->error)
+        wcore_error_tinfo_destroy(self->error);
+
+    free(self);
+}
 
 static struct wcore_tinfo*
 wcore_tinfo_create(void)
 {
     struct wcore_tinfo *self = calloc(1, sizeof(*self));
     if (!self)
-        return NULL;
+        goto error;
+
+    self->error = wcore_error_tinfo_create();
+    if (!self->error)
+        goto error;
 
     return self;
-}
 
-static void
-wcore_tinfo_destroy(struct wcore_tinfo *self)
-{
-    free(self);
+error:
+    wcore_tinfo_destroy(self);
+    return NULL;
 }
 
 /// @brief Initialize @ref wcore_tinfo_key.

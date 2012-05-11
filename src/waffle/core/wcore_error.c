@@ -19,61 +19,91 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "wcore_tinfo.h"
+
 enum {
     WCORE_ERROR_MESSAGE_BUFSIZE = 1024,
 };
 
-static bool wcore_error_is_enabled = true;
-static int wcore_error_code = WAFFLE_NO_ERROR;
-static char wcore_error_message[WCORE_ERROR_MESSAGE_BUFSIZE];
+struct wcore_error_tinfo {
+    bool is_enabled;
+    int32_t code;
+    char message[WCORE_ERROR_MESSAGE_BUFSIZE];
+};
+
+struct wcore_error_tinfo*
+wcore_error_tinfo_create(void)
+{
+    struct wcore_error_tinfo *self = malloc(sizeof(*self));
+    if (!self)
+        return NULL;
+
+    self->is_enabled = true;
+    self->code = WAFFLE_NO_ERROR;
+    self->message[0] = 0;
+
+    return self;
+}
+
+bool
+wcore_error_tinfo_destroy(struct wcore_error_tinfo *self)
+{
+    free(self);
+    return true;
+}
 
 void
 _wcore_error_enable(void)
 {
-    wcore_error_is_enabled = true;
+    wcore_tinfo_get()->error->is_enabled = true;
 }
 
 void
 _wcore_error_disable(void)
 {
-    wcore_error_is_enabled = false;
+    wcore_tinfo_get()->error->is_enabled = false;
 }
 
 void
 wcore_error(int error)
 {
-    if (!wcore_error_is_enabled)
+    struct wcore_error_tinfo *t = wcore_tinfo_get()->error;
+
+    if (!t->is_enabled)
         return;
 
-    wcore_error_code = error;
-    wcore_error_message[0] = '\0';
+    t->code = error;
+    t->message[0] = '\0';
 }
 
 void
 wcore_errorf(int error, const char *format, ...)
 {
+    struct wcore_error_tinfo *t = wcore_tinfo_get()->error;
     va_list ap;
 
-    if (!wcore_error_is_enabled)
+    if (!t->is_enabled)
         return;
 
-    wcore_error_code = error;
+    t->code = error;
     va_start(ap, format);
-    vsnprintf(wcore_error_message, WCORE_ERROR_MESSAGE_BUFSIZE - 1, format, ap);
+    vsnprintf(t->message, WCORE_ERROR_MESSAGE_BUFSIZE - 1, format, ap);
     va_end(ap);
 }
 
 void
 _wcore_error_internal(const char *file, int line, const char *format, ...)
 {
-    char *cur = wcore_error_message;
-    char *end = wcore_error_message + sizeof(wcore_error_message);
+    struct wcore_error_tinfo *t = wcore_tinfo_get()->error;
+
+    char *cur = t->message;
+    char *end = t->message + WCORE_ERROR_MESSAGE_BUFSIZE;
     int printed;
 
-    if (!wcore_error_is_enabled)
+    if (!t->is_enabled)
         return;
 
-    wcore_error_code = WAFFLE_INTERNAL_ERROR;
+    t->code = WAFFLE_INTERNAL_ERROR;
 
     printed = snprintf(cur, end - cur,
                        "waffle: internal error: %s:%d: ", file, line);
@@ -100,11 +130,11 @@ _wcore_error_internal(const char *file, int line, const char *format, ...)
 int
 wcore_error_get_code(void)
 {
-    return wcore_error_code;
+    return wcore_tinfo_get()->error->code;
 }
 
 const char*
 wcore_error_get_message(void)
 {
-    return wcore_error_message;
+    return wcore_tinfo_get()->error->message;
 }

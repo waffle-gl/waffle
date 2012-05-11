@@ -17,7 +17,9 @@
 
 #pragma once
 
-/// @defgroup wcore_tinfo wcore_tinfo
+struct wcore_error_tinfo;
+
+/// @defgroup wcore_tinfo
 /// @brief Thread-local info.
 /// @{
 
@@ -25,7 +27,10 @@
 /// @{
 
 /// @brief Thread-local info for all of Waffle.
-struct wcore_tinfo {};
+struct wcore_tinfo {
+    /// @brief Info for @ref wcore_error.
+    struct wcore_error_tinfo *error;
+};
 
 /// @brief Get the thread-local info for the current thread.
 struct wcore_tinfo* wcore_tinfo_get(void);

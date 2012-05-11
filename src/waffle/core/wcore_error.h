@@ -14,7 +14,24 @@
 
 #pragma once
 
+#include <stdbool.h>
+
 #include <waffle/waffle_error.h>
+
+/// @defgroup wcore_error
+///
+/// All functions operate on thread-local storage.
+///
+/// @{
+
+/// @brief Thread-local info for the wcore_error module.
+struct wcore_error_tinfo;
+
+struct wcore_error_tinfo*
+wcore_error_tinfo_create(void);
+
+bool
+wcore_error_tinfo_destroy(struct wcore_error_tinfo *self);
 
 /// @brief Set error code for client.
 ///
@@ -48,9 +65,6 @@ wcore_error_get_code(void);
 /// @brief Get the last set error message.
 const char*
 wcore_error_get_message(void);
-
-/// @defgroup wcore_error private
-/// @{
 
 void
 _wcore_error_internal(const char *file, int line, const char *format, ...);

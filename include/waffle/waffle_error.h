@@ -23,7 +23,7 @@
 extern "C" {
 #endif
 
-/// @brief Get info on most recent failure.
+/// @brief Get info on most recent failure of the current thread.
 ///
 /// Waffle functions usually return either a bool, in which false indicates
 /// failure, or a pointer, in which null indicates failure. To receive more
