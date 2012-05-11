@@ -16,6 +16,7 @@ set(waffle_sources
     core/wcore_config_attrs.c
     core/wcore_error.c
     core/wcore_platform.c
+    core/wcore_tinfo.c
     )
 
 if(waffle_has_egl)
