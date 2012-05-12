@@ -112,6 +112,8 @@ waffle_init(const int32_t *attrib_list)
     int platform;
     int gl_api = 0;
 
+    wcore_error_reset();
+
     if (api_current_platform) {
         wcore_error(WAFFLE_ALREADY_INITIALIZED);
         return false;
@@ -131,7 +133,10 @@ waffle_init(const int32_t *attrib_list)
 bool
 waffle_finish(void)
 {
-    bool ok = wcore_platform_destroy(api_current_platform);
+    bool ok;
+
+    wcore_error_reset();
+    ok = wcore_platform_destroy(api_current_platform);
     api_current_platform = NULL;
     return ok;
 }

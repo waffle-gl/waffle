@@ -14,6 +14,10 @@
 
 /// @defgroup waffle_attrib_list waffle_attrib_list
 /// @ingroup waffle_api
+///
+/// @brief Utilities for attribute lists
+///
+/// All functions in this module set the error code to WAFFLE_NO_ERROR.
 /// @{
 
 /// @file

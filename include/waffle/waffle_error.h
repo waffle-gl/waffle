@@ -14,6 +14,18 @@
 
 /// @defgroup waffle_error waffle_error
 /// @ingroup waffle_api
+///
+/// @brief Thread-local error state.
+///
+/// Waffle functions usually return either a bool, in which false indicates
+/// failure, or a pointer, in which null indicates failure. In addition to
+/// returning a flag indicating failure, most functions also clears and then
+/// set some thread-local error state. The only functions that do not alter
+/// the error state are those in this module, @ref waffle_error.
+///
+/// To obtain the error state of the last called function in the current
+/// thread, call waffle_get_error() or waffle_get_error_m().
+///
 /// @{
 
 /// @file
@@ -29,16 +41,13 @@
 extern "C" {
 #endif
 
-/// @brief Get info on most recent failure of the current thread.
-///
-/// Waffle functions usually return either a bool, in which false indicates
-/// failure, or a pointer, in which null indicates failure. To receive more
-/// information about the most recent failed function, call waffle_get_error().
+/// @brief Get the current thread's error state.
 ///
 /// This may be called when waffle is uninitialized (that is, before
 /// waffle_init() and after waffle_finish()).
 ///
 /// @return an error code from `enum waffle_error`.
+/// @see waffle_error
 WAFFLE_API int32_t
 waffle_get_error(void);
 
@@ -62,7 +71,7 @@ waffle_get_error(void);
 /// This may be called when waffle is uninitialized (that is, before
 /// waffle_init() and after waffle_finish()).
 ///
-/// @see waffle_get_error()
+/// @see waffle_error
 WAFFLE_API int32_t
 waffle_get_error_m(
         char message_buffer[],

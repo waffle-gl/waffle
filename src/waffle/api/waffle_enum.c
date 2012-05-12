@@ -19,9 +19,13 @@
 
 #include <waffle/waffle_enum.h>
 
+#include <waffle/core/wcore_error.h>
+
 const char*
 waffle_enum_to_string(int32_t e)
 {
+    wcore_error_reset();
+
     switch (e) {
 #define CASE(x) case x: return #x
         CASE(WAFFLE_DONT_CARE);

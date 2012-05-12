@@ -32,6 +32,8 @@ api_check_entry(const struct api_object *obj_list[], int length)
 {
     int i;
 
+    wcore_error_reset();
+
     if (!api_current_platform) {
         wcore_error(WAFFLE_NOT_INITIALIZED);
         return false;
