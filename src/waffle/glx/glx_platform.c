@@ -25,6 +25,7 @@
 #include <waffle/native.h>
 #include <waffle/waffle_enum.h>
 #include <waffle/core/wcore_error.h>
+#include <waffle/linux/linux_platform.h>
 
 #include "glx_config.h"
 #include "glx_context.h"
@@ -60,11 +61,8 @@ glx_platform_create(
         return NULL;
     }
 
-    self->glx->gl_api = gl_api;
-
     switch (gl_api) {
         case WAFFLE_OPENGL:
-            self->glx->libgl_name = "libGL.so";
             break;
         case WAFFLE_OPENGL_ES1:
         case WAFFLE_OPENGL_ES2:
@@ -77,12 +75,11 @@ glx_platform_create(
             goto error;
     }
 
-    self->glx->libgl = dlopen(self->glx->libgl_name, RTLD_LAZY);
-    if (!self->glx->libgl) {
-        wcore_errorf(WAFFLE_UNKNOWN_ERROR,
-                      "dlopen(\"%s\") failed", self->glx->libgl_name);
+
+    self->glx->gl_api = gl_api;
+    self->glx->linux_ = linux_platform_create();
+    if (!self->glx->linux_)
         goto error;
-    }
 
     *dispatch = &glx_dispatch;
     return self;
@@ -97,21 +94,16 @@ error:
 bool
 glx_platform_destroy(union native_platform *self)
 {
-    int error = 0;
+    bool ok = true;
 
     if (!self)
         return true;
 
-    if (self->glx->libgl) {
-        error |= dlclose(self->glx->libgl);
-        if (error) {
-            wcore_errorf(WAFFLE_UNKNOWN_ERROR, "dlclose() failed on \"%s\"",
-                         self->glx->libgl_name);
-        }
-    }
+    if (self->glx->linux_)
+        ok &= linux_platform_destroy(self->glx->linux_);
 
     free(self);
-    return !error;
+    return ok;
 }
 
 /// @}
