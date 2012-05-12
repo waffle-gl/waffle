@@ -12,6 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @addtogroup xegl_context
+/// @{
+
+/// @file
+
 #include "xegl_context.h"
 
 #include <stdlib.h>
@@ -69,3 +74,5 @@ xegl_context_destroy(union native_context *self)
     free(self);
     return ok;
 }
+
+/// @}

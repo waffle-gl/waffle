@@ -12,6 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @defgroup xegl_priv_types xegl_priv_types
+/// @ingroup xegl
+/// @{
+
+/// @file
+
 #pragma once
 
 #include <EGL/egl.h>
@@ -59,3 +65,5 @@ struct xegl_window {
     xcb_window_t xcb_window;
     EGLSurface egl_surface;
 };
+
+/// @}

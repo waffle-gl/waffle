@@ -12,6 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @defgroup waffle_context waffle_context
+/// @ingroup waffle_api
+/// @{
+
+/// @file
+
 #pragma once
 
 #include <stdbool.h>
@@ -36,3 +42,5 @@ waffle_context_destroy(struct waffle_context *self);
 #ifdef __cplusplus
 } // end extern "C"
 #endif
+
+/// @}

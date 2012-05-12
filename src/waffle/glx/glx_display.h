@@ -12,6 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @defgroup glx_display glx_display
+/// @ingroup glx
+/// @{
+
+/// @file
+
 #pragma once
 
 #include <stdbool.h>
@@ -26,3 +32,5 @@ glx_display_connect(
 
 bool
 glx_display_disconnect(union native_display *self);
+
+/// @}

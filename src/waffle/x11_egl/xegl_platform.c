@@ -12,6 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @addtogroup xegl_platform
+/// @{
+
+/// @file
+
 #include "xegl_platform.h"
 
 #define _POSIX_C_SOURCE 200112 // glib feature macro for unsetenv()
@@ -114,3 +119,5 @@ xegl_platform_destroy(union native_platform *self)
     free(self);
     return !error;
 }
+
+/// @}

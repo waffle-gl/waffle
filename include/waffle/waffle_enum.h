@@ -12,6 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @defgroup waffle_enum waffle_enum
+/// @ingroup waffle_api
+/// @{
+
+/// @file
+
 #pragma once
 
 #include <stddef.h>
@@ -80,3 +86,5 @@ enum waffle_enum {
 #ifdef __cplusplus
 } // end extern "C"
 #endif
+
+/// @}

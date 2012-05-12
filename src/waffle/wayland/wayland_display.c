@@ -12,6 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @addtogroup wayland_display
+/// @{
+
+/// @file
+
 #include "wayland_display.h"
 
 #include <stdlib.h>
@@ -97,3 +102,5 @@ wayland_display_disconnect(union native_display *self)
     free(self);
     return ok;
 }
+
+/// @}

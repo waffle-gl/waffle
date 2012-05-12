@@ -12,6 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @defgroup wayland_priv_types wayland_priv_types
+/// @ingroup wayland
+/// @{
+
+/// @file
+
 #pragma once
 
 // WL_EGL_PLATFORM configures Mesa's <EGL/egl.h> to define native types (such
@@ -66,3 +72,5 @@ struct wayland_window {
     struct wl_egl_window *wl_window;
     EGLSurface egl_surface;
 };
+
+/// @}

@@ -12,6 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @addtogroup waffle_context
+/// @{
+
+/// @file
+
 #include <waffle/waffle_context.h>
 
 #include <stdlib.h>
@@ -80,3 +85,5 @@ waffle_context_destroy(struct waffle_context *self)
     free(self);
     return ok;
 }
+
+/// @}

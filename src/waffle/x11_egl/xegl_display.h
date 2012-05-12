@@ -12,6 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @defgroup xegl_display xegl_display
+/// @ingroup xegl
+/// @{
+
+/// @file
+
 #pragma once
 
 #include <stdbool.h>
@@ -26,3 +32,5 @@ xegl_display_connect(
 
 bool
 xegl_display_disconnect(union native_display *self);
+
+/// @}

@@ -12,6 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @defgroup waffle_window waffle_window
+/// @ingroup waffle_api
+/// @{
+
 #pragma once
 
 #include <stdbool.h>
@@ -41,3 +45,5 @@ waffle_window_swap_buffers(struct waffle_window *self);
 #ifdef __cplusplus
 } // end extern "C"
 #endif
+
+/// @}

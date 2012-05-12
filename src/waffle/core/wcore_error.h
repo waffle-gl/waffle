@@ -12,17 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @defgroup wcore_error wcore_error
+/// @ingroup wcore
+///
+/// @brief Error handling and reporting
+///
+/// All functions operate on thread-local storage.
+///
+/// @{
+
+/// @file
+
 #pragma once
 
 #include <stdbool.h>
 
 #include <waffle/waffle_error.h>
 
-/// @defgroup wcore_error
-///
-/// All functions operate on thread-local storage.
-///
-/// @{
 
 /// @brief Thread-local info for the wcore_error module.
 struct wcore_error_tinfo;

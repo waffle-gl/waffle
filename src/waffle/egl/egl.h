@@ -12,9 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/// @file
-/// @brief Wrappers for EGL functions.
+/// @defgroup egl egl
 ///
+/// @brief Wrappers for EGL functions.
+/// @{
+
+/// @file
 /// Waffle supports multiple EGL platforms (Android, Wayland, X11/EGL). This
 /// header declares all common code.
 
@@ -22,3 +25,5 @@
 
 #include "egl_native_template.h"
 #include "egl_no_native.h"
+
+/// @}

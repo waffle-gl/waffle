@@ -12,6 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @addtogroup glx_context
+/// @{
+
+/// @file
+
 #include "glx_context.h"
 
 #include <stdlib.h>
@@ -68,3 +73,5 @@ glx_context_destroy(union native_context *self)
     free(self);
     return true;
 }
+
+/// @}

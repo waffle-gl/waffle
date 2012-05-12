@@ -12,6 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @defgroup wayland_config wayland_config
+/// @ingroup wayland
+/// @{
+
+/// @file
+
 #pragma once
 
 #include <stdbool.h>
@@ -28,3 +34,5 @@ wayland_config_choose(
 
 bool
 wayland_config_destroy(union native_config *self);
+
+/// @}

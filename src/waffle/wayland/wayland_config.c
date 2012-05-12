@@ -12,6 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @addtogroup wayland_config
+/// @{
+
+/// @file
+
 #include "wayland_config.h"
 
 #include <stdlib.h>
@@ -64,3 +69,5 @@ wayland_config_destroy(union native_config *self)
     free(self);
     return true;
 }
+
+/// @}

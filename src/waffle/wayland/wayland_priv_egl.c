@@ -12,5 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @addtogroup wayland_priv_egl
+/// @{
+
+/// @file
+
 #include "wayland_priv_egl.h"
 #include <waffle/egl/egl_native_template.c>
+
+/// @}

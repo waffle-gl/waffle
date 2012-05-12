@@ -12,6 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @addtogroup x11
+/// @{
+
+/// @file
+
 #include "x11.h"
 
 #include <waffle/core/wcore_error.h>
@@ -165,3 +170,5 @@ x11_window_destroy(
 
     return ok;
 }
+
+/// @}

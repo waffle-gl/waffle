@@ -12,6 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @addtogroup wayland_gl_misc
+/// @{
+
+/// @file
+
 #include "wayland_gl_misc.h"
 
 #include <dlfcn.h>
@@ -47,3 +52,5 @@ wayland_dlsym_gl(
 {
     return dlsym(native->wl->libgl, name);
 }
+
+/// @}

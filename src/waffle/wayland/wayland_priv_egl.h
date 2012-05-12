@@ -12,6 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @defgroup wayland_priv_egl wayland_priv_egl
+/// @ingroup wayland
+/// @{
+
+/// @file
+
 #pragma once
 
 // WL_EGL_PLATFORM configures Mesa's <EGL/egl.h> to define native types (such
@@ -20,3 +26,5 @@
 
 #define NATIVE_EGL(basename) wayland_egl_##basename
 #include <waffle/egl/egl.h>
+
+/// @}

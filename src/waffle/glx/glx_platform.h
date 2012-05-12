@@ -12,6 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @defgroup glx_platform glx_platform
+/// @ingroup glx
+/// @{
+
+/// @file
+
 #pragma once
 
 #include <stdbool.h>
@@ -26,3 +32,5 @@ glx_platform_create(
 
 bool
 glx_platform_destroy(union native_platform *self);
+
+/// @}

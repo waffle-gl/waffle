@@ -12,8 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/// @file wcore_tinfo.c
-/// @ingroup wcore_tinfo
+/// @addtogroup wcore_tinfo
+/// @{
+
+/// @file
 
 #include "wcore_tinfo.h"
 
@@ -24,13 +26,6 @@
 #include <pthread.h>
 
 #include "wcore_error.h"
-
-/// @addtogroup wcore_tinfo
-/// @{
-
-// ---------------------------------------------------------------------------
-/// @name Private
-/// @{
 
 /// @brief Key for @ref wcore_tinfo_tl_singleton.
 static pthread_key_t wcore_tinfo_key;
@@ -119,9 +114,6 @@ wcore_tinfo_key_init(void)
     pthread_mutex_unlock(&mutex);
 }
 
-/// @} name Private
-// ---------------------------------------------------------------------------
-
 struct wcore_tinfo*
 wcore_tinfo_get(void)
 {
@@ -147,4 +139,4 @@ wcore_tinfo_get(void)
     return wcore_tinfo_tl_singleton;
 }
 
-/// @} addtogroup wcore_tinfo
+/// @}

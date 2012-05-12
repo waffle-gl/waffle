@@ -12,6 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @addtogroup egl_native_template
+/// @{
+
 #include "egl_native_template.h"
 
 #include <stdbool.h>
@@ -62,3 +65,5 @@ NATIVE_EGL(create_window_surface)(
 
     return surf;
 }
+
+/// @}

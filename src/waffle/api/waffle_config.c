@@ -12,6 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @addtogroup waffle_config
+/// @{
+
+/// @file
+
 #include <waffle/waffle_config.h>
 
 #include <stdlib.h>
@@ -81,3 +86,5 @@ waffle_config_destroy(struct waffle_config *self)
     free(self);
     return ok;
 }
+
+/// @}

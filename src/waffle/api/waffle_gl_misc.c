@@ -12,6 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @addtogroup waffle_gl_misc
+/// @{
+
+/// @file
+
 #include <waffle/waffle_gl_misc.h>
 
 #include <stddef.h>
@@ -68,3 +73,5 @@ waffle_dlsym_gl(const char *name)
     return api_current_platform->dispatch->
             dlsym_gl(api_current_platform->native, name);
 }
+
+/// @}

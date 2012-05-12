@@ -12,6 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @defgroup wayland_platform wayland_platform
+/// @ingroup wayland
+/// @{
+
+/// @file
+
 #pragma once
 
 #include <stdbool.h>
@@ -26,3 +32,5 @@ wayland_platform_create(
 
 bool
 wayland_platform_destroy(union native_platform *self);
+
+/// @}

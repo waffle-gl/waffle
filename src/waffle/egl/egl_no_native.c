@@ -12,6 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @addtogroup egl_no_native
+/// @{
+
 #include "egl_no_native.h"
 
 #include <stdlib.h>
@@ -254,3 +257,5 @@ egl_get_render_buffer_attrib(
             return false;
     }
 }
+
+/// @}

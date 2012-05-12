@@ -12,6 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @defgroup xegl_platform xegl_platform
+/// @ingroup xegl
+/// @{
+
+/// @file
+
 #pragma once
 
 #include <stdbool.h>
@@ -26,3 +32,5 @@ xegl_platform_create(
 
 bool
 xegl_platform_destroy(union native_platform *self);
+
+/// @}

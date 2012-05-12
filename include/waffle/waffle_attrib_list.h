@@ -12,6 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @defgroup waffle_attrib_list waffle_attrib_list
+/// @ingroup waffle_api
+/// @{
+
+/// @file
+
 #pragma once
 
 #include <stdbool.h>
@@ -55,3 +61,5 @@ waffle_attrib_list_update(
 #ifdef __cplusplus
 } // end extern "C"
 #endif
+
+/// @}

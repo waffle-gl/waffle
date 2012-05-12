@@ -12,10 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @defgroup x11 x11
+///
 /// @brief Wrappers for X11 functions.
 ///
 /// Waffle supports two X11 platforms (GLX and X11/EGL). This header declares
 /// all common code.
+/// @{
+
+/// @file
 
 #pragma once
 
@@ -42,3 +47,5 @@ bool
 x11_window_destroy(
         xcb_connection_t *conn,
         xcb_window_t window);
+
+/// @}

@@ -12,6 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @addtogroup waffle_enum
+/// @{
+
+/// @file
+
 #include <waffle/waffle_enum.h>
 
 const char*
@@ -44,3 +49,5 @@ waffle_enum_to_string(int32_t e)
 #undef CASE
     }
 }
+
+/// @}

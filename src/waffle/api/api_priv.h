@@ -12,6 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @defgroup api_priv api_priv
+/// @ingroup waffle_api
+///
+/// @brief Private bits for implementing Waffle's API.
+/// @{
+
+/// @file
+
 #pragma once
 
 #include <stdbool.h>
@@ -37,9 +45,6 @@ api_check_entry(const struct api_object *obj_list[], int length);
 /// @brief Create a unique id.
 size_t
 api_new_object_id(void);
-
-/// @defgroup API Types
-/// @{
 
 struct api_object {
     size_t platform_id;

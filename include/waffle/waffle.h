@@ -12,10 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#pragma once
+/// @defgroup waffle_api waffle_api
+///
+/// @brief Waffle's public API
+/// @{
 
 /// @file
 /// @brief Convenience header to include all waffle headers.
+
+#pragma once
 
 #include "waffle_attrib_list.h"
 #include "waffle_config.h"
@@ -27,3 +32,5 @@
 #include "waffle_init.h"
 #include "waffle_visibility.h"
 #include "waffle_window.h"
+
+/// @}

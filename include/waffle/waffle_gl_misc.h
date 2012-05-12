@@ -12,6 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @defgroup waffle_gl_misc waffle_gl_misc
+/// @ingroup waffle_api
+/// @{
+
+/// @file
+
 #pragma once
 
 #include <stdbool.h>
@@ -41,3 +47,5 @@ waffle_dlsym_gl(const char *name);
 #ifdef __cplusplus
 } // end extern "C"
 #endif
+
+/// @}

@@ -12,6 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @addtogroup glx_platform
+/// @{
+
+/// @file
+
 #include "glx_platform.h"
 
 #include <dlfcn.h>
@@ -108,3 +113,5 @@ glx_platform_destroy(union native_platform *self)
     free(self);
     return !error;
 }
+
+/// @}

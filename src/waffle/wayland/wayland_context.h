@@ -12,6 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @defgroup wayland_context wayland_context
+/// @ingroup wayland
+/// @{
+
+/// @file
+
 #pragma once
 
 #include <stdbool.h>
@@ -26,3 +32,5 @@ wayland_context_create(
 
 bool
 wayland_context_destroy(union native_context *self);
+
+/// @}

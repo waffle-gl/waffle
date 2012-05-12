@@ -12,6 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @addtogroup xegl_display
+/// @{
+
+/// @file
+
 #include "xegl_display.h"
 
 #include <stdlib.h>
@@ -76,3 +81,5 @@ xegl_display_disconnect(union native_display *self)
     free(self);
     return ok;
 }
+
+/// @}

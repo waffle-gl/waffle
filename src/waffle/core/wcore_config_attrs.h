@@ -12,6 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @defgroup wcore_config_attrs wcore_config_attrs
+/// @ingroup wcore
+///
+/// @brief Process the attribute list given to waffle_config_choose().
+/// @{
+
+/// @file
+
 #pragma once
 
 #include <stdbool.h>
@@ -38,3 +46,5 @@ bool
 wcore_config_attrs_parse(
       const int32_t waffle_attrib_list[],
       struct wcore_config_attrs *attrs);
+
+/// @}

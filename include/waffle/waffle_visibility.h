@@ -12,8 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/// @file
+/// @defgroup waffle_visibility waffle_visibility
+/// @ingroup waffle_api
+///
 /// @brief Macros for visibility of shared library symbols.
+/// @{
 
 #pragma once
 
@@ -45,3 +48,5 @@ extern "C" {
 #ifdef __cplusplus
 } // end extern "C"
 #endif
+
+/// @}

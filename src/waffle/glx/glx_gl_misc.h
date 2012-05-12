@@ -12,6 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @defgroup glx_gl_misc glx_gl_misc
+/// @ingroup glx
+/// @{
+
+/// @file
+
 #pragma once
 
 #include <stdbool.h>
@@ -36,3 +42,5 @@ void*
 glx_dlsym_gl(
         union native_platform *native,
         const char *name);
+
+/// @}

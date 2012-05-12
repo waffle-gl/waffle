@@ -12,6 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @addtogroup waffle_attrib_list
+/// @{
+
+/// @file
+/// @ingroup api
+
 #include <waffle/waffle_attrib_list.h>
 
 int32_t
@@ -79,3 +85,5 @@ waffle_attrib_list_update(
         return false;
     }
 }
+
+/// @}

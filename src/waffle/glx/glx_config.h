@@ -12,6 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @defgroup glx_config glx_config
+/// @ingroup glx
+/// @{
+
+/// @file
+
 #pragma once
 
 #include <stdbool.h>
@@ -28,3 +34,5 @@ glx_config_choose(
 
 bool
 glx_config_destroy(union native_config *self);
+
+/// @}

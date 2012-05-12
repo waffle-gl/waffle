@@ -12,19 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @defgroup wcore_tinfo wcore_tinfo
+/// @ingroup wcore
+///
+/// @brief Thread-local info.
+/// @{
+
 /// @file
-/// @ingroup wcore_tinfo
 
 #pragma once
 
 struct wcore_error_tinfo;
-
-/// @defgroup wcore_tinfo
-/// @brief Thread-local info.
-/// @{
-
-/// @name Public
-/// @{
 
 /// @brief Thread-local info for all of Waffle.
 struct wcore_tinfo {
@@ -35,5 +33,4 @@ struct wcore_tinfo {
 /// @brief Get the thread-local info for the current thread.
 struct wcore_tinfo* wcore_tinfo_get(void);
 
-/// @} name Public
-/// @} defgroup wcore_tinfo
+/// @}

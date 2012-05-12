@@ -12,6 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @addtogroup wayland_window
+/// @{
+
+/// @file
+
 #include "wayland_window.h"
 
 #include <stdlib.h>
@@ -126,3 +131,5 @@ wayland_window_swap_buffers(union native_window *self)
     return egl_swap_buffers(dpy->wl->egl_display,
                             self->wl->egl_surface);
 }
+
+/// @}

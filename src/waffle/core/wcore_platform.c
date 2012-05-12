@@ -12,6 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @addtogroup wcore_platform
+/// @{
+
+/// @file
+
 #include "wcore_platform.h"
 
 #include <stdbool.h>
@@ -118,3 +123,5 @@ wcore_platform_destroy(struct wcore_platform *self)
 
     return ok;
 }
+
+/// @}

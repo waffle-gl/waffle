@@ -12,6 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @addtogroup glx_display
+/// @{
+
+/// @file
+
 #include "glx_display.h"
 
 #include <stdlib.h>
@@ -67,3 +72,5 @@ glx_display_disconnect(union native_display *self)
     free(self);
     return ok;
 }
+
+/// @}

@@ -12,6 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @addtogroup wcore_config_attrs
+/// @{
+
+/// @file
+
 #include "wcore_config_attrs.h"
 
 #include <stdlib.h>
@@ -114,3 +119,5 @@ wcore_config_attrs_parse(
 
     return attrs;
 }
+
+/// @}

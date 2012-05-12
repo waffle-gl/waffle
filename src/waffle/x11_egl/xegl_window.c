@@ -12,6 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @addtogroup xegl_window
+/// @{
+
+/// @file
+
 #include "xegl_window.h"
 
 #include <stdlib.h>
@@ -92,3 +97,5 @@ xegl_window_swap_buffers(union native_window *self)
     return egl_swap_buffers(self->xegl->display->xegl->egl_display,
                             self->xegl->egl_surface);
 }
+
+/// @}

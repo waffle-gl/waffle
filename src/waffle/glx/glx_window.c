@@ -12,6 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @addtogroup glx_window
+/// @{
+
+/// @file
+
 #include "glx_window.h"
 
 #include <stdlib.h>
@@ -97,3 +102,5 @@ glx_window_swap_buffers(union native_window *self)
     glXSwapBuffers(dpy->glx->xlib_display, self->glx->glx_window);
     return true;
 }
+
+/// @}

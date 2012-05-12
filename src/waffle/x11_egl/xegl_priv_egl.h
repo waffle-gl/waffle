@@ -12,7 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @defgroup xegl_priv_egl xegl_priv_egl
+/// @ingroup xegl
+/// @{
+
+/// @file
+
 #pragma once
 
 #define NATIVE_EGL(basename) xegl_egl_##basename
 #include <waffle/egl/egl.h>
+
+/// @}

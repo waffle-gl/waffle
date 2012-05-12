@@ -12,6 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @addtogroup wcore_error
+/// @{
+
+/// @file
+
 #include "wcore_error.h"
 
 #include <stdarg.h>
@@ -138,3 +143,5 @@ wcore_error_get_message(void)
 {
     return wcore_tinfo_get()->error->message;
 }
+
+/// @}

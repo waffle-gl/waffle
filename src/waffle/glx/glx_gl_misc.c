@@ -12,6 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @addtogroup glx_gl_misc
+/// @{
+
+/// @file
+
 #include "glx_gl_misc.h"
 
 #include <dlfcn.h>
@@ -46,3 +51,5 @@ glx_dlsym_gl(
 {
     return dlsym(native->glx->libgl, name);
 }
+
+/// @}

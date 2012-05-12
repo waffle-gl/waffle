@@ -12,6 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @addtogroup wayland_context
+/// @{
+
+/// @file
+
 #include "wayland_context.h"
 
 #include <stdlib.h>
@@ -69,3 +74,5 @@ wayland_context_destroy(union native_context *self)
     free(self);
     return ok;
 }
+
+/// @}

@@ -12,9 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/// @file
-/// @brief Wrappers for EGL functions that lack EGLNative parameters.
+/// @defgroup egl_no_native egl_no_native
+/// @ingroup egl
 ///
+/// @brief Wrappers for EGL functions that lack EGLNative parameters.
+/// @{
+
+/// @file
 /// This header follows the same order as the official EGL header.
 
 #pragma once
@@ -81,3 +85,5 @@ bool
 egl_get_render_buffer_attrib(
         const struct wcore_config_attrs *attrs,
         EGLint *egl_render_buffer_attrib);
+
+/// @}

@@ -12,6 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @defgroup glx_priv_types glx_priv_types
+/// @ingroup glx
+/// @{
+
+/// @file
+
 #pragma once
 
 #include <GL/glx.h>
@@ -56,3 +62,5 @@ struct glx_window {
     xcb_window_t xcb_window;
     GLXWindow glx_window;
 };
+
+/// @}

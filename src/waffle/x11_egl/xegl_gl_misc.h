@@ -12,6 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @defgroup xegl_gl_misc xegl_gl_misc
+/// @ingroup xegl
+/// @{
+
+/// @file
+
 #pragma once
 
 #include <stdbool.h>
@@ -36,3 +42,5 @@ void*
 xegl_dlsym_gl(
         union native_platform *native,
         const char *name);
+
+/// @}

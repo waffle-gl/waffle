@@ -12,6 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @defgroup xegl_config xegl_config
+/// @ingroup xegl
+/// @{
+
+/// @file
+
 #pragma once
 
 #include <stdbool.h>
@@ -28,3 +34,5 @@ xegl_config_choose(
 
 bool
 xegl_config_destroy(union native_config *self);
+
+/// @}

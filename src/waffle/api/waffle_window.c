@@ -12,6 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @addtogroup waffle_window
+/// @{
+
+/// @file
+
 #include <waffle/waffle_window.h>
 
 #include <stdlib.h>
@@ -88,3 +93,5 @@ waffle_window_swap_buffers(struct waffle_window *self)
     return api_current_platform->dispatch->
             window_swap_buffers(self->native);
 }
+
+/// @}

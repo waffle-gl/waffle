@@ -12,6 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @defgroup waffle_config waffle_config
+/// @ingroup waffle_api
+/// @{
+
+/// @file
+
 #pragma once
 
 #include <stdbool.h>
@@ -81,3 +87,5 @@ waffle_config_destroy(struct waffle_config *self);
 #ifdef __cplusplus
 } // end extern "C"
 #endif
+
+/// @}

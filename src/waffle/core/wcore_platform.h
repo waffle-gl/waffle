@@ -12,6 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @defgroup wcore_platform wcore_platform
+/// @ingroup wcore
+///
+/// @brief Abstract native platform.
+/// @{
+
+/// @file
+
 #pragma once
 
 #include <stdbool.h>
@@ -39,3 +47,5 @@ wcore_platform_create(int platform, int gl_api);
 
 bool
 wcore_platform_destroy(struct wcore_platform *self);
+
+/// @}

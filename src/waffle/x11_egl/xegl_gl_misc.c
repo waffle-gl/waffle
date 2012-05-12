@@ -12,6 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @addtogroup xegl_gl_misc
+/// @{
+
+/// @file
+
 #include "xegl_gl_misc.h"
 
 #include <dlfcn.h>
@@ -47,3 +52,5 @@ xegl_dlsym_gl(
 {
     return dlsym(native->xegl->libgl, name);
 }
+
+/// @}

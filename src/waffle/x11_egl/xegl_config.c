@@ -12,6 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @addtogroup xegl_config
+/// @{
+
+/// @file
+
 #include "xegl_config.h"
 
 #include <stdlib.h>
@@ -71,3 +76,5 @@ xegl_config_destroy(union native_config *self)
     free(self);
     return true;
 }
+
+/// @}

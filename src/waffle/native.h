@@ -12,6 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @defgroup native native
+/// @{
+
+/// @file
+
 #pragma once
 
 #include <stdbool.h>
@@ -53,9 +58,6 @@ NATIVE_UNION(window);
 
 
 struct native_dispatch {
-    /// @defgroup native_display
-    /// @{
-
     union native_display*
     (*display_connect)(
             union native_platform *platform,
@@ -63,10 +65,6 @@ struct native_dispatch {
 
     bool
     (*display_disconnect)(union native_display *self);
-
-    /// @}
-    /// @defgroup native_config
-    /// @{
 
     union native_config*
     (*config_choose)(
@@ -76,10 +74,6 @@ struct native_dispatch {
     bool
     (*config_destroy)(union native_config *self);
 
-    /// @}
-    /// @defgroup native_context
-    /// @{
-
     union native_context*
     (*context_create)(
             union native_config *config,
@@ -87,10 +81,6 @@ struct native_dispatch {
 
     bool
     (*context_destroy)(union native_context *self);
-
-    /// @}
-    /// @defgroup native_window
-    /// @{
 
     union native_window*
     (*window_create)(
@@ -103,10 +93,6 @@ struct native_dispatch {
 
     bool
     (*window_swap_buffers)(union native_window *self);
-
-    /// @}
-    /// @defgroup native gl misc
-    /// @{
 
     bool
     (*make_current)(
@@ -123,6 +109,6 @@ struct native_dispatch {
     (*dlsym_gl)(
             union native_platform *platform,
             const char *name);
-
-    /// @}
 };
+
+/// @}

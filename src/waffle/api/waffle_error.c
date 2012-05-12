@@ -12,8 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @addtogroup waffle_error
+/// @{
+
+/// @file
+
 #include <string.h>
 #include <waffle/core/wcore_error.h>
+
 
 static int
 min(int x, int y)
@@ -70,3 +76,5 @@ waffle_error_to_string(int32_t e)
 #undef CASE
     }
 }
+
+/// @}

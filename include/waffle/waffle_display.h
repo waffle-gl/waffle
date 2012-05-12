@@ -12,6 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @defgroup waffle_display waffle_display
+/// @ingroup waffle_api
+/// @{
+
+/// @file
+
 #pragma once
 
 #include <stdbool.h>
@@ -34,3 +40,5 @@ waffle_display_disconnect(struct waffle_display *self);
 #ifdef __cplusplus
 } // end extern "C"
 #endif
+
+/// @}

@@ -12,8 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/// @file
+/// @defgroup waffle_init waffle_init
+/// @ingroup waffle_api
+///
 /// @brief Initializing and terminating global library state.
+/// @{
 
 #pragma once
 
@@ -126,3 +129,5 @@ waffle_finish(void);
 #ifdef __cplusplus
 } // end extern "C"
 #endif
+
+/// @}

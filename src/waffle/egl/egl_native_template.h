@@ -12,9 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/// @file
-/// @brief Wrappers for EGL functions that have EGLNative parameters.
+/// @defgroup egl_native_template egl_native_template
+/// @ingroup egl
 ///
+/// @brief Wrappers for EGL functions that have EGLNative parameters.
+/// @{
+
+/// @file
 /// This header follows the same order as the official EGL header.
 
 #pragma once
@@ -35,3 +39,5 @@ NATIVE_EGL(create_window_surface)(
         EGLConfig config,
         EGLNativeWindowType native_window,
         EGLint render_buffer_attrib);
+
+/// @}

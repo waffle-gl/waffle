@@ -12,6 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @defgroup wayland_display wayland_display
+/// @ingroup wayland
+/// @{
+
+/// @file
+
 #pragma once
 
 #include <stdbool.h>
@@ -26,3 +32,5 @@ wayland_display_connect(
 
 bool
 wayland_display_disconnect(union native_display *self);
+
+/// @}

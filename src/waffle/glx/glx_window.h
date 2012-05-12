@@ -12,6 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @defgroup glx_window glx_window
+/// @ingroup glx
+/// @{
+
+/// @file
+
 #pragma once
 
 #include <stdbool.h>
@@ -31,3 +37,5 @@ glx_window_destroy(union native_window *self);
 
 bool
 glx_window_swap_buffers(union native_window *self);
+
+/// @}

@@ -12,25 +12,5 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/// @defgroup glx_context glx_context
-/// @ingroup glx
-/// @{
-
-/// @file
-
-#pragma once
-
-#include <stdbool.h>
-
-union native_context;
-union native_config;
-
-union native_context*
-glx_context_create(
-        union native_config *config,
-        union native_context *share_ctx);
-
-bool
-glx_context_destroy(union native_context *self);
-
-/// @}
+/// @defgroup glx glx
+/// @brief GLX Platform

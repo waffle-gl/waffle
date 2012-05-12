@@ -12,6 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @addtogroup waffle_init
+/// @{
+
+/// @file
+
 #include <waffle/waffle_init.h>
 
 #include <waffle/waffle_enum.h>
@@ -130,3 +135,5 @@ waffle_finish(void)
     api_current_platform = NULL;
     return ok;
 }
+
+/// @}

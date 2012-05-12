@@ -12,6 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// @addtogroup waffle_display
+/// @{
+
+/// @file
+
 #include <waffle/waffle_display.h>
 
 #include <stdlib.h>
@@ -67,3 +72,5 @@ waffle_display_disconnect(struct waffle_display *self)
     free(self);
     return ok;
 }
+
+/// @}
