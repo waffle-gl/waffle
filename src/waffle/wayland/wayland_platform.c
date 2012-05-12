@@ -27,6 +27,7 @@
 #include <waffle/native.h>
 #include <waffle/waffle_enum.h>
 #include <waffle/core/wcore_error.h>
+#include <waffle/linux/linux_platform.h>
 
 #include "wayland_config.h"
 #include "wayland_context.h"
@@ -65,28 +66,25 @@ wayland_platform_create(
         return NULL;
     }
 
-    self->wl->gl_api = gl_api;
-
     switch (gl_api) {
-        case WAFFLE_OPENGL:      self->wl->libgl_name = "libGL.so";        break;
-        case WAFFLE_OPENGL_ES1:  self->wl->libgl_name = "libGLESv1_CM.so"; break;
-        case WAFFLE_OPENGL_ES2:  self->wl->libgl_name = "libGLESv2.so";    break;
+        case WAFFLE_OPENGL:
+        case WAFFLE_OPENGL_ES1:
+        case WAFFLE_OPENGL_ES2:
+            break;
         default:
             wcore_error_internal("gl_api has bad value 0x%x", gl_api);
             goto error;
     }
 
+    self->wl->gl_api = gl_api;
+    self->wl->linux_ = linux_platform_create();
+    if (!self->wl->linux_)
+        goto error;
+
     setenv("EGL_PLATFORM", "wayland", true);
     ok &= egl_bind_api(gl_api);
     if (!ok)
         goto error;
-
-    self->wl->libgl = dlopen(self->wl->libgl_name, RTLD_LAZY);
-    if (!self->wl->libgl) {
-        wcore_errorf(WAFFLE_UNKNOWN_ERROR,
-                     "dlopen(\"%s\") failed", self->wl->libgl_name);
-        goto error;
-    }
 
     *dispatch = &wayland_dispatch;
     return self;
@@ -101,23 +99,18 @@ error:
 bool
 wayland_platform_destroy(union native_platform *self)
 {
-    int error = 0;
+    bool ok = true;
 
     if (!self)
         return true;
 
     unsetenv("EGL_PLATFORM");
 
-    if (self->wl->libgl) {
-        error |= dlclose(self->wl->libgl);
-        if (error) {
-            wcore_errorf(WAFFLE_UNKNOWN_ERROR, "dlclose() failed on \"%s\"",
-                         self->wl->libgl_name);
-        }
-    }
+    if (self->wl->linux_)
+        ok &= linux_platform_destroy(self->wl->linux_);
 
     free(self);
-    return !error;
+    return ok;
 }
 
 /// @}

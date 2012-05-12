@@ -29,6 +29,8 @@
 
 #include <EGL/egl.h>
 
+struct linux_platform;
+
 union native_display;
 union native_platform;
 
@@ -36,11 +38,7 @@ struct wayland_platform {
     /// @brief One of WAFFLE_{GL,GLES1,GLES2}.
     int gl_api;
 
-    /// @brief The GL library obtained with dlopen().
-    void *libgl;
-
-    /// @brief For example, "libGLESv2.so".
-    const char *libgl_name;
+    struct linux_platform *linux_;
 };
 
 struct wayland_display {
