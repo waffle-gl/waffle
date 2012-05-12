@@ -70,6 +70,12 @@ _wcore_error_disable(void)
 }
 
 void
+wcore_error_reset(void)
+{
+    wcore_error(WAFFLE_NO_ERROR);
+}
+
+void
 wcore_error(int error)
 {
     struct wcore_error_tinfo *t = wcore_tinfo_get()->error;

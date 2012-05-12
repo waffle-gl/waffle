@@ -39,6 +39,10 @@ wcore_error_tinfo_create(void);
 bool
 wcore_error_tinfo_destroy(struct wcore_error_tinfo *self);
 
+/// @brief Reset the error state to WAFFLE_NO_ERROR.
+void
+wcore_error_reset(void);
+
 /// @brief Set error code for client.
 ///
 /// @param error is an `enum waffle_error`.
