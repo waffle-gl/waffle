@@ -219,12 +219,12 @@ TEST(gl_basic, glx_gles1)
     };
 
     int32_t error_code;
-    char error_message[1024];
+    const char *error_message;
     size_t error_message_length;
 
     ASSERT_TRUE(!waffle_init(attrib_list));
 
-    error_code = waffle_get_error_m(error_message, 1024, &error_message_length);
+    waffle_error_get_info(&error_code, &error_message, &error_message_length);
     ASSERT_TRUE(error_code == WAFFLE_BAD_ATTRIBUTE);
     ASSERT_TRUE(error_message_length > 0);
     ASSERT_TRUE(strstr(error_message, "WAFFLE_OPENGL_ES1"));
@@ -242,12 +242,12 @@ TEST(gl_basic, glx_gles2)
     };
 
     int32_t error_code;
-    char error_message[1024];
+    const char *error_message;
     size_t error_message_length;
 
     ASSERT_TRUE(!waffle_init(attrib_list));
 
-    error_code = waffle_get_error_m(error_message, 1024, &error_message_length);
+    waffle_error_get_info(&error_code, &error_message, &error_message_length);
     ASSERT_TRUE(error_code == WAFFLE_BAD_ATTRIBUTE);
     ASSERT_TRUE(error_message_length > 0);
     ASSERT_TRUE(strstr(error_message, "WAFFLE_OPENGL_ES1"));

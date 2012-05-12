@@ -20,38 +20,31 @@
 #include <string.h>
 #include <waffle/core/wcore_error.h>
 
-
-static int
-min(int x, int y)
-{
-    if (x < y)
-        return x;
-    else
-        return y;
-}
-
 int32_t
 waffle_get_error(void)
 {
     return wcore_error_get_code();
 }
 
-int32_t
-waffle_get_error_m(
-        char message_buffer[],
-        size_t buffer_size,
+void
+waffle_error_get_info(
+        int32_t *code,
+        const char **message,
         size_t *message_length)
 {
-    const char *m = wcore_error_get_message();
-    size_t length = strlen(m);
+    const char *m = NULL;
+
+    if (code)
+        *code = wcore_error_get_code();
+
+    if (message || message_length)
+        m = wcore_error_get_message();
+
+    if (message)
+        *message = m;
 
     if (message_length)
-        *message_length = length;
-
-    if (buffer_size > 0)
-        memcpy(message_buffer, m, min(buffer_size, length + 1));
-
-    return wcore_error_get_code();
+        *message_length = strlen(m);
 }
 
 const char*

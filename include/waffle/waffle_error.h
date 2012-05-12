@@ -53,29 +53,22 @@ waffle_get_error(void);
 
 /// @copybrief waffle_get_error()
 ///
-/// This is a variant of waffle_get_error() that returns an error
-/// message.
+/// This is a variant of waffle_get_error() that returns an error message. The
+/// returned @a message pointer is never null, and it becomes invalid when the
+/// thread-local error state changes.
 ///
-/// The error message is placed into @a message_buffer. If @a buffer_size is
-/// 0, the @a message_buffer is ignored. If @a buffer_size is non-zero, than
-/// the content of @a message_buffer will be a null-terminated string. No more
-/// than `min(buffer_size, *message_length + 1)` bytes will be written to
-/// @a message_buffer.
-///
-/// The message's length, according to strlen(), is returned in @a
-/// message_length. If @a message_length is null, then it is ignored. If the
-/// message does not fit into @a message_buffer, then @a message_length will be
-/// the length of the message that would have been returned if @a message_buffer
-/// had sufficient space.
+/// If any argument is null, then that argument is ignored. For example,
+/// `waffle_error_get_m(NULL, NULL, &message_length)` will obtain only the
+/// message's length.
 ///
 /// This may be called when waffle is uninitialized (that is, before
 /// waffle_init() and after waffle_finish()).
 ///
 /// @see waffle_error
-WAFFLE_API int32_t
-waffle_get_error_m(
-        char message_buffer[],
-        size_t buffer_size,
+WAFFLE_API void
+waffle_error_get_info(
+        int32_t *code,
+        const char **message,
         size_t *message_length);
 
 /// @brief Convert error code to string.

@@ -69,7 +69,7 @@ error_waffle(void)
     const size_t buf_size = 1024;
     size_t message_length;
 
-    code = waffle_get_error_m(buf, buf_size, &message_length);
+    code = waffle_error_get_m(buf, buf_size, &message_length);
 
     fflush(stdout);
     fprintf(stderr, "waffle: error: %s", waffle_error_to_string(code));
