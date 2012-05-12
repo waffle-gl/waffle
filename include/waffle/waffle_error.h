@@ -49,7 +49,7 @@ extern "C" {
 /// @return an error code from `enum waffle_error`.
 /// @see waffle_error
 WAFFLE_API int32_t
-waffle_get_error(void);
+waffle_error_get_code(void);
 
 /// @copybrief waffle_get_error()
 ///

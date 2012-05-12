@@ -21,7 +21,7 @@
 #include <waffle/core/wcore_error.h>
 
 int32_t
-waffle_get_error(void)
+waffle_error_get_code(void)
 {
     return wcore_error_get_code();
 }
