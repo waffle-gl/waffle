@@ -36,6 +36,13 @@ if(waffle_has_glx)
         )
 endif(waffle_has_glx)
 
+if("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
+    list(APPEND waffle_sources
+        linux/linux_dl.c
+        linux/linux_platform.c
+        )
+endif()
+
 if(waffle_has_wayland)
     list(APPEND waffle_sources
         wayland/wayland_config.c
