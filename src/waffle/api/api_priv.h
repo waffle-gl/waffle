@@ -33,12 +33,13 @@ extern struct wcore_platform *api_current_platform;
 
 /// @brief Used to validate most API entry points.
 ///
+/// The objects that the user passed into the API entry point are listed in
+/// @a obj_list. If its @a length is 0, then the objects are not validated.
+///
 /// Emit an error and return false if any of the following:
 ///     - waffle is not initialized
 ///     - an object pointer is null
 ///     - an object has an old platform id
-///
-/// @param length of obj_list
 bool
 api_check_entry(const struct api_object *obj_list[], int length);
 
