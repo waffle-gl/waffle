@@ -1522,7 +1522,9 @@ INCLUDE_FILE_PATTERNS  =
 # instead of the = operator.
 
 # The Doxygen parser misinterprets __attribute__ as a function declaration.
-PREDEFINED             = __attribute__(x)=
+PREDEFINED             = \
+    "__attribute__(x)=" \
+    "NATIVE_EGL(x):=NATIVE_EGL_##x" \
 
 # If the MACRO_EXPANSION and EXPAND_ONLY_PREDEF tags are set to YES then
 # this tag can be used to specify a list of macro names that should be expanded.
