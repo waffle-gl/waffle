@@ -21,7 +21,9 @@
 
 #include <dlfcn.h>
 
+#include <waffle/waffle_enum.h>
 #include <waffle/native.h>
+#include <waffle/linux/linux_platform.h>
 
 #include "xegl_priv_egl.h"
 #include "xegl_priv_types.h"
@@ -50,7 +52,20 @@ xegl_dlsym_gl(
         union native_platform *native,
         const char *name)
 {
-    return dlsym(native->xegl->libgl, name);
+    int32_t waffle_gl;
+
+    switch (native->xegl->gl_api) {
+        case WAFFLE_OPENGL:     waffle_gl = WAFFLE_DL_OPENGL;      break;
+        case WAFFLE_OPENGL_ES1: waffle_gl = WAFFLE_DL_OPENGL_ES1;  break;
+        case WAFFLE_OPENGL_ES2: waffle_gl = WAFFLE_DL_OPENGL_ES2;  break;
+        default:
+            // No need to report an error. This switch statement will be
+            // removed soon.
+            abort();
+            break;
+    }
+
+    return linux_platform_dl_sym(native->xegl->linux_, waffle_gl, name);
 }
 
 /// @}

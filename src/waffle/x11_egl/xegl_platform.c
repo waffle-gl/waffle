@@ -27,6 +27,7 @@
 #include <waffle/native.h>
 #include <waffle/waffle_enum.h>
 #include <waffle/core/wcore_error.h>
+#include <waffle/linux/linux_platform.h>
 
 #include "xegl_config.h"
 #include "xegl_context.h"
@@ -65,28 +66,25 @@ xegl_platform_create(
         return NULL;
     }
 
-    self->xegl->gl_api = gl_api;
-
     switch (gl_api) {
-        case WAFFLE_OPENGL:      self->xegl->libgl_name = "libGL.so";        break;
-        case WAFFLE_OPENGL_ES1:  self->xegl->libgl_name = "libGLESv1_CM.so"; break;
-        case WAFFLE_OPENGL_ES2:  self->xegl->libgl_name = "libGLESv2.so";    break;
+        case WAFFLE_OPENGL:
+        case WAFFLE_OPENGL_ES1:
+        case WAFFLE_OPENGL_ES2:
+            break;
         default:
             wcore_error_internal("gl_api has bad value 0x%x", gl_api);
             goto error;
     }
 
+    self->xegl->gl_api = gl_api;
+    self->xegl->linux_ = linux_platform_create();
+    if (!self->xegl->linux_)
+        goto error;
+
     setenv("EGL_PLATFORM", "x11", true);
     ok &= egl_bind_api(gl_api);
     if (!ok)
         goto error;
-
-    self->xegl->libgl = dlopen(self->xegl->libgl_name, RTLD_LAZY);
-    if (!self->xegl->libgl) {
-        wcore_errorf(WAFFLE_UNKNOWN_ERROR,
-                      "dlopen(\"%s\") failed", self->xegl->libgl_name);
-        goto error;
-    }
 
     *dispatch = &xegl_dispatch;
     return self;
@@ -101,23 +99,18 @@ error:
 bool
 xegl_platform_destroy(union native_platform *self)
 {
-    int error = 0;
+    bool ok = true;
 
     if (!self)
         return true;
 
     unsetenv("EGL_PLATFORM");
 
-    if (self->xegl->libgl) {
-        error |= dlclose(self->xegl->libgl);
-        if (error) {
-            wcore_errorf(WAFFLE_UNKNOWN_ERROR, "dlclose() failed on \"%s\"",
-                         self->xegl->libgl_name);
-        }
-    }
+    if (self->xegl->linux_)
+        ok &= linux_platform_destroy(self->xegl->linux_);
 
     free(self);
-    return !error;
+    return ok;
 }
 
 /// @}

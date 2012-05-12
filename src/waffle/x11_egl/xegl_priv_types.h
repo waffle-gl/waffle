@@ -24,6 +24,8 @@
 #include <X11/Xlib.h>
 #include <xcb/xcb.h>
 
+struct linux_platform;
+
 union native_display;
 union native_platform;
 
@@ -31,11 +33,7 @@ struct xegl_platform {
     /// @brief One of WAFFLE_{GL,GLES1,GLES2}.
     int gl_api;
 
-    /// @brief The GL library obtained with dlopen().
-    void *libgl;
-
-    /// @brief For example, "libGLESv2.so".
-    const char *libgl_name;
+    struct linux_platform *linux_;
 };
 
 struct xegl_display {
