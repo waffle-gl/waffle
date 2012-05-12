@@ -77,7 +77,7 @@ egl_swap_buffers(
 
 /// @brief Translate WAFFLE_DOUBLE_BUFFERED to an EGL_RENDER_BUFFER value.
 ///
-/// @param[in] waffle_config_attrib_list is from waffle_config_choose().
+/// @param[in] attrs was provided by the user through waffle_config_choose().
 /// @param[out] egl_render_buffer_attrib is intended to be put in the
 ///             attrib_list of eglCreateWindowSurface().
 /// @return True on success.
