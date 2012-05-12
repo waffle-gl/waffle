@@ -21,6 +21,7 @@
 #pragma once
 
 #include <stdbool.h>
+#include <stdint.h>
 
 union native_platform;
 union native_display;
@@ -41,6 +42,7 @@ xegl_get_proc_address(
 void*
 xegl_dlsym_gl(
         union native_platform *native,
+        int32_t waffle_dl,
         const char *name);
 
 /// @}

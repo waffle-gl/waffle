@@ -50,22 +50,10 @@ xegl_get_proc_address(
 void*
 xegl_dlsym_gl(
         union native_platform *native,
+        int32_t waffle_dl,
         const char *name)
 {
-    int32_t waffle_gl;
-
-    switch (native->xegl->gl_api) {
-        case WAFFLE_OPENGL:     waffle_gl = WAFFLE_DL_OPENGL;      break;
-        case WAFFLE_OPENGL_ES1: waffle_gl = WAFFLE_DL_OPENGL_ES1;  break;
-        case WAFFLE_OPENGL_ES2: waffle_gl = WAFFLE_DL_OPENGL_ES2;  break;
-        default:
-            // No need to report an error. This switch statement will be
-            // removed soon.
-            abort();
-            break;
-    }
-
-    return linux_platform_dl_sym(native->xegl->linux_, waffle_gl, name);
+    return linux_platform_dl_sym(native->xegl->linux_, waffle_dl, name);
 }
 
 /// @}

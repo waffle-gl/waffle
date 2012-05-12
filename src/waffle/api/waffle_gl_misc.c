@@ -22,6 +22,8 @@
 #include <stddef.h>
 
 #include <waffle/native.h>
+#include <waffle/waffle_enum.h>
+#include <waffle/core/wcore_error.h>
 #include <waffle/core/wcore_platform.h>
 
 #include "api_priv.h"
@@ -65,13 +67,23 @@ waffle_get_proc_address(const char *name)
 }
 
 void*
-waffle_dlsym_gl(const char *name)
+waffle_dlsym_gl(int32_t dl, const char *name)
 {
     if (!api_check_entry(NULL, 0))
         return NULL;
 
+    switch (dl) {
+        case WAFFLE_DL_OPENGL:
+        case WAFFLE_DL_OPENGL_ES1:
+        case WAFFLE_DL_OPENGL_ES2:
+            break;
+        default:
+            wcore_errorf(WAFFLE_BAD_PARAMETER, "dl has bad value %#x");
+            return NULL;
+    }
+
     return api_current_platform->dispatch->
-            dlsym_gl(api_current_platform->native, name);
+            dlsym_gl(api_current_platform->native, dl, name);
 }
 
 /// @}

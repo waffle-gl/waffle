@@ -132,6 +132,20 @@ testgroup_gl_basic_teardown(void)
     // empty
 }
 
+static int32_t
+libgl_from_gl_api(int32_t gl_api)
+{
+    switch (gl_api) {
+        case WAFFLE_OPENGL:     return WAFFLE_DL_OPENGL;
+        case WAFFLE_OPENGL_ES1: return WAFFLE_DL_OPENGL_ES1;
+        case WAFFLE_OPENGL_ES2: return WAFFLE_DL_OPENGL_ES2;
+
+        default:
+            TEST_FAIL();
+            return 0;
+    }
+}
+
 static void
 gl_basic(int32_t platform, int32_t gl_api)
 {
@@ -140,6 +154,8 @@ gl_basic(int32_t platform, int32_t gl_api)
         WAFFLE_OPENGL_API,      gl_api,
         0,
     };
+
+    const int32_t libgl = libgl_from_gl_api(gl_api);
 
     struct waffle_display *dpy = NULL;
     struct waffle_config *config = NULL;
@@ -165,10 +181,10 @@ gl_basic(int32_t platform, int32_t gl_api)
     ASSERT_TRUE(ctx = waffle_context_create(config, NULL));
 
     // Get GL functions.
-    ASSERT_TRUE(glClear = waffle_dlsym_gl("glClear"));
-    ASSERT_TRUE(glClearColor = waffle_dlsym_gl("glClearColor"));
-    ASSERT_TRUE(glGetError = waffle_dlsym_gl("glGetError"));
-    ASSERT_TRUE(glReadPixels = waffle_dlsym_gl("glReadPixels"));
+    ASSERT_TRUE(glClear         = waffle_dlsym_gl(libgl, "glClear"));
+    ASSERT_TRUE(glClearColor    = waffle_dlsym_gl(libgl, "glClearColor"));
+    ASSERT_TRUE(glGetError      = waffle_dlsym_gl(libgl, "glGetError"));
+    ASSERT_TRUE(glReadPixels    = waffle_dlsym_gl(libgl, "glReadPixels"));
 
     // Draw.
     ASSERT_TRUE(waffle_make_current(dpy, window, ctx));

@@ -108,6 +108,7 @@ struct native_dispatch {
     void*
     (*dlsym_gl)(
             union native_platform *platform,
+            int32_t waffle_dl,
             const char *name);
 };
 

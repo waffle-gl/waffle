@@ -21,6 +21,7 @@
 #pragma once
 
 #include <stdbool.h>
+#include <stdint.h>
 
 #include "waffle_visibility.h"
 
@@ -41,8 +42,14 @@ waffle_make_current(
 WAFFLE_API void*
 waffle_get_proc_address(const char *name);
 
+/// @brief Get symbol from GL library.
+///
+/// The library is selected with @a dl, which must be one of
+///     - WAFFLE_DL_OPENGL
+///     - WAFFLE_DL_OPENGL_ES1
+///     - WAFFLE_DL_OPENGL_ES2
 WAFFLE_API void*
-waffle_dlsym_gl(const char *name);
+waffle_dlsym_gl(int32_t dl, const char *name);
 
 #ifdef __cplusplus
 } // end extern "C"
