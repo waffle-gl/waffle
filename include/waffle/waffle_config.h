@@ -35,6 +35,33 @@ struct waffle_display;
 /// @brief Choose a config satisfying some attributes.
 ///
 ///
+/// ### Example Attribute Lists ###
+///
+/// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.c}
+/// const int32_t empty_list[] = {0};
+///
+/// const int32_t opengl32_rgb565[] = {
+///     WAFFLE_CONTEXT_API,             WAFFLE_CONTEXT_OPENGL,
+///     WAFFLE_CONTEXT_MAJOR_VERSION,   3,
+///     WAFFLE_CONTEXT_MINOR_VERSION,   2,
+///     WAFFLE_CONTEXT_PROFILE,         WAFFLE_CONTEXT_CORE_PROFILE,
+///
+///     WAFFLE_RED_SIZE,    5,
+///     WAFFLE_GREEN_SIZE,  6,
+///     WAFFLE_BLUE_SIZE,   5,
+///     0,
+/// };
+///
+/// const int32_t opengles2_z24s8[] = {
+///     WAFFLE_CONTEXT_API,      WAFFLE_CONTEXT_OPENGL_ES2,
+///
+///     WAFFLE_DEPTH_SIZE,      24,
+///     WAFFLE_STENCIL_SIZE,     8,
+///     0,
+/// };
+/// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+///
+///
 /// ### Attributes ###
 ///
 /// Argument @a attrib_list specifies a list of attributes, described in the
@@ -163,38 +190,6 @@ struct waffle_display;
 /// | WAFFLE_SAMPLES                          |  int |                0 | .                                             |
 /// | .                                       |    . |                . | .                                             |
 /// | WAFFLE_DOUBLE_BUFFERED                  | bool |             true | .                                             |
-///
-///
-/// ### Example Attribute Lists ###
-///
-/// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.c}
-/// const int32_t empty_list[] = {0};
-///
-/// const int32_t opengl32_rgb565[] = {
-///     WAFFLE_CONTEXT_API,             WAFFLE_CONTEXT_OPENGL,
-///     WAFFLE_CONTEXT_MAJOR_VERSION,   3,
-///     WAFFLE_CONTEXT_MINOR_VERSION,   2,
-///     WAFFLE_CONTEXT_PROFILE,         WAFFLE_CONTEXT_CORE_PROFILE,
-///
-///     WAFFLE_RED_SIZE,    5,
-///     WAFFLE_GREEN_SIZE,  6,
-///     WAFFLE_BLUE_SIZE,   5,
-///     0,
-/// };
-///
-/// const int32_t opengles2_z24s8[] = {
-///     WAFFLE_CONTEXT_API,      WAFFLE_CONTEXT_OPENGL_ES2,
-///
-///     WAFFLE_DEPTH_SIZE,      24,
-///     WAFFLE_STENCIL_SIZE,     8,
-///     0,
-/// };
-/// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-///
-///
-/// @return A config that satisfies @a attrib_list. If no such config is
-///     found, return null.
-/// @see waffle_enum
 ///
 WAFFLE_API struct waffle_config*
 waffle_config_choose(struct waffle_display *dpy, const int32_t attrib_list[]);
