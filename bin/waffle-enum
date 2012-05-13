@@ -1,0 +1,124 @@
+#!/bin/bash
+
+set -e
+
+waffle_enum_h="include/waffle/waffle_enum.h"
+
+function prog_name() {
+    echo $(basename "$0")
+}
+
+function show_help() {
+    local p="$(prog_name)"
+
+    echo "NAME"
+    echo "    $p - a tool for waffle_enum.h"
+    echo
+    echo "DESCRIPTION"
+    echo "    This script validates the enum values in waffle_enum.h. It must"
+    echo "    be called from the top of the waffle repo."
+    echo
+    echo "USAGE"
+    echo "    $p check"
+    echo "        Check waffle_enum.h for errors. If there is an error, then"
+    echo "        print a diagnostic message and exit 1. Otherwise, exit 0."
+    echo
+    echo "        Possible errors are duplicate values and ill-formed enum"
+    echo "        values. Enum values must have form 0x????, where ? is a hex"
+    echo "        digit."
+    echo
+    echo "    $p -h"
+    echo "        Show this help message."
+}
+
+function usage_error() {
+    local p="$(prog_name)"
+
+    echo "$p: usage error. see \`$p -h\`"
+    exit 1
+}
+
+function fatal_error() {
+    local p="$(prog_name)"
+
+    echo "$p: error: $1"
+    exit 1
+}
+
+function print_raw_values() {
+    local file_in="$waffle_enum_h"
+    local file_out="$(mktemp)"
+
+    sed \
+        -e '/WAFFLE_NONE/d' \
+        -e '/WAFFLE_DONT_CARE/d' \
+        -e '/WAFFLE_.*=/!d' \
+        -e 's/^.*=[[:space:]]*\(.*\),.*$/\1/' \
+        < "$file_in" \
+        > "$file_out"
+
+    echo "$file_out"
+}
+
+function check_syntax_raw() {
+    sed -e '/^0x[[:xdigit:]]\{4\}$/d' "$1"
+}
+
+function check_syntax() {
+    local file_raw_values="$1"
+
+    if [[ "$(check_syntax_raw "$file_raw_values" | wc -l)" = 0 ]]
+    then
+        return 0
+    else
+        echo "The enum values below are ill-formed."
+        check_syntax_raw "$file_raw_values"
+        exit 1
+    fi
+}
+
+function check_duplicates_raw() {
+    sort < "$1" | uniq --repeated
+}
+
+function check_duplicates() {
+    local file_raw_values="$1"
+
+    if [[ "$(check_duplicates_raw "$file_raw_values" | wc -l)" = 0 ]]
+    then
+        return 0
+    else
+        echo "The enum values below are duplicates."
+        check_duplicates_raw "$file_raw_values"
+        exit 1
+    fi
+}
+
+function check() {
+    local file_raw_values="$1"
+
+    check_syntax "$file_raw_values"
+    check_duplicates "$file_raw_values"
+}
+
+function main() {
+    if [[ $# != 1 ]]
+    then
+        show_help
+        exit 1
+    fi
+
+    case "$1" in
+        "-h")
+            show_help
+            ;;
+        "check")
+            check "$(print_raw_values)"
+            ;;
+        *)
+            usage_error
+            ;;
+    esac
+}
+
+main "$@"
