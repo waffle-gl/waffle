@@ -24,8 +24,10 @@
 #include <GL/glx.h>
 
 #include <waffle/native.h>
+#include <waffle/waffle_enum.h>
 #include <waffle/waffle_gl_misc.h>
 #include <waffle/core/wcore_error.h>
+#include <waffle/linux/linux_platform.h>
 #include <waffle/x11/x11.h>
 
 #include "glx_priv_types.h"
@@ -97,6 +99,29 @@ glx_display_disconnect(union native_display *self)
 
     free(self);
     return ok;
+}
+
+bool
+glx_display_supports_context_api(
+        union native_display *self,
+        int32_t context_api)
+{
+    struct linux_platform *linux_plat = self->glx->platform->glx->linux_;
+
+    switch (context_api) {
+        case WAFFLE_CONTEXT_OPENGL:
+            return true;
+        case WAFFLE_CONTEXT_OPENGL_ES1:
+            return false;
+        case WAFFLE_CONTEXT_OPENGL_ES2:
+            return self->glx->extensions.EXT_create_context_es2_profile
+                   && linux_platform_dl_can_open(linux_plat,
+                                                 WAFFLE_DL_OPENGL_ES2);
+        default:
+            wcore_error_internal("waffle_context_api has bad value %#x",
+                                 context_api);
+            return false;
+    }
 }
 
 /// @}

@@ -38,6 +38,7 @@
 static const struct native_dispatch glx_dispatch = {
     .display_connect = glx_display_connect,
     .display_disconnect = glx_display_disconnect,
+    .display_supports_context_api = glx_display_supports_context_api,
     .config_choose = glx_config_choose,
     .config_destroy = glx_config_destroy,
     .context_create = glx_context_create,
