@@ -20,6 +20,7 @@
 #include <waffle/waffle_gl_misc.h>
 
 #include <stddef.h>
+#include <string.h>
 
 #include <waffle/native.h>
 #include <waffle/waffle_enum.h>
@@ -27,6 +28,43 @@
 #include <waffle/core/wcore_platform.h>
 
 #include "api_priv.h"
+
+bool
+waffle_is_extension_in_string(
+        const char *restrict extension_string,
+        const char *restrict extension_name)
+{
+    size_t name_length;
+    const char *restrict search_start;
+
+    wcore_error_reset();
+
+    if (extension_string == NULL || extension_name == NULL)
+        return false;
+
+    name_length = strlen(extension_name);
+    search_start = extension_string;
+
+    if (name_length == 0)
+        return false;
+
+    while (true) {
+        const char *restrict s;
+        const char *restrict next_char;
+
+        s = strstr(search_start, extension_name);
+        if (s == NULL)
+            return false;
+
+        next_char = s + name_length;
+        if (*next_char == ' ' || *next_char == '\0')
+            return true;
+
+        // strstr found an extension whose name begins with, but is not
+        // equal to, extension_name. Continue the search
+        search_start = next_char;
+    }
+}
 
 bool
 waffle_make_current(

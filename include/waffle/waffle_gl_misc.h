@@ -33,6 +33,19 @@ struct waffle_context;
 struct waffle_display;
 struct waffle_window;
 
+/// @brief Check if an extension is contained in a GL-style extension string.
+///
+/// The @a extension_string must be in the format returned by
+/// `glGetString(GL_EXTENSIONS)`. Note that this function is not restricted to
+/// the GL extension string; it can also be used on the GLX and EGL extension
+/// strings.
+///
+/// This function may be called before waffle_init().
+WAFFLE_API bool
+waffle_is_extension_in_string(
+        const char *restrict extension_string,
+        const char *restrict extension_name);
+
 WAFFLE_API bool
 waffle_make_current(
         struct waffle_display *dpy,
