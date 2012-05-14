@@ -24,6 +24,7 @@
 #include <waffle/waffle_attrib_list.h>
 #include <waffle/core/wcore_config_attrs.h>
 #include <waffle/core/wcore_error.h>
+#include <waffle/linux/linux_platform.h>
 
 void
 egl_get_error(const char *egl_func_call)
@@ -256,6 +257,27 @@ egl_get_render_buffer_attrib(
             wcore_error_internal("%s", "attrs->double_buffered has bad value");
             return false;
     }
+}
+
+bool
+egl_supports_context_api(
+        struct linux_platform *platform,
+        int32_t context_api)
+{
+    int32_t waffle_dl;
+
+    switch (context_api) {
+        case WAFFLE_CONTEXT_OPENGL:     waffle_dl = WAFFLE_DL_OPENGL;      break;
+        case WAFFLE_CONTEXT_OPENGL_ES1: waffle_dl = WAFFLE_DL_OPENGL_ES1;  break;
+        case WAFFLE_CONTEXT_OPENGL_ES2: waffle_dl = WAFFLE_DL_OPENGL_ES2;  break;
+
+        default:
+            wcore_error_internal("context_api has bad value %#x",
+                                 context_api);
+            return false;
+    }
+
+    return linux_platform_dl_can_open(platform, waffle_dl);
 }
 
 /// @}

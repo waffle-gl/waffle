@@ -27,6 +27,7 @@
 #include <stdint.h>
 #include <EGL/egl.h>
 
+struct linux_platform;
 struct wcore_config_attrs;
 
 /// @brief Sets the waffle error with info from eglGetError().
@@ -85,5 +86,11 @@ bool
 egl_get_render_buffer_attrib(
         const struct wcore_config_attrs *attrs,
         EGLint *egl_render_buffer_attrib);
+
+/// @brief Helper for waffle_display_supports_context_api().
+bool
+egl_supports_context_api(
+        struct linux_platform *platform,
+        int32_t context_api);
 
 /// @}
