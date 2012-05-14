@@ -21,11 +21,33 @@
 
 #include <stdlib.h>
 
+#include <GL/glx.h>
+
 #include <waffle/native.h>
+#include <waffle/waffle_gl_misc.h>
 #include <waffle/core/wcore_error.h>
 #include <waffle/x11/x11.h>
 
 #include "glx_priv_types.h"
+
+static bool
+glx_display_set_extensions(struct glx_display *self)
+{
+
+    const char *s = glXQueryExtensionsString(self->xlib_display,
+                                             self->screen);
+    if (!s) {
+        wcore_errorf(WAFFLE_UNKNOWN_ERROR,
+                     "glXQueryExtensionsString failed");
+        return false;
+    }
+
+    self->extensions.ARB_create_context                     = waffle_is_extension_in_string(s, "GLX_ARB_create_context");
+    self->extensions.ARB_create_context_profile             = waffle_is_extension_in_string(s, "GLX_ARB_create_context_profile");
+    self->extensions.EXT_create_context_es2_profile         = waffle_is_extension_in_string(s, "GLX_EXT_create_context_es2_profile");
+
+    return true;
+}
 
 union native_display*
 glx_display_connect(
@@ -46,6 +68,10 @@ glx_display_connect(
     ok &= x11_display_connect(name,
                               &self->glx->xlib_display,
                               &self->glx->xcb_connection);
+    if (!ok)
+        goto error;
+
+    ok = glx_display_set_extensions(self->glx);
     if (!ok)
         goto error;
 

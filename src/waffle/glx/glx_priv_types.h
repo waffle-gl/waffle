@@ -41,6 +41,12 @@ struct glx_display {
     Display *xlib_display;
     xcb_connection_t *xcb_connection;
     int screen;
+
+    struct glx_extentions {
+        bool ARB_create_context;
+        bool ARB_create_context_profile;
+        bool EXT_create_context_es2_profile;
+    } extensions;
 };
 
 struct glx_config {
