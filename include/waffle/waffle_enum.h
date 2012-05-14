@@ -81,6 +81,14 @@ enum waffle_enum {
     WAFFLE_SAMPLES                      = 0x0208,
 
     WAFFLE_DOUBLE_BUFFERED              = 0x0209,
+
+    // -----------------------------------------
+    // For waffle_dlsym_gl()
+    // -----------------------------------------
+
+    WAFFLE_DL_OPENGL                    = 0x0301,
+    WAFFLE_DL_OPENGL_ES1                = 0x0302,
+    WAFFLE_DL_OPENGL_ES2                = 0x0303,
 };
 
 #ifdef __cplusplus

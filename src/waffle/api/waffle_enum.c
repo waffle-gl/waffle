@@ -49,6 +49,9 @@ waffle_enum_to_string(int32_t e)
         CASE(WAFFLE_SAMPLE_BUFFERS);
         CASE(WAFFLE_SAMPLES);
         CASE(WAFFLE_DOUBLE_BUFFERED);
+        CASE(WAFFLE_DL_OPENGL);
+        CASE(WAFFLE_DL_OPENGL_ES1);
+        CASE(WAFFLE_DL_OPENGL_ES2);
         default: return 0;
 #undef CASE
     }
