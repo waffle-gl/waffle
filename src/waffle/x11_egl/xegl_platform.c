@@ -41,6 +41,7 @@
 static const struct native_dispatch xegl_dispatch = {
     .display_connect = xegl_display_connect,
     .display_disconnect = xegl_display_disconnect,
+    .display_supports_context_api = xegl_display_supports_context_api,
     .config_choose = xegl_config_choose,
     .config_destroy = xegl_config_destroy,
     .context_create = xegl_context_create,

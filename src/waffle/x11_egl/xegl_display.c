@@ -82,4 +82,13 @@ xegl_display_disconnect(union native_display *self)
     return ok;
 }
 
+bool
+xegl_display_supports_context_api(
+        union native_display *self,
+        int32_t context_api)
+{
+    union native_platform *platform = self->xegl->platform;
+    return egl_supports_context_api(platform->xegl->linux_, context_api);
+}
+
 /// @}
