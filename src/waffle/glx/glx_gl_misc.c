@@ -19,9 +19,6 @@
 
 #include "glx_gl_misc.h"
 
-#include <dlfcn.h>
-
-#include <waffle/waffle_enum.h>
 #include <waffle/native.h>
 #include <waffle/linux/linux_platform.h>
 
@@ -44,15 +41,6 @@ glx_get_proc_address(
         const char *name)
 {
     return glXGetProcAddress((const uint8_t*) name);
-}
-
-void*
-glx_dlsym_gl(
-        union native_platform *native,
-        int32_t waffle_dl,
-        const char *name)
-{
-    return linux_platform_dl_sym(native->glx->linux_, waffle_dl, name);
 }
 
 /// @}

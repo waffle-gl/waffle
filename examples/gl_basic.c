@@ -283,11 +283,11 @@ main(int argc, char **argv)
     if (!ok)
         error_waffle();
 
-    glClear = waffle_dlsym_gl("glClear");
+    glClear = waffle_dl_sym("glClear");
     if (!glClear)
         error_get_gl_symbol("glClear");
 
-    glClearColor = waffle_dlsym_gl("glClearColor");
+    glClearColor = waffle_dl_sym("glClearColor");
     if (!glClearColor)
         error_get_gl_symbol("glClearColor");
 

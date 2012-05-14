@@ -39,10 +39,4 @@ glx_get_proc_address(
         union native_platform *native,
         const char *name);
 
-void*
-glx_dlsym_gl(
-        union native_platform *native,
-        int32_t waffle_dl,
-        const char *name);
-
 /// @}

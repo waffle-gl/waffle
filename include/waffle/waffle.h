@@ -26,6 +26,7 @@
 #include "waffle_config.h"
 #include "waffle_context.h"
 #include "waffle_display.h"
+#include "waffle_dl.h"
 #include "waffle_enum.h"
 #include "waffle_error.h"
 #include "waffle_gl_misc.h"

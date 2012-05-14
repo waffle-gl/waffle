@@ -12,8 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/// @defgroup waffle_gl_misc waffle_gl_misc
+/// @defgroup waffle_dl waffle_dl
 /// @ingroup waffle_api
+///
+/// @brief Dynamic libraries.
+///
+/// Use these functions to query dynamic libraries. For each function, @a dl
+/// must be one of:
+/// - WAFFLE_DL_OPENGL
+/// - WAFFLE_DL_OPENGL_ES1
+/// - WAFFLE_DL_OPENGL_ES2
+///
 /// @{
 
 /// @file
@@ -29,18 +38,9 @@
 extern "C" {
 #endif
 
-struct waffle_context;
-struct waffle_display;
-struct waffle_window;
-
-WAFFLE_API bool
-waffle_make_current(
-        struct waffle_display *dpy,
-        struct waffle_window *window,
-        struct waffle_context *ctx);
-
+/// @brief Get symbol from dynamic library.
 WAFFLE_API void*
-waffle_get_proc_address(const char *name);
+waffle_dl_sym(int32_t dl, const char *name);
 
 #ifdef __cplusplus
 } // end extern "C"

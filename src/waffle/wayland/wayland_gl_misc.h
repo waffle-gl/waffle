@@ -39,10 +39,4 @@ wayland_get_proc_address(
         union native_platform *native,
         const char *name);
 
-void*
-wayland_dlsym_gl(
-        union native_platform *native,
-        int32_t libgl,
-        const char *name);
-
 /// @}

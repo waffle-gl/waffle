@@ -32,6 +32,7 @@
 #include "wayland_config.h"
 #include "wayland_context.h"
 #include "wayland_display.h"
+#include "wayland_dl.h"
 #include "wayland_gl_misc.h"
 #include "wayland_priv_egl.h"
 #include "wayland_priv_types.h"
@@ -44,12 +45,12 @@ static const struct native_dispatch wayland_dispatch = {
     .config_destroy = wayland_config_destroy,
     .context_create = wayland_context_create,
     .context_destroy = wayland_context_destroy,
+    .dl_sym = wayland_dl_sym,
     .window_create = wayland_window_create,
     .window_destroy = wayland_window_destroy,
     .window_swap_buffers = wayland_window_swap_buffers,
     .make_current = wayland_make_current,
     .get_proc_address = wayland_get_proc_address,
-    .dlsym_gl = wayland_dlsym_gl,
 };
 
 union native_platform*

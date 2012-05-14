@@ -30,6 +30,7 @@
 #include "glx_config.h"
 #include "glx_context.h"
 #include "glx_display.h"
+#include "glx_dl.h"
 #include "glx_gl_misc.h"
 #include "glx_priv_types.h"
 #include "glx_window.h"
@@ -41,12 +42,12 @@ static const struct native_dispatch glx_dispatch = {
     .config_destroy = glx_config_destroy,
     .context_create = glx_context_create,
     .context_destroy = glx_context_destroy,
+    .dl_sym = glx_dl_sym,
     .window_create = glx_window_create,
     .window_destroy = glx_window_destroy,
     .window_swap_buffers = glx_window_swap_buffers,
     .make_current = glx_make_current,
     .get_proc_address = glx_get_proc_address,
-    .dlsym_gl = glx_dlsym_gl,
 };
 
 union native_platform*

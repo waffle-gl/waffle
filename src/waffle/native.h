@@ -82,6 +82,12 @@ struct native_dispatch {
     bool
     (*context_destroy)(union native_context *self);
 
+    void*
+    (*dl_sym)(
+            union native_platform *platform,
+            int32_t waffle_dl,
+            const char *name);
+
     union native_window*
     (*window_create)(
             union native_config *config,
@@ -103,12 +109,6 @@ struct native_dispatch {
     void*
     (*get_proc_address)(
             union native_platform *platform,
-            const char *name);
-
-    void*
-    (*dlsym_gl)(
-            union native_platform *platform,
-            int32_t waffle_dl,
             const char *name);
 };
 

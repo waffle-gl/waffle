@@ -181,10 +181,10 @@ gl_basic(int32_t platform, int32_t gl_api)
     ASSERT_TRUE(ctx = waffle_context_create(config, NULL));
 
     // Get GL functions.
-    ASSERT_TRUE(glClear         = waffle_dlsym_gl(libgl, "glClear"));
-    ASSERT_TRUE(glClearColor    = waffle_dlsym_gl(libgl, "glClearColor"));
-    ASSERT_TRUE(glGetError      = waffle_dlsym_gl(libgl, "glGetError"));
-    ASSERT_TRUE(glReadPixels    = waffle_dlsym_gl(libgl, "glReadPixels"));
+    ASSERT_TRUE(glClear         = waffle_dl_sym(libgl, "glClear"));
+    ASSERT_TRUE(glClearColor    = waffle_dl_sym(libgl, "glClearColor"));
+    ASSERT_TRUE(glGetError      = waffle_dl_sym(libgl, "glGetError"));
+    ASSERT_TRUE(glReadPixels    = waffle_dl_sym(libgl, "glReadPixels"));
 
     // Draw.
     ASSERT_TRUE(waffle_make_current(dpy, window, ctx));

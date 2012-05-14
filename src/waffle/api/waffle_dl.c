@@ -12,36 +12,38 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/// @addtogroup wayland_gl_misc
+/// @addtogroup waffle_dl
 /// @{
 
 /// @file
 
-#include "wayland_gl_misc.h"
+#include <waffle/waffle_dl.h>
 
 #include <waffle/native.h>
-#include <waffle/linux/linux_platform.h>
+#include <waffle/waffle_enum.h>
+#include <waffle/core/wcore_error.h>
+#include <waffle/core/wcore_platform.h>
 
-#include "wayland_priv_egl.h"
-#include "wayland_priv_types.h"
-
-bool
-wayland_make_current(
-        union native_display *dpy,
-        union native_window *window,
-        union native_context *ctx)
-{
-    return egl_make_current(dpy->wl->egl_display,
-                            window ? window->wl->egl_surface : 0,
-                            ctx ? ctx->wl->egl_context : 0);
-}
+#include "api_priv.h"
 
 void*
-wayland_get_proc_address(
-        union native_platform *native,
-        const char *name)
+waffle_dl_sym(int32_t dl, const char *name)
 {
-    return eglGetProcAddress(name);
+    if (!api_check_entry(NULL, 0))
+        return NULL;
+
+    switch (dl) {
+        case WAFFLE_DL_OPENGL:
+        case WAFFLE_DL_OPENGL_ES1:
+        case WAFFLE_DL_OPENGL_ES2:
+            break;
+        default:
+            wcore_errorf(WAFFLE_BAD_PARAMETER, "lib has bad value %#x");
+            return NULL;
+    }
+
+    return api_current_platform->dispatch->
+            dl_sym(api_current_platform->native, dl, name);
 }
 
 /// @}

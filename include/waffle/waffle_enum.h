@@ -83,7 +83,7 @@ enum waffle_enum {
     WAFFLE_DOUBLE_BUFFERED              = 0x0209,
 
     // -----------------------------------------
-    // For waffle_dlsym_gl()
+    // For waffle_dl_sym()
     // -----------------------------------------
 
     WAFFLE_DL_OPENGL                    = 0x0301,

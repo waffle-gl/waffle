@@ -8,6 +8,7 @@ set(waffle_sources
     api/waffle_config.c
     api/waffle_context.c
     api/waffle_display.c
+    api/waffle_dl.c
     api/waffle_enum.c
     api/waffle_error.c
     api/waffle_gl_misc.c
@@ -30,6 +31,7 @@ if(waffle_has_glx)
         glx/glx_config.c
         glx/glx_context.c
         glx/glx_display.c
+        glx/glx_dl.c
         glx/glx_gl_misc.c
         glx/glx_platform.c
         glx/glx_window.c
@@ -48,6 +50,7 @@ if(waffle_has_wayland)
         wayland/wayland_config.c
         wayland/wayland_context.c
         wayland/wayland_display.c
+        wayland/wayland_dl.c
         wayland/wayland_gl_misc.c
         wayland/wayland_platform.c
         wayland/wayland_priv_egl.c
@@ -66,6 +69,7 @@ if(waffle_has_x11_egl)
         x11_egl/xegl_config.c
         x11_egl/xegl_context.c
         x11_egl/xegl_display.c
+        x11_egl/xegl_dl.c
         x11_egl/xegl_gl_misc.c
         x11_egl/xegl_platform.c
         x11_egl/xegl_priv_egl.c

@@ -32,6 +32,7 @@
 #include "xegl_config.h"
 #include "xegl_context.h"
 #include "xegl_display.h"
+#include "xegl_dl.h"
 #include "xegl_gl_misc.h"
 #include "xegl_priv_egl.h"
 #include "xegl_priv_types.h"
@@ -44,12 +45,12 @@ static const struct native_dispatch xegl_dispatch = {
     .config_destroy = xegl_config_destroy,
     .context_create = xegl_context_create,
     .context_destroy = xegl_context_destroy,
+    .dl_sym = xegl_dl_sym,
     .window_create = xegl_window_create,
     .window_destroy = xegl_window_destroy,
     .window_swap_buffers = xegl_window_swap_buffers,
     .make_current = xegl_make_current,
     .get_proc_address = xegl_get_proc_address,
-    .dlsym_gl = xegl_dlsym_gl,
 };
 
 union native_platform*

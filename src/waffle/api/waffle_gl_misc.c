@@ -66,24 +66,4 @@ waffle_get_proc_address(const char *name)
             get_proc_address(api_current_platform->native, name);
 }
 
-void*
-waffle_dlsym_gl(int32_t dl, const char *name)
-{
-    if (!api_check_entry(NULL, 0))
-        return NULL;
-
-    switch (dl) {
-        case WAFFLE_DL_OPENGL:
-        case WAFFLE_DL_OPENGL_ES1:
-        case WAFFLE_DL_OPENGL_ES2:
-            break;
-        default:
-            wcore_errorf(WAFFLE_BAD_PARAMETER, "dl has bad value %#x");
-            return NULL;
-    }
-
-    return api_current_platform->dispatch->
-            dlsym_gl(api_current_platform->native, dl, name);
-}
-
 /// @}
