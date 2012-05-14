@@ -103,4 +103,14 @@ wayland_display_disconnect(union native_display *self)
     return ok;
 }
 
+bool
+wayland_display_supports_context_api(
+        union native_display *self,
+        int32_t context_api)
+{
+    union native_platform *platform = self->wl->platform;
+    return egl_supports_context_api(platform->wl->linux_, context_api);
+}
+
+
 /// @}

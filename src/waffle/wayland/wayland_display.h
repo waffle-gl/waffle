@@ -21,6 +21,7 @@
 #pragma once
 
 #include <stdbool.h>
+#include <stdint.h>
 
 union native_display;
 union native_platform;
@@ -32,5 +33,10 @@ wayland_display_connect(
 
 bool
 wayland_display_disconnect(union native_display *self);
+
+bool
+wayland_display_supports_context_api(
+        union native_display *self,
+        int32_t context_api);
 
 /// @}

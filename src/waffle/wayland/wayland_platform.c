@@ -41,6 +41,7 @@
 static const struct native_dispatch wayland_dispatch = {
     .display_connect = wayland_display_connect,
     .display_disconnect = wayland_display_disconnect,
+    .display_supports_context_api = wayland_display_supports_context_api,
     .config_choose = wayland_config_choose,
     .config_destroy = wayland_config_destroy,
     .context_create = wayland_context_create,
