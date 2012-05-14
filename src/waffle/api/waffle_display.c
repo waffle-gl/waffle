@@ -22,6 +22,7 @@
 #include <stdlib.h>
 
 #include <waffle/native.h>
+#include <waffle/waffle_enum.h>
 #include <waffle/core/wcore_error.h>
 #include <waffle/core/wcore_platform.h>
 
@@ -71,6 +72,33 @@ waffle_display_disconnect(struct waffle_display *self)
     ok &= api_current_platform->dispatch->display_disconnect(self->native);
     free(self);
     return ok;
+}
+
+bool
+waffle_display_supports_context_api(
+        struct waffle_display *self,
+        int32_t context_api)
+{
+    const struct api_object *obj_list[] = {
+        waffle_display_cast_to_api_object(self),
+    };
+
+    if (!api_check_entry(obj_list, 1))
+        return false;
+
+    switch (context_api) {
+        case WAFFLE_CONTEXT_OPENGL:
+        case WAFFLE_CONTEXT_OPENGL_ES1:
+        case WAFFLE_CONTEXT_OPENGL_ES2:
+            break;
+        default:
+            wcore_errorf(WAFFLE_BAD_PARAMETER,
+                         "context_api has bad value %#x", context_api);
+            return false;
+    }
+
+    return api_current_platform->dispatch->
+            display_supports_context_api(self->native, context_api);
 }
 
 /// @}

@@ -37,6 +37,14 @@ waffle_display_connect(const char *name);
 WAFFLE_API bool
 waffle_display_disconnect(struct waffle_display *self);
 
+/// Check if the display supports creation of a @ref waffle_context with
+/// the given @a context_api. Choices for @a context_api are
+/// `WAFFLE_CONTEXT_OPENGL*`.
+WAFFLE_API bool
+waffle_display_supports_context_api(
+        struct waffle_display *self,
+        int32_t context_api);
+
 #ifdef __cplusplus
 } // end extern "C"
 #endif

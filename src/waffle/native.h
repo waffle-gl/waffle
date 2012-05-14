@@ -66,6 +66,11 @@ struct native_dispatch {
     bool
     (*display_disconnect)(union native_display *self);
 
+    bool
+    (*display_supports_context_api)(
+            union native_display *self,
+            int32_t context_api);
+
     union native_config*
     (*config_choose)(
             union native_display *dpy,
