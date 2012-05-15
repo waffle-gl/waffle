@@ -25,7 +25,8 @@
 #include <waffle/waffle_enum.h>
 #include <waffle/core/wcore_error.h>
 
-static const struct wcore_config_attrs wcore_config_attrs_default = {
+/// @brief Attribute defaults that apply to all API's.
+static const struct wcore_config_attrs wcore_config_attrs_default_all = {
     .color_buffer_size      = 0,
     .red_size               = WAFFLE_DONT_CARE,
     .green_size             = WAFFLE_DONT_CARE,
@@ -41,6 +42,12 @@ static const struct wcore_config_attrs wcore_config_attrs_default = {
     .double_buffered        = true,
 };
 
+static void
+wcore_config_attrs_set_defaults(struct wcore_config_attrs *attrs)
+{
+    memcpy(attrs, &wcore_config_attrs_default_all, sizeof(*attrs));
+}
+
 bool
 wcore_config_attrs_parse(
       const int32_t waffle_attrib_list[],
@@ -48,7 +55,7 @@ wcore_config_attrs_parse(
 {
     const int32_t *i;
 
-    memcpy(attrs, &wcore_config_attrs_default, sizeof(*attrs));
+    wcore_config_attrs_set_defaults(attrs);
 
     if (!waffle_attrib_list) {
         // Nothing to parse. Just return defaults.
