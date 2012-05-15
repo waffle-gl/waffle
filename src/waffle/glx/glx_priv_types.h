@@ -56,6 +56,11 @@ struct glx_config {
     GLXFBConfig glx_fbconfig;
     int32_t glx_fbconfig_id;
     xcb_visualid_t xcb_visual_id;
+
+    int context_api;
+    int context_major_version;
+    int context_minor_version;
+    int context_profile;
 };
 
 struct glx_context {

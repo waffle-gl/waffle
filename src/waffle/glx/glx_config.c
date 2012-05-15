@@ -26,8 +26,66 @@
 #include <waffle/waffle_enum.h>
 #include <waffle/core/wcore_config_attrs.h>
 #include <waffle/core/wcore_error.h>
+#include <waffle/linux/linux_platform.h>
 
 #include "glx_priv_types.h"
+
+/// @brief Check the values of `attrs->context_*`.
+static bool
+glx_config_check_context_attrs(
+        struct glx_display *dpy,
+        const struct wcore_config_attrs *attrs)
+{
+    struct glx_platform *platform = dpy->platform->glx;
+    int version = 10 * attrs->context_major_version
+                + attrs->context_minor_version;
+
+    switch (attrs->context_api) {
+        case WAFFLE_CONTEXT_OPENGL:
+            if (version != 10 && !dpy->extensions.ARB_create_context) {
+                wcore_errorf(WAFFLE_UNSUPPORTED_ON_PLATFORM,
+                             "GLX_ARB_create_context is required in order to "
+                             "request a GL version not equal to the default "
+                             "value 1.0");
+                return false;
+            }
+            else if (version >= 32 && !dpy->extensions.EXT_create_context_es2_profile) {
+                wcore_errorf(WAFFLE_UNSUPPORTED_ON_PLATFORM,
+                             "GLX_EXT_create_context_es2_profile is required "
+                             "to create a context with version >= 3.2");
+                return false;
+            }
+            else if (version >= 32 && attrs->context_profile == WAFFLE_NONE) {
+                wcore_errorf(WAFFLE_BAD_ATTRIBUTE,
+                             "a profile must be specified when the GL version "
+                             "is >= 3.2");
+                return false;
+            }
+            return true;
+        case WAFFLE_CONTEXT_OPENGL_ES1:
+            wcore_errorf(WAFFLE_UNSUPPORTED_ON_PLATFORM,
+                         "GLX does not support OpenGL ES1");
+            return false;
+        case WAFFLE_CONTEXT_OPENGL_ES2:
+            if (!dpy->extensions.EXT_create_context_es2_profile) {
+                wcore_errorf(WAFFLE_UNSUPPORTED_ON_PLATFORM,
+                             "GLX_EXT_create_context_es2_profile is required "
+                             "to create an OpenGL ES2 context");
+                return false;
+            }
+            if (!linux_platform_dl_can_open(platform->linux_,
+                                            WAFFLE_DL_OPENGL_ES2)) {
+                wcore_errorf(WAFFLE_UNSUPPORTED_ON_PLATFORM,
+                             "failed to open the OpenGL ES2 library");
+                return false;
+            }
+            return true;
+        default:
+            wcore_error_internal("context_api has bad value %#x",
+                                 attrs->context_api);
+            return false;
+    }
+}
 
 union native_config*
 glx_config_choose(
@@ -39,6 +97,9 @@ glx_config_choose(
     GLXFBConfig *configs = NULL;
     int num_configs;
     XVisualInfo *vi = NULL;
+
+    if (!glx_config_check_context_attrs(dpy->glx, attrs))
+        return NULL;
 
     int attrib_list[] = {
         GLX_BUFFER_SIZE,        attrs->color_buffer_size,
@@ -105,6 +166,12 @@ glx_config_choose(
         goto error;
     }
     self->glx->xcb_visual_id = vi->visualid;
+
+    // Set context attributes.
+    self->glx->context_api                  = attrs->context_api;
+    self->glx->context_major_version        = attrs->context_major_version;
+    self->glx->context_minor_version        = attrs->context_minor_version;
+    self->glx->context_profile              = attrs->context_profile;
 
     goto end;
 
