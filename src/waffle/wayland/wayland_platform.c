@@ -45,6 +45,7 @@ static const struct native_dispatch wayland_dispatch = {
     .config_destroy = wayland_config_destroy,
     .context_create = wayland_context_create,
     .context_destroy = wayland_context_destroy,
+    .dl_can_open = wayland_dl_can_open,
     .dl_sym = wayland_dl_sym,
     .window_create = wayland_window_create,
     .window_destroy = wayland_window_destroy,

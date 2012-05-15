@@ -20,9 +20,16 @@
 
 #pragma once
 
+
+#include <stdbool.h>
 #include <stdint.h>
 
 union native_platform;
+
+bool
+wayland_dl_can_open(
+        union native_platform *native,
+        int32_t waffle_dl);
 
 void*
 wayland_dl_sym(

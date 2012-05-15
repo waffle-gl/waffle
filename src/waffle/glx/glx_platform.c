@@ -42,6 +42,7 @@ static const struct native_dispatch glx_dispatch = {
     .config_destroy = glx_config_destroy,
     .context_create = glx_context_create,
     .context_destroy = glx_context_destroy,
+    .dl_can_open = glx_dl_can_open,
     .dl_sym = glx_dl_sym,
     .window_create = glx_window_create,
     .window_destroy = glx_window_destroy,

@@ -20,9 +20,18 @@
 #include "wayland_dl.h"
 
 #include <waffle/native.h>
+#include <waffle/linux/linux_dl.h>
 #include <waffle/linux/linux_platform.h>
 
 #include "wayland_priv_types.h"
+
+bool
+wayland_dl_can_open(
+        union native_platform *native,
+        int32_t waffle_dl)
+{
+    return linux_platform_dl_can_open(native->wl->linux_, waffle_dl);
+}
 
 void*
 wayland_dl_sym(

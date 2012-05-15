@@ -20,9 +20,18 @@
 #include "glx_dl.h"
 
 #include <waffle/native.h>
+#include <waffle/linux/linux_dl.h>
 #include <waffle/linux/linux_platform.h>
 
 #include "glx_priv_types.h"
+
+bool
+glx_dl_can_open(
+        union native_platform *native,
+        int32_t waffle_dl)
+{
+    return linux_platform_dl_can_open(native->glx->linux_, waffle_dl);
+}
 
 void*
 glx_dl_sym(

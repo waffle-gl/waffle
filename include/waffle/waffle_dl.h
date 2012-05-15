@@ -38,6 +38,10 @@
 extern "C" {
 #endif
 
+/// @brief Test if a dynamic library can be opened.
+WAFFLE_API bool
+waffle_dl_can_open(int32_t dl);
+
 /// @brief Get symbol from dynamic library.
 WAFFLE_API void*
 waffle_dl_sym(int32_t dl, const char *name);

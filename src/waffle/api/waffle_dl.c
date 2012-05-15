@@ -26,21 +26,41 @@
 
 #include "api_priv.h"
 
+static bool
+waffle_dl_check_enum(int32_t dl)
+{
+    switch (dl) {
+        case WAFFLE_DL_OPENGL:
+        case WAFFLE_DL_OPENGL_ES1:
+        case WAFFLE_DL_OPENGL_ES2:
+            return true;
+        default:
+            wcore_errorf(WAFFLE_BAD_PARAMETER, "dl has bad value %#x");
+            return false;
+    }
+}
+
+bool
+waffle_dl_can_open(int32_t dl)
+{
+    if (!api_check_entry(NULL, 0))
+         return NULL;
+
+     if (!waffle_dl_check_enum(dl))
+         return false;
+
+     return api_current_platform->dispatch->
+             dl_can_open(api_current_platform->native, dl);
+}
+
 void*
 waffle_dl_sym(int32_t dl, const char *name)
 {
     if (!api_check_entry(NULL, 0))
         return NULL;
 
-    switch (dl) {
-        case WAFFLE_DL_OPENGL:
-        case WAFFLE_DL_OPENGL_ES1:
-        case WAFFLE_DL_OPENGL_ES2:
-            break;
-        default:
-            wcore_errorf(WAFFLE_BAD_PARAMETER, "lib has bad value %#x");
-            return NULL;
-    }
+    if (!waffle_dl_check_enum(dl))
+        return false;
 
     return api_current_platform->dispatch->
             dl_sym(api_current_platform->native, dl, name);

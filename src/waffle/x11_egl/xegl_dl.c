@@ -20,9 +20,18 @@
 #include "xegl_dl.h"
 
 #include <waffle/native.h>
+#include <waffle/linux/linux_dl.h>
 #include <waffle/linux/linux_platform.h>
 
 #include "xegl_priv_types.h"
+
+bool
+xegl_dl_can_open(
+        union native_platform *native,
+        int32_t waffle_dl)
+{
+    return linux_platform_dl_can_open(native->xegl->linux_, waffle_dl);
+}
 
 void*
 xegl_dl_sym(

@@ -82,6 +82,11 @@ struct native_dispatch {
     bool
     (*context_destroy)(union native_context *self);
 
+    bool
+    (*dl_can_open)(
+            union native_platform *platform,
+            int32_t waffle_dl);
+
     void*
     (*dl_sym)(
             union native_platform *platform,

@@ -20,10 +20,15 @@
 
 #pragma once
 
+#include <stdbool.h>
 #include <stdint.h>
 
 union native_platform;
 
+bool
+xegl_dl_can_open(
+        union native_platform *native,
+        int32_t waffle_dl);
 void*
 xegl_dl_sym(
         union native_platform *native,

@@ -45,6 +45,7 @@ static const struct native_dispatch xegl_dispatch = {
     .config_destroy = xegl_config_destroy,
     .context_create = xegl_context_create,
     .context_destroy = xegl_context_destroy,
+    .dl_can_open = xegl_dl_can_open,
     .dl_sym = xegl_dl_sym,
     .window_create = xegl_window_create,
     .window_destroy = xegl_window_destroy,
