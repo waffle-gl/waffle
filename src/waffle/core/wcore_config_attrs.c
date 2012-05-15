@@ -67,6 +67,12 @@ wcore_config_attrs_parse(
         int32_t w_value = i[1];
 
         switch (w_attr) {
+            case WAFFLE_CONTEXT_API:
+                // Don't process this attribute yet. But don't emit an error
+                // either. Just silently ignore it. This allows some tests to
+                // be preemptively fixed before wcore_config_attrs_parse
+                // requires this attribute.
+                break;
             case WAFFLE_RED_SIZE:
                 attrs->red_size = w_value;
                 break;

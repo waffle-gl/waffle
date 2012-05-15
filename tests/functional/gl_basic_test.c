@@ -51,14 +51,6 @@ static const uint8_t    GREEN_UB    = 0x00;
 static const uint8_t    BLUE_UB     = 0xff;
 static const uint8_t    ALPHA_UB    = 0xff;
 
-static const int32_t config_attrib_list[] = {
-    WAFFLE_RED_SIZE,        8,
-    WAFFLE_GREEN_SIZE,      8,
-    WAFFLE_BLUE_SIZE,       8,
-    WAFFLE_ALPHA_SIZE,      0,
-    0,
-};
-
 static uint8_t pixels[4 * WINDOW_WIDTH * WINDOW_HEIGHT];
 
 #define ASSERT_GL(statement) \
@@ -146,21 +138,50 @@ libgl_from_gl_api(int32_t gl_api)
     }
 }
 
+// This silly function will be killed as soon as the great
+// context-version refactoring is complete.
+static int32_t
+context_api_from_gl_api(int32_t gl_api)
+{
+    switch (gl_api) {
+        case WAFFLE_OPENGL:     return WAFFLE_CONTEXT_OPENGL;
+        case WAFFLE_OPENGL_ES1: return WAFFLE_CONTEXT_OPENGL_ES1;
+        case WAFFLE_OPENGL_ES2: return WAFFLE_CONTEXT_OPENGL_ES2;
+
+        default:
+            TEST_FAIL();
+            return 0;
+    }
+}
+
 static void
 gl_basic(int32_t platform, int32_t gl_api)
 {
+    int32_t libgl;
+
     const int32_t init_attrib_list[] = {
         WAFFLE_PLATFORM,        platform,
         WAFFLE_OPENGL_API,      gl_api,
         0,
     };
 
-    const int32_t libgl = libgl_from_gl_api(gl_api);
+    int32_t config_attrib_list[] = {
+        WAFFLE_CONTEXT_API,     3141592653,
+
+        WAFFLE_RED_SIZE,        8,
+        WAFFLE_GREEN_SIZE,      8,
+        WAFFLE_BLUE_SIZE,       8,
+        WAFFLE_ALPHA_SIZE,      0,
+        0,
+    };
 
     struct waffle_display *dpy = NULL;
     struct waffle_config *config = NULL;
     struct waffle_window *window = NULL;
     struct waffle_context *ctx = NULL;
+
+    libgl = libgl_from_gl_api(gl_api);
+    config_attrib_list[1] = context_api_from_gl_api(gl_api);
 
     ASSERT_TRUE(waffle_init(init_attrib_list));
 
