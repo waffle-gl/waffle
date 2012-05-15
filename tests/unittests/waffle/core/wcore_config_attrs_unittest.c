@@ -24,6 +24,13 @@ static struct wcore_config_attrs actual_attrs;
 static struct wcore_config_attrs expect_attrs;
 
 static const struct wcore_config_attrs default_attrs = {
+    // There is no default context api, so arbitrarily choose OpenGL. The
+    // remaining context attrs are the defaults for OpenGL.
+    .context_api            = WAFFLE_CONTEXT_OPENGL,
+    .context_major_version  = 1,
+    .context_minor_version  = 0,
+    .context_profile        = WAFFLE_CONTEXT_CORE_PROFILE,
+
     .color_buffer_size      = 0,
     .red_size               = WAFFLE_DONT_CARE,
     .green_size             = WAFFLE_DONT_CARE,
@@ -57,21 +64,22 @@ testgroup_wcore_config_attrs_teardown(void)
 
 TEST(wcore_config_attrs, null_attrib_list)
 {
-    ASSERT_TRUE(wcore_config_attrs_parse(NULL, &actual_attrs));
-    ASSERT_TRUE(!memcmp(&actual_attrs, &expect_attrs, sizeof(expect_attrs)));
+    ASSERT_TRUE(!wcore_config_attrs_parse(NULL, &actual_attrs));
+    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_BAD_ATTRIBUTE);
 }
 
 TEST(wcore_config_attrs, empty_attrib_list)
 {
     const int32_t attrib_list[] = {0};
 
-    ASSERT_TRUE(wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    ASSERT_TRUE(!memcmp(&actual_attrs, &expect_attrs, sizeof(expect_attrs)));
+    ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
+    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_BAD_ATTRIBUTE);
 }
 
 TEST(wcore_config_attrs, bad_attr)
 {
     const int32_t attrib_list[] = {
+        WAFFLE_CONTEXT_API, WAFFLE_CONTEXT_OPENGL,
         WAFFLE_OPENGL_API,  WAFFLE_OPENGL_ES2,
         0,
     };
@@ -85,6 +93,8 @@ TEST(wcore_config_attrs, bad_attr)
 TEST(wcore_config_attrs, color_buffer_size)
 {
     const int32_t attrib_list[] = {
+        WAFFLE_CONTEXT_API, WAFFLE_CONTEXT_OPENGL,
+
         WAFFLE_SAMPLES,     4, // noise
 
         WAFFLE_ALPHA_SIZE,  8,
@@ -106,6 +116,7 @@ TEST(wcore_config_attrs, color_buffer_size)
 TEST(wcore_config_attrs, double_buffered_is_true)
 {
     const int32_t attrib_list[] = {
+        WAFFLE_CONTEXT_API,      WAFFLE_CONTEXT_OPENGL,
         WAFFLE_DOUBLE_BUFFERED, 1,
         0,
     };
@@ -118,6 +129,7 @@ TEST(wcore_config_attrs, double_buffered_is_true)
 TEST(wcore_config_attrs, double_buffered_is_false)
 {
     const int32_t attrib_list[] = {
+        WAFFLE_CONTEXT_API,     WAFFLE_CONTEXT_OPENGL,
         WAFFLE_DOUBLE_BUFFERED, 0,
         0,
     };
@@ -130,6 +142,7 @@ TEST(wcore_config_attrs, double_buffered_is_false)
 TEST(wcore_config_attrs, double_buffered_is_bad)
 {
     const int32_t attrib_list[] = {
+        WAFFLE_CONTEXT_API,     WAFFLE_CONTEXT_OPENGL,
         WAFFLE_DOUBLE_BUFFERED, 0x31415926,
         0,
     };

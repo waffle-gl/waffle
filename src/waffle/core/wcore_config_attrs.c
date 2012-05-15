@@ -22,6 +22,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <waffle/waffle_attrib_list.h>
 #include <waffle/waffle_enum.h>
 #include <waffle/core/wcore_error.h>
 
@@ -42,10 +43,109 @@ static const struct wcore_config_attrs wcore_config_attrs_default_all = {
     .double_buffered        = true,
 };
 
-static void
-wcore_config_attrs_set_defaults(struct wcore_config_attrs *attrs)
+static bool
+wcore_config_attrs_set_defaults(
+        int32_t context_api,
+        struct wcore_config_attrs *attrs)
 {
     memcpy(attrs, &wcore_config_attrs_default_all, sizeof(*attrs));
+
+    switch (context_api) {
+        case WAFFLE_CONTEXT_OPENGL:
+            attrs->context_major_version = 1;
+            attrs->context_minor_version = 0;
+            attrs->context_profile = WAFFLE_CONTEXT_CORE_PROFILE;
+            return true;
+        case WAFFLE_CONTEXT_OPENGL_ES1:
+            attrs->context_major_version = 1;
+            attrs->context_minor_version = 0;
+            attrs->context_profile = WAFFLE_NONE;
+            return true;
+        case WAFFLE_CONTEXT_OPENGL_ES2:
+            attrs->context_major_version = 2;
+            attrs->context_minor_version = 0;
+            attrs->context_profile = WAFFLE_NONE;
+            return true;
+        default:
+            wcore_errorf(WAFFLE_BAD_ATTRIBUTE,
+                         "attribute WAFFLE_CONTEXT_API has bad value %#x",
+                         context_api);
+            return false;
+    }
+}
+
+/// @brief Check the context attributes.
+///
+/// The validation done here is independent of the native platform. The native
+/// platform may need to do additional checking. For example, GLX should
+/// reject the attribute list if the API is GLES1.
+static bool
+wcore_config_attrs_check_context(struct wcore_config_attrs *attrs)
+{
+    int version = 10 * attrs->context_major_version
+                + attrs->context_minor_version;
+
+    switch (attrs->context_api) {
+        case WAFFLE_CONTEXT_OPENGL: {
+            switch (attrs->context_profile) {
+                case WAFFLE_NONE:
+                case WAFFLE_CONTEXT_CORE_PROFILE:
+                case WAFFLE_CONTEXT_COMPATIBILITY_PROFILE:
+                    break;
+                default:
+                    goto bad_profile;
+            }
+
+            if (version < 10) {
+                wcore_errorf(WAFFLE_BAD_ATTRIBUTE,
+                             "the minimum OpenGL version is 1.0");
+                return false;
+            }
+            else if (version >= 32 && attrs->context_profile == WAFFLE_NONE) {
+                wcore_errorf(WAFFLE_BAD_ATTRIBUTE,
+                             "a profile must be given when the OpenGL "
+                             "version is >= 3.2");
+                return false;
+            }
+
+            return true;
+        }
+        case WAFFLE_CONTEXT_OPENGL_ES1: {
+            if (version != 10) {
+                wcore_errorf(WAFFLE_BAD_ATTRIBUTE,
+                             "the context version must be 1.0 for OpenGL ES1");
+                return false;
+            }
+
+            if (attrs->context_profile != WAFFLE_NONE)
+                goto bad_profile;
+
+            return true;
+        }
+        case WAFFLE_CONTEXT_OPENGL_ES2: {
+            if (version != 20) {
+                wcore_errorf(WAFFLE_BAD_ATTRIBUTE,
+                             "the context version must 2.0 for OpenGL ES2");
+                return false;
+            }
+
+            if (attrs->context_profile != WAFFLE_NONE)
+                goto bad_profile;
+
+            return true;
+        }
+        default:
+            wcore_errorf(WAFFLE_BAD_ATTRIBUTE,
+                         "attribute WAFFLE_CONTEXT_API has bad value %#x",
+                         attrs->context_api);
+            return false;
+    }
+
+bad_profile:
+    wcore_errorf(WAFFLE_BAD_ATTRIBUTE,
+                 "WAFFLE_CONTEXT_PROFILE has bad value %#x",
+                 attrs->context_profile);
+    return false;
 }
 
 bool
@@ -53,14 +153,22 @@ wcore_config_attrs_parse(
       const int32_t waffle_attrib_list[],
       struct wcore_config_attrs *attrs)
 {
+    bool ok;
     const int32_t *i;
+    int32_t context_api;
 
-    wcore_config_attrs_set_defaults(attrs);
+    if (waffle_attrib_list == NULL)
+        goto error_context_api_required;
 
-    if (!waffle_attrib_list) {
-        // Nothing to parse. Just return defaults.
-        return attrs;
-    }
+    ok = waffle_attrib_list_get(waffle_attrib_list,
+                                WAFFLE_CONTEXT_API,
+                                &context_api);
+    if (!ok)
+        goto error_context_api_required;
+
+    ok = wcore_config_attrs_set_defaults(context_api, attrs);
+    if (!ok)
+        return false;
 
     for (i = waffle_attrib_list; *i != 0; i += 2) {
         int32_t w_attr = i[0];
@@ -68,10 +176,16 @@ wcore_config_attrs_parse(
 
         switch (w_attr) {
             case WAFFLE_CONTEXT_API:
-                // Don't process this attribute yet. But don't emit an error
-                // either. Just silently ignore it. This allows some tests to
-                // be preemptively fixed before wcore_config_attrs_parse
-                // requires this attribute.
+                attrs->context_api = w_value;
+                break;
+            case WAFFLE_CONTEXT_MAJOR_VERSION:
+                attrs->context_major_version = w_value;
+                break;
+            case WAFFLE_CONTEXT_MINOR_VERSION:
+                attrs->context_minor_version = w_value;
+                break;
+            case WAFFLE_CONTEXT_PROFILE:
+                attrs->context_profile = w_value;
                 break;
             case WAFFLE_RED_SIZE:
                 attrs->red_size = w_value;
@@ -130,7 +244,15 @@ wcore_config_attrs_parse(
     if (attrs->alpha_size != WAFFLE_DONT_CARE)
         attrs->color_buffer_size += attrs->alpha_size;
 
+    if (!wcore_config_attrs_check_context(attrs))
+        return false;
+
     return attrs;
+
+error_context_api_required:
+    wcore_errorf(WAFFLE_BAD_ATTRIBUTE,
+                 "the WAFFLE_CONTEXT_API attribute is required");
+    return false;
 }
 
 /// @}

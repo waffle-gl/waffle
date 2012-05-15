@@ -27,6 +27,11 @@
 
 /// @brief Encodes the attribute list received by waffle_config_choose().
 struct wcore_config_attrs {
+    int32_t context_api;
+    int32_t context_major_version;
+    int32_t context_minor_version;
+    int32_t context_profile;
+
     int32_t color_buffer_size;
     int32_t red_size;
     int32_t green_size;
