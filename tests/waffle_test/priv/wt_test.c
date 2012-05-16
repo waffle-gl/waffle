@@ -46,7 +46,7 @@ wt_test_print_result(void)
         default:
         case WT_RESULT_FAIL:       tag = "fail:";      break;
         case WT_RESULT_PASS:       tag = "pass:";      break;
-        case WT_RESULT_IGNORE:     tag = "ignore:";    break;
+        case WT_RESULT_SKIP:       tag = "skip:";    break;
     }
 
     printf("test: %-7s %s.%s\n", tag, self.group, self.name);
@@ -129,10 +129,10 @@ wt_test_pass(void)
 }
 
 void
-wt_test_ignore(void)
+wt_test_skip(void)
 {
     wt_test_check_command_preconditions();
-    wt_test_terminate_early(WT_RESULT_IGNORE);
+    wt_test_terminate_early(WT_RESULT_SKIP);
 }
 
 void

@@ -53,7 +53,7 @@ int wt_main(int *argc, char **argv, void (*test_suites[])(void));
 /// @{
 
 #define TEST_PASS()                           wt_test_pass()
-#define TEST_IGNORE()                         wt_test_ignore()
+#define TEST_SKIP()                           wt_test_skip()
 #define TEST_FAIL()                           wt_test_fail( __FILE__, __LINE__)
 #define TEST_FAIL_PRINTF(format, ...)         wt_test_fail_printf( __FILE__, __LINE__, format, __VA_ARGS__)
 

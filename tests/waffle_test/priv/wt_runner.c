@@ -57,7 +57,7 @@ wt_runner_accum_result(int result)
     switch (result) {
         case WT_RESULT_PASS:   ++self.num_pass;    break;
         case WT_RESULT_FAIL:   ++self.num_fail;    break;
-        case WT_RESULT_IGNORE: ++self.num_ignore;  break;
+        case WT_RESULT_SKIP: ++self.num_ignore;  break;
 
         default:
             printf("wt: internal error: %s:%d: result has bad value 0x%x\n",

@@ -19,7 +19,7 @@
 enum wt_result {
     WT_RESULT_PASS,
     WT_RESULT_FAIL,
-    WT_RESULT_IGNORE,
+    WT_RESULT_SKIP,
 };
 
 /// This must be called only from wt_main().
@@ -32,7 +32,7 @@ wt_test_run(
         int *result);
 
 void wt_test_pass(void);
-void wt_test_ignore(void);
+void wt_test_skip(void);
 void wt_test_fail(const char *file, int line);
 void wt_test_fail_printf(const char *file, int line, const char *format, ...);
 void wt_test_error(const char *filename, int line);
