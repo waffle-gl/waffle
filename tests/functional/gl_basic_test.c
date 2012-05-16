@@ -196,10 +196,24 @@ gl_basic(int32_t platform, int32_t gl_api)
 
     // Create objects.
     ASSERT_TRUE(dpy = waffle_display_connect(NULL));
-    ASSERT_TRUE(config = waffle_config_choose(dpy, config_attrib_list));
+
+    config = waffle_config_choose(dpy, config_attrib_list);
+    if (!config) {
+        if (waffle_error_get_code() == WAFFLE_UNSUPPORTED_ON_PLATFORM)
+            TEST_SKIP();
+        else
+            TEST_FAIL();
+    }
+
     ASSERT_TRUE(window = waffle_window_create(config,
                                               WINDOW_WIDTH, WINDOW_HEIGHT));
-    ASSERT_TRUE(ctx = waffle_context_create(config, NULL));
+    ctx = waffle_context_create(config, NULL);
+    if (!ctx) {
+        if (waffle_error_get_code() == WAFFLE_UNSUPPORTED_ON_PLATFORM)
+            TEST_SKIP();
+        else
+            TEST_FAIL();
+    }
 
     // Get GL functions.
     ASSERT_TRUE(glClear         = waffle_dl_sym(libgl, "glClear"));
@@ -245,49 +259,14 @@ TEST(gl_basic, glx_gl)
     gl_basic(WAFFLE_PLATFORM_GLX, WAFFLE_OPENGL);
 }
 
-// Check that waffle_init() fails on WAFFLE_OPENGL_ES1. Mesa has not yet
-// implemented the necessary GLX extension.
 TEST(gl_basic, glx_gles1)
 {
-    const int32_t attrib_list[] = {
-        WAFFLE_PLATFORM,        WAFFLE_PLATFORM_GLX,
-        WAFFLE_OPENGL_API,      WAFFLE_OPENGL_ES1,
-        0,
-    };
-
-    int32_t error_code;
-    const char *error_message;
-    size_t error_message_length;
-
-    ASSERT_TRUE(!waffle_init(attrib_list));
-
-    waffle_error_get_info(&error_code, &error_message, &error_message_length);
-    ASSERT_TRUE(error_code == WAFFLE_BAD_ATTRIBUTE);
-    ASSERT_TRUE(error_message_length > 0);
-    ASSERT_TRUE(strstr(error_message, "WAFFLE_OPENGL_ES1"));
-
+    gl_basic(WAFFLE_PLATFORM_GLX, WAFFLE_OPENGL_ES1);
 }
 
-// Check that waffle_init() fails on WAFFLE_OPENGL_ES1. Mesa has not yet
-// implemented the necessary GLX extension.
 TEST(gl_basic, glx_gles2)
 {
-    const int32_t attrib_list[] = {
-        WAFFLE_PLATFORM,        WAFFLE_PLATFORM_GLX,
-        WAFFLE_OPENGL_API,      WAFFLE_OPENGL_ES1,
-        0,
-    };
-
-    int32_t error_code;
-    const char *error_message;
-    size_t error_message_length;
-
-    ASSERT_TRUE(!waffle_init(attrib_list));
-
-    waffle_error_get_info(&error_code, &error_message, &error_message_length);
-    ASSERT_TRUE(error_code == WAFFLE_BAD_ATTRIBUTE);
-    ASSERT_TRUE(error_message_length > 0);
-    ASSERT_TRUE(strstr(error_message, "WAFFLE_OPENGL_ES1"));
+    gl_basic(WAFFLE_PLATFORM_GLX, WAFFLE_OPENGL_ES2);
 }
 
 static void

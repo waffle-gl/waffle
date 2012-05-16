@@ -64,23 +64,8 @@ glx_platform_create(
         return NULL;
     }
 
-    switch (gl_api) {
-        case WAFFLE_OPENGL:
-            break;
-        case WAFFLE_OPENGL_ES1:
-        case WAFFLE_OPENGL_ES2:
-            wcore_errorf(WAFFLE_BAD_ATTRIBUTE,
-                         "GLX does not yet support %s",
-                         waffle_enum_to_string(gl_api));
-            goto error;
-        default:
-            wcore_error_internal("gl_api has bad value 0x%x", gl_api);
-            goto error;
-    }
-
     self->glx->glXCreateContextAttribsARB = (PFNGLXCREATECONTEXTATTRIBSARBPROC) glXGetProcAddress((const uint8_t*) "glXCreateContextAttribsARB");
 
-    self->glx->gl_api = gl_api;
     self->glx->linux_ = linux_platform_create();
     if (!self->glx->linux_)
         goto error;
