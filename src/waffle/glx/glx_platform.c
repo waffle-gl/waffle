@@ -78,6 +78,7 @@ glx_platform_create(
             goto error;
     }
 
+    self->glx->glXCreateContextAttribsARB = (PFNGLXCREATECONTEXTATTRIBSARBPROC) glXGetProcAddress((const uint8_t*) "glXCreateContextAttribsARB");
 
     self->glx->gl_api = gl_api;
     self->glx->linux_ = linux_platform_create();

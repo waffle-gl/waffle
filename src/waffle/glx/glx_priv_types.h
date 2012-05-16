@@ -34,6 +34,8 @@ struct glx_platform {
     int gl_api;
 
     struct linux_platform *linux_;
+
+    PFNGLXCREATECONTEXTATTRIBSARBPROC glXCreateContextAttribsARB;
 };
 
 struct glx_display {
