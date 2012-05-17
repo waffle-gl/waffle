@@ -28,7 +28,7 @@
 struct api_object;
 struct wcore_platform;
 
-/// @brief Managed by waffle_init() and waffle_finish().
+/// @brief Managed by waffle_init().
 extern struct wcore_platform *api_current_platform;
 
 /// @brief Used to validate most API entry points.

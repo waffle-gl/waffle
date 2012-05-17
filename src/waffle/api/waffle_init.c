@@ -106,15 +106,4 @@ waffle_init(const int32_t *attrib_list)
     return true;
 }
 
-bool
-waffle_finish(void)
-{
-    bool ok;
-
-    wcore_error_reset();
-    ok = wcore_platform_destroy(api_current_platform);
-    api_current_platform = NULL;
-    return ok;
-}
-
 /// @}

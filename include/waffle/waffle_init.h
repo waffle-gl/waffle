@@ -32,11 +32,8 @@ extern "C" {
 /// @brief Initialize the per-process global state of the waffle library.
 ///
 /// This function must be called before calling any other waffle functions
-/// (except waffle_finish()). If waffle is already initialized, then calling
-/// waffle_init() produces the error @c WAFFLE_ALREADY_INITIALIZED. To reset
-/// waffle's global state, call waffle_finish(). After calling
-/// waffle_finish(), it is safe to reinitialize the library with a new set of
-/// attributes.
+/// If waffle is already initialized, then calling waffle_init() produces the
+/// error @c WAFFLE_ALREADY_INITIALIZED.
 ///
 ///
 /// ### Attributes ###
@@ -71,7 +68,7 @@ extern "C" {
 ///
 /// - WAFFLE_ALREADY_INITIALIZED @n
 ///     The library's global state has already been initialized with a call
-///     to waffle_init(), but has not been reset with waffle_finish().
+///     to waffle_init().
 ///
 /// - WAFFLE_BAD_ATTRIBUTE @n
 ///     An item in @a attrib_list is unrecognized, missing, or has an
@@ -81,22 +78,6 @@ extern "C" {
 ///
 WAFFLE_API bool
 waffle_init(const int32_t *attrib_list);
-
-/// @brief Reset the per-process global state of the waffle library.
-///
-/// This restores waffle to its uninitialized state. If the library is
-/// uninitialized, then calling waffle_finish() has no effect and the function
-/// trivially succeeds. After calling waffle_finish(), it is safe to
-/// reinitialize waffle with waffle_init().
-///
-/// This invalidates all waffle objects. Passing an invalid object to a
-/// waffle function produces a WAFFLE_OLD_OBJECT error.
-///
-/// If waffle_finish() returns false, then things have gone terribly wrong;
-/// all future waffle calls result in undefined behavior.
-///
-WAFFLE_API bool
-waffle_finish(void);
 
 #ifdef __cplusplus
 } // end extern "C"
