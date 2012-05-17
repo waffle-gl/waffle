@@ -24,6 +24,7 @@
 
 #include <waffle/native.h>
 #include <waffle/waffle_enum.h>
+#include <waffle/core/wcore_config_attrs.h>
 #include <waffle/core/wcore_error.h>
 
 #include "xegl_priv_egl.h"
@@ -62,6 +63,8 @@ xegl_config_choose(
         egl_get_error("eglGetConfigAttrib(EGL_NATIVE_VISUAL_ID)");
         goto error;
     }
+
+    self->xegl->waffle_context_api = attrs->context_api;
 
     return self;
 

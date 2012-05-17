@@ -51,6 +51,8 @@ struct xegl_config {
     /// The value of @c EGL_RENDER_BUFFER that will be set in the attrib_list
     /// of eglCreateWindowSurface().
     EGLint egl_render_buffer;
+
+    int32_t waffle_context_api;
 };
 
 struct xegl_context {
