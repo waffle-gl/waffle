@@ -34,7 +34,7 @@
 static uint64_t id_counter = 0;
 
 struct wcore_platform*
-wcore_platform_create(int platform, int gl_api)
+wcore_platform_create(int platform)
 {
     struct wcore_platform *self;
 
@@ -50,26 +50,24 @@ wcore_platform_create(int platform, int gl_api)
         abort();
     }
 
-    self->gl_api = gl_api;
-
     switch (platform) {
 #ifdef WAFFLE_HAS_GLX
         case WAFFLE_PLATFORM_GLX:
-            self->native = glx_platform_create(gl_api, &self->dispatch);
+            self->native = glx_platform_create(&self->dispatch);
             if (!self->native)
                 goto error;
             break;
 #endif
 #ifdef WAFFLE_HAS_WAYLAND
         case WAFFLE_PLATFORM_WAYLAND:
-            self->native = wayland_platform_create(gl_api, &self->dispatch);
+            self->native = wayland_platform_create(&self->dispatch);
             if (!self->native)
                 goto error;
             break;
 #endif
 #ifdef WAFFLE_HAS_X11_EGL
         case WAFFLE_PLATFORM_X11_EGL:
-            self->native = xegl_platform_create(gl_api, &self->dispatch);
+            self->native = xegl_platform_create(&self->dispatch);
             if (!self->native)
                 goto error;
             break;

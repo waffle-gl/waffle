@@ -35,9 +35,6 @@ union native_display;
 union native_platform;
 
 struct wayland_platform {
-    /// @brief One of WAFFLE_{GL,GLES1,GLES2}.
-    int gl_api;
-
     struct linux_platform *linux_;
 };
 

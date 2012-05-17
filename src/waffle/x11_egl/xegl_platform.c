@@ -56,9 +56,7 @@ static const struct native_dispatch xegl_dispatch = {
 };
 
 union native_platform*
-xegl_platform_create(
-        int gl_api,
-        const struct native_dispatch **dispatch)
+xegl_platform_create(const struct native_dispatch **dispatch)
 {
     union native_platform *self;
     NATIVE_ALLOC(self, xegl);
@@ -67,17 +65,6 @@ xegl_platform_create(
         return NULL;
     }
 
-    switch (gl_api) {
-        case WAFFLE_OPENGL:
-        case WAFFLE_OPENGL_ES1:
-        case WAFFLE_OPENGL_ES2:
-            break;
-        default:
-            wcore_error_internal("gl_api has bad value 0x%x", gl_api);
-            goto error;
-    }
-
-    self->xegl->gl_api = gl_api;
     self->xegl->linux_ = linux_platform_create();
     if (!self->xegl->linux_)
         goto error;

@@ -26,9 +26,7 @@ struct native_dispatch;
 union native_platform;
 
 union native_platform*
-xegl_platform_create(
-        int gl_api,
-        const struct native_dispatch **dispatch);
+xegl_platform_create(const struct native_dispatch **dispatch);
 
 bool
 xegl_platform_destroy(union native_platform *self);

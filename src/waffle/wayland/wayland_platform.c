@@ -56,9 +56,7 @@ static const struct native_dispatch wayland_dispatch = {
 };
 
 union native_platform*
-wayland_platform_create(
-        int gl_api,
-        const struct native_dispatch **dispatch)
+wayland_platform_create(const struct native_dispatch **dispatch)
 {
     union native_platform *self;
     NATIVE_ALLOC(self, wl);
@@ -67,17 +65,6 @@ wayland_platform_create(
         return NULL;
     }
 
-    switch (gl_api) {
-        case WAFFLE_OPENGL:
-        case WAFFLE_OPENGL_ES1:
-        case WAFFLE_OPENGL_ES2:
-            break;
-        default:
-            wcore_error_internal("gl_api has bad value 0x%x", gl_api);
-            goto error;
-    }
-
-    self->wl->gl_api = gl_api;
     self->wl->linux_ = linux_platform_create();
     if (!self->wl->linux_)
         goto error;

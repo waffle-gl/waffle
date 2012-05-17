@@ -26,9 +26,7 @@ struct native_dispatch;
 union native_platform;
 
 union native_platform*
-wayland_platform_create(
-        int gl_api,
-        const struct native_dispatch **dispatch);
+wayland_platform_create(const struct native_dispatch **dispatch);
 
 bool
 wayland_platform_destroy(union native_platform *self);

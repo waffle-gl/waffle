@@ -32,9 +32,6 @@ struct wcore_platform {
     /// @brief Each instance has a unique id.
     uint64_t id;
 
-    /// @brief One of WAFFLE_{GL,GLES1,GLES2}.
-    int gl_api;
-
     /// @brief One of WAFFLE_PLATFORM_*. Denotes type of `native`.
     int native_tag;
 
@@ -43,7 +40,7 @@ struct wcore_platform {
 };
 
 struct wcore_platform*
-wcore_platform_create(int platform, int gl_api);
+wcore_platform_create(int platform);
 
 bool
 wcore_platform_destroy(struct wcore_platform *self);

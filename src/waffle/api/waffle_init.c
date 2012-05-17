@@ -28,12 +28,10 @@
 static bool
 waffle_init_parse_attrib_list(
         const int32_t attrib_list[],
-        int *platform,
-        int *gl_api)
+        int *platform)
 {
     const int32_t *i;
     bool found_platform = false;
-    bool found_gl_api = false;
 
     for (i = attrib_list; *i != 0; i += 2) {
         const int32_t attr = i[0];
@@ -69,19 +67,7 @@ waffle_init_parse_attrib_list(
 
                 break;
             case WAFFLE_OPENGL_API:
-                switch (value) {
-                    case WAFFLE_OPENGL:
-                    case WAFFLE_OPENGL_ES1:
-                    case WAFFLE_OPENGL_ES2:
-                        found_gl_api = true;
-                        *gl_api = value;
-                        break;
-                    default:
-                        wcore_errorf(WAFFLE_BAD_ATTRIBUTE,
-                                     "WAFFLE_OPENGL_API has bad value 0x%x",
-                                     value);
-                        return false;
-                }
+                // ignore
                 break;
             default:
                 wcore_errorf(WAFFLE_BAD_ATTRIBUTE, "bad attribute 0x%x", attr);
@@ -96,12 +82,6 @@ waffle_init_parse_attrib_list(
         return false;
     }
 
-    if (!found_gl_api) {
-        wcore_errorf(WAFFLE_BAD_ATTRIBUTE,
-                     "attribute list is missing WAFFLE_OPENGL_API");
-        return false;
-    }
-
     return true;
 }
 
@@ -110,7 +90,6 @@ waffle_init(const int32_t *attrib_list)
 {
     bool ok = true;
     int platform;
-    int gl_api = 0;
 
     wcore_error_reset();
 
@@ -119,11 +98,11 @@ waffle_init(const int32_t *attrib_list)
         return false;
     }
 
-    ok &= waffle_init_parse_attrib_list(attrib_list, &platform, &gl_api);
+    ok &= waffle_init_parse_attrib_list(attrib_list, &platform);
     if (!ok)
         return false;
 
-    api_current_platform = wcore_platform_create(platform, gl_api);
+    api_current_platform = wcore_platform_create(platform);
     if (!api_current_platform)
         return false;
 

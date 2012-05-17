@@ -53,9 +53,7 @@ static const struct native_dispatch glx_dispatch = {
 };
 
 union native_platform*
-glx_platform_create(
-        int gl_api,
-        const struct native_dispatch **dispatch)
+glx_platform_create(const struct native_dispatch **dispatch)
 {
     union native_platform *self;
     NATIVE_ALLOC(self, glx);
