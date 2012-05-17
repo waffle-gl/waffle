@@ -113,9 +113,6 @@ static void
 testgroup_gl_basic_setup(void)
 {
     memset(pixels, 0, sizeof(pixels));
-
-    // If an earlier test failed, then we need to clean up after it here.
-    ABORT_IF(!waffle_finish());
 }
 
 static void
@@ -139,14 +136,20 @@ libgl_from_context_api(int32_t waffle_context_api)
 }
 
 static void
-gl_basic(int32_t platform, int32_t waffle_context_api)
+gl_basic_init(int32_t waffle_platform)
 {
-    int32_t libgl;
-
     const int32_t init_attrib_list[] = {
-        WAFFLE_PLATFORM,        platform,
+        WAFFLE_PLATFORM, waffle_platform,
         0,
     };
+
+    ASSERT_TRUE(waffle_init(init_attrib_list));
+}
+
+static void
+gl_basic_draw(int32_t waffle_context_api)
+{
+    int32_t libgl;
 
     static const int config_context_api_index = 1;
 
@@ -167,8 +170,6 @@ gl_basic(int32_t platform, int32_t waffle_context_api)
 
     libgl = libgl_from_context_api(waffle_context_api);
     config_attrib_list[config_context_api_index] = waffle_context_api;
-
-    ASSERT_TRUE(waffle_init(init_attrib_list));
 
     // Check that we've set the EGL_PLATFORM environment variable for Mesa.
     //
@@ -235,28 +236,33 @@ gl_basic(int32_t platform, int32_t waffle_context_api)
     ASSERT_TRUE(waffle_context_destroy(ctx));
     ASSERT_TRUE(waffle_config_destroy(config));
     ASSERT_TRUE(waffle_display_disconnect(dpy));
-    ABORT_IF(!waffle_finish());
 }
 
 #ifdef WAFFLE_HAS_GLX
+TEST(gl_basic, glx_init)
+{
+    gl_basic_init(WAFFLE_PLATFORM_GLX);
+}
+
 TEST(gl_basic, glx_gl)
 {
-    gl_basic(WAFFLE_PLATFORM_GLX, WAFFLE_CONTEXT_OPENGL);
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL);
 }
 
 TEST(gl_basic, glx_gles1)
 {
-    gl_basic(WAFFLE_PLATFORM_GLX, WAFFLE_CONTEXT_OPENGL_ES1);
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES1);
 }
 
 TEST(gl_basic, glx_gles2)
 {
-    gl_basic(WAFFLE_PLATFORM_GLX, WAFFLE_CONTEXT_OPENGL_ES2);
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES2);
 }
 
 static void
 testsuite_glx(void)
 {
+    TEST_RUN(gl_basic, glx_init);
     TEST_RUN(gl_basic, glx_gl);
     TEST_RUN(gl_basic, glx_gles1);
     TEST_RUN(gl_basic, glx_gles2);
@@ -264,24 +270,30 @@ testsuite_glx(void)
 #endif // WAFFLE_HAS_GLX
 
 #ifdef WAFFLE_HAS_WAYLAND
+TEST(gl_basic, wayland_init)
+{
+    gl_basic_init(WAFFLE_PLATFORM_WAYLAND);
+}
+
 TEST(gl_basic, wayland_gl)
 {
-    gl_basic(WAFFLE_PLATFORM_WAYLAND, WAFFLE_CONTEXT_OPENGL);
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL);
 }
 
 TEST(gl_basic, wayland_gles1)
 {
-    gl_basic(WAFFLE_PLATFORM_WAYLAND, WAFFLE_CONTEXT_OPENGL_ES1);
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES1);
 }
 
 TEST(gl_basic, wayland_gles2)
 {
-    gl_basic(WAFFLE_PLATFORM_WAYLAND, WAFFLE_CONTEXT_OPENGL_ES2);
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES2);
 }
 
 static void
 testsuite_wayland(void)
 {
+    TEST_RUN(gl_basic, wayland_init);
     TEST_RUN(gl_basic, wayland_gl);
     TEST_RUN(gl_basic, wayland_gles1);
     TEST_RUN(gl_basic, wayland_gles2);
@@ -289,24 +301,30 @@ testsuite_wayland(void)
 #endif // WAFFLE_HAS_WAYLAND
 
 #ifdef WAFFLE_HAS_X11_EGL
+TEST(gl_basic, x11_egl_init)
+{
+    gl_basic_init(WAFFLE_PLATFORM_X11_EGL);
+}
+
 TEST(gl_basic, x11_egl_gl)
 {
-    gl_basic(WAFFLE_PLATFORM_X11_EGL, WAFFLE_CONTEXT_OPENGL);
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL);
 }
 
 TEST(gl_basic, x11_egl_gles1)
 {
-    gl_basic(WAFFLE_PLATFORM_X11_EGL, WAFFLE_CONTEXT_OPENGL_ES1);
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES1);
 }
 
 TEST(gl_basic, x11_egl_gles2)
 {
-    gl_basic(WAFFLE_PLATFORM_X11_EGL, WAFFLE_CONTEXT_OPENGL_ES2);
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES2);
 }
 
 static void
 testsuite_x11_egl(void)
 {
+    TEST_RUN(gl_basic, x11_egl_init);
     TEST_RUN(gl_basic, x11_egl_gl);
     TEST_RUN(gl_basic, x11_egl_gles1);
     TEST_RUN(gl_basic, x11_egl_gles2);
