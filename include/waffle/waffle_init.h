@@ -48,11 +48,6 @@ extern "C" {
 /// attrib_list is null or empty, then all attributes assume their default
 /// values.
 ///
-/// Some attribute combinations are inherently invalid due to platform or API
-/// incompatibilities. For example, desktop OpenGL is not available on
-/// Android. Providing such an attribute list produces the error
-/// @c WAFFLE_INCOMPATIBLE_ATTRIBUTES.
-///
 /// |Name                                    | Required | Type | Default | Choices                      |
 /// |:---------------------------------------|:--------:|-----:|--------:|:-----------------------------|
 /// | WAFFLE_PLATFORM                        |   yes    | enum |    none | WAFFLE_PLATFORM_ANDROID      |
@@ -60,32 +55,13 @@ extern "C" {
 /// | .                                      |     .    |    . |       . | WAFFLE_PLATFORM_GLX          |
 /// | .                                      |     .    |    . |       . | WAFFLE_PLATFORM_WAYLAND      |
 /// | .                                      |     .    |    . |       . | WAFFLE_PLATFORM_X11_EGL      |
-/// | .                                      |     .    |    . |       . | .                            |
-/// | WAFFLE_OPENGL_API                      |   yes    | enum |    none | WAFFLE_OPENGL                |
-/// | .                                      |     .    |    . |       . | WAFFLE_OPENGL_ES1            |
-/// | .                                      |     .    |    . |       . | WAFFLE_OPENGL_ES2            |
 ///
 ///
 /// ### Example Attribute Lists ###
 ///
-/// Below is a valid attribute list for Android.
-///
 /// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.c}
-/// const int32_t android_good[] = {
+/// const int32_t attrib_list[] = {
 ///   WAFFLE_PLATFORM,      WAFFLE_PLATFORM_ANDROID,
-///   WAFFLE_OPENGL_API,    WAFFLE_OPENGL_ES2,
-///   0,
-/// }
-/// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-///
-/// Below is an invalid attribute list because desktop OpenGL is not availabe
-/// on Android.  Passing it to waffle_init() will produce the error
-/// @c WAFFLE_INCOMPATIBLE_ATTRIBUTES.
-///
-/// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.c}
-/// const int32_t android_bad[] = {
-///   WAFFLE_PLATFORM,      WAFFLE_PLATFORM_ANDROID,
-///   WAFFLE_OPENGL_API,    WAFFLE_OPENGL,
 ///   0,
 /// }
 /// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -100,10 +76,6 @@ extern "C" {
 /// - WAFFLE_BAD_ATTRIBUTE @n
 ///     An item in @a attrib_list is unrecognized, missing, or has an
 ///     invalid value.
-///
-/// - WAFFLE_INCOMPATIBLE_ATTRIBUTES @n
-///     The attribute list contains attributes that conflict with each
-///     other.
 ///
 /// @see waffle_enum
 ///
