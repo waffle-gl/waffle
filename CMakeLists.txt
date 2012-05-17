@@ -37,10 +37,7 @@ set(waffle_so_version "1.0.0")
 # ----------------------------------------------
 
 option(waffle_build_tests "Build tests" ON)
-
-# The API is rapidly changing. Disable the examples until the API becomes
-# stable.
-set(waffle_build_examples OFF)
+set(waffle_build_examples "Build examples" ON)
 
 option(waffle_has_glx "Build support for GLX" OFF)
 option(waffle_has_wayland "Build support for Wayland" OFF)
