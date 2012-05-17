@@ -148,6 +148,8 @@ gl_basic(int32_t platform, int32_t waffle_context_api)
         0,
     };
 
+    static const int config_context_api_index = 1;
+
     int32_t config_attrib_list[] = {
         WAFFLE_CONTEXT_API,     3141592653,
 
@@ -164,7 +166,7 @@ gl_basic(int32_t platform, int32_t waffle_context_api)
     struct waffle_context *ctx = NULL;
 
     libgl = libgl_from_context_api(waffle_context_api);
-    config_attrib_list[1] = waffle_context_api;
+    config_attrib_list[config_context_api_index] = waffle_context_api;
 
     ASSERT_TRUE(waffle_init(init_attrib_list));
 
