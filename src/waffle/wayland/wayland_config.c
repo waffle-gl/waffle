@@ -24,6 +24,7 @@
 
 #include <waffle/native.h>
 #include <waffle/waffle_enum.h>
+#include <waffle/core/wcore_config_attrs.h>
 #include <waffle/core/wcore_error.h>
 
 #include "wayland_priv_egl.h"
@@ -55,6 +56,8 @@ wayland_config_choose(
                                              platform->wl->gl_api);
     if (!self->wl->egl_config)
         goto error;
+
+    self->wl->waffle_context_api = attrs->context_api;
 
     return self;
 
