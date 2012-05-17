@@ -93,9 +93,7 @@ wayland_window_create(
     return self;
 
 error:
-    WCORE_ERROR_DISABLED({
-        wayland_window_destroy(self);
-    });
+    wayland_window_destroy(self);
     return NULL;
 }
 

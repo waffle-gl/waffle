@@ -80,9 +80,7 @@ glx_display_connect(
     return self;
 
 error:
-    WCORE_ERROR_DISABLED({
-        glx_display_disconnect(self);
-    });
+    glx_display_disconnect(self);
     return NULL;
 }
 

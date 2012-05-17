@@ -93,9 +93,7 @@ wayland_platform_create(
     return self;
 
 error:
-    WCORE_ERROR_DISABLED({
-        wayland_platform_destroy(self);
-    });
+    wayland_platform_destroy(self);
     return NULL;
 }
 

@@ -93,9 +93,7 @@ xegl_platform_create(
     return self;
 
 error:
-    WCORE_ERROR_DISABLED({
-        xegl_platform_destroy(self);
-    });
+    xegl_platform_destroy(self);
     return NULL;
 }
 

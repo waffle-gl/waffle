@@ -79,9 +79,7 @@ wayland_display_connect(
     return self;
 
 error:
-    WCORE_ERROR_DISABLED({
-        wayland_display_disconnect(self);
-    });
+    wayland_display_disconnect(self);
     return NULL;
 }
 

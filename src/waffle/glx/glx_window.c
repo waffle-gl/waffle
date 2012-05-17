@@ -67,9 +67,7 @@ glx_window_create(
     return self;
 
 error:
-    WCORE_ERROR_DISABLED({
-        glx_window_destroy(self);
-    });
+    glx_window_destroy(self);
     return NULL;
 }
 

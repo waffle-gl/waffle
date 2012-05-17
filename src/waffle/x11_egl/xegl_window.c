@@ -64,9 +64,7 @@ xegl_window_create(
     return self;
 
 error:
-    WCORE_ERROR_DISABLED({
-        xegl_window_destroy(self);
-    });
+    xegl_window_destroy(self);
     return NULL;
 }
 

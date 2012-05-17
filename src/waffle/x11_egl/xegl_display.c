@@ -58,9 +58,7 @@ xegl_display_connect(
     return self;
 
 error:
-    WCORE_ERROR_DISABLED({
-        xegl_display_disconnect(self);
-    });
+    xegl_display_disconnect(self);
     return NULL;
 }
 

@@ -74,9 +74,7 @@ glx_platform_create(
     return self;
 
 error:
-    WCORE_ERROR_DISABLED({
-        glx_platform_destroy(self);
-    });
+    glx_platform_destroy(self);
     return NULL;
 }
 

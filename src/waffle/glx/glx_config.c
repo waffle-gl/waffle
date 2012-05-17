@@ -176,10 +176,8 @@ glx_config_choose(
     goto end;
 
 error:
-    WCORE_ERROR_DISABLED({
-        glx_config_destroy(self);
-        self = NULL;
-    });
+    glx_config_destroy(self);
+    self = NULL;
 
 end:
     if (configs)

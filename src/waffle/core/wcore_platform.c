@@ -84,9 +84,7 @@ wcore_platform_create(int platform, int gl_api)
     return self;
 
 error:
-    WCORE_ERROR_DISABLED({
-        wcore_platform_destroy(self);
-    });
+    wcore_platform_destroy(self);
     return NULL;
 }
 
