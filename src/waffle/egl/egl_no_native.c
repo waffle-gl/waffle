@@ -197,21 +197,22 @@ egl_destroy_surface(
     return ok;
 }
 
-bool
-egl_bind_api(int32_t waffle_gl_api)
+static bool
+egl_bind_api(int32_t waffle_context_api)
 {
     bool ok = true;
 
-    switch (waffle_gl_api) {
-        case WAFFLE_OPENGL:
+    switch (waffle_context_api) {
+        case WAFFLE_CONTEXT_OPENGL:
             ok &= eglBindAPI(EGL_OPENGL_API);
             break;
-        case WAFFLE_OPENGL_ES1:
-        case WAFFLE_OPENGL_ES2:
+        case WAFFLE_CONTEXT_OPENGL_ES1:
+        case WAFFLE_CONTEXT_OPENGL_ES2:
             ok &= eglBindAPI(EGL_OPENGL_ES_API);
             break;
         default:
-            wcore_error_internal("gl_api has bad value 0x%x", waffle_gl_api);
+            wcore_error_internal("waffle_context_api has bad value #x%x",
+                                 waffle_context_api);
             return false;
     }
 
@@ -227,6 +228,7 @@ egl_create_context(
         EGLContext share_context,
         int32_t waffle_context_api)
 {
+    bool ok = true;
     EGLint attrib_list[3];
 
     switch (waffle_context_api) {
@@ -248,6 +250,10 @@ egl_create_context(
                                  waffle_context_api);
             return EGL_NO_CONTEXT;
     }
+
+    ok = egl_bind_api(waffle_context_api);
+    if (!ok)
+        return false;
 
     EGLContext ctx = eglCreateContext(dpy, config, share_context, attrib_list);
     if (!ctx)

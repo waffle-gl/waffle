@@ -50,9 +50,6 @@ egl_destroy_surface(
         EGLDisplay dpy,
         EGLSurface surface);
 
-bool
-egl_bind_api(int32_t waffle_gl_api);
-
 EGLContext
 egl_create_context(
         EGLDisplay dpy,

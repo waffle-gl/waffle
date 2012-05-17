@@ -60,8 +60,6 @@ wayland_platform_create(
         int gl_api,
         const struct native_dispatch **dispatch)
 {
-    bool ok = true;
-
     union native_platform *self;
     NATIVE_ALLOC(self, wl);
     if (!self) {
@@ -85,9 +83,6 @@ wayland_platform_create(
         goto error;
 
     setenv("EGL_PLATFORM", "wayland", true);
-    ok &= egl_bind_api(gl_api);
-    if (!ok)
-        goto error;
 
     *dispatch = &wayland_dispatch;
     return self;

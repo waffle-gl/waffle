@@ -60,8 +60,6 @@ xegl_platform_create(
         int gl_api,
         const struct native_dispatch **dispatch)
 {
-    bool ok = true;
-
     union native_platform *self;
     NATIVE_ALLOC(self, xegl);
     if (!self) {
@@ -85,9 +83,6 @@ xegl_platform_create(
         goto error;
 
     setenv("EGL_PLATFORM", "x11", true);
-    ok &= egl_bind_api(gl_api);
-    if (!ok)
-        goto error;
 
     *dispatch = &xegl_dispatch;
     return self;
