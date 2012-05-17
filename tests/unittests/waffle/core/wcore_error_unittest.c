@@ -63,22 +63,22 @@ TEST(wcore_error, internal_error)
     EXPECT_TRUE(strstr(wcore_error_get_message(), error_location));
 }
 
-TEST(wcore_error, last_call_without_message_wins)
+TEST(wcore_error, first_call_without_message_wins)
 {
     wcore_error_reset();
     wcore_errorf(WAFFLE_UNKNOWN_ERROR, "cookies");
     wcore_error(WAFFLE_BAD_ATTRIBUTE);
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_BAD_ATTRIBUTE);
-    EXPECT_TRUE(!strcmp(wcore_error_get_message(), ""));
+    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_UNKNOWN_ERROR);
+    EXPECT_TRUE(!strcmp(wcore_error_get_message(), "cookies"));
 }
 
-TEST(wcore_error, last_call_with_message_wins)
+TEST(wcore_error, first_call_with_message_wins)
 {
     wcore_error_reset();
     wcore_errorf(WAFFLE_UNKNOWN_ERROR, "cookies");
     wcore_errorf(WAFFLE_NO_ERROR, "all is well");
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_NO_ERROR);
-    EXPECT_TRUE(!strcmp(wcore_error_get_message(), "all is well"));
+    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_UNKNOWN_ERROR);
+    EXPECT_TRUE(!strcmp(wcore_error_get_message(), "cookies"));
 }
 
 TEST(wcore_error, disable_then_error)
@@ -191,8 +191,8 @@ testsuite_wcore_error(void)
     TEST_RUN(wcore_error, code_unknown_error);
     TEST_RUN(wcore_error, with_message);
     TEST_RUN(wcore_error, internal_error);
-    TEST_RUN(wcore_error, last_call_without_message_wins);
-    TEST_RUN(wcore_error, last_call_with_message_wins);
+    TEST_RUN(wcore_error, first_call_without_message_wins);
+    TEST_RUN(wcore_error, first_call_with_message_wins);
     TEST_RUN(wcore_error, disable_then_error);
     TEST_RUN(wcore_error, disable_then_errorf);
     TEST_RUN(wcore_error, disable_then_error_internal);

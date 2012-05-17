@@ -72,7 +72,13 @@ _wcore_error_disable(void)
 void
 wcore_error_reset(void)
 {
-    wcore_error(WAFFLE_NO_ERROR);
+    struct wcore_error_tinfo *t = wcore_tinfo_get()->error;
+
+    if (!t->is_enabled)
+        return;
+
+    t->code = WAFFLE_NO_ERROR;
+    t->message[0] = '\0';
 }
 
 void
@@ -82,6 +88,13 @@ wcore_error(int error)
 
     if (!t->is_enabled)
         return;
+
+    if (t->code != WAFFLE_NO_ERROR) {
+        // Waffle is incapable of emitting a sequence of errors. The first
+        // error emitted will likely be the most significant one the
+        // sequence, so don't clobber it.
+        return;
+    }
 
     t->code = error;
     t->message[0] = '\0';
@@ -95,6 +108,13 @@ wcore_errorf(int error, const char *format, ...)
 
     if (!t->is_enabled)
         return;
+
+    if (t->code != WAFFLE_NO_ERROR) {
+        // Waffle is incapable of emitting a sequence of errors. The first
+        // error emitted will likely be the most significant one the
+        // sequence, so don't clobber it.
+        return;
+    }
 
     t->code = error;
     va_start(ap, format);
@@ -114,6 +134,8 @@ _wcore_error_internal(const char *file, int line, const char *format, ...)
     if (!t->is_enabled)
         return;
 
+    // If an error has already been emitted, then clobber it. Internal errors
+    // get priority.
     t->code = WAFFLE_INTERNAL_ERROR;
 
     printed = snprintf(cur, end - cur,
