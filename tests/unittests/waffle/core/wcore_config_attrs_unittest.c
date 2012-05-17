@@ -49,6 +49,8 @@ static const struct wcore_config_attrs default_attrs = {
 static void
 testgroup_wcore_config_attrs_setup(void)
 {
+    wcore_error_reset();
+
     // Fill actual_attrs with canaries.
     memset(&actual_attrs, 0x99, sizeof(actual_attrs));
 
