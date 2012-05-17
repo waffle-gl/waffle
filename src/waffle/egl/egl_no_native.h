@@ -43,8 +43,7 @@ EGLConfig
 egl_choose_config(
         struct linux_platform *platform,
         EGLDisplay dpy,
-        const struct wcore_config_attrs *attrs,
-        int32_t waffle_gl_api);
+        const struct wcore_config_attrs *attrs);
 
 bool
 egl_destroy_surface(

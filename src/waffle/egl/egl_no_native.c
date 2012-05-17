@@ -120,8 +120,7 @@ EGLConfig
 egl_choose_config(
         struct linux_platform *platform,
         EGLDisplay dpy,
-        const struct wcore_config_attrs *attrs,
-        int32_t waffle_gl_api)
+        const struct wcore_config_attrs *attrs)
 {
     bool ok = true;
 
@@ -153,18 +152,19 @@ egl_choose_config(
         EGL_NONE,
     };
 
-    switch (waffle_gl_api) {
-        case WAFFLE_OPENGL:
+    switch (attrs->context_api) {
+        case WAFFLE_CONTEXT_OPENGL:
             attrib_list[renderable_index] = EGL_OPENGL_BIT;
             break;
-        case WAFFLE_OPENGL_ES1:
+        case WAFFLE_CONTEXT_OPENGL_ES1:
             attrib_list[renderable_index] = EGL_OPENGL_ES_BIT;
             break;
-        case WAFFLE_OPENGL_ES2:
+        case WAFFLE_CONTEXT_OPENGL_ES2:
             attrib_list[renderable_index] = EGL_OPENGL_ES2_BIT;
             break;
         default:
-            wcore_error_internal("gl_api has bad value 0x%x", waffle_gl_api);
+            wcore_error_internal("waffle_context_api has bad value %#x",
+                                 attrs->context_api);
             goto end;
     }
 
@@ -225,26 +225,27 @@ egl_create_context(
         EGLDisplay dpy,
         EGLConfig config,
         EGLContext share_context,
-        int32_t waffle_gl_api)
+        int32_t waffle_context_api)
 {
     EGLint attrib_list[3];
 
-    switch (waffle_gl_api) {
-        case WAFFLE_OPENGL:
+    switch (waffle_context_api) {
+        case WAFFLE_CONTEXT_OPENGL:
             attrib_list[0] = EGL_NONE;
             break;
-        case WAFFLE_OPENGL_ES1:
+        case WAFFLE_CONTEXT_OPENGL_ES1:
             attrib_list[0] = EGL_CONTEXT_CLIENT_VERSION;
             attrib_list[1] = 1;
             attrib_list[2] = EGL_NONE;
             break;
-        case WAFFLE_OPENGL_ES2:
+        case WAFFLE_CONTEXT_OPENGL_ES2:
             attrib_list[0] = EGL_CONTEXT_CLIENT_VERSION;
             attrib_list[1] = 2;
             attrib_list[2] = EGL_NONE;
             break;
         default:
-            wcore_error_internal("bad value for gl_api (0x%x)", waffle_gl_api);
+            wcore_error_internal("waffle_context_api has bad value %#x",
+                                 waffle_context_api);
             return EGL_NO_CONTEXT;
     }
 

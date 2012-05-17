@@ -33,7 +33,6 @@ wayland_context_create(
         union native_context *share_ctx)
 {
     union native_display *dpy = config->wl->display;
-    union native_platform *platform = dpy->wl->platform;
 
     union native_context *self;
     NATIVE_ALLOC(self, wl);
@@ -49,7 +48,7 @@ wayland_context_create(
                                   share_ctx
                                       ? share_ctx->wl->egl_context
                                       : NULL,
-                                  platform->wl->gl_api);
+                                  config->wl->waffle_context_api);
 
     if (!self->wl->egl_context) {
         free(self);

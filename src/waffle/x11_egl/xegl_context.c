@@ -33,7 +33,6 @@ xegl_context_create(
         union native_context *share_ctx)
 {
     union native_display *dpy = config->xegl->display;
-    union native_platform *platform = dpy->xegl->platform;
 
     union native_context *self;
     NATIVE_ALLOC(self, xegl);
@@ -49,7 +48,7 @@ xegl_context_create(
                                   share_ctx
                                       ? share_ctx->xegl->egl_context
                                       : NULL,
-                                  platform->xegl->gl_api);
+                                  config->xegl->waffle_context_api);
 
     if (!self->xegl->egl_context) {
         free(self);
