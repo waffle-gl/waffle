@@ -50,7 +50,8 @@ xegl_config_choose(
     ok &= egl_get_render_buffer_attrib(attrs, &self->xegl->egl_render_buffer);
     if (!ok)
         goto error;
-    self->xegl->egl_config = egl_choose_config(dpy->xegl->egl_display,
+    self->xegl->egl_config = egl_choose_config(platform->xegl->linux_,
+                                               dpy->xegl->egl_display,
                                                attrs,
                                                platform->xegl->gl_api);
     if (!self->xegl->egl_config)

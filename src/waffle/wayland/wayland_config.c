@@ -51,7 +51,8 @@ wayland_config_choose(
     if (!ok)
         goto error;
 
-    self->wl->egl_config = egl_choose_config(dpy->wl->egl_display,
+    self->wl->egl_config = egl_choose_config(platform->wl->linux_,
+                                             dpy->wl->egl_display,
                                              attrs,
                                              platform->wl->gl_api);
     if (!self->wl->egl_config)

@@ -72,13 +72,61 @@ egl_terminate(EGLDisplay dpy)
     return ok;
 }
 
+/// @brief Check the `wcore_config_attrs.context_` attributes.
+static bool
+egl_config_check_context_attrs(
+        struct linux_platform *platform,
+        const struct wcore_config_attrs *attrs)
+{
+    int version = 10 * attrs->context_major_version
+                + attrs->context_minor_version;
+
+    switch (attrs->context_api) {
+        case WAFFLE_CONTEXT_OPENGL:
+            if (version != 10) {
+                wcore_errorf(WAFFLE_UNSUPPORTED_ON_PLATFORM,
+                             "on EGL, the requested version of OpenGL must be "
+                             "the default value 1.0");
+                return false;
+            }
+            if (!linux_platform_dl_can_open(platform, WAFFLE_DL_OPENGL)) {
+                wcore_errorf(WAFFLE_UNSUPPORTED_ON_PLATFORM,
+                             "failed to open the OpenGL library");
+                return false;
+            }
+            return true;
+        case WAFFLE_CONTEXT_OPENGL_ES1:
+            if (!linux_platform_dl_can_open(platform, WAFFLE_DL_OPENGL_ES1)) {
+                wcore_errorf(WAFFLE_UNSUPPORTED_ON_PLATFORM,
+                             "failed to open the OpenGL ES1 library");
+                return false;
+            }
+            return true;
+        case WAFFLE_CONTEXT_OPENGL_ES2:
+            if (!linux_platform_dl_can_open(platform, WAFFLE_DL_OPENGL_ES2)) {
+                wcore_errorf(WAFFLE_UNSUPPORTED_ON_PLATFORM,
+                             "failed to open the OpenGL ES2 library");
+                return false;
+            }
+            return true;
+        default:
+            wcore_error_internal("context_api has bad value %#x",
+                                 attrs->context_api);
+            return false;
+    }
+}
+
 EGLConfig
 egl_choose_config(
+        struct linux_platform *platform,
         EGLDisplay dpy,
         const struct wcore_config_attrs *attrs,
         int32_t waffle_gl_api)
 {
     bool ok = true;
+
+    if (!egl_config_check_context_attrs(platform, attrs))
+        return false;
 
     // WARNING: If you resize attrib_list, then update renderable_index.
     const int renderable_index = 19;
