@@ -125,28 +125,12 @@ testgroup_gl_basic_teardown(void)
 }
 
 static int32_t
-libgl_from_gl_api(int32_t gl_api)
+libgl_from_context_api(int32_t waffle_context_api)
 {
-    switch (gl_api) {
-        case WAFFLE_OPENGL:     return WAFFLE_DL_OPENGL;
-        case WAFFLE_OPENGL_ES1: return WAFFLE_DL_OPENGL_ES1;
-        case WAFFLE_OPENGL_ES2: return WAFFLE_DL_OPENGL_ES2;
-
-        default:
-            TEST_FAIL();
-            return 0;
-    }
-}
-
-// This silly function will be killed as soon as the great
-// context-version refactoring is complete.
-static int32_t
-context_api_from_gl_api(int32_t gl_api)
-{
-    switch (gl_api) {
-        case WAFFLE_OPENGL:     return WAFFLE_CONTEXT_OPENGL;
-        case WAFFLE_OPENGL_ES1: return WAFFLE_CONTEXT_OPENGL_ES1;
-        case WAFFLE_OPENGL_ES2: return WAFFLE_CONTEXT_OPENGL_ES2;
+    switch (waffle_context_api) {
+        case WAFFLE_CONTEXT_OPENGL:     return WAFFLE_DL_OPENGL;
+        case WAFFLE_CONTEXT_OPENGL_ES1: return WAFFLE_DL_OPENGL_ES1;
+        case WAFFLE_CONTEXT_OPENGL_ES2: return WAFFLE_DL_OPENGL_ES2;
 
         default:
             TEST_FAIL();
@@ -155,13 +139,12 @@ context_api_from_gl_api(int32_t gl_api)
 }
 
 static void
-gl_basic(int32_t platform, int32_t gl_api)
+gl_basic(int32_t platform, int32_t waffle_context_api)
 {
     int32_t libgl;
 
     const int32_t init_attrib_list[] = {
         WAFFLE_PLATFORM,        platform,
-        WAFFLE_OPENGL_API,      gl_api,
         0,
     };
 
@@ -180,8 +163,8 @@ gl_basic(int32_t platform, int32_t gl_api)
     struct waffle_window *window = NULL;
     struct waffle_context *ctx = NULL;
 
-    libgl = libgl_from_gl_api(gl_api);
-    config_attrib_list[1] = context_api_from_gl_api(gl_api);
+    libgl = libgl_from_context_api(waffle_context_api);
+    config_attrib_list[1] = waffle_context_api;
 
     ASSERT_TRUE(waffle_init(init_attrib_list));
 
@@ -256,17 +239,17 @@ gl_basic(int32_t platform, int32_t gl_api)
 #ifdef WAFFLE_HAS_GLX
 TEST(gl_basic, glx_gl)
 {
-    gl_basic(WAFFLE_PLATFORM_GLX, WAFFLE_OPENGL);
+    gl_basic(WAFFLE_PLATFORM_GLX, WAFFLE_CONTEXT_OPENGL);
 }
 
 TEST(gl_basic, glx_gles1)
 {
-    gl_basic(WAFFLE_PLATFORM_GLX, WAFFLE_OPENGL_ES1);
+    gl_basic(WAFFLE_PLATFORM_GLX, WAFFLE_CONTEXT_OPENGL_ES1);
 }
 
 TEST(gl_basic, glx_gles2)
 {
-    gl_basic(WAFFLE_PLATFORM_GLX, WAFFLE_OPENGL_ES2);
+    gl_basic(WAFFLE_PLATFORM_GLX, WAFFLE_CONTEXT_OPENGL_ES2);
 }
 
 static void
@@ -281,17 +264,17 @@ testsuite_glx(void)
 #ifdef WAFFLE_HAS_WAYLAND
 TEST(gl_basic, wayland_gl)
 {
-    gl_basic(WAFFLE_PLATFORM_WAYLAND, WAFFLE_OPENGL);
+    gl_basic(WAFFLE_PLATFORM_WAYLAND, WAFFLE_CONTEXT_OPENGL);
 }
 
 TEST(gl_basic, wayland_gles1)
 {
-    gl_basic(WAFFLE_PLATFORM_WAYLAND, WAFFLE_OPENGL_ES1);
+    gl_basic(WAFFLE_PLATFORM_WAYLAND, WAFFLE_CONTEXT_OPENGL_ES1);
 }
 
 TEST(gl_basic, wayland_gles2)
 {
-    gl_basic(WAFFLE_PLATFORM_WAYLAND, WAFFLE_OPENGL_ES2);
+    gl_basic(WAFFLE_PLATFORM_WAYLAND, WAFFLE_CONTEXT_OPENGL_ES2);
 }
 
 static void
@@ -306,17 +289,17 @@ testsuite_wayland(void)
 #ifdef WAFFLE_HAS_X11_EGL
 TEST(gl_basic, x11_egl_gl)
 {
-    gl_basic(WAFFLE_PLATFORM_X11_EGL, WAFFLE_OPENGL);
+    gl_basic(WAFFLE_PLATFORM_X11_EGL, WAFFLE_CONTEXT_OPENGL);
 }
 
 TEST(gl_basic, x11_egl_gles1)
 {
-    gl_basic(WAFFLE_PLATFORM_X11_EGL, WAFFLE_OPENGL_ES1);
+    gl_basic(WAFFLE_PLATFORM_X11_EGL, WAFFLE_CONTEXT_OPENGL_ES1);
 }
 
 TEST(gl_basic, x11_egl_gles2)
 {
-    gl_basic(WAFFLE_PLATFORM_X11_EGL, WAFFLE_OPENGL_ES2);
+    gl_basic(WAFFLE_PLATFORM_X11_EGL, WAFFLE_CONTEXT_OPENGL_ES2);
 }
 
 static void
