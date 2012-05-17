@@ -66,9 +66,6 @@ waffle_init_parse_attrib_list(
                 }
 
                 break;
-            case WAFFLE_OPENGL_API:
-                // ignore
-                break;
             default:
                 wcore_errorf(WAFFLE_BAD_ATTRIBUTE, "bad attribute 0x%x", attr);
                 return false;

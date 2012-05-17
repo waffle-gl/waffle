@@ -60,11 +60,6 @@ enum waffle_enum {
         WAFFLE_PLATFORM_WAYLAND                                 = 0x0014,
         WAFFLE_PLATFORM_X11_EGL                                 = 0x0015,
 
-    WAFFLE_OPENGL_API                                           = 0x0100,
-        WAFFLE_OPENGL                                           = 0x0101,
-        WAFFLE_OPENGL_ES1                                       = 0x0102,
-        WAFFLE_OPENGL_ES2                                       = 0x0103,
-
     // ------------------------------------------------------------------
     // For waffle_config_choose()
     // ------------------------------------------------------------------
