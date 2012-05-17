@@ -34,11 +34,11 @@
 
 static const char *usage_message =
     "usage:\n"
-    "    gl_basic <platform> <gl_api>\n"
+    "    gl_basic <platform> <context_api>\n"
     "\n"
     "arguments:\n"
     "    platform: One of android, cocoa, glx, wayland, x11_egl.\n"
-    "    gl_api: One of gl, gles1, gles2.\n"
+    "    context_api: One of gl, gles1, gles2.\n"
     "\n"
     "example:\n"
     "    gl_basic glx gl\n"
@@ -65,16 +65,15 @@ static void
 error_waffle(void)
 {
     int32_t code;
-    char buf[1024];
-    const size_t buf_size = 1024;
-    size_t message_length;
+    const char *message = NULL;
+    size_t message_length = 0;
 
-    code = waffle_error_get_m(buf, buf_size, &message_length);
+    waffle_error_get_info(&code, &message, &message_length);
 
     fflush(stdout);
     fprintf(stderr, "waffle: error: %s", waffle_error_to_string(code));
     if (message_length > 0)
-        fprintf(stderr, ": %s", buf);
+        fprintf(stderr, ": %s", message);
     fprintf(stderr, "\n");
 
     exit(EXIT_FAILURE);
@@ -109,8 +108,15 @@ static void (*glClear)(GLbitfield mask);
 /// @{
 
 struct options {
+    /// @brief One of `WAFFLE_PLATFORM_*`.
     int platform;
-    int gl_api;
+
+    /// @brief One of `WAFFLE_CONTEXT_OPENGL_*`.
+    int context_api;
+
+    /// @brief One of `WAFFLE_DL_*`.
+    int dl;
+
     const char *display_name;
 };
 
@@ -128,11 +134,11 @@ static const struct enum_map platform_map[] = {
     {0,                         0               },
 };
 
-static const struct enum_map gl_api_map[] = {
-    {WAFFLE_OPENGL,             "gl"            },
-    {WAFFLE_OPENGL_ES1,         "gles1"         },
-    {WAFFLE_OPENGL_ES2,         "gles2"         },
-    {0,                         0               },
+static const struct enum_map context_api_map[] = {
+    {WAFFLE_CONTEXT_OPENGL,         "gl"        },
+    {WAFFLE_CONTEXT_OPENGL_ES1,     "gles1"     },
+    {WAFFLE_CONTEXT_OPENGL_ES2,     "gles2"     },
+    {0,                             0           },
 };
 
 /// @brief Translate string to `enum waffle_enum`.
@@ -176,12 +182,22 @@ parse_args(int argc, char *argv[], struct options *opts)
         return false;
     }
 
-    // Set gl_api.
+    // Set context_api.
     arg = argv[2];
-    ok = enum_map_translate_str(gl_api_map, arg, &opts->gl_api);
+    ok = enum_map_translate_str(context_api_map, arg, &opts->context_api);
     if (!ok) {
-        fprintf(stderr, "error: '%s' is not a valid GL API", arg);
+        fprintf(stderr, "error: '%s' is not a valid API for a GL context", arg);
         return false;
+    }
+
+    // Set dl.
+    switch (opts->context_api) {
+        case WAFFLE_CONTEXT_OPENGL:     opts->dl = WAFFLE_DL_OPENGL;      break;
+        case WAFFLE_CONTEXT_OPENGL_ES1: opts->dl = WAFFLE_DL_OPENGL_ES1;  break;
+        case WAFFLE_CONTEXT_OPENGL_ES2: opts->dl = WAFFLE_DL_OPENGL_ES2;  break;
+        default:
+            abort();
+            break;
     }
 
     // Set display_name.
@@ -202,25 +218,6 @@ parse_args(int argc, char *argv[], struct options *opts)
 }
 
 /// @}
-
-/// Call free() to release result.
-static int32_t*
-make_waffle_attrib_list(int platform, int gl_api)
-{
-    int32_t *result = malloc(5 * sizeof(int32_t));
-    if (!result) {
-        fprintf(stderr, "error: out of memory\n");
-        return false;
-    }
-
-    result[0] = WAFFLE_PLATFORM;
-    result[1] = platform;
-    result[2] = WAFFLE_OPENGL_API;
-    result[3] = gl_api;
-    result[4] = 0;
-
-    return result;
-}
 
 static bool
 draw(struct waffle_window *window)
@@ -256,16 +253,14 @@ int
 main(int argc, char **argv)
 {
     bool ok;
+    int i;
+
     struct options opts;
-    int32_t *init_attribs;
+
+    int32_t init_attrib_list[3];
+    int32_t config_attrib_list[11];
+
     struct waffle_display *dpy;
-    const int32_t config_attribs[] = {
-        WAFFLE_RED_SIZE,        8,
-        WAFFLE_GREEN_SIZE,      8,
-        WAFFLE_BLUE_SIZE,       8,
-        WAFFLE_DOUBLE_BUFFERED, 1,
-        0,
-    };
     struct waffle_config *config;
     struct waffle_context *ctx;
     struct waffle_window *window;
@@ -274,20 +269,20 @@ main(int argc, char **argv)
     if (!ok)
         exit(EXIT_FAILURE);
 
-    init_attribs = make_waffle_attrib_list(opts.platform, opts.gl_api);
-    if (!init_attribs)
-        error_waffle();
+    i = 0;
+    init_attrib_list[i++] = WAFFLE_PLATFORM;
+    init_attrib_list[i++] = opts.platform;
+    init_attrib_list[i++] = WAFFLE_NONE;
 
-    ok = waffle_init(init_attribs);
-    free(init_attribs);
+    ok = waffle_init(init_attrib_list);
     if (!ok)
         error_waffle();
 
-    glClear = waffle_dl_sym("glClear");
+    glClear = waffle_dl_sym(opts.dl, "glClear");
     if (!glClear)
         error_get_gl_symbol("glClear");
 
-    glClearColor = waffle_dl_sym("glClearColor");
+    glClearColor = waffle_dl_sym(opts.dl, "glClearColor");
     if (!glClearColor)
         error_get_gl_symbol("glClearColor");
 
@@ -295,7 +290,20 @@ main(int argc, char **argv)
     if (!dpy)
         error_waffle();
 
-    config = waffle_config_choose(dpy, config_attribs);
+    i = 0;
+    config_attrib_list[i++] = WAFFLE_CONTEXT_API;
+    config_attrib_list[i++] = opts.context_api;
+    config_attrib_list[i++] = WAFFLE_RED_SIZE;
+    config_attrib_list[i++] = 8;
+    config_attrib_list[i++] = WAFFLE_GREEN_SIZE;
+    config_attrib_list[i++] = 8;
+    config_attrib_list[i++] = WAFFLE_BLUE_SIZE;
+    config_attrib_list[i++] = 8;
+    config_attrib_list[i++] = WAFFLE_DOUBLE_BUFFERED;
+    config_attrib_list[i++] = true;
+    config_attrib_list[i++] = 0;
+
+    config = waffle_config_choose(dpy, config_attrib_list);
     if (!config)
         error_waffle();
 
@@ -328,10 +336,6 @@ main(int argc, char **argv)
         error_waffle();
 
     ok = waffle_display_disconnect(dpy);
-    if (!ok)
-        error_waffle();
-
-    ok = waffle_finish();
     if (!ok)
         error_waffle();
 
