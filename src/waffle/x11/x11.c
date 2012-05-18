@@ -111,8 +111,6 @@ x11_window_create(
             attrib_mask,
             attrib_list);
 
-    xcb_void_cookie_t map_cookie = xcb_map_window_checked(conn, window);
-
     // Check errors.
     xcb_generic_error_t *error;
     error = xcb_request_check(conn, colormap_cookie);
@@ -126,13 +124,6 @@ x11_window_create(
     if (error) {
         wcore_errorf(WAFFLE_UNKNOWN_ERROR,
                      "xcb_create_window_checked() failed: error=0x%x",
-                     error->error_code);
-        goto error;
-    }
-    error = xcb_request_check(conn, map_cookie);
-    if (error) {
-        wcore_errorf(WAFFLE_UNKNOWN_ERROR,
-                     "xcb_map_window_checked() failed: error=0x%x",
                      error->error_code);
         goto error;
     }
