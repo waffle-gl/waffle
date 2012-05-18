@@ -108,6 +108,9 @@ struct native_dispatch {
     (*window_destroy)(union native_window *self);
 
     bool
+    (*window_show)(union native_window *self);
+
+    bool
     (*window_swap_buffers)(union native_window *self);
 
     bool

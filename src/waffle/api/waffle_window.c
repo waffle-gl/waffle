@@ -80,6 +80,26 @@ waffle_window_destroy(struct waffle_window *self)
     return ok;
 }
 
+WAFFLE_API bool
+waffle_window_show(struct waffle_window *self)
+{
+    const struct api_object *obj_list[] = {
+        waffle_window_cast_to_api_object(self),
+    };
+
+    if (!api_check_entry(obj_list, 1))
+        return false;
+
+    if (api_current_platform->dispatch->window_show == NULL) {
+        // The platform does not yet implement waffle_window_show().
+        // Succeed without warning.
+        return true;
+    }
+
+    return api_current_platform->dispatch->
+                window_show(self->native);
+}
+
 bool
 waffle_window_swap_buffers(struct waffle_window *self)
 {

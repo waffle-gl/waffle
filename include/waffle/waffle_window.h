@@ -30,6 +30,8 @@ extern "C" {
 struct waffle_config;
 struct waffle_window;
 
+/// If the platform allows, the window is not displayed onto the screen
+/// after creation. To display the window, call waffle_window_show().
 WAFFLE_API struct waffle_window*
 waffle_window_create(
         struct waffle_config *config,
@@ -38,6 +40,12 @@ waffle_window_create(
 
 WAFFLE_API bool
 waffle_window_destroy(struct waffle_window *self);
+
+/// @brief Show the window on the screen.
+///
+/// If the window is already shown, this does nothing.
+WAFFLE_API bool
+waffle_window_show(struct waffle_window *self);
 
 WAFFLE_API bool
 waffle_window_swap_buffers(struct waffle_window *self);
