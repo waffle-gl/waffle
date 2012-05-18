@@ -23,7 +23,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#include "waffle_visibility.h"
+#include "waffle_portable.h"
 
 #ifdef __cplusplus
 extern "C" {

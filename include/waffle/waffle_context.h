@@ -22,7 +22,7 @@
 
 #include <stdbool.h>
 
-#include "waffle_visibility.h"
+#include "waffle_portable.h"
 
 #ifdef __cplusplus
 extern "C" {

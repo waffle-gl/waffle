@@ -12,10 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/// @defgroup waffle_visibility waffle_visibility
+/// @defgroup waffle_portable waffle_portable
 /// @ingroup waffle_api
 ///
-/// @brief Macros for visibility of shared library symbols.
+/// @brief Cross-platform portability.
+///
+/// Visual Studio doesn't support C99. Ugh.
 /// @{
 
 #pragma once
