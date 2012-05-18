@@ -47,6 +47,7 @@ static const struct native_dispatch glx_dispatch = {
     .dl_sym = glx_dl_sym,
     .window_create = glx_window_create,
     .window_destroy = glx_window_destroy,
+    .window_show = glx_window_show,
     .window_swap_buffers = glx_window_swap_buffers,
     .make_current = glx_make_current,
     .get_proc_address = glx_get_proc_address,

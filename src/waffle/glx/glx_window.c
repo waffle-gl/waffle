@@ -92,6 +92,14 @@ glx_window_destroy(union native_window *self)
     return ok;
 }
 
+bool
+glx_window_show(union native_window *native_self)
+{
+    struct glx_window *self = native_self->glx;
+    struct glx_display *display = self->display->glx;
+
+    return x11_window_show(display->xcb_connection, self->xcb_window);
+}
 
 bool
 glx_window_swap_buffers(union native_window *self)

@@ -36,6 +36,9 @@ bool
 glx_window_destroy(union native_window *self);
 
 bool
+glx_window_show(union native_window *native_self);
+
+bool
 glx_window_swap_buffers(union native_window *self);
 
 /// @}
