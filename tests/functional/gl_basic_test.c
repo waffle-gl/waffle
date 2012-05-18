@@ -193,6 +193,8 @@ gl_basic_draw(int32_t waffle_context_api)
 
     ASSERT_TRUE(window = waffle_window_create(config,
                                               WINDOW_WIDTH, WINDOW_HEIGHT));
+    ASSERT_TRUE(waffle_window_show(window));
+
     ctx = waffle_context_create(config, NULL);
     if (!ctx) {
         if (waffle_error_get_code() == WAFFLE_UNSUPPORTED_ON_PLATFORM)
