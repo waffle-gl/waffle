@@ -171,4 +171,23 @@ x11_window_destroy(
     return ok;
 }
 
+bool
+x11_window_show(
+        xcb_connection_t *conn,
+        xcb_window_t window)
+{
+    xcb_void_cookie_t cookie;
+    xcb_generic_error_t *error;
+
+    cookie = xcb_map_window_checked(conn, window);
+    error = xcb_request_check(conn, cookie);
+    if (error) {
+        wcore_errorf(WAFFLE_UNKNOWN_ERROR,
+                     "xcb_map_window_checked() failed: error=0x%x",
+                     error->error_code);
+    }
+
+    return error == NULL;
+}
+
 /// @}

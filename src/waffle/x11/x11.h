@@ -48,4 +48,9 @@ x11_window_destroy(
         xcb_connection_t *conn,
         xcb_window_t window);
 
+bool
+x11_window_show(
+        xcb_connection_t *conn,
+        xcb_window_t window);
+
 /// @}
