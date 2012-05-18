@@ -42,6 +42,10 @@ extern "C" {
 #   define WAFFLE_API
 #endif
 
+#if __STDC_VERSION__ < 199901L
+#   define restrict
+#endif
+
 #ifdef __cplusplus
 } // end extern "C"
 #endif
