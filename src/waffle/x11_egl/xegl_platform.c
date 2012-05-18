@@ -50,6 +50,7 @@ static const struct native_dispatch xegl_dispatch = {
     .dl_sym = xegl_dl_sym,
     .window_create = xegl_window_create,
     .window_destroy = xegl_window_destroy,
+    .window_show = xegl_window_show,
     .window_swap_buffers = xegl_window_swap_buffers,
     .make_current = xegl_make_current,
     .get_proc_address = xegl_get_proc_address,

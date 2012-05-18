@@ -88,6 +88,15 @@ xegl_window_destroy(union native_window *self)
     return ok;
 }
 
+bool
+xegl_window_show(union native_window *native_self)
+{
+    struct xegl_window *self = native_self->xegl;
+    struct xegl_display *display = self->display->xegl;
+
+    return x11_window_show(display->xcb_connection, self->xcb_window);
+}
+
 
 bool
 xegl_window_swap_buffers(union native_window *self)
