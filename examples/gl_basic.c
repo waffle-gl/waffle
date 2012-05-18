@@ -315,6 +315,10 @@ main(int argc, char **argv)
     if (!window)
         error_waffle();
 
+    ok = waffle_window_show(window);
+    if (!ok)
+        error_waffle();
+
     ok = waffle_make_current(dpy, window, ctx);
     if (!ok)
         error_waffle();
