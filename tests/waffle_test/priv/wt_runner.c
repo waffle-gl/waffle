@@ -33,7 +33,7 @@ struct wt_runner {
 
     int num_pass;
     int num_fail;
-    int num_ignore;
+    int num_skip;
 
     struct wt_testname *fail_names;
     int fail_names_length;
@@ -57,7 +57,7 @@ wt_runner_accum_result(int result)
     switch (result) {
         case WT_RESULT_PASS:   ++self.num_pass;    break;
         case WT_RESULT_FAIL:   ++self.num_fail;    break;
-        case WT_RESULT_SKIP: ++self.num_ignore;  break;
+        case WT_RESULT_SKIP:   ++self.num_skip;    break;
 
         default:
             printf("wt: internal error: %s:%d: result has bad value 0x%x\n",
@@ -137,7 +137,7 @@ wt_runner_get_totals(int *pass, int *fail, int *ignore)
     if (fail)
         *fail = self.num_fail;
     if (ignore)
-        *ignore = self.num_ignore;
+        *ignore = self.num_skip;
 }
 
 void
@@ -153,6 +153,6 @@ wt_runner_print_summary(void)
         }
     }
 
-    printf("test: summary: failed %d, ignored %d, passed %d\n",
-           self.num_fail, self.num_ignore, self.num_pass);
+    printf("test: summary: failed %d, skipped %d, passed %d\n",
+           self.num_fail, self.num_skip, self.num_pass);
 }
