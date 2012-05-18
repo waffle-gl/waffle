@@ -50,6 +50,7 @@ static const struct native_dispatch wayland_dispatch = {
     .dl_sym = wayland_dl_sym,
     .window_create = wayland_window_create,
     .window_destroy = wayland_window_destroy,
+    .window_show = wayland_window_show,
     .window_swap_buffers = wayland_window_swap_buffers,
     .make_current = wayland_make_current,
     .get_proc_address = wayland_get_proc_address,

@@ -36,6 +36,9 @@ bool
 wayland_window_destroy(union native_window *self);
 
 bool
+wayland_window_show(union native_window *native_self);
+
+bool
 wayland_window_swap_buffers(union native_window *self);
 
 /// @}

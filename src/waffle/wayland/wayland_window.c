@@ -87,9 +87,6 @@ wayland_window_create(
     if (!self->wl->egl_surface)
      goto error;
 
-
-    wl_shell_surface_set_toplevel(self->wl->wl_shell_surface);
-
     return self;
 
 error:
@@ -121,6 +118,16 @@ wayland_window_destroy(union native_window *self)
     return ok;
 }
 
+bool
+wayland_window_show(union native_window *native_self)
+{
+    struct wayland_window *self = native_self->wl;
+
+    wl_shell_surface_set_toplevel(self->wl_shell_surface);
+
+    // FIXME: How to detect errors in Wayland?
+    return true;
+}
 
 bool
 wayland_window_swap_buffers(union native_window *self)
