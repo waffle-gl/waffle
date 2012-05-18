@@ -90,12 +90,6 @@ waffle_window_show(struct waffle_window *self)
     if (!api_check_entry(obj_list, 1))
         return false;
 
-    if (api_current_platform->dispatch->window_show == NULL) {
-        // The platform does not yet implement waffle_window_show().
-        // Succeed without warning.
-        return true;
-    }
-
     return api_current_platform->dispatch->
                 window_show(self->native);
 }
