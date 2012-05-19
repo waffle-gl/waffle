@@ -127,6 +127,12 @@ egl_choose_config(
     if (!egl_config_check_context_attrs(platform, attrs))
         return false;
 
+    if (attrs->accum_buffer) {
+        wcore_errorf(WAFFLE_UNSUPPORTED_ON_PLATFORM,
+                     "accum buffers do not exist on EGL");
+        return false;
+    }
+
     // WARNING: If you resize attrib_list, then update renderable_index.
     const int renderable_index = 19;
 

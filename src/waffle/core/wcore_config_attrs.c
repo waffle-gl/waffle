@@ -41,6 +41,8 @@ static const struct wcore_config_attrs wcore_config_attrs_default_all = {
     .samples                = 0,
 
     .double_buffered        = true,
+
+    .accum_buffer           = false,
 };
 
 static bool
@@ -223,6 +225,21 @@ wcore_config_attrs_parse(
                         wcore_errorf(WAFFLE_BAD_ATTRIBUTE,
                                      "WAFFLE_DOUBLE_BUFFERED has bad value "
                                      "0x%x", w_value);
+                        return false;
+                }
+                break;
+            case WAFFLE_ACCUM_BUFFER:
+                switch (w_value) {
+                    case 0:
+                        attrs->accum_buffer = false;
+                        break;
+                    case 1:
+                        attrs->accum_buffer = true;
+                        break;
+                    default:
+                        wcore_errorf(WAFFLE_BAD_ATTRIBUTE,
+                                     "WAFFLE_ACCUM_BUFFER has bad value %#x",
+                                     w_value);
                         return false;
                 }
                 break;

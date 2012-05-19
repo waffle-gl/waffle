@@ -45,6 +45,8 @@ struct wcore_config_attrs {
     int32_t samples;
 
     bool double_buffered;
+
+    bool accum_buffer;
 };
 
 bool

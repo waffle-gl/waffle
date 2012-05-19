@@ -116,6 +116,11 @@ glx_config_choose(
 
         GLX_DOUBLEBUFFER,       attrs->double_buffered,
 
+        GLX_ACCUM_RED_SIZE,     attrs->accum_buffer,
+        GLX_ACCUM_GREEN_SIZE,   attrs->accum_buffer,
+        GLX_ACCUM_BLUE_SIZE,    attrs->accum_buffer,
+        GLX_ACCUM_ALPHA_SIZE,   attrs->accum_buffer,
+
         // According to the GLX 1.4 spec Table 3.4, the default value of
         // GLX_DRAWABLE_TYPE is GLX_WINDOW_BIT. Explicitly set the default
         // here for the sake of self-documentation.

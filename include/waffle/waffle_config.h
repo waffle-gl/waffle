@@ -190,6 +190,7 @@ struct waffle_display;
 /// | WAFFLE_SAMPLES                          |  int |                0 | .                                             |
 /// | .                                       |    . |                . | .                                             |
 /// | WAFFLE_DOUBLE_BUFFERED                  | bool |             true | .                                             |
+/// | WAFFLE_ACCUM_BUFFER                     | bool |            false | .                                             |
 ///
 WAFFLE_API struct waffle_config*
 waffle_config_choose(struct waffle_display *dpy, const int32_t attrib_list[]);
