@@ -24,7 +24,7 @@ Links
 =====
 
 homepage:       http://people.freedesktop.org/~chadversary/waffle
-mailing-list:   TODO
+mailing-list:   waffle@lists.freedesktop.org
 maintainer:     Chad Versace <chad@chad.versace@linux.intel.com>
 source:         git://people.freedesktop.org/~chadversary/waffle.git
 gitweb:         http://cgit.freedesktop.org/~chadversary/waffle
