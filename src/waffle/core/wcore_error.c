@@ -23,6 +23,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "wcore_tinfo.h"
 
@@ -34,6 +35,9 @@ struct wcore_error_tinfo {
     bool is_enabled;
     int32_t code;
     char message[WCORE_ERROR_MESSAGE_BUFSIZE];
+
+    /// @brief The user-visible portion of the error state.
+    struct waffle_error_info user_info;
 };
 
 struct wcore_error_tinfo*
@@ -166,10 +170,16 @@ wcore_error_get_code(void)
     return wcore_tinfo_get()->error->code;
 }
 
-const char*
-wcore_error_get_message(void)
+const struct waffle_error_info*
+wcore_error_get_info(void)
 {
-    return wcore_tinfo_get()->error->message;
+    struct wcore_error_tinfo *info = wcore_tinfo_get()->error;
+
+    info->user_info.code = info->code;
+    info->user_info.message = info->message;
+    info->user_info.message_length = strlen(info->message);
+
+    return &info->user_info;
 }
 
 /// @}

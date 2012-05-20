@@ -26,25 +26,10 @@ waffle_error_get_code(void)
     return wcore_error_get_code();
 }
 
-void
-waffle_error_get_info(
-        int32_t *code,
-        const char **message,
-        size_t *message_length)
+const struct waffle_error_info*
+waffle_error_get_info(void)
 {
-    const char *m = NULL;
-
-    if (code)
-        *code = wcore_error_get_code();
-
-    if (message || message_length)
-        m = wcore_error_get_message();
-
-    if (message)
-        *message = m;
-
-    if (message_length)
-        *message_length = strlen(m);
+    return wcore_error_get_info();
 }
 
 const char*

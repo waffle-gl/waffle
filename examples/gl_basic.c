@@ -64,16 +64,12 @@ error_usage(void)
 static void
 error_waffle(void)
 {
-    int32_t code;
-    const char *message = NULL;
-    size_t message_length = 0;
-
-    waffle_error_get_info(&code, &message, &message_length);
+    const struct waffle_error_info *info = waffle_error_get_info();
 
     fflush(stdout);
-    fprintf(stderr, "waffle: error: %s", waffle_error_to_string(code));
-    if (message_length > 0)
-        fprintf(stderr, ": %s", message);
+    fprintf(stderr, "waffle: error: %s", waffle_error_to_string(info->code));
+    if (info->message_length > 0)
+        fprintf(stderr, ": %s", info->message);
     fprintf(stderr, "\n");
 
     exit(EXIT_FAILURE);

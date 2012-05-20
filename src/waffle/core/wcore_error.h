@@ -72,9 +72,9 @@ wcore_errorf(int error, const char *format, ...);
 int
 wcore_error_get_code(void);
 
-/// @brief Get the last set error message.
-const char*
-wcore_error_get_message(void);
+/// @brief Get the user-visible portion of the error state.
+const struct waffle_error_info*
+wcore_error_get_info(void);
 
 void
 _wcore_error_internal(const char *file, int line, const char *format, ...);

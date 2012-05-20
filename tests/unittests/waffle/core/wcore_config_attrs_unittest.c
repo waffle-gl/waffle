@@ -88,8 +88,8 @@ TEST(wcore_config_attrs, bad_attr)
 
     ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
     EXPECT_TRUE(wcore_error_get_code() == WAFFLE_BAD_ATTRIBUTE);
-    EXPECT_TRUE(strstr(wcore_error_get_message(), "WAFFLE_CONTEXT_OPENGL_ES2")
-                || strstr(wcore_error_get_message(), "0x20d"));
+    EXPECT_TRUE(strstr(wcore_error_get_info()->message, "WAFFLE_CONTEXT_OPENGL_ES2")
+                || strstr(wcore_error_get_info()->message, "0x20d"));
 }
 
 TEST(wcore_config_attrs, color_buffer_size)
@@ -151,8 +151,8 @@ TEST(wcore_config_attrs, double_buffered_is_bad)
 
     ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
     EXPECT_TRUE(wcore_error_get_code() == WAFFLE_BAD_ATTRIBUTE);
-    EXPECT_TRUE(strstr(wcore_error_get_message(), "WAFFLE_DOUBLE_BUFFERED"));
-    EXPECT_TRUE(strstr(wcore_error_get_message(), "0x31415926"));
+    EXPECT_TRUE(strstr(wcore_error_get_info()->message, "WAFFLE_DOUBLE_BUFFERED"));
+    EXPECT_TRUE(strstr(wcore_error_get_info()->message, "0x31415926"));
 }
 
 void

@@ -30,7 +30,7 @@ TEST(wcore_error, code_unknown_error)
     wcore_error_reset();
     wcore_error(WAFFLE_UNKNOWN_ERROR);
     EXPECT_TRUE(wcore_error_get_code() == WAFFLE_UNKNOWN_ERROR);
-    EXPECT_TRUE(!strcmp(wcore_error_get_message(), ""));
+    EXPECT_TRUE(!strcmp(wcore_error_get_info()->message, ""));
 
 }
 
@@ -39,7 +39,7 @@ TEST(wcore_error, code_bad_attribute)
     wcore_error_reset();
     wcore_error(WAFFLE_BAD_ATTRIBUTE);
     EXPECT_TRUE(wcore_error_get_code() == WAFFLE_BAD_ATTRIBUTE);
-    EXPECT_TRUE(!strcmp(wcore_error_get_message(), ""));
+    EXPECT_TRUE(!strcmp(wcore_error_get_info()->message, ""));
 
 }
 
@@ -48,7 +48,7 @@ TEST(wcore_error, with_message)
     wcore_error_reset();
     wcore_errorf(WAFFLE_BAD_PARAMETER, "bad %s (0x%x)", "gl_api", 0x17);
     EXPECT_TRUE(wcore_error_get_code() == WAFFLE_BAD_PARAMETER);
-    EXPECT_TRUE(!strcmp(wcore_error_get_message(), "bad gl_api (0x17)"));
+    EXPECT_TRUE(!strcmp(wcore_error_get_info()->message, "bad gl_api (0x17)"));
 }
 
 TEST(wcore_error, internal_error)
@@ -59,8 +59,8 @@ TEST(wcore_error, internal_error)
     wcore_error_reset();
     wcore_error_internal("%s zoroaster %d", "hello", 5);
     EXPECT_TRUE(wcore_error_get_code() == WAFFLE_INTERNAL_ERROR);
-    EXPECT_TRUE(strstr(wcore_error_get_message(), "hello zoroaster 5"));
-    EXPECT_TRUE(strstr(wcore_error_get_message(), error_location));
+    EXPECT_TRUE(strstr(wcore_error_get_info()->message, "hello zoroaster 5"));
+    EXPECT_TRUE(strstr(wcore_error_get_info()->message, error_location));
 }
 
 TEST(wcore_error, first_call_without_message_wins)
@@ -69,7 +69,7 @@ TEST(wcore_error, first_call_without_message_wins)
     wcore_errorf(WAFFLE_UNKNOWN_ERROR, "cookies");
     wcore_error(WAFFLE_BAD_ATTRIBUTE);
     EXPECT_TRUE(wcore_error_get_code() == WAFFLE_UNKNOWN_ERROR);
-    EXPECT_TRUE(!strcmp(wcore_error_get_message(), "cookies"));
+    EXPECT_TRUE(!strcmp(wcore_error_get_info()->message, "cookies"));
 }
 
 TEST(wcore_error, first_call_with_message_wins)
@@ -78,7 +78,7 @@ TEST(wcore_error, first_call_with_message_wins)
     wcore_errorf(WAFFLE_UNKNOWN_ERROR, "cookies");
     wcore_errorf(WAFFLE_NO_ERROR, "all is well");
     EXPECT_TRUE(wcore_error_get_code() == WAFFLE_UNKNOWN_ERROR);
-    EXPECT_TRUE(!strcmp(wcore_error_get_message(), "cookies"));
+    EXPECT_TRUE(!strcmp(wcore_error_get_info()->message, "cookies"));
 }
 
 TEST(wcore_error, disable_then_error)

@@ -15,17 +15,6 @@
 /// @defgroup waffle_error waffle_error
 /// @ingroup waffle_api
 ///
-/// @brief Thread-local error state.
-///
-/// Waffle functions usually return either a bool, in which false indicates
-/// failure, or a pointer, in which null indicates failure. In addition to
-/// returning a flag indicating failure, most functions also clears and then
-/// set some thread-local error state. The only functions that do not alter
-/// the error state are those in this module, @ref waffle_error.
-///
-/// To obtain the error state of the last called function in the current
-/// thread, call waffle_get_error() or waffle_get_error_m().
-///
 /// @{
 
 /// @file
@@ -41,35 +30,49 @@
 extern "C" {
 #endif
 
-/// @brief Get the current thread's error state.
+/// @brief Thread-local error info.
+///
+/// Waffle functions usually return either a bool, in which false indicates
+/// failure, or a pointer, in which null indicates failure. In addition to
+/// returning a flag indicating failure, most functions also clear and then
+/// set some thread-local error state. The only functions that do not alter
+/// the error state are those in this module, @ref waffle_error.
+///
+/// This struct contains the user-visible portion of the thread-local
+/// error state.
+struct waffle_error_info {
+    /// @brief An error code from `enum waffle_error`.
+    ///
+    /// This may be `WAFFLE_NO_ERROR`.
+    int32_t code;
+
+    /// Never null.
+    const char *message;
+
+    /// @brief The length of @ref message according to strlen().
+    size_t message_length;
+};
+
+/// @brief Get the current thread's error code.
 ///
 /// This may be called when waffle is uninitialized (that is, before
 /// waffle_init() and after waffle_finish()).
 ///
-/// @return an error code from `enum waffle_error`.
-/// @see waffle_error
+/// Calling this function is equivalent to obtaining the error code with
+/// `waffle_error_get_info()->code`.
+///
 WAFFLE_API int32_t
 waffle_error_get_code(void);
 
-/// @copybrief waffle_get_error()
+/// @brief Get the current thread's error info.
 ///
-/// This is a variant of waffle_get_error() that returns an error message. The
-/// returned @a message pointer is never null, and it becomes invalid when the
-/// thread-local error state changes.
-///
-/// If any argument is null, then that argument is ignored. For example,
-/// `waffle_error_get_m(NULL, NULL, &message_length)` will obtain only the
-/// message's length.
+/// This function never returns null. The returned pointer becomes invalid
+/// when the thread-local error state changes.
 ///
 /// This may be called when waffle is uninitialized (that is, before
 /// waffle_init() and after waffle_finish()).
-///
-/// @see waffle_error
-WAFFLE_API void
-waffle_error_get_info(
-        int32_t *code,
-        const char **message,
-        size_t *message_length);
+WAFFLE_API const struct waffle_error_info*
+waffle_error_get_info(void);
 
 /// @brief Convert error code to string.
 ///
