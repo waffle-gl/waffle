@@ -25,7 +25,7 @@ Links
 
 homepage:       http://people.freedesktop.org/~chadversary/waffle
 mailing-list:   waffle@lists.freedesktop.org
-maintainer:     Chad Versace <chad@chad.versace@linux.intel.com>
+maintainer:     Chad Versace <chad.versace@linux.intel.com>
 source:         git://people.freedesktop.org/~chadversary/waffle.git
 gitweb:         http://cgit.freedesktop.org/~chadversary/waffle
 license:        Apache 2.0 [http://www.apache.org/licenses/LICENSE-2.0]
