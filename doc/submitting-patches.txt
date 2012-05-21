@@ -1,8 +1,7 @@
 How to submit
 -------------
 
-There is no mailing list yet, so submit patches to
-Chad Versace <chad.versace@linux.intel.com>.
+Submit patches to waffle@lists.freedesktop.org.
 
 Use `git send-email`. Don't send patches as attachments.
 
