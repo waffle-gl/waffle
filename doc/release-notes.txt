@@ -1,3 +1,26 @@
+Version 0.3 - 21 May 2012
+=========================
+
+New Features
+------------
+- Support for selecting the flavor of GL context with new attributes, which
+  are given to waffle_config_choose():
+    - WAFFLE_CONTEXT_API
+    - WAFFLE_CONTEXT_MAJOR_VERSION
+    - WAFFLE_CONTEXT_MINOR_VERSION
+    - WAFFLE_CONTEXT_PROFILE
+- Support for selecting the library on which waffle_dl_sym() is called on
+  a per-call basis.
+- Windows are no longer shown at time of creation. The user controls when the
+  window is shown with waffle_window_show().
+- Friendlier API for getting error info with waffle_error_get_info().
+
+Changes
+-------
+- No API attribute is given to waffle_init().
+- Signature of waffle_error_get_info() has changed.
+
+
 Version 0.2 - 11 Apr 2012
 =========================
 
