@@ -88,7 +88,7 @@ example, see `/examples/gl_basic.c` [3].
         struct waffle_display *dpy = waffle_display_connect(NULL);
         struct waffle_config *config = waffle_config_choose(dpy, config_attrs);
         struct waffle_window *window = waffle_window_create(dpy, width, height);
-        struct waffle_context *ctx = waffle_context_creat(config, NULL);
+        struct waffle_context *ctx = waffle_context_create(config, NULL);
 
         glClearColor = waffle_dl_sym(WAFFLE_DL_OPENGL, "glClearColor");
         glClear = waffle_dl_sym(WAFFLE_DL_OPENGL, "glClear");
@@ -105,7 +105,6 @@ example, see `/examples/gl_basic.c` [3].
         waffle_context_destroy(ctx);
         waffle_config_destroy(config);
         waffle_display_disconnect(dpy);
-        waffle_finish();
 
         return 0;
     }
