@@ -39,9 +39,6 @@ Waffle supports the following GL API's:
     - OpenGL ES1
     - OpenGL ES2
 
-Waffle does not yet support selection of OpenGL version and profile, but
-that's on the short todo list.
-
 Waffle supports, or has planned support, for the following window systems:
     - Android   (planned)
     - Apple/GLX (planned)
@@ -69,15 +66,20 @@ example, see `/examples/gl_basic.c` [3].
     main()
     {
         const int32_t init_attrs[] = {
-            WAFFLE_PLATFORM,            WAFFLE_PLATFORM_X11_EGL,
-            WAFFLE_OPENGL_API,          WAFFLE_OPENGL_ES2,
+            WAFFLE_PLATFORM, WAFFLE_PLATFORM_X11_EGL,
             0,
         };
 
         const int32_t config_attrs[] = {
+            WAFFLE_CONTEXT_API,                 WAFFLE_CONTEXT_OPENGL,
+            WAFFLE_CONTEXT_MAJOR_VERSION,       3,
+            WAFFLE_CONTEXT_MINOR_VERSION,       1,
+            WAFFLE_CONTEXT_PROFILE,             WAFFLE_CONTEXT_CORE_PROFILE,
+
             WAFFLE_RED_SIZE,            8,
             WAFFLE_BLUE_SIZE,           8,
             WAFFLE_GREEN_SIZE,          8,
+
             0,
         };
 
@@ -88,12 +90,13 @@ example, see `/examples/gl_basic.c` [3].
         struct waffle_window *window = waffle_window_create(dpy, width, height);
         struct waffle_context *ctx = waffle_context_creat(config, NULL);
 
-        glClearColor = waffle_dlsym_gl("glClearColor");
-        glClear = waffle_dlsym_gl("glClear");
+        glClearColor = waffle_dl_sym(WAFFLE_DL_OPENGL, "glClearColor");
+        glClear = waffle_dl_sym(WAFFLE_DL_OPENGL, "glClear");
 
         waffle_make_current(dpy, window, ctx);
         glClearColor(1.0, 0.0, 0.0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
+        waffle_window_show(window);
         waffle_window_swap_buffers(window);
 
         // Teardown waffle.
