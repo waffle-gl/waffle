@@ -73,7 +73,7 @@ example, see `/examples/gl_basic.c` [3].
         const int32_t config_attrs[] = {
             WAFFLE_CONTEXT_API,                 WAFFLE_CONTEXT_OPENGL,
             WAFFLE_CONTEXT_MAJOR_VERSION,       3,
-            WAFFLE_CONTEXT_MINOR_VERSION,       1,
+            WAFFLE_CONTEXT_MINOR_VERSION,       2,
             WAFFLE_CONTEXT_PROFILE,             WAFFLE_CONTEXT_CORE_PROFILE,
 
             WAFFLE_RED_SIZE,            8,
