@@ -52,18 +52,6 @@ glx_window_create(
     if (!self->glx->xcb_window)
         goto error;
 
-    // From the GLX 1.4 spec:
-    //      Currently no attributes are recognized, so attrib list must be
-    //      NULL or empty (first attribute of None).
-    self->glx->glx_window = glXCreateWindow(display->glx->xlib_display,
-                                            config->glx->glx_fbconfig,
-                                            self->glx->xcb_window,
-                                            NULL /*attrib_list*/);
-    if (!self->glx->glx_window) {
-        wcore_errorf(WAFFLE_UNKNOWN_ERROR, "glXCreateWindow failed");
-        goto error;
-    }
-
     return self;
 
 error:
@@ -79,10 +67,6 @@ glx_window_destroy(union native_window *self)
 
     bool ok = true;
     union native_display *dpy = self->glx->display;
-
-    if (self->glx->glx_window)
-        glXDestroyWindow(dpy->glx->xlib_display,
-                               self->glx->glx_window);
 
     if (self->glx->xcb_window)
         ok &= x11_window_destroy(dpy->glx->xcb_connection,
@@ -105,7 +89,7 @@ bool
 glx_window_swap_buffers(union native_window *self)
 {
     union native_display *dpy = self->glx->display;
-    glXSwapBuffers(dpy->glx->xlib_display, self->glx->glx_window);
+    glXSwapBuffers(dpy->glx->xlib_display, self->glx->xcb_window);
     return true;
 }
 

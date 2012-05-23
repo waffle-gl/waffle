@@ -68,7 +68,6 @@ struct glx_context {
 struct glx_window {
     union native_display *display;
     xcb_window_t xcb_window;
-    GLXWindow glx_window;
 };
 
 /// @}

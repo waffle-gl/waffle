@@ -31,7 +31,7 @@ glx_make_current(
         union native_context *ctx)
 {
     return glXMakeCurrent(dpy->glx->xlib_display,
-                          window ? window->glx->glx_window : 0,
+                          window ? window->glx->xcb_window : 0,
                           ctx ? ctx->glx->glx_context : 0);
 }
 
