@@ -16,14 +16,14 @@ project(waffle C)
 cmake_minimum_required(VERSION 2.8)
 
 # Release version.
-set(waffle_version 0.3)
+set(waffle_version 0.3.1)
 
 # Library version.
 #
 # The library version scheme follows the libtool guidelines and is independent
 # of the release version. It is appended to libwaffle.so as libwaffle.so.X.X.X.
 # See http://www.gnu.org/software/libtool/manual/html_node/Updating-version-info.html.
-set(waffle_so_version "2.0.0")
+set(waffle_so_version "2.1.0")
 
 # ------------------------------------------------------------------------------
 # Waffle Options
