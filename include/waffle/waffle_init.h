@@ -79,6 +79,13 @@ extern "C" {
 WAFFLE_API bool
 waffle_init(const int32_t *attrib_list);
 
+/// @brief Get the platform given to waffle_init().
+///
+/// This may be called before waffle_init(), in which `WAFFLE_NONE`
+/// is returned. Otherwise, one of `WAFFLE_PLATFORM_*` is returned.
+WAFFLE_API int32_t
+waffle_get_platform(void);
+
 #ifdef __cplusplus
 } // end extern "C"
 #endif

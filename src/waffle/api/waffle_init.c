@@ -106,4 +106,15 @@ waffle_init(const int32_t *attrib_list)
     return true;
 }
 
+int32_t
+waffle_get_platform(void)
+{
+    wcore_error_reset();
+
+    if (api_current_platform)
+        return api_current_platform->native_tag;
+    else
+        return WAFFLE_NONE;
+}
+
 /// @}
