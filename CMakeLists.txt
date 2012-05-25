@@ -73,10 +73,12 @@ endif(waffle_has_glx OR waffle_has_x11_egl)
 # ----------------------------------------------
 
 if(NOT waffle_has_glx
+   AND NOT waffle_has_wayland
    AND NOT waffle_has_x11_egl)
-    message(FATAL_ERROR "Must enable at least one of: waffle_has_glx, waffle_has_x11_egl.")
+    message(FATAL_ERROR "Must enable at least one of: waffle_has_glx, waffle_has_wayland, waffle_has_x11_egl.")
 endif(NOT waffle_has_glx
-      AND NOT waffle_has_x11_egl)
+     AND NOT waffle_has_wayland
+     AND NOT waffle_has_x11_egl)
 
 
 # ------------------------------------------------------------------------------
