@@ -25,6 +25,15 @@ set(waffle_version 0.3.1)
 # See http://www.gnu.org/software/libtool/manual/html_node/Updating-version-info.html.
 set(waffle_so_version "2.1.0")
 
+
+# ------------------------------------------------------------------------------
+# Includes
+# ------------------------------------------------------------------------------
+
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules")
+include(CheckThreadLocalStorage)
+
+
 # ------------------------------------------------------------------------------
 # Waffle Options
 # ------------------------------------------------------------------------------
