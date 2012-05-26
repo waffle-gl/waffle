@@ -113,17 +113,32 @@ TEST(wcore_error, disable_then_error_internal)
     EXPECT_TRUE(wcore_error_get_code() == WAFFLE_NOT_INITIALIZED);
 }
 
-struct thread_arg {
-    int thread_id;
-    pthread_mutex_t *mutex;
-    pthread_barrier_t *barrier;
-};
-
 /// Number of threads in test wcore_error.thread_local.
 enum {
     NUM_THREADS = 3,
 };
 
+/// Given to pthread_create() in test wcore_error.thread_local.
+///
+/// A sub-thread, after calling wcore_error(), locks the mutex, increments
+/// `num_threads_waiting`, and waits on `cond`. When all sub-threads are
+/// waiting (that is, `num_threads_waiting == TOTAL_THREADS`), then the main
+/// thread broadcasts on `cond`.
+struct thread_arg {
+    /// Has value in range `[0, TOTAL_THREADS)`.
+    int thread_id;
+
+    /// Protects `num_threads_waiting` and `cond`.
+    pthread_mutex_t *mutex;
+
+    /// Satisfied when `num_threads_waiting == TOTAL_THREADS`.
+    pthread_cond_t *cond;
+
+    /// Number of threads waiting on `cond`.
+    int *num_threads_waiting;
+};
+
+/// The start routine given to threads in test wcore_error.thread_local.
 static bool
 thread_start(struct thread_arg *a)
 {
@@ -143,8 +158,12 @@ thread_start(struct thread_arg *a)
     wcore_error(error_code);
 
     // Wait for all threads to set their error codes, thus giving
-    // the threads opportunity to clobber each other's error codes.
-    pthread_barrier_wait(a->barrier);
+    // the threads opportunity to clobber each other's codes.
+    pthread_mutex_lock(a->mutex); {
+        *a->num_threads_waiting += 1;
+        pthread_cond_wait(a->cond, a->mutex);
+        pthread_mutex_unlock(a->mutex);
+    }
 
     // Verify that the threads did not clobber each other's
     // error codes.
@@ -157,34 +176,43 @@ thread_start(struct thread_arg *a)
 TEST(wcore_error, thread_local)
 {
     pthread_mutex_t mutex;
-    pthread_barrier_t barrier;
+    pthread_cond_t cond;
+    int num_threads_waiting = 0;
 
     pthread_t threads[NUM_THREADS];
     struct thread_arg thread_args[NUM_THREADS];
     bool exit_codes[NUM_THREADS];
 
     pthread_mutex_init(&mutex, NULL);
-    pthread_barrier_init(&barrier, NULL, 4);
+    pthread_cond_init(&cond, NULL);
 
     for (intptr_t i = 0; i < NUM_THREADS; ++i) {
         struct thread_arg *a = &thread_args[i];
         a->thread_id = i;
         a->mutex = &mutex;
-        a->barrier = &barrier;
+        a->cond = &cond;
+        a->num_threads_waiting = &num_threads_waiting;
 
         pthread_create(&threads[i], NULL,
                       (void* (*)(void*)) thread_start,
                       (void*) a);
     }
 
-    pthread_barrier_wait(&barrier);
+    // Wait for all threads to set their error codes, thus giving
+    // the threads opportunity to clobber each other's codes.
+    while (num_threads_waiting < NUM_THREADS)
+        ;;
+    pthread_mutex_lock(&mutex); {
+        pthread_cond_broadcast(&cond);
+        pthread_mutex_unlock(&mutex);
+    }
 
     for (int i = 0; i < NUM_THREADS; ++i) {
         pthread_join(threads[i], (void**) &exit_codes[i]);
         EXPECT_TRUE(exit_codes[i] == true);
     }
 
-    pthread_barrier_destroy(&barrier);
+    pthread_cond_destroy(&cond);
     pthread_mutex_destroy(&mutex);
 }
 
