@@ -117,9 +117,12 @@ wcore_tinfo_key_init(void)
 struct wcore_tinfo*
 wcore_tinfo_get(void)
 {
-    wcore_tinfo_key_init();
+    struct wcore_tinfo *t;
 
-    if (wcore_tinfo_tl_singleton == NULL) {
+    wcore_tinfo_key_init();
+    t = wcore_tinfo_tl_singleton;
+
+    if (t == NULL) {
         // If a key is assigned a non-null pointer, then the key's
         // destructor will be called on that pointer when the thread exits.
         //
@@ -127,7 +130,7 @@ wcore_tinfo_get(void)
         // storage is assigned. If not, a memory leak will occur if a
         // disaster occurs between assignment to thread-local storage and
         // assignment to the key.
-        struct wcore_tinfo *t = wcore_tinfo_create();
+        t = wcore_tinfo_create();
         if (!t) {
             printf("waffle: fatal-error: failed to allocate thread info\n");
             abort();
@@ -136,7 +139,7 @@ wcore_tinfo_get(void)
         wcore_tinfo_tl_singleton = t;
     }
 
-    return wcore_tinfo_tl_singleton;
+    return t;
 }
 
 /// @}
