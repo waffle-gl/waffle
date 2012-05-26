@@ -119,10 +119,15 @@ struct thread_arg {
     pthread_barrier_t *barrier;
 };
 
+/// Number of threads in test wcore_error.thread_local.
+enum {
+    NUM_THREADS = 3,
+};
+
 static bool
 thread_start(struct thread_arg *a)
 {
-    static const int error_codes[] = {
+    static const int error_codes[NUM_THREADS] = {
         WAFFLE_BAD_ATTRIBUTE,
         WAFFLE_UNKNOWN_ERROR,
         WAFFLE_ALREADY_INITIALIZED,
@@ -154,14 +159,14 @@ TEST(wcore_error, thread_local)
     pthread_mutex_t mutex;
     pthread_barrier_t barrier;
 
-    pthread_t threads[3];
-    struct thread_arg thread_args[3];
-    bool exit_codes[3];
+    pthread_t threads[NUM_THREADS];
+    struct thread_arg thread_args[NUM_THREADS];
+    bool exit_codes[NUM_THREADS];
 
     pthread_mutex_init(&mutex, NULL);
     pthread_barrier_init(&barrier, NULL, 4);
 
-    for (intptr_t i = 0; i < 3; ++i) {
+    for (intptr_t i = 0; i < NUM_THREADS; ++i) {
         struct thread_arg *a = &thread_args[i];
         a->thread_id = i;
         a->mutex = &mutex;
@@ -174,7 +179,7 @@ TEST(wcore_error, thread_local)
 
     pthread_barrier_wait(&barrier);
 
-    for (int i = 0; i < 3; ++i) {
+    for (int i = 0; i < NUM_THREADS; ++i) {
         pthread_join(threads[i], (void**) &exit_codes[i]);
         EXPECT_TRUE(exit_codes[i] == true);
     }
