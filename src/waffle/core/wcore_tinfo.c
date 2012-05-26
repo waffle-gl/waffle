@@ -30,6 +30,8 @@
 /// @brief Key for @ref wcore_tinfo_tl_singleton.
 static pthread_key_t wcore_tinfo_key;
 
+#ifdef WAFFLE_HAS_TLS
+
 /// @brief Thread-local singleton for thread info.
 ///
 /// There exists a distinct pointer for each thread.
@@ -46,6 +48,8 @@ static pthread_key_t wcore_tinfo_key;
 static __thread
     struct wcore_tinfo *wcore_tinfo_tl_singleton
     __attribute__((tls_model("initial-exec")));
+
+#endif
 
 static void
 wcore_tinfo_destroy(struct wcore_tinfo *self)
@@ -120,7 +124,12 @@ wcore_tinfo_get(void)
     struct wcore_tinfo *t;
 
     wcore_tinfo_key_init();
-    t = wcore_tinfo_tl_singleton;
+
+    #ifdef WAFFLE_HAS_TLS
+        t = wcore_tinfo_tl_singleton;
+    #else
+        t = pthread_getspecific(wcore_tinfo_key);
+    #endif
 
     if (t == NULL) {
         // If a key is assigned a non-null pointer, then the key's
@@ -136,7 +145,10 @@ wcore_tinfo_get(void)
             abort();
         }
         pthread_setspecific(wcore_tinfo_key, t);
-        wcore_tinfo_tl_singleton = t;
+
+        #ifdef WAFFLE_HAS_TLS
+            wcore_tinfo_tl_singleton = t;
+        #endif
     }
 
     return t;
