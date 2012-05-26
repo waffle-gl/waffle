@@ -12,7 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#define _XOPEN_SOURCE 600
+#ifdef __linux__
+#   define _XOPEN_SOURCE 600
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>

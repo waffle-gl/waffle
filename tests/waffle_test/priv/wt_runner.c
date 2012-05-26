@@ -12,7 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#define _XOPEN_SOURCE 500 // for strdup()
+#ifdef __linux__
+#   define _XOPEN_SOURCE 500 // for strdup()
+#endif
 
 #include "wt_runner.h"
 
