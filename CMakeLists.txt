@@ -86,10 +86,20 @@ endif()
 # Validate waffle options
 # ----------------------------------------------
 
-if(NOT waffle_has_glx
-   AND NOT waffle_has_wayland
-   AND NOT waffle_has_x11_egl)
-    message(FATAL_ERROR "Must enable at least one of: waffle_has_glx, waffle_has_wayland, waffle_has_x11_egl.")
+if("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
+    if(NOT waffle_has_glx AND NOT waffle_has_wayland AND NOT waffle_has_x11_egl)
+        message(FATAL_ERROR "Must enable at least one of: waffle_has_glx, waffle_has_wayland, waffle_has_x11_egl.")
+    endif()
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "Darwin")
+    if(waffle_has_glx)
+        message(FATAL_ERROR "Option is not supported on Darwin: waffle_has_glx.")
+    endif()
+    if(waffle_has_wayland)
+        message(FATAL_ERROR "Option is not supported on Darwin: waffle_has_wayland.")
+    endif()
+    if(waffle_has_x11_egl)
+        message(FATAL_ERROR "Option is not supported on Darwin: waffle_has_x11_egl.")
+    endif()
 endif()
 
 
