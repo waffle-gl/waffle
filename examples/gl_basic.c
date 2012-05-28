@@ -37,7 +37,7 @@ static const char *usage_message =
     "    gl_basic <platform> <context_api>\n"
     "\n"
     "arguments:\n"
-    "    platform: One of android, cocoa, glx, wayland, x11_egl.\n"
+    "    platform: One of android, cgl, glx, wayland, x11_egl.\n"
     "    context_api: One of gl, gles1, gles2.\n"
     "\n"
     "example:\n"
@@ -123,7 +123,7 @@ struct enum_map {
 
 static const struct enum_map platform_map[] = {
     {WAFFLE_PLATFORM_ANDROID,   "android"       },
-    {WAFFLE_PLATFORM_COCOA,     "cocoa",        },
+    {WAFFLE_PLATFORM_CGL,       "cgl",          },
     {WAFFLE_PLATFORM_GLX,       "glx"           },
     {WAFFLE_PLATFORM_WAYLAND,   "wayland"       },
     {WAFFLE_PLATFORM_X11_EGL,   "x11_egl"       },

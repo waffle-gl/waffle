@@ -49,7 +49,7 @@ extern "C" {
 /// |:---------------------------------------|:--------:|-----:|--------:|:-----------------------------|
 /// | WAFFLE_PLATFORM                        |   yes    | enum |    none | WAFFLE_PLATFORM_ANDROID      |
 /// | .                                      |     .    |    . |       . | WAFFLE_PLATFORM_COCOA        |
-/// | .                                      |     .    |    . |       . | WAFFLE_PLATFORM_GLX          |
+/// | .                                      |     .    |    . |       . | WAFFLE_PLATFORM_CGL          |
 /// | .                                      |     .    |    . |       . | WAFFLE_PLATFORM_WAYLAND      |
 /// | .                                      |     .    |    . |       . | WAFFLE_PLATFORM_X11_EGL      |
 ///
