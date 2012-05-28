@@ -117,6 +117,12 @@ function(waffle_find_library var name)
     endif()
 endfunction()
 
+if("${CMAKE_SYSTEM_NAME}" STREQUAL "Darwin")
+    find_package(OpenGL REQUIRED)
+    find_library(COCOA_FRAMEWORK Cocoa REQUIRED)
+    find_library(CORE_FOUNDATION_FRAMEWORK CoreFoundation REQUIRED)
+endif()
+
 if(waffle_has_egl)
     waffle_find_library(waffle_EGL_library EGL)
 endif()
