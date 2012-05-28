@@ -164,6 +164,10 @@ endif()
 # Android is not in this list because it uses a separate build system.
 #
 
+if("${CMAKE_SYSTEM_NAME}" STREQUAL "Darwin")
+    add_definitions(-DWAFFLE_HAS_CGL)
+endif()
+
 if(waffle_has_glx)
     add_definitions(-DWAFFLE_HAS_GLX)
 endif()
