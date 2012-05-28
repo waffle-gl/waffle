@@ -34,6 +34,8 @@
 #include <waffle/waffle.h>
 #include <waffle_test/waffle_test.h>
 
+#include "gl_basic_cocoa.h"
+
 enum {
     // Choosing a smaller window would shorten the execution time of pixel
     // validation, but Windows 7 enforces a minimum size.
@@ -240,6 +242,31 @@ gl_basic_draw(int32_t waffle_context_api, int32_t alpha)
     ASSERT_TRUE(waffle_display_disconnect(dpy));
 }
 
+#ifdef WAFFLE_HAS_CGL
+TEST(gl_basic, cgl_init)
+{
+    gl_basic_init(WAFFLE_PLATFORM_CGL);
+}
+
+TEST(gl_basic, cgl_gl_rgb)
+{
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL, 0);
+}
+
+TEST(gl_basic, cgl_gl_rgba)
+{
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL, 1);
+}
+
+static void
+testsuite_cgl(void)
+{
+    TEST_RUN(gl_basic, cgl_init);
+    TEST_RUN(gl_basic, cgl_gl_rgb);
+    TEST_RUN(gl_basic, cgl_gl_rgba);
+}
+#endif // WAFFLE_HAS_CGL
+
 #ifdef WAFFLE_HAS_GLX
 TEST(gl_basic, glx_init)
 {
@@ -421,9 +448,18 @@ run_testsuite(void (*testsuite)(void))
         }
     }
     else if (pid == 0) {
+        #ifdef __APPLE__
+            gl_basic_cocoa_init();
+        #endif
+
         void (*testsuites[])(void) = {testsuite, 0};
         int argc = 0;
         int num_failures = wt_main(&argc, NULL, testsuites);
+
+        #ifdef __APPLE__
+            gl_basic_cocoa_finish();
+        #endif
+
         exit(num_failures);
     }
     else {
@@ -438,6 +474,9 @@ main(int argc, char *argv[])
     if (argc != 1)
         usage_error();
 
+#ifdef WAFFLE_HAS_CGL
+    run_testsuite(testsuite_cgl);
+#endif
 #ifdef WAFFLE_HAS_GLX
     run_testsuite(testsuite_glx);
 #endif
