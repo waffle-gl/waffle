@@ -27,7 +27,7 @@ if(waffle_has_egl)
     list(APPEND waffle_libdeps
         ${waffle_EGL_library}
         )
-endif(waffle_has_egl)
+endif()
 
 if(waffle_has_glx)
     list(APPEND waffle_sources
@@ -42,7 +42,7 @@ if(waffle_has_glx)
     list(APPEND waffle_libdeps
         ${waffle_GL_library}
         )
-endif(waffle_has_glx)
+endif()
 
 if("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
     list(APPEND waffle_sources
@@ -66,7 +66,7 @@ if(waffle_has_wayland)
         ${waffle_wayland-client_library}
         ${waffle_wayland-egl_library}
         )
-endif(waffle_has_wayland)
+endif()
 
 if(waffle_has_x11)
     list(APPEND waffle_sources
@@ -75,7 +75,7 @@ if(waffle_has_x11)
     list(APPEND waffle_libdeps
         ${waffle_X11-xcb_library}
         )
-endif(waffle_has_x11)
+endif()
 
 if(waffle_has_x11_egl)
     list(APPEND waffle_sources
@@ -88,7 +88,7 @@ if(waffle_has_x11_egl)
         x11_egl/xegl_priv_egl.c
         x11_egl/xegl_window.c
     )
-endif(waffle_has_x11_egl)
+endif()
 
 add_library(waffle SHARED ${waffle_sources})
 target_link_libraries(waffle ${waffle_libdeps})

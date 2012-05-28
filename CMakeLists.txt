@@ -71,13 +71,13 @@ if(waffle_has_wayland OR waffle_has_x11_egl)
     set(waffle_has_egl TRUE)
 else(waffle_has_wayland OR waffle_has_x11_egl)
     set(waffle_has_egl FALSE)
-endif(waffle_has_wayland OR waffle_has_x11_egl)
+endif()
 
 if(waffle_has_glx OR waffle_has_x11_egl)
     set(waffle_has_x11 TRUE)
-else(waffle_has_glx OR waffle_has_x11_egl)
+else()
     set(waffle_has_x11 FALSE)
-endif(waffle_has_glx OR waffle_has_x11_egl)
+endif()
 
 # ----------------------------------------------
 # Validate waffle options
@@ -87,9 +87,7 @@ if(NOT waffle_has_glx
    AND NOT waffle_has_wayland
    AND NOT waffle_has_x11_egl)
     message(FATAL_ERROR "Must enable at least one of: waffle_has_glx, waffle_has_wayland, waffle_has_x11_egl.")
-endif(NOT waffle_has_glx
-     AND NOT waffle_has_wayland
-     AND NOT waffle_has_x11_egl)
+endif()
 
 
 # ------------------------------------------------------------------------------
@@ -101,27 +99,27 @@ function(waffle_find_library var name)
 
     if("${var}")
         message(STATUS "Library ${name} found: ${${var}}")
-    else("${var}")
+    else()
         message(STATUS "Library ${name} not found")
-    endif("${var}")
-endfunction(waffle_find_library)
+    endif()
+endfunction()
 
 if(waffle_has_egl)
     waffle_find_library(waffle_EGL_library EGL)
-endif(waffle_has_egl)
+endif()
 
 if(waffle_has_glx)
     waffle_find_library(waffle_GL_library GL)
-endif(waffle_has_glx)
+endif()
 
 if(waffle_has_wayland)
     waffle_find_library(waffle_wayland-client_library wayland-client)
     waffle_find_library(waffle_wayland-egl_library wayland-egl)
-endif(waffle_has_wayland)
+endif()
 
 if(waffle_has_x11)
     waffle_find_library(waffle_X11-xcb_library X11-xcb)
-endif(waffle_has_x11)
+endif()
 
 
 # ------------------------------------------------------------------------------
@@ -139,7 +137,7 @@ set(CMAKE_C_FLAGS_RELEASE "-g1 -02 -DNDEBUG")
 
 if(waffle_has_tls)
     add_definitions(-DWAFFLE_HAS_TLS)
-endif(waffle_has_tls)
+endif()
 
 #
 # Define macros WAFFLE_HAS_{PLATFORM}.
@@ -149,15 +147,15 @@ endif(waffle_has_tls)
 
 if(waffle_has_glx)
     add_definitions(-DWAFFLE_HAS_GLX)
-endif(waffle_has_glx)
+endif()
 
 if(waffle_has_wayland)
     add_definitions(-DWAFFLE_HAS_WAYLAND)
-endif(waffle_has_wayland)
+endif()
 
 if(waffle_has_x11_egl)
     add_definitions(-DWAFFLE_HAS_X11_EGL)
-endif(waffle_has_x11_egl)
+endif()
 
 # ------------------------------------------------------------------------------
 # Add subdirectories
@@ -170,11 +168,11 @@ add_subdirectory(include)
 
 if(waffle_build_tests)
     add_subdirectory(tests)
-endif(waffle_build_tests)
+endif()
 
 if(waffle_build_examples)
     add_subdirectory(examples)
-endif(waffle_build_examples)
+endif()
 
 # ------------------------------------------------------------------------------
 # Target: check
@@ -188,7 +186,7 @@ if(waffle_build_tests)
         COMMAND ${CMAKE_BINARY_DIR}/tests/unittests/waffle-unittest
         COMMAND ${CMAKE_BINARY_DIR}/tests/functional/gl_basic_test
         )
-endif(waffle_build_tests)
+endif()
 
 # ------------------------------------------------------------------------------
 # Install: waffle.pc
@@ -213,28 +211,28 @@ message("")
 message("Supported platforms: ")
 if(waffle_has_glx)
     message("    glx")
-endif(waffle_has_glx)
+endif()
 if(waffle_has_wayland)
     message("    wayland")
-endif(waffle_has_wayland)
+endif()
 if(waffle_has_x11_egl)
     message("    x11_egl")
-endif(waffle_has_x11_egl)
+endif()
 message("")
 message("Libraries:")
 if(DEFINED waffle_EGL_library)
     message("    EGL: ${waffle_EGL_library}")
-endif(DEFINED waffle_EGL_library)
+endif()
 if(DEFINED waffle_GL_library)
     message("    GL: ${waffle_GL_library}")
-endif(DEFINED waffle_GL_library)
+endif()
 if(waffle_has_wayland)
     message("    wayland-client: ${waffle_wayland-client_library}")
     message("    wayland-egl: ${waffle_wayland-egl_library}")
-endif(waffle_has_wayland)
+endif()
 if(DEFINED waffle_X11-xcb_library)
     message("    X11-xcb: ${waffle_X11-xcb_library}")
-endif(DEFINED waffle_X11-xcb_library)
+endif()
 message("")
 message("Build type:")
 message("    ${CMAKE_BUILD_TYPE}")
