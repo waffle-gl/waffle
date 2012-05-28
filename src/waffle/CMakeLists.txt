@@ -24,6 +24,9 @@ if(waffle_has_egl)
     list(APPEND waffle_sources
         egl/egl_no_native.c
         )
+    list(APPEND waffle_libdeps
+        ${waffle_EGL_library}
+        )
 endif(waffle_has_egl)
 
 if(waffle_has_glx)
@@ -35,6 +38,9 @@ if(waffle_has_glx)
         glx/glx_gl_misc.c
         glx/glx_platform.c
         glx/glx_window.c
+        )
+    list(APPEND waffle_libdeps
+        ${waffle_GL_library}
         )
 endif(waffle_has_glx)
 
@@ -56,11 +62,18 @@ if(waffle_has_wayland)
         wayland/wayland_priv_egl.c
         wayland/wayland_window.c
     )
+    list(APPEND waffle_libdeps
+        ${waffle_wayland-client_library}
+        ${waffle_wayland-egl_library}
+        )
 endif(waffle_has_wayland)
 
 if(waffle_has_x11)
     list(APPEND waffle_sources
         x11/x11.c
+        )
+    list(APPEND waffle_libdeps
+        ${waffle_X11-xcb_library}
         )
 endif(waffle_has_x11)
 
@@ -78,25 +91,7 @@ if(waffle_has_x11_egl)
 endif(waffle_has_x11_egl)
 
 add_library(waffle SHARED ${waffle_sources})
-
-if(waffle_has_egl)
-  target_link_libraries(waffle ${waffle_EGL_library})
-endif(waffle_has_egl)
-
-if(waffle_has_glx)
-    target_link_libraries(waffle ${waffle_GL_library})
-endif(waffle_has_glx)
-
-if(waffle_has_wayland)
-    target_link_libraries(waffle
-        ${waffle_wayland-client_library}
-        ${waffle_wayland-egl_library}
-        )
-endif(waffle_has_wayland)
-
-if(waffle_has_x11_egl)
-  target_link_libraries(waffle ${waffle_X11-xcb_library})
-endif(waffle_has_x11_egl)
+target_link_libraries(waffle ${waffle_libdeps})
 
 set_target_properties(waffle
     PROPERTIES
