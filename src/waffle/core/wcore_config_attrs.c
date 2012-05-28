@@ -109,6 +109,14 @@ wcore_config_attrs_check_context(struct wcore_config_attrs *attrs)
                              "version is >= 3.2");
                 return false;
             }
+            else if (version >= 32
+                     && attrs->context_profile == WAFFLE_CONTEXT_CORE_PROFILE
+                     && attrs->accum_buffer) {
+                wcore_errorf(WAFFLE_BAD_ATTRIBUTE,
+                             "core profiles do not support accumulation "
+                             "buffers");
+                return false;
+            }
 
             return true;
         }
