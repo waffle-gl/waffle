@@ -30,6 +30,8 @@
 /// @brief Key for @ref wcore_tinfo_tl_singleton.
 static pthread_key_t wcore_tinfo_key;
 
+#ifdef WAFFLE_HAS_TLS
+
 /// @brief Thread-local singleton for thread info.
 ///
 /// There exists a distinct pointer for each thread.
@@ -46,6 +48,8 @@ static pthread_key_t wcore_tinfo_key;
 static __thread
     struct wcore_tinfo *wcore_tinfo_tl_singleton
     __attribute__((tls_model("initial-exec")));
+
+#endif
 
 static void
 wcore_tinfo_destroy(struct wcore_tinfo *self)
@@ -117,9 +121,17 @@ wcore_tinfo_key_init(void)
 struct wcore_tinfo*
 wcore_tinfo_get(void)
 {
+    struct wcore_tinfo *t;
+
     wcore_tinfo_key_init();
 
-    if (wcore_tinfo_tl_singleton == NULL) {
+    #ifdef WAFFLE_HAS_TLS
+        t = wcore_tinfo_tl_singleton;
+    #else
+        t = pthread_getspecific(wcore_tinfo_key);
+    #endif
+
+    if (t == NULL) {
         // If a key is assigned a non-null pointer, then the key's
         // destructor will be called on that pointer when the thread exits.
         //
@@ -127,16 +139,19 @@ wcore_tinfo_get(void)
         // storage is assigned. If not, a memory leak will occur if a
         // disaster occurs between assignment to thread-local storage and
         // assignment to the key.
-        struct wcore_tinfo *t = wcore_tinfo_create();
+        t = wcore_tinfo_create();
         if (!t) {
             printf("waffle: fatal-error: failed to allocate thread info\n");
             abort();
         }
         pthread_setspecific(wcore_tinfo_key, t);
-        wcore_tinfo_tl_singleton = t;
+
+        #ifdef WAFFLE_HAS_TLS
+            wcore_tinfo_tl_singleton = t;
+        #endif
     }
 
-    return wcore_tinfo_tl_singleton;
+    return t;
 }
 
 /// @}

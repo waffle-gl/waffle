@@ -25,6 +25,15 @@ set(waffle_version 0.3.1)
 # See http://www.gnu.org/software/libtool/manual/html_node/Updating-version-info.html.
 set(waffle_so_version "2.1.0")
 
+
+# ------------------------------------------------------------------------------
+# Includes
+# ------------------------------------------------------------------------------
+
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules")
+include(CheckThreadLocalStorage)
+
+
 # ------------------------------------------------------------------------------
 # Waffle Options
 # ------------------------------------------------------------------------------
@@ -55,6 +64,8 @@ set(waffle_install_docdir "${CMAKE_INSTALL_PREFIX}/share/doc/waffle"
 #
 # Set internal options.
 #
+
+check_thread_local_storage(waffle_has_tls)
 
 if(waffle_has_wayland OR waffle_has_x11_egl)
     set(waffle_has_egl TRUE)
@@ -125,6 +136,10 @@ set(CMAKE_C_FLAGS_DEBUG "-g3 -O0 -DDEBUG")
 # Produce enough debug info for generating backtraces, but not
 # single-stepping.
 set(CMAKE_C_FLAGS_RELEASE "-g1 -02 -DNDEBUG")
+
+if(waffle_has_tls)
+    add_definitions(-DWAFFLE_HAS_TLS)
+endif(waffle_has_tls)
 
 #
 # Define macros WAFFLE_HAS_{PLATFORM}.
