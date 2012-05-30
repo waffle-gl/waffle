@@ -49,6 +49,10 @@ if("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
         linux/linux_dl.c
         linux/linux_platform.c
         )
+    list(APPEND waffle_libdeps
+        dl
+        pthread
+        )
 endif()
 
 if(waffle_has_wayland)
@@ -74,6 +78,8 @@ if(waffle_has_x11)
         )
     list(APPEND waffle_libdeps
         ${waffle_X11-xcb_library}
+        ${waffle_X11_library}
+        ${waffle_xcb_library}
         )
 endif()
 
