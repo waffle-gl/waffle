@@ -307,17 +307,12 @@ egl_get_render_buffer_attrib(
         const struct wcore_config_attrs *attrs,
         EGLint *egl_render_buffer_attrib)
 {
-    switch (attrs->double_buffered) {
-        case true:
-            *egl_render_buffer_attrib = EGL_BACK_BUFFER;
-            return true;
-        case false:
-            *egl_render_buffer_attrib = EGL_SINGLE_BUFFER;
-            return true;
-        default:
-            wcore_error_internal("%s", "attrs->double_buffered has bad value");
-            return false;
-    }
+    if (attrs->double_buffered)
+        *egl_render_buffer_attrib = EGL_BACK_BUFFER;
+    else
+        *egl_render_buffer_attrib = EGL_SINGLE_BUFFER;
+
+    return true;
 }
 
 bool
