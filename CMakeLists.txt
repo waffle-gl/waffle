@@ -65,7 +65,10 @@ set(waffle_install_docdir "${CMAKE_INSTALL_PREFIX}/share/doc/waffle"
 # Set internal options.
 #
 
-check_thread_local_storage(waffle_has_tls)
+# Set the following:
+#     waffle_has_tls
+#     waffle_tls_model_initial_exec
+check_thread_local_storage()
 
 if(waffle_has_wayland OR waffle_has_x11_egl)
     set(waffle_has_egl TRUE)
