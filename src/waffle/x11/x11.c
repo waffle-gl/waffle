@@ -57,6 +57,24 @@ x11_display_disconnect(Display *dpy)
     return !error;
 }
 
+static uint8_t
+x11_get_depth_for_visual(
+        xcb_connection_t *conn,
+        const xcb_screen_t *screen,
+        xcb_visualid_t id)
+{
+    xcb_depth_iterator_t depth = xcb_screen_allowed_depths_iterator(screen);
+    for (; depth.rem; xcb_depth_next(&depth)) {
+        xcb_visualtype_iterator_t visual =
+            xcb_depth_visuals_iterator (depth.data);
+        for (; visual.rem; xcb_visualtype_next(&visual)) {
+            if (visual.data->visual_id == id)
+                return depth.data->depth;
+        }
+    }
+    return 0;
+}
+
 xcb_window_t
 x11_window_create(
         xcb_connection_t *conn,
@@ -95,12 +113,14 @@ x11_window_create(
     const uint32_t event_mask = XCB_EVENT_MASK_BUTTON_PRESS
                                | XCB_EVENT_MASK_EXPOSURE
                                | XCB_EVENT_MASK_KEY_PRESS;
-    const uint32_t attrib_mask = XCB_CW_EVENT_MASK | XCB_CW_COLORMAP;
-    const uint32_t attrib_list[] = {event_mask, colormap, 0};
+    const uint32_t attrib_mask = XCB_CW_EVENT_MASK
+                                | XCB_CW_COLORMAP
+                                | XCB_CW_BORDER_PIXEL;
+    const uint32_t attrib_list[] = {0, event_mask, colormap, 0};
 
     xcb_void_cookie_t create_cookie = xcb_create_window_checked(
             conn,
-            XCB_COPY_FROM_PARENT, // depth
+            x11_get_depth_for_visual(conn, screen, visual_id), // depth
             window,
             screen->root, // parent
             0, 0, // x, y
