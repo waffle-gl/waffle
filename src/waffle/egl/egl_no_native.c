@@ -137,7 +137,7 @@ egl_choose_config(
     const int renderable_index = 19;
 
     EGLint attrib_list[] = {
-        EGL_BUFFER_SIZE,            attrs->color_buffer_size,
+        EGL_BUFFER_SIZE,            attrs->rgba_size,
         EGL_RED_SIZE,               attrs->red_size,
         EGL_GREEN_SIZE,             attrs->green_size,
         EGL_BLUE_SIZE,              attrs->blue_size,

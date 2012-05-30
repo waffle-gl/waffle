@@ -28,7 +28,7 @@
 
 /// @brief Attribute defaults that apply to all API's.
 static const struct wcore_config_attrs wcore_config_attrs_default_all = {
-    .color_buffer_size      = 0,
+    .rgba_size      = 0,
     .red_size               = WAFFLE_DONT_CARE,
     .green_size             = WAFFLE_DONT_CARE,
     .blue_size              = WAFFLE_DONT_CARE,
@@ -259,15 +259,15 @@ wcore_config_attrs_parse(
         }
     }
 
-    attrs->color_buffer_size = 0;
+    attrs->rgba_size = 0;
     if (attrs->red_size != WAFFLE_DONT_CARE)
-        attrs->color_buffer_size += attrs->red_size;
+        attrs->rgba_size += attrs->red_size;
     if (attrs->green_size != WAFFLE_DONT_CARE)
-        attrs->color_buffer_size += attrs->green_size;
+        attrs->rgba_size += attrs->green_size;
     if (attrs->blue_size != WAFFLE_DONT_CARE)
-        attrs->color_buffer_size += attrs->blue_size;
+        attrs->rgba_size += attrs->blue_size;
     if (attrs->alpha_size != WAFFLE_DONT_CARE)
-        attrs->color_buffer_size += attrs->alpha_size;
+        attrs->rgba_size += attrs->alpha_size;
 
     if (!wcore_config_attrs_check_context(attrs))
         return false;

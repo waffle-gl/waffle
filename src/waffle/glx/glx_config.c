@@ -102,7 +102,7 @@ glx_config_choose(
         return NULL;
 
     int attrib_list[] = {
-        GLX_BUFFER_SIZE,        attrs->color_buffer_size,
+        GLX_BUFFER_SIZE,        attrs->rgba_size,
         GLX_RED_SIZE,           attrs->red_size,
         GLX_GREEN_SIZE,         attrs->green_size,
         GLX_BLUE_SIZE,          attrs->blue_size,
