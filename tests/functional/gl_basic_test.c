@@ -147,7 +147,7 @@ gl_basic_init(int32_t waffle_platform)
 }
 
 static void
-gl_basic_draw(int32_t waffle_context_api)
+gl_basic_draw(int32_t waffle_context_api, int32_t alpha)
 {
     int32_t libgl;
 
@@ -159,7 +159,7 @@ gl_basic_draw(int32_t waffle_context_api)
         WAFFLE_RED_SIZE,        8,
         WAFFLE_GREEN_SIZE,      8,
         WAFFLE_BLUE_SIZE,       8,
-        WAFFLE_ALPHA_SIZE,      0,
+        WAFFLE_ALPHA_SIZE,      alpha,
         0,
     };
 
@@ -246,28 +246,46 @@ TEST(gl_basic, glx_init)
     gl_basic_init(WAFFLE_PLATFORM_GLX);
 }
 
-TEST(gl_basic, glx_gl)
+TEST(gl_basic, glx_gl_rgb)
 {
-    gl_basic_draw(WAFFLE_CONTEXT_OPENGL);
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL, 0);
 }
 
-TEST(gl_basic, glx_gles1)
+TEST(gl_basic, glx_gles1_rgb)
 {
-    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES1);
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES1, 0);
 }
 
-TEST(gl_basic, glx_gles2)
+TEST(gl_basic, glx_gles2_rgb)
 {
-    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES2);
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES2, 0);
+}
+
+TEST(gl_basic, glx_gl_rgba)
+{
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL, 1);
+}
+
+TEST(gl_basic, glx_gles1_rgba)
+{
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES1, 1);
+}
+
+TEST(gl_basic, glx_gles2_rgba)
+{
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES2, 1);
 }
 
 static void
 testsuite_glx(void)
 {
     TEST_RUN(gl_basic, glx_init);
-    TEST_RUN(gl_basic, glx_gl);
-    TEST_RUN(gl_basic, glx_gles1);
-    TEST_RUN(gl_basic, glx_gles2);
+    TEST_RUN(gl_basic, glx_gl_rgb);
+    TEST_RUN(gl_basic, glx_gles1_rgb);
+    TEST_RUN(gl_basic, glx_gles2_rgb);
+    TEST_RUN(gl_basic, glx_gl_rgba);
+    TEST_RUN(gl_basic, glx_gles1_rgba);
+    TEST_RUN(gl_basic, glx_gles2_rgba);
 }
 #endif // WAFFLE_HAS_GLX
 
@@ -277,28 +295,46 @@ TEST(gl_basic, wayland_init)
     gl_basic_init(WAFFLE_PLATFORM_WAYLAND);
 }
 
-TEST(gl_basic, wayland_gl)
+TEST(gl_basic, wayland_gl_rgb)
 {
-    gl_basic_draw(WAFFLE_CONTEXT_OPENGL);
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL, 0);
 }
 
-TEST(gl_basic, wayland_gles1)
+TEST(gl_basic, wayland_gles1_rgb)
 {
-    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES1);
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES1, 0);
 }
 
-TEST(gl_basic, wayland_gles2)
+TEST(gl_basic, wayland_gles2_rgb)
 {
-    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES2);
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES2, 0);
+}
+
+TEST(gl_basic, wayland_gl_rgba)
+{
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL, 1);
+}
+
+TEST(gl_basic, wayland_gles1_rgba)
+{
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES1, 1);
+}
+
+TEST(gl_basic, wayland_gles2_rgba)
+{
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES2, 1);
 }
 
 static void
 testsuite_wayland(void)
 {
     TEST_RUN(gl_basic, wayland_init);
-    TEST_RUN(gl_basic, wayland_gl);
-    TEST_RUN(gl_basic, wayland_gles1);
-    TEST_RUN(gl_basic, wayland_gles2);
+    TEST_RUN(gl_basic, wayland_gl_rgb);
+    TEST_RUN(gl_basic, wayland_gles1_rgb);
+    TEST_RUN(gl_basic, wayland_gles2_rgb);
+    TEST_RUN(gl_basic, wayland_gl_rgba);
+    TEST_RUN(gl_basic, wayland_gles1_rgba);
+    TEST_RUN(gl_basic, wayland_gles2_rgba);
 }
 #endif // WAFFLE_HAS_WAYLAND
 
@@ -308,28 +344,46 @@ TEST(gl_basic, x11_egl_init)
     gl_basic_init(WAFFLE_PLATFORM_X11_EGL);
 }
 
-TEST(gl_basic, x11_egl_gl)
+TEST(gl_basic, x11_egl_gl_rgb)
 {
-    gl_basic_draw(WAFFLE_CONTEXT_OPENGL);
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL, 0);
 }
 
-TEST(gl_basic, x11_egl_gles1)
+TEST(gl_basic, x11_egl_gles1_rgb)
 {
-    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES1);
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES1, 0);
 }
 
-TEST(gl_basic, x11_egl_gles2)
+TEST(gl_basic, x11_egl_gles2_rgb)
 {
-    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES2);
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES2, 0);
+}
+
+TEST(gl_basic, x11_egl_gl_rgba)
+{
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL, 1);
+}
+
+TEST(gl_basic, x11_egl_gles1_rgba)
+{
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES1, 1);
+}
+
+TEST(gl_basic, x11_egl_gles2_rgba)
+{
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES2, 1);
 }
 
 static void
 testsuite_x11_egl(void)
 {
     TEST_RUN(gl_basic, x11_egl_init);
-    TEST_RUN(gl_basic, x11_egl_gl);
-    TEST_RUN(gl_basic, x11_egl_gles1);
-    TEST_RUN(gl_basic, x11_egl_gles2);
+    TEST_RUN(gl_basic, x11_egl_gl_rgb);
+    TEST_RUN(gl_basic, x11_egl_gles1_rgb);
+    TEST_RUN(gl_basic, x11_egl_gles2_rgb);
+    TEST_RUN(gl_basic, x11_egl_gl_rgba);
+    TEST_RUN(gl_basic, x11_egl_gles1_rgba);
+    TEST_RUN(gl_basic, x11_egl_gles2_rgba);
 }
 #endif // WAFFLE_HAS_X11_EGL
 
