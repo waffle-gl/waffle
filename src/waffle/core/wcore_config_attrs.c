@@ -259,13 +259,15 @@ wcore_config_attrs_parse(
         }
     }
 
-    attrs->rgba_size = 0;
+    attrs->rgb_size = 0;
     if (attrs->red_size != WAFFLE_DONT_CARE)
-        attrs->rgba_size += attrs->red_size;
+        attrs->rgb_size += attrs->red_size;
     if (attrs->green_size != WAFFLE_DONT_CARE)
-        attrs->rgba_size += attrs->green_size;
+        attrs->rgb_size += attrs->green_size;
     if (attrs->blue_size != WAFFLE_DONT_CARE)
-        attrs->rgba_size += attrs->blue_size;
+        attrs->rgb_size += attrs->blue_size;
+
+    attrs->rgba_size = attrs->rgb_size;
     if (attrs->alpha_size != WAFFLE_DONT_CARE)
         attrs->rgba_size += attrs->alpha_size;
 

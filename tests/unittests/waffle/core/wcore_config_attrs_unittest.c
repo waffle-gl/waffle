@@ -31,7 +31,9 @@ static const struct wcore_config_attrs default_attrs = {
     .context_minor_version  = 0,
     .context_profile        = WAFFLE_CONTEXT_CORE_PROFILE,
 
+    .rgb_size               = 0,
     .rgba_size              = 0,
+
     .red_size               = WAFFLE_DONT_CARE,
     .green_size             = WAFFLE_DONT_CARE,
     .blue_size              = WAFFLE_DONT_CARE,
@@ -109,6 +111,8 @@ TEST(wcore_config_attrs, color_buffer_size)
     expect_attrs.alpha_size = 8;
     expect_attrs.red_size = 5;
     expect_attrs.green_size = 6;
+
+    expect_attrs.rgb_size = 5 + 6;
     expect_attrs.rgba_size = 8 + 5 + 6;
 
     ASSERT_TRUE(wcore_config_attrs_parse(attrib_list, &actual_attrs));
