@@ -30,6 +30,10 @@
 #include <string.h>
 #include <time.h>
 
+#ifdef __APPLE__
+#    include <Cocoa/Cocoa.h>
+#endif
+
 #include <waffle/waffle.h>
 
 static const char *usage_message =
@@ -245,6 +249,37 @@ draw(struct waffle_window *window)
     return true;
 }
 
+#ifdef __APPLE__
+
+static NSAutoreleasePool *pool;
+
+static void
+cocoa_init(void)
+{
+    // From the NSApplication Class Reference:
+    //     [...] if you do need to use Cocoa classes within the main()
+    //     function itself (other than to load nib files or to instantiate
+    //     NSApplication), you should create an autorelease pool before using
+    //     the classes and then release the pool when you’re done.
+    pool = [[NSAutoreleasePool alloc] init];
+
+    // From the NSApplication Class Reference:
+    //     The sharedApplication class method initializes the display
+    //     environment and connects your program to the window server and the
+    //     display server.
+    //
+    // It also creates the singleton NSApp if it does not yet exist.
+    [NSApplication sharedApplication];
+}
+
+static void
+cocoa_finish(void)
+{
+    [pool drain];
+}
+
+#endif // __APPLE__
+
 int
 main(int argc, char **argv)
 {
@@ -260,6 +295,10 @@ main(int argc, char **argv)
     struct waffle_config *config;
     struct waffle_context *ctx;
     struct waffle_window *window;
+
+    #ifdef __APPLE__
+        cocoa_init();
+    #endif
 
     ok = parse_args(argc, argv, &opts);
     if (!ok)
@@ -338,6 +377,10 @@ main(int argc, char **argv)
     ok = waffle_display_disconnect(dpy);
     if (!ok)
         error_waffle();
+
+    #ifdef __APPLE__
+        cocoa_finish();
+    #endif
 
     return EXIT_SUCCESS;
 }
