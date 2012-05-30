@@ -142,6 +142,10 @@ if(waffle_has_tls)
     add_definitions(-DWAFFLE_HAS_TLS)
 endif()
 
+if(waffle_has_tls_model_initial_exec)
+    add_definitions(-DWAFFLE_HAS_TLS_MODEL_INITIAL_EXEC)
+endif()
+
 #
 # Define macros WAFFLE_HAS_{PLATFORM}.
 #
