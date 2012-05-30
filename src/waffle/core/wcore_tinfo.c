@@ -45,9 +45,11 @@ static pthread_key_t wcore_tinfo_key;
 /// [2] Ulrich Drepper. "Elf Handling For Thread Local Storage".
 ///     http://people.redhat.com/drepper/tls.pdf
 
-static __thread
-    struct wcore_tinfo *wcore_tinfo_tl_singleton
-    __attribute__((tls_model("initial-exec")));
+static __thread struct wcore_tinfo *wcore_tinfo_tl_singleton
+#ifdef WAFFLE_HAS_TLS_MODEL_INITIAL_EXEC
+    __attribute__((tls_model("initial-exec")))
+#endif
+    ;
 
 #endif
 
