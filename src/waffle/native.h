@@ -26,16 +26,16 @@
 struct wcore_config_attrs;
 
 #define NATIVE_UNION(name) \
+    struct cgl_##name; \
     struct droid_##name; \
     struct glx_##name; \
-    struct mac_##name; \
     struct wayland_##name; \
     struct xegl_##name; \
     \
     union native_##name { \
+        struct cgl_##name *cgl; \
         struct droid_##name *droid; \
         struct glx_##name *glx; \
-        struct mac_##name *mac; \
         struct wayland_##name *wl; \
         struct xegl_##name *xegl; \
     }

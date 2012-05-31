@@ -86,10 +86,20 @@ endif()
 # Validate waffle options
 # ----------------------------------------------
 
-if(NOT waffle_has_glx
-   AND NOT waffle_has_wayland
-   AND NOT waffle_has_x11_egl)
-    message(FATAL_ERROR "Must enable at least one of: waffle_has_glx, waffle_has_wayland, waffle_has_x11_egl.")
+if("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
+    if(NOT waffle_has_glx AND NOT waffle_has_wayland AND NOT waffle_has_x11_egl)
+        message(FATAL_ERROR "Must enable at least one of: waffle_has_glx, waffle_has_wayland, waffle_has_x11_egl.")
+    endif()
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "Darwin")
+    if(waffle_has_glx)
+        message(FATAL_ERROR "Option is not supported on Darwin: waffle_has_glx.")
+    endif()
+    if(waffle_has_wayland)
+        message(FATAL_ERROR "Option is not supported on Darwin: waffle_has_wayland.")
+    endif()
+    if(waffle_has_x11_egl)
+        message(FATAL_ERROR "Option is not supported on Darwin: waffle_has_x11_egl.")
+    endif()
 endif()
 
 
@@ -106,6 +116,12 @@ function(waffle_find_library var name)
         message(STATUS "Library ${name} not found")
     endif()
 endfunction()
+
+if("${CMAKE_SYSTEM_NAME}" STREQUAL "Darwin")
+    find_package(OpenGL REQUIRED)
+    find_library(COCOA_FRAMEWORK Cocoa REQUIRED)
+    find_library(CORE_FOUNDATION_FRAMEWORK CoreFoundation REQUIRED)
+endif()
 
 if(waffle_has_egl)
     waffle_find_library(waffle_EGL_library EGL)
@@ -153,6 +169,10 @@ endif()
 #
 # Android is not in this list because it uses a separate build system.
 #
+
+if("${CMAKE_SYSTEM_NAME}" STREQUAL "Darwin")
+    add_definitions(-DWAFFLE_HAS_CGL)
+endif()
 
 if(waffle_has_glx)
     add_definitions(-DWAFFLE_HAS_GLX)

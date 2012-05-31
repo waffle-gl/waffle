@@ -55,7 +55,7 @@ enum waffle_enum {
 
     WAFFLE_PLATFORM                                             = 0x0010,
         WAFFLE_PLATFORM_ANDROID                                 = 0x0011,
-        WAFFLE_PLATFORM_COCOA                                   = 0x0012,
+        WAFFLE_PLATFORM_CGL                                     = 0x0012,
         WAFFLE_PLATFORM_GLX                                     = 0x0013,
         WAFFLE_PLATFORM_WAYLAND                                 = 0x0014,
         WAFFLE_PLATFORM_X11_EGL                                 = 0x0015,

@@ -20,6 +20,26 @@ set(waffle_sources
     core/wcore_tinfo.c
     )
 
+if("${CMAKE_SYSTEM_NAME}" STREQUAL "Darwin")
+    list(APPEND waffle_sources
+        cgl/cgl_config.m
+        cgl/cgl_context.m
+        cgl/cgl_display.m
+        cgl/cgl_dl.m
+        cgl/cgl_error.m
+        cgl/cgl_gl_misc.m
+        cgl/cgl_platform.m
+        cgl/cgl_window.m
+
+        cgl/WaffleGLView.m
+        )
+    list(APPEND waffle_libdeps
+        ${OPENGL_gl_LIBRARY}
+        ${COCOA_FRAMEWORK}
+        ${CORE_FOUNDATION_FRAMEWORK}
+        )
+endif()
+
 if(waffle_has_egl)
     list(APPEND waffle_sources
         egl/egl_no_native.c
@@ -95,6 +115,15 @@ if(waffle_has_x11_egl)
         x11_egl/xegl_window.c
     )
 endif()
+
+# CMake will pass to the C compiler only C sources. CMake does not recognize the
+# .m extension and ignores any such files in the source lists. To coerce CMake
+# to pass .m files to the compiler, we must lie and claim that they are
+# C sources.
+set_source_files_properties(
+    ${waffle_sources}
+    PROPERTIES LANGUAGE C
+    )
 
 add_library(waffle SHARED ${waffle_sources})
 target_link_libraries(waffle ${waffle_libdeps})

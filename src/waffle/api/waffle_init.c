@@ -43,8 +43,8 @@ waffle_init_parse_attrib_list(
 #ifdef WAFFLE_HAS_ANDROID
                     case WAFFLE_PLATFORM_ANDROID:
 #endif
-#ifdef WAFFLE_HAS_COCOA
-                    case WAFFLE_PLATFORM_COCOA:
+#ifdef WAFFLE_HAS_CGL
+                    case WAFFLE_PLATFORM_CGL:
 #endif
 #ifdef WAFFLE_HAS_GLX
                     case WAFFLE_PLATFORM_GLX:
