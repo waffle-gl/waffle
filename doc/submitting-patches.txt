@@ -28,7 +28,7 @@ touching existing files.
 Copyright
 ---------
 
-If the patch adds a new file, the file must contain the Apache 2.0 copyright
+If the patch adds a new file, the file must contain the BSD copyright
 header.  Just copy the same header block used throughout Waffle. You may
 assign the copyright to yourself, your organization, or Intel, Waffle's
 dominant copyright holder.
