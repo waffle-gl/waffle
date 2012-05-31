@@ -149,7 +149,7 @@ struct thread_arg {
     pthread_cond_t *cond;
 
     /// Number of threads waiting on `cond`.
-    int *num_threads_waiting;
+    volatile int *num_threads_waiting;
 };
 
 /// The start routine given to threads in test wcore_error.thread_local.
@@ -191,7 +191,7 @@ TEST(wcore_error, thread_local)
 {
     pthread_mutex_t mutex;
     pthread_cond_t cond;
-    int num_threads_waiting = 0;
+    volatile int num_threads_waiting = 0;
 
     pthread_t threads[NUM_THREADS];
     struct thread_arg thread_args[NUM_THREADS];
