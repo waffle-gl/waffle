@@ -165,7 +165,7 @@ set(CMAKE_C_FLAGS_DEBUG "-g3 -O0 -DDEBUG")
 
 # Produce enough debug info for generating backtraces, but not
 # single-stepping.
-set(CMAKE_C_FLAGS_RELEASE "-g1 -02 -DNDEBUG")
+set(CMAKE_C_FLAGS_RELEASE "-g1 -O2 -DNDEBUG")
 
 if(waffle_has_tls)
     add_definitions(-DWAFFLE_HAS_TLS)
