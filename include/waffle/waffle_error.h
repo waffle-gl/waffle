@@ -123,7 +123,6 @@ enum waffle_error {
 
     WAFFLE_NOT_INITIALIZED              = 0x05,
     WAFFLE_ALREADY_INITIALIZED          = 0x06,
-    WAFFLE_OLD_OBJECT                   = 0x07,
     WAFFLE_BAD_ATTRIBUTE                = 0x08,
     WAFFLE_INCOMPATIBLE_ATTRIBUTES      = 0x09,
     WAFFLE_BAD_PARAMETER                = 0x10,
