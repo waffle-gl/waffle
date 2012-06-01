@@ -38,6 +38,10 @@
 
 struct api_object;
 struct wcore_platform;
+union native_config;
+union native_context;
+union native_display;
+union native_window;
 
 /// @brief Managed by waffle_init().
 extern struct wcore_platform *api_current_platform;
@@ -68,28 +72,52 @@ struct api_object {
     size_t display_id;
 };
 
-#define API_TYPE(name) \
-    union native_##name;                                                    \
-                                                                            \
-    struct waffle_##name {                                                  \
-        struct api_object api;                                              \
-        union native_##name *native;                                        \
-    };                                                                      \
-                                                                            \
-    static inline struct api_object*                                        \
-    waffle_##name##_cast_to_api_object(struct waffle_##name *x)             \
-    {                                                                       \
-        if (x)                                                              \
-            return &x->api;                                                 \
-        else                                                                \
-            return NULL;                                                    \
-    }
+struct waffle_config {
+    struct api_object api;
+    union native_config *native;
+};
 
-API_TYPE(display)
-API_TYPE(config)
-API_TYPE(context)
-API_TYPE(window)
+struct waffle_context {
+    struct api_object api;
+    union native_context *native;
+};
 
-#undef API_TYPE
+struct waffle_display {
+    struct api_object api;
+    union native_display *native;
+};
+
+struct waffle_window {
+    struct api_object api;
+    union native_window *native;
+};
+
+/// Return null if @a config is null.
+static inline struct api_object*
+waffle_config_cast_to_api_object(struct waffle_config *config)
+{
+    return config ? &config->api : NULL;
+}
+
+/// Return null if @a ctx is null.
+static inline struct api_object*
+waffle_context_cast_to_api_object(struct waffle_context *ctx)
+{
+    return ctx ? &ctx->api : NULL;
+}
+
+/// Return null if @a display is null.
+static inline struct api_object*
+waffle_display_cast_to_api_object(struct waffle_display *display)
+{
+    return display ? &display->api : NULL;
+}
+
+/// Return null if @a window is null.
+static inline struct api_object*
+waffle_window_cast_to_api_object(struct waffle_window *window)
+{
+    return window ? &window->api : NULL;
+}
 
 /// @}
