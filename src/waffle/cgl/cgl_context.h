@@ -23,12 +23,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @defgroup cgl_context cgl_context
-/// @ingroup cgl
-/// @{
-
-/// @file
-
 #pragma once
 
 #include <stdbool.h>
@@ -36,19 +30,23 @@
 #include <Cocoa/Cocoa.h>
 #include <OpenGL/OpenGL.h>
 
-union native_context;
-union native_config;
+#include <waffle/core/wcore_context.h>
+#include <waffle/core/wcore_util.h>
+
+struct wcore_config;
+struct wcore_platform;
 
 struct cgl_context {
-    NSOpenGLContext *ns_context;
+    struct wcore_context wcore;
+    NSOpenGLContext *ns;
 };
 
-union native_context*
-cgl_context_create(
-        union native_config *config,
-        union native_context *share_ctx);
+DEFINE_CONTAINER_CAST_FUNC(cgl_context,
+                           struct cgl_context,
+                           struct wcore_context,
+                           wcore)
 
-bool
-cgl_context_destroy(union native_context *self);
-
-/// @}
+struct wcore_context*
+cgl_context_create(struct wcore_platform *wc_plat,
+                   struct wcore_config *wc_config,
+                   struct wcore_context *wc_share_ctx);

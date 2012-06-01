@@ -23,31 +23,31 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @defgroup xegl_display xegl_display
-/// @ingroup xegl
-/// @{
-
-/// @file
-
 #pragma once
 
 #include <stdbool.h>
 #include <stdint.h>
 
-union native_display;
-union native_platform;
+#include <EGL/egl.h>
+#include <X11/Xlib-xcb.h>
 
-union native_display*
-xegl_display_connect(
-        union native_platform *platform,
-        const char *name);
+#include <waffle/core/wcore_display.h>
+#include <waffle/core/wcore_util.h>
+#include <waffle/x11/x11_display.h>
 
-bool
-xegl_display_disconnect(union native_display *self);
+struct wcore_platform;
 
-bool
-xegl_display_supports_context_api(
-        union native_display *self,
-        int32_t context_api);
+struct xegl_display {
+    struct wcore_display wcore;
+    struct x11_display x11;
+    EGLDisplay egl;
+};
 
-/// @}
+DEFINE_CONTAINER_CAST_FUNC(xegl_display,
+                           struct xegl_display,
+                           struct wcore_display,
+                           wcore)
+
+struct wcore_display*
+xegl_display_connect(struct wcore_platform *wc_plat,
+                     const char *name);

@@ -23,20 +23,14 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @addtogroup cgl_dl
-/// @{
-
-/// @file
-
-#include "cgl_dl.h"
-
 #include <assert.h>
 #include <dlfcn.h>
 
 #include <waffle/waffle_enum.h>
-#include <waffle/native.h>
+
 #include <waffle/core/wcore_error.h>
 
+#include "cgl_dl.h"
 #include "cgl_platform.h"
 
 static const char *cgl_dl_gl_path =
@@ -63,10 +57,11 @@ cgl_dl_check_enum(int32_t waffle_dl)
 }
 
 static bool
-cgl_dl_open(union native_platform *platform)
+cgl_dl_open(struct cgl_platform *plat)
 {
-    platform->cgl->dl_gl = dlopen(cgl_dl_gl_path, RTLD_LAZY);
-    if (!platform->cgl->dl_gl) {
+    plat->dl_gl = dlopen(cgl_dl_gl_path, RTLD_LAZY);
+
+    if (!plat->dl_gl) {
         wcore_errorf(WAFFLE_UNKNOWN_ERROR,
                      "dlopen(\"%s\") failed", cgl_dl_gl_path);
         return false;
@@ -76,69 +71,44 @@ cgl_dl_open(union native_platform *platform)
 }
 
 bool
-cgl_dl_can_open(
-        union native_platform *platform,
-        int32_t waffle_dl)
+cgl_dl_can_open(struct wcore_platform *wc_plat,
+                int32_t waffle_dl)
 {
+    struct cgl_platform *plat = cgl_platform(wc_plat);
+
     if (!cgl_dl_check_enum(waffle_dl))
         return false;
 
-    if (platform->cgl->dl_gl != NULL)
+    if (plat->dl_gl != NULL)
         return true;
 
     WCORE_ERROR_DISABLED({
-        cgl_dl_open(platform);
+        cgl_dl_open(plat);
     });
 
-    return platform->cgl->dl_gl != NULL;
-}
-
-bool
-cgl_dl_close(struct cgl_platform *platform)
-{
-    int error_code = 0;
-    const char *error_msg = NULL;
-
-    if (!platform->dl_gl)
-        return true;
-
-    error_code = dlclose(platform->dl_gl);
-
-    if (error_code)
-        error_msg = dlerror();
-
-    if (error_code && error_msg) {
-        wcore_errorf(WAFFLE_UNKNOWN_ERROR,
-                     "dlclose(libname=\"%s\") failed: %s",
-                     error_msg);
-    }
-    else if (error_code && !error_msg) {
-        wcore_errorf(WAFFLE_UNKNOWN_ERROR,
-                     "dlclose(libname=\"%s\") failed");
-    }
-
-    return !error_code;
+    return plat->dl_gl != NULL;
 }
 
 void*
-cgl_dl_sym(
-        union native_platform *platform,
-        int32_t waffle_dl,
-        const char *symbol)
+cgl_dl_sym(struct wcore_platform *wc_plat,
+          int32_t waffle_dl,
+          const char *name)
 {
+    struct cgl_platform *plat = cgl_platform(wc_plat);
+
     if (!cgl_dl_check_enum(waffle_dl))
         return NULL;
 
-    if (platform->cgl->dl_gl == NULL)
-        cgl_dl_open(platform);
+    if (plat->dl_gl == NULL)
+        cgl_dl_open(plat);
 
-    if (platform->cgl->dl_gl == NULL)
+    if (plat->dl_gl == NULL)
         return NULL;
 
     // Clear any previous error.
     dlerror();
 
-    void *sym = dlsym(platform->cgl->dl_gl, symbol);
+    void *sym = dlsym(plat->dl_gl, name);
 
     if (sym)
         return sym;
@@ -148,10 +118,39 @@ cgl_dl_sym(
     if (error) {
         wcore_errorf(WAFFLE_UNKNOWN_ERROR,
                      "dlsym(libname=\"%s\", symbol=\"%s\") failed: %s",
-                     cgl_dl_gl_path, symbol, error);
+                     cgl_dl_gl_path, name, error);
     }
 
     return NULL;
 }
 
-/// @}
+bool
+cgl_dl_close(struct wcore_platform *wc_plat)
+{
+    struct cgl_platform *plat = cgl_platform(wc_plat);
+
+    int error_code = 0;
+    const char *error_msg = NULL;
+
+    if (!plat->dl_gl)
+        return true;
+
+    error_code = dlclose(plat->dl_gl);
+
+    if (!error_code)
+        return true;
+
+    error_msg = dlerror();
+
+    if (error_msg) {
+        wcore_errorf(WAFFLE_UNKNOWN_ERROR,
+                     "dlclose(libname=\"%s\") failed: %s",
+                     error_msg);
+    }
+    else {
+        wcore_errorf(WAFFLE_UNKNOWN_ERROR,
+                     "dlclose(libname=\"%s\") failed");
+    }
+
+    return false;
+}

@@ -23,81 +23,84 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @addtogroup cgl_context
-/// @{
-
-/// @file
-
-#include "cgl_context.h"
-
 #include <assert.h>
 #include <stdlib.h>
 
-#include <waffle/native.h>
 #include <waffle/waffle_enum.h>
 #include <waffle/core/wcore_error.h>
 
 #include "cgl_config.h"
+#include "cgl_context.h"
 #include "cgl_error.h"
 
-union native_context*
-cgl_context_create(
-        union native_config *config,
-        union native_context *share_ctx)
-{
-    int error = 0;
-    CGLContextObj real_cgl_ctx = NULL;
-    CGLContextObj real_cgl_share_ctx = NULL;
+static const struct wcore_context_vtbl cgl_context_wcore_vtbl;
 
-    union native_context *self;
-    NATIVE_ALLOC(self, cgl);
+static bool
+cgl_context_destroy(struct wcore_context *wc_self)
+{
+    struct cgl_context *self = cgl_context(wc_self);
+    bool ok = true;
+
+    if (!self)
+        return ok;
+
+    [self->ns release];
+    ok &= wcore_context_teardown(wc_self);
+    free(self);
+    return ok;
+}
+
+struct wcore_context*
+cgl_context_create(struct wcore_platform *wc_plat,
+                   struct wcore_config *wc_config,
+                   struct wcore_context *wc_share_ctx)
+{
+    struct cgl_context *self;
+    struct cgl_config *config = cgl_config(wc_config);
+    struct cgl_context *share_ctx = cgl_context(wc_share_ctx);
+
+    CGLContextObj cgl_self = NULL;
+    CGLContextObj cgl_share_ctx = NULL;
+
+    int error = 0;
+
+    self = calloc(1, sizeof(*self));
     if (!self) {
         wcore_error(WAFFLE_OUT_OF_MEMORY);
         return NULL;
     }
 
-    if (share_ctx)
-        real_cgl_share_ctx = [share_ctx->cgl->ns_context CGLContextObj];
+    error = !wcore_context_init(&self->wcore, wc_config);
+    if (error)
+        goto fail;
 
-    error = CGLCreateContext(config->cgl->pixel_format,
-                             real_cgl_share_ctx,
-                             &real_cgl_ctx);
+    if (share_ctx)
+        cgl_share_ctx = [share_ctx->ns CGLContextObj];
+
+    error = CGLCreateContext(config->pixel_format, cgl_share_ctx, &cgl_self);
     if (error) {
         cgl_error_failed_func("CGLCreateContext", error);
         goto fail;
     }
 
-    self->cgl->ns_context = [[[NSOpenGLContext alloc]
-                            initWithCGLContextObj:real_cgl_ctx]
-                            autorelease];
-    if (!self->cgl->ns_context) {
+    self->ns = [[NSOpenGLContext alloc] initWithCGLContextObj:cgl_self];
+    if (!self->ns) {
         wcore_errorf(WAFFLE_UNKNOWN_ERROR,
                      "NSOpenGLContext.initWithCGLContextObj failed");
         goto fail;
     }
 
     // The NSOpenGLContext now owns the CGLContext.
-    CGLReleaseContext(real_cgl_ctx);
+    CGLReleaseContext(cgl_self);
 
-    goto end;
+    self->wcore.vtbl = &cgl_context_wcore_vtbl;
+    return &self->wcore;
 
 fail:
-    cgl_context_destroy(self);
-    self = NULL;
-
-end:
-    return self;
+    cgl_context_destroy(&self->wcore);
+    return NULL;
 }
 
-bool
-cgl_context_destroy(union native_context *self)
-{
-    if (!self)
-        return true;
-
-    [self->cgl->ns_context release];
-    free(self);
-    return true;
-}
-
-/// @}
+static const struct wcore_context_vtbl cgl_context_wcore_vtbl = {
+    .destroy = cgl_context_destroy,
+};

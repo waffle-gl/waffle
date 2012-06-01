@@ -23,15 +23,8 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @defgroup xegl_priv_egl xegl_priv_egl
-/// @ingroup xegl
-/// @{
-
-/// @file
-
 #pragma once
 
 #define NATIVE_EGL(basename) xegl_egl_##basename
-#include <waffle/egl/egl.h>
 
-/// @}
+#include <waffle/egl/egl.h>

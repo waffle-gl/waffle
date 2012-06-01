@@ -32,55 +32,42 @@
 
 #include <stdlib.h>
 
-#include <waffle/native.h>
 #include <waffle/waffle_enum.h>
 #include <waffle/core/wcore_error.h>
+#include <waffle/core/wcore_display.h>
 #include <waffle/core/wcore_platform.h>
+#include <waffle/core/wcore_util.h>
 
 #include "api_priv.h"
 
 struct waffle_display*
 waffle_display_connect(const char *name)
 {
-    struct waffle_display *self;
+    struct wcore_display *wc_self;
 
     if (!api_check_entry(NULL, 0))
         return NULL;
 
-    self = malloc(sizeof(*self));
-    if (!self) {
-        wcore_error(WAFFLE_OUT_OF_MEMORY);
+    wc_self = api_platform->vtbl->connect_to_display(api_platform, name);
+    if (!wc_self)
         return NULL;
-    }
 
-    self->api.display_id = api_new_object_id();
-
-    self->native = api_current_platform->dispatch->
-                    display_connect(api_current_platform->native, name);
-
-    if (!self->native) {
-        free(self);
-        return NULL;
-    }
-
-    return self;
+    return &wc_self->wfl;
 }
 
 bool
 waffle_display_disconnect(struct waffle_display *self)
 {
-    bool ok = true;
+    struct wcore_display *wc_self = wcore_display(self);
 
     const struct api_object *obj_list[] = {
-        waffle_display_get_api_obj(self),
+        wc_self ? &wc_self->api : NULL,
     };
 
     if (!api_check_entry(obj_list, 1))
         return false;
 
-    ok &= api_current_platform->dispatch->display_disconnect(self->native);
-    free(self);
-    return ok;
+    return wc_self->vtbl->destroy(wc_self);
 }
 
 bool
@@ -88,8 +75,10 @@ waffle_display_supports_context_api(
         struct waffle_display *self,
         int32_t context_api)
 {
+    struct wcore_display *wc_self = wcore_display(self);
+
     const struct api_object *obj_list[] = {
-        waffle_display_get_api_obj(self),
+        wc_self ? &wc_self->api : NULL,
     };
 
     if (!api_check_entry(obj_list, 1))
@@ -106,8 +95,7 @@ waffle_display_supports_context_api(
             return false;
     }
 
-    return api_current_platform->dispatch->
-            display_supports_context_api(self->native, context_api);
+    return wc_self->vtbl->supports_context_api(wc_self, context_api);
 }
 
 /// @}

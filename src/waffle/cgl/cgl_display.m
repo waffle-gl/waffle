@@ -23,46 +23,59 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @addtogroup cgl_display
-/// @{
-
-/// @file
-
-#include "cgl_display.h"
 
 #include <stdlib.h>
 
-#include <waffle/native.h>
 #include <waffle/waffle_enum.h>
 #include <waffle/core/wcore_error.h>
 
-union native_display*
-cgl_display_connect(
-        union native_platform *native_platform,
-        const char *name)
-{
-    union native_display *native_self;
+#include "cgl_display.h"
 
-    NATIVE_ALLOC(native_self, cgl);
-    if (!native_self) {
+static const struct wcore_display_vtbl cgl_display_wcore_vtbl;
+
+static bool
+cgl_display_destroy(struct wcore_display *wc_self)
+{
+    struct cgl_display *self = cgl_display(wc_self);
+    bool ok = true;
+
+    if (!self)
+        return ok;
+
+    ok &= wcore_display_teardown(&self->wcore);
+    free(self);
+    return ok;
+}
+
+
+struct wcore_display*
+cgl_display_connect(struct wcore_platform *wc_plat,
+                    const char *name)
+{
+    struct cgl_display *self;
+    bool ok = true;
+
+    self = calloc(1, sizeof(*self));
+    if (!self) {
         wcore_error(WAFFLE_OUT_OF_MEMORY);
         return NULL;
     }
 
-    return native_self;
+    ok = wcore_display_init(&self->wcore, wc_plat);
+    if (!ok)
+        goto error;
+
+    self->wcore.vtbl = &cgl_display_wcore_vtbl;
+    return &self->wcore;
+
+error:
+    cgl_display_destroy(&self->wcore);
+    return NULL;
 }
 
-bool
-cgl_display_disconnect(union native_display *native_self)
-{
-    free(native_self);
-    return true;
-}
-
-bool
-cgl_display_supports_context_api(
-        union native_display *native_self,
-        int32_t context_api)
+static bool
+cgl_display_supports_context_api(struct wcore_display *wc_self,
+                                 int32_t context_api)
 {
     switch (context_api) {
         case WAFFLE_CONTEXT_OPENGL:
@@ -78,4 +91,7 @@ cgl_display_supports_context_api(
     }
 }
 
-/// @}
+static const struct wcore_display_vtbl cgl_display_wcore_vtbl = {
+    .destroy = cgl_display_destroy,
+    .supports_context_api = cgl_display_supports_context_api,
+};

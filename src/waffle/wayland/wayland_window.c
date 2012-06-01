@@ -23,116 +23,123 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @addtogroup wayland_window
-/// @{
-
-/// @file
-
-#include "wayland_window.h"
+#define WL_EGL_PLATFORM 1
 
 #include <stdlib.h>
 #include <string.h>
 
-#include <waffle/native.h>
+#include <wayland-egl.h>
+#undef container_of
+
 #include <waffle/core/wcore_error.h>
-#include <waffle/x11/x11.h>
 
+#include "wayland_config.h"
+#include "wayland_display.h"
 #include "wayland_priv_egl.h"
-#include "wayland_priv_types.h"
+#include "wayland_window.h"
 
-union native_window*
-wayland_window_create(
-        union native_config *config,
-        int width,
-        int height)
+static const struct wcore_window_vtbl wayland_window_wcore_vtbl;
+
+static bool
+wayland_window_destroy(struct wcore_window *wc_self)
 {
-    union native_display *display = config->wl->display;
+    struct wayland_window *self = wayland_window(wc_self);
+    struct wayland_display *dpy;
+    bool ok = true;
 
-    union native_window *self;
-    NATIVE_ALLOC(self, wl);
+    if (!self)
+        return ok;
+
+    dpy = wayland_display(wc_self->display);
+
+    if (self->egl)
+        ok &= egl_destroy_surface(dpy->egl, self->egl);
+
+    if (self->wl_window)
+        wl_egl_window_destroy(self->wl_window);
+
+    if (self->wl_shell_surface)
+        wl_shell_surface_destroy(self->wl_shell_surface);
+
+    if (self->wl_surface)
+        wl_surface_destroy(self->wl_surface);
+
+    ok &= wcore_window_teardown(wc_self);
+    free(self);
+    return ok;
+}
+
+struct wcore_window*
+wayland_window_create(struct wcore_platform *wc_plat,
+                      struct wcore_config *wc_config,
+                      int width,
+                      int height)
+{
+    struct wayland_window *self;
+    struct wayland_config *config = wayland_config(wc_config);
+    struct wayland_display *dpy = wayland_display(wc_config->display);
+    bool ok = true;
+
+    self = calloc(1, sizeof(*self));
     if (!self) {
         wcore_error(WAFFLE_OUT_OF_MEMORY);
         return NULL;
     }
 
-    self->wl->display = display;
+    ok = wcore_window_init(&self->wcore, wc_config);
+    if (!ok)
+        goto error;
 
-    if (!display->wl->wl_compositor) {
+    if (!dpy->wl_compositor) {
         wcore_errorf(WAFFLE_UNKNOWN_ERROR, "wayland compositor not found");
         goto error;
     }
-    if (!display->wl->wl_shell) {
+    if (!dpy->wl_shell) {
         wcore_errorf(WAFFLE_UNKNOWN_ERROR, "wayland shell not found");
         goto error;
     }
 
-    self->wl->wl_surface = wl_compositor_create_surface(display->wl->wl_compositor);
-    if (!self->wl->wl_surface) {
+    self->wl_surface = wl_compositor_create_surface(dpy->wl_compositor);
+    if (!self->wl_surface) {
         wcore_errorf(WAFFLE_UNKNOWN_ERROR,
                      "wl_compositor_create_surface failed");
         goto error;
     }
 
-    self->wl->wl_shell_surface = wl_shell_get_shell_surface(
-                                        display->wl->wl_shell,
-                                        self->wl->wl_surface);
-    if (!self->wl->wl_shell_surface) {
+    self->wl_shell_surface = wl_shell_get_shell_surface(dpy->wl_shell,
+                                                        self->wl_surface);
+    if (!self->wl_shell_surface) {
         wcore_errorf(WAFFLE_UNKNOWN_ERROR,
                      "wl_shell_get_shell_surface failed");
         goto error;
     }
 
-    self->wl->wl_window = wl_egl_window_create(self->wl->wl_surface,
-                                               width,
-                                               height);
-    if (!self->wl->wl_window) {
+    self->wl_window = wl_egl_window_create(self->wl_surface, width, height);
+    if (!self->wl_window) {
         wcore_errorf(WAFFLE_UNKNOWN_ERROR, "wl_egl_window_create failed");
         goto error;
     }
 
-    self->wl->egl_surface = wayland_egl_create_window_surface(
-                                    display->wl->egl_display,
-                                    config->wl->egl_config,
-                                    self->wl->wl_window,
-                                    config->wl->egl_render_buffer);
-    if (!self->wl->egl_surface)
-     goto error;
+    self->egl = wayland_egl_create_window_surface(dpy->egl,
+                                                  config->egl,
+                                                  self->wl_window,
+                                                  config->egl_render_buffer);
+    if (!self->egl)
+        goto error;
 
-    return self;
+    self->wcore.vtbl = &wayland_window_wcore_vtbl;
+    return &self->wcore;
 
 error:
-    wayland_window_destroy(self);
+    wayland_window_destroy(&self->wcore);
     return NULL;
 }
 
-bool
-wayland_window_destroy(union native_window *self)
+
+static bool
+wayland_window_show(struct wcore_window *wc_self)
 {
-    if (!self)
-        return true;
-
-    bool ok = true;
-    union native_display *dpy = self->wl->display;
-
-    if (self->wl->egl_surface)
-        ok &= egl_destroy_surface(dpy->wl->egl_display,
-                                  self->wl->egl_surface);
-
-    if (self->wl->wl_window)
-        wl_egl_window_destroy(self->wl->wl_window);
-    if (self->wl->wl_shell_surface)
-        wl_shell_surface_destroy(self->wl->wl_shell_surface);
-    if (self->wl->wl_surface)
-        wl_surface_destroy(self->wl->wl_surface);
-
-    free(self);
-    return ok;
-}
-
-bool
-wayland_window_show(union native_window *native_self)
-{
-    struct wayland_window *self = native_self->wl;
+    struct wayland_window *self = wayland_window(wc_self);
 
     wl_shell_surface_set_toplevel(self->wl_shell_surface);
 
@@ -140,12 +147,17 @@ wayland_window_show(union native_window *native_self)
     return true;
 }
 
-bool
-wayland_window_swap_buffers(union native_window *self)
+static bool
+wayland_window_swap_buffers(struct wcore_window *wc_self)
 {
-    union native_display *dpy = self->wl->display;
-    return egl_swap_buffers(dpy->wl->egl_display,
-                            self->wl->egl_surface);
+    struct wayland_window *self = wayland_window(wc_self);
+    struct wayland_display *dpy = wayland_display(wc_self->display);
+
+    return egl_swap_buffers(dpy->egl, self->egl);
 }
 
-/// @}
+static const struct wcore_window_vtbl wayland_window_wcore_vtbl = {
+    .destroy = wayland_window_destroy,
+    .show = wayland_window_show,
+    .swap_buffers = wayland_window_swap_buffers,
+};

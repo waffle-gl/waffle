@@ -23,32 +23,40 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @addtogroup glx_display
-/// @{
-
-/// @file
-
-#include "glx_display.h"
-
 #include <stdlib.h>
 
-#include <GL/glx.h>
-
-#include <waffle/native.h>
 #include <waffle/waffle_enum.h>
 #include <waffle/waffle_gl_misc.h>
+
 #include <waffle/core/wcore_error.h>
 #include <waffle/linux/linux_platform.h>
-#include <waffle/x11/x11.h>
 
-#include "glx_priv_types.h"
+#include "glx_display.h"
+#include "glx_platform.h"
+
+static const struct wcore_display_vtbl glx_display_wcore_vtbl;
+
+static bool
+glx_display_destroy(struct wcore_display *wc_self)
+{
+    struct glx_display *self = glx_display(wc_self);
+    bool ok = true;
+
+    if (!self)
+        return ok;
+
+    ok &= x11_display_teardown(&self->x11);
+    ok &= wcore_display_teardown(&self->wcore);
+    free(self);
+    return ok;
+}
 
 static bool
 glx_display_set_extensions(struct glx_display *self)
 {
 
-    const char *s = glXQueryExtensionsString(self->xlib_display,
-                                             self->screen);
+    const char *s = glXQueryExtensionsString(self->x11.xlib,
+                                             self->x11.screen);
     if (!s) {
         wcore_errorf(WAFFLE_UNKNOWN_ERROR,
                      "glXQueryExtensionsString failed");
@@ -62,60 +70,45 @@ glx_display_set_extensions(struct glx_display *self)
     return true;
 }
 
-union native_display*
-glx_display_connect(
-        union native_platform *platform,
-        const char *name)
+struct wcore_display*
+glx_display_connect(struct wcore_platform *wc_plat,
+                    const char *name)
 {
+    struct glx_display *self;
     bool ok = true;
 
-    union native_display *self;
-    NATIVE_ALLOC(self, glx);
+    self = calloc(1, sizeof(*self));
     if (!self) {
         wcore_error(WAFFLE_OUT_OF_MEMORY);
         return NULL;
     }
 
-    self->glx->platform = platform;
-
-    ok &= x11_display_connect(name,
-                              &self->glx->xlib_display,
-                              &self->glx->xcb_connection);
+    ok = wcore_display_init(&self->wcore, wc_plat);
     if (!ok)
         goto error;
 
-    ok = glx_display_set_extensions(self->glx);
+    ok = x11_display_init(&self->x11, name);
     if (!ok)
         goto error;
 
-    return self;
+    ok = glx_display_set_extensions(self);
+    if (!ok)
+        goto error;
+
+    self->wcore.vtbl = &glx_display_wcore_vtbl;
+    return &self->wcore;
 
 error:
-    glx_display_disconnect(self);
+    glx_display_destroy(&self->wcore);
     return NULL;
 }
 
-bool
-glx_display_disconnect(union native_display *self)
+static bool
+glx_display_supports_context_api(struct wcore_display *wc_self,
+                                 int32_t context_api)
 {
-    bool ok = true;
-
-    if (!self)
-        return true;
-
-    if (self->glx->xlib_display)
-        ok &= x11_display_disconnect(self->glx->xlib_display);
-
-    free(self);
-    return ok;
-}
-
-bool
-glx_display_supports_context_api(
-        union native_display *self,
-        int32_t context_api)
-{
-    struct linux_platform *linux_plat = self->glx->platform->glx->linux_;
+    struct glx_display *self = glx_display(wc_self);
+    struct glx_platform *plat = glx_platform(wc_self->platform);
 
     switch (context_api) {
         case WAFFLE_CONTEXT_OPENGL:
@@ -123,8 +116,8 @@ glx_display_supports_context_api(
         case WAFFLE_CONTEXT_OPENGL_ES1:
             return false;
         case WAFFLE_CONTEXT_OPENGL_ES2:
-            return self->glx->extensions.EXT_create_context_es2_profile
-                   && linux_platform_dl_can_open(linux_plat,
+            return self->extensions.EXT_create_context_es2_profile
+                   && linux_platform_dl_can_open(plat->linux,
                                                  WAFFLE_DL_OPENGL_ES2);
         default:
             wcore_error_internal("waffle_context_api has bad value %#x",
@@ -133,4 +126,7 @@ glx_display_supports_context_api(
     }
 }
 
-/// @}
+static const struct wcore_display_vtbl glx_display_wcore_vtbl = {
+    .destroy = glx_display_destroy,
+    .supports_context_api = glx_display_supports_context_api,
+};

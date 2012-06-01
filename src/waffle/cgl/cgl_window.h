@@ -23,42 +23,30 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @defgroup cgl_window cgl_window
-/// @ingroup cgl
-/// @{
-
-/// @file
-
 #pragma once
 
 #include <stdbool.h>
 
+#include <waffle/core/wcore_window.h>
+#include <waffle/core/wcore_util.h>
+
 #include "WaffleGLView.h"
 
-union native_config;
-union native_display;
-union native_window;
-
-@class NSWindow;
+struct wcore_platform;
 
 struct cgl_window {
+    struct wcore_window wcore;
+
     NSWindow *ns_window;
     WaffleGLView *gl_view;
 };
 
-union native_window*
-cgl_window_create(
-        union native_config *config,
-        int width,
-        int height);
-
-bool
-cgl_window_destroy(union native_window *self);
-
-bool
-cgl_window_show(union native_window *self);
-
-bool
-cgl_window_swap_buffers(union native_window *self);
-
-/// @}
+DEFINE_CONTAINER_CAST_FUNC(cgl_window,
+                           struct cgl_window,
+                           struct wcore_window,
+                           wcore)
+struct wcore_window*
+cgl_window_create(struct wcore_platform *wc_plat,
+                  struct wcore_config *wc_config,
+                  int width,
+                  int height);

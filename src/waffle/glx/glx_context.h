@@ -23,25 +23,29 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @defgroup glx_context glx_context
-/// @ingroup glx
-/// @{
-
-/// @file
-
 #pragma once
 
 #include <stdbool.h>
 
-union native_context;
-union native_config;
+#include <GL/glx.h>
 
-union native_context*
-glx_context_create(
-        union native_config *config,
-        union native_context *share_ctx);
+#include <waffle/core/wcore_context.h>
+#include <waffle/core/wcore_util.h>
 
-bool
-glx_context_destroy(union native_context *self);
+struct wcore_config;
+struct wcore_platform;
 
-/// @}
+struct glx_context {
+    struct wcore_context wcore;
+    GLXContext glx;
+};
+
+DEFINE_CONTAINER_CAST_FUNC(glx_context,
+                           struct glx_context,
+                           struct wcore_context,
+                           wcore)
+
+struct wcore_context*
+glx_context_create(struct wcore_platform *wc_plat,
+                   struct wcore_config *wc_config,
+                   struct wcore_context *wc_share_ctx);

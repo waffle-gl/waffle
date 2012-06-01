@@ -36,6 +36,12 @@
 
 #include "api_priv.h"
 
+struct wcore_platform* droid_platform_create(void);
+struct wcore_platform* cgl_platform_create(void);
+struct wcore_platform* glx_platform_create(void);
+struct wcore_platform* wayland_platform_create(void);
+struct wcore_platform* xegl_platform_create(void);
+
 static bool
 waffle_init_parse_attrib_list(
         const int32_t attrib_list[],
@@ -93,6 +99,36 @@ waffle_init_parse_attrib_list(
     return true;
 }
 
+static struct wcore_platform*
+waffle_init_create_platform(int32_t waffle_platform)
+{
+    switch (waffle_platform) {
+#ifdef WAFFLE_HAS_ANDROID
+        case WAFFLE_PLATFORM_ANDROID:
+            return droid_platform_create();
+#endif
+#ifdef WAFFLE_HAS_CGL
+        case WAFFLE_PLATFORM_CGL:
+            return cgl_platform_create();
+#endif
+#ifdef WAFFLE_HAS_GLX
+        case WAFFLE_PLATFORM_GLX:
+            return glx_platform_create();
+#endif
+#ifdef WAFFLE_HAS_WAYLAND
+        case  WAFFLE_PLATFORM_WAYLAND:
+            return wayland_platform_create();
+#endif
+#ifdef WAFFLE_HAS_X11_EGL
+        case WAFFLE_PLATFORM_X11_EGL:
+            return xegl_platform_create();
+#endif
+        default:
+            assert(false);
+            return NULL;
+    }
+}
+
 bool
 waffle_init(const int32_t *attrib_list)
 {
@@ -101,7 +137,7 @@ waffle_init(const int32_t *attrib_list)
 
     wcore_error_reset();
 
-    if (api_current_platform) {
+    if (api_platform) {
         wcore_error(WAFFLE_ALREADY_INITIALIZED);
         return false;
     }
@@ -110,22 +146,11 @@ waffle_init(const int32_t *attrib_list)
     if (!ok)
         return false;
 
-    api_current_platform = wcore_platform_create(platform);
-    if (!api_current_platform)
+    api_platform = waffle_init_create_platform(platform);
+    if (!api_platform)
         return false;
 
     return true;
-}
-
-int32_t
-waffle_get_platform(void)
-{
-    wcore_error_reset();
-
-    if (api_current_platform)
-        return api_current_platform->native_tag;
-    else
-        return WAFFLE_NONE;
 }
 
 /// @}

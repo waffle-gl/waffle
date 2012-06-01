@@ -23,81 +23,77 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @addtogroup xegl_display
-/// @{
-
-/// @file
-
-#include "xegl_display.h"
-
 #include <stdlib.h>
 
-#include <xcb/xcb.h>
-#include <X11/Xlib-xcb.h>
-
-#include <waffle/native.h>
 #include <waffle/core/wcore_error.h>
-#include <waffle/x11/x11.h>
+#include <waffle/core/wcore_display.h>
 
+#include "xegl_display.h"
+#include "xegl_platform.h"
 #include "xegl_priv_egl.h"
-#include "xegl_priv_types.h"
 
-union native_display*
-xegl_display_connect(
-        union native_platform *platform,
-        const char *name)
+static const struct wcore_display_vtbl xegl_display_wcore_vtbl;
+
+static bool
+xegl_display_destroy(struct wcore_display *wc_self)
 {
+    struct xegl_display *self = xegl_display(wc_self);
     bool ok = true;
 
-    union native_display *self;
-    NATIVE_ALLOC(self, xegl);
+    if (!self)
+        return ok;
+
+    if (self->egl)
+        ok &= egl_terminate(self->egl);
+
+    ok &= x11_display_teardown(&self->x11);
+    ok &= wcore_display_teardown(&self->wcore);
+    free(self);
+    return ok;
+}
+
+struct wcore_display*
+xegl_display_connect(
+        struct wcore_platform *wc_plat,
+        const char *name)
+{
+    struct xegl_display *self;
+    bool ok = true;
+
+    self = calloc(1, sizeof(*self));
     if (!self) {
         wcore_error(WAFFLE_OUT_OF_MEMORY);
         return NULL;
     }
 
-    self->xegl->platform = platform;
-
-    ok &= x11_display_connect(name, &self->xegl->xlib_display, &self->xegl->xcb_connection);
+    ok = wcore_display_init(&self->wcore, wc_plat);
     if (!ok)
         goto error;
 
-    self->xegl->egl_display = xegl_egl_initialize(self->xegl->xlib_display);
-    if (!self->xegl->egl_display)
+    ok = x11_display_init(&self->x11, name);
+    if (!ok)
         goto error;
 
-    return self;
+    self->egl = xegl_egl_initialize(self->x11.xlib);
+    if (!self->egl)
+        goto error;
+
+    self->wcore.vtbl = &xegl_display_wcore_vtbl;
+    return &self->wcore;
 
 error:
-    xegl_display_disconnect(self);
+    xegl_display_destroy(&self->wcore);
     return NULL;
 }
 
-bool
-xegl_display_disconnect(union native_display *self)
+static bool
+xegl_display_supports_context_api(struct wcore_display *wc_self,
+                                  int32_t waffle_context_api)
 {
-    bool ok = true;
-
-    if (!self)
-        return true;
-
-    if (self->xegl->egl_display)
-        ok &= egl_terminate(self->xegl->egl_display);
-
-    if (self->xegl->xlib_display)
-        ok &= x11_display_disconnect(self->xegl->xlib_display);
-
-    free(self);
-    return ok;
+    return egl_supports_context_api(wc_self->platform, waffle_context_api);
 }
 
-bool
-xegl_display_supports_context_api(
-        union native_display *self,
-        int32_t context_api)
-{
-    union native_platform *platform = self->xegl->platform;
-    return egl_supports_context_api(platform->xegl->linux_, context_api);
-}
-
-/// @}
+static const struct wcore_display_vtbl xegl_display_wcore_vtbl = {
+    .destroy = xegl_display_destroy,
+    .supports_context_api = xegl_display_supports_context_api,
+};

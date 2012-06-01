@@ -23,34 +23,46 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @addtogroup xegl_dl
-/// @{
+#include <assert.h>
 
-/// @file
+#include <waffle/core/wcore_error.h>
 
-#include "xegl_dl.h"
-
-#include <waffle/native.h>
-#include <waffle/linux/linux_dl.h>
-#include <waffle/linux/linux_platform.h>
-
-#include "xegl_priv_types.h"
+#include "x11_display.h"
 
 bool
-xegl_dl_can_open(
-        union native_platform *native,
-        int32_t waffle_dl)
+x11_display_init(struct x11_display *self, const char *name)
 {
-    return linux_platform_dl_can_open(native->xegl->linux_, waffle_dl);
+    assert(self);
+
+    self->xlib = XOpenDisplay(name);
+    if (!self->xlib) {
+        wcore_errorf(WAFFLE_UNKNOWN_ERROR, "XOpenDisplay failed");
+        return false;
+    }
+
+    self->xcb = XGetXCBConnection(self->xlib);
+    if (!self->xcb) {
+        wcore_errorf(WAFFLE_UNKNOWN_ERROR, "XGetXCBConnection failed");
+        XCloseDisplay(self->xlib);
+        return false;
+    }
+
+    // FIXME: Don't assume screen is 0.
+    self->screen = 0;
+
+    return true;
 }
 
-void*
-xegl_dl_sym(
-        union native_platform *native,
-        int32_t waffle_dl,
-        const char *name)
+bool
+x11_display_teardown(struct x11_display *self)
 {
-    return linux_platform_dl_sym(native->xegl->linux_, waffle_dl, name);
-}
+    int error = 0;
 
-/// @}
+    assert(self);
+
+    error = XCloseDisplay(self->xlib);
+    if (error)
+        wcore_errorf(WAFFLE_UNKNOWN_ERROR, "XCloseDisplay failed");
+
+    return !error;
+}

@@ -23,33 +23,31 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @defgroup xegl_window xegl_window
-/// @ingroup xegl
-/// @{
-
-/// @file
-
 #pragma once
 
 #include <stdbool.h>
 
-union native_config;
-union native_display;
-union native_window;
+#include <EGL/egl.h>
+#include <xcb/xcb.h>
 
-union native_window*
-xegl_window_create(
-        union native_config *config,
-        int width,
-        int height);
+#include <waffle/core/wcore_window.h>
+#include <waffle/core/wcore_util.h>
+#include <waffle/x11/x11_window.h>
 
-bool
-xegl_window_destroy(union native_window *self);
+struct wcore_platform;
 
-bool
-xegl_window_show(union native_window *native_self);
+struct xegl_window {
+    struct wcore_window wcore;
+    struct x11_window x11;
+    EGLSurface egl;
+};
 
-bool
-xegl_window_swap_buffers(union native_window *self);
-
-/// @}
+DEFINE_CONTAINER_CAST_FUNC(xegl_window,
+                           struct xegl_window,
+                           struct wcore_window,
+                           wcore)
+struct wcore_window*
+xegl_window_create(struct wcore_platform *wc_plat,
+                   struct wcore_config *wc_config,
+                   int width,
+                   int height);

@@ -23,19 +23,8 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @defgroup wayland_priv_egl wayland_priv_egl
-/// @ingroup wayland
-/// @{
-
-/// @file
-
 #pragma once
 
-// WL_EGL_PLATFORM configures Mesa's <EGL/egl.h> to define native types (such
-// as EGLNativeDisplay) as Wayland types rather than Xlib types.
-#define WL_EGL_PLATFORM 1
-
 #define NATIVE_EGL(basename) wayland_egl_##basename
-#include <waffle/egl/egl.h>
 
-/// @}
+#include <waffle/egl/egl.h>

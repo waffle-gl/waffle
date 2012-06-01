@@ -23,31 +23,28 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @defgroup glx_gl_misc glx_gl_misc
-/// @ingroup glx
-/// @{
-
-/// @file
-
 #pragma once
 
 #include <stdbool.h>
-#include <stdint.h>
 
-union native_platform;
-union native_display;
-union native_window;
-union native_context;
+#include <X11/Xlib-xcb.h>
+
+struct x11_display;
+
+struct x11_window {
+    struct x11_display *display;
+    xcb_window_t xcb;
+};
 
 bool
-glx_make_current(
-        union native_display *dpy,
-        union native_window *window,
-        union native_context *ctx);
+x11_window_init(struct x11_window *self,
+                struct x11_display *dpy,
+                xcb_visualid_t visual_id,
+                int width,
+                int height);
 
-void*
-glx_get_proc_address(
-        union native_platform *native,
-        const char *name);
+bool
+x11_window_teardown(struct x11_window *self);
 
-/// @}
+bool
+x11_window_show(struct x11_window *self);

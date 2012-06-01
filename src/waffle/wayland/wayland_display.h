@@ -23,31 +23,36 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @defgroup wayland_display wayland_display
-/// @ingroup wayland
-/// @{
-
-/// @file
-
 #pragma once
 
 #include <stdbool.h>
 #include <stdint.h>
 
-union native_display;
-union native_platform;
+#include <EGL/egl.h>
 
-union native_display*
-wayland_display_connect(
-        union native_platform *platform,
-        const char *name);
+#include <waffle/core/wcore_display.h>
+#include <waffle/core/wcore_util.h>
 
-bool
-wayland_display_disconnect(union native_display *self);
+struct wcore_platform;
+struct wl_display;
+struct wl_compositor;
+struct wl_shell;
 
-bool
-wayland_display_supports_context_api(
-        union native_display *self,
-        int32_t context_api);
+struct wayland_display {
+    struct wcore_display wcore;
 
-/// @}
+    struct wl_display *wl_display;
+    struct wl_compositor *wl_compositor;
+    struct wl_shell *wl_shell;
+
+    EGLDisplay egl;
+};
+
+DEFINE_CONTAINER_CAST_FUNC(wayland_display,
+                           struct wayland_display,
+                           struct wcore_display,
+                           wcore)
+
+struct wcore_display*
+wayland_display_connect(struct wcore_platform *wc_plat,
+                        const char *name);

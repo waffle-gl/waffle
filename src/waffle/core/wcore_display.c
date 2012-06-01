@@ -23,47 +23,35 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @addtogroup cgl_gl_misc
-/// @{
+#include "wcore_display.h"
 
-/// @file
-
-#include "cgl_gl_misc.h"
-
-#include <waffle/native.h>
-
-#include "cgl_context.h"
-#include "cgl_window.h"
-
-@class NSView;
+#include <assert.h>
+#include <stdio.h>
 
 bool
-cgl_make_current(
-        union native_display *dpy,
-        union native_window *window,
-        union native_context *ctx)
+wcore_display_init(struct wcore_display *self,
+                   struct wcore_platform *platform)
 {
-    NSOpenGLContext *cocoa_ctx = ctx ? ctx->cgl->ns_context : NULL;
-    WaffleGLView* cocoa_view = window ? window->cgl->gl_view : NULL;
+    static size_t id_counter = 0;
 
-    if (cocoa_view)
-        cocoa_view.glContext = cocoa_ctx;
+    assert(self);
+    assert(platform);
 
-    if (cocoa_ctx) {
-        [cocoa_ctx makeCurrentContext];
-        [cocoa_ctx setView:cocoa_view];
+    // FIXME: Not thread safe.
+    self->api.display_id = ++id_counter;
+    self->platform = platform;
+
+    if (self->api.display_id == 0) {
+        fprintf(stderr, "waffle: error: internal counter wrapped to 0\n");
+        abort();
     }
 
     return true;
 }
 
-void*
-cgl_get_proc_address(
-        union native_platform *native,
-        const char *name)
+bool
+wcore_display_teardown(struct wcore_display *self)
 {
-    // There is no CGLGetProcAddress.
-    return NULL;
+    assert(self);
+    return true;
 }
-
-/// @}

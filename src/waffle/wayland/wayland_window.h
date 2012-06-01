@@ -23,33 +23,33 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @defgroup wayland_window wayland_window
-/// @ingroup wayland
-/// @{
-
-/// @file
-
 #pragma once
 
 #include <stdbool.h>
 
-union native_config;
-union native_display;
-union native_window;
+#include <EGL/egl.h>
 
-union native_window*
-wayland_window_create(
-        union native_config *config,
-        int width,
-        int height);
+#include <waffle/core/wcore_window.h>
+#include <waffle/core/wcore_util.h>
 
-bool
-wayland_window_destroy(union native_window *self);
+struct wcore_platform;
 
-bool
-wayland_window_show(union native_window *native_self);
+struct wayland_window {
+    struct wcore_window wcore;
 
-bool
-wayland_window_swap_buffers(union native_window *self);
+    struct wl_surface *wl_surface;
+    struct wl_shell_surface *wl_shell_surface;
+    struct wl_egl_window *wl_window;
 
-/// @}
+    EGLSurface egl;
+};
+
+DEFINE_CONTAINER_CAST_FUNC(wayland_window,
+                           struct wayland_window,
+                           struct wcore_window,
+                           wcore)
+struct wcore_window*
+wayland_window_create(struct wcore_platform *wc_plat,
+                      struct wcore_config *wc_config,
+                      int width,
+                      int height);

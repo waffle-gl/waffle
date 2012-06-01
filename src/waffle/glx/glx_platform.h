@@ -23,23 +23,29 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @defgroup glx_platform glx_platform
-/// @ingroup glx
-/// @{
-
-/// @file
-
 #pragma once
 
-#include <stdbool.h>
+#include <GL/glx.h>
+#include <X11/Xlib.h>
+#include <xcb/xcb.h>
+#undef linux
 
-struct native_dispatch;
-union native_platform;
+#include <waffle/core/wcore_platform.h>
+#include <waffle/core/wcore_util.h>
 
-union native_platform*
-glx_platform_create(const struct native_dispatch **dispatch);
+struct linux_platform;
 
-bool
-glx_platform_destroy(union native_platform *self);
+struct glx_platform {
+    struct wcore_platform wcore;
+    struct linux_platform *linux;
 
-/// @}
+    PFNGLXCREATECONTEXTATTRIBSARBPROC glXCreateContextAttribsARB;
+};
+
+DEFINE_CONTAINER_CAST_FUNC(glx_platform,
+                           struct glx_platform,
+                           struct wcore_platform,
+                           wcore)
+
+struct wcore_platform*
+glx_platform_create(void);

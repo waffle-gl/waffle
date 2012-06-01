@@ -23,36 +23,16 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @addtogroup wayland_gl_misc
-/// @{
+#pragma once
 
-/// @file
+#include <stddef.h>
 
-#include "wayland_gl_misc.h"
+// This header is so sad and lonely... but there is no other appropriate place
+// to define this struct.
 
-#include <waffle/native.h>
-#include <waffle/linux/linux_platform.h>
-
-#include "wayland_priv_egl.h"
-#include "wayland_priv_types.h"
-
-bool
-wayland_make_current(
-        union native_display *dpy,
-        union native_window *window,
-        union native_context *ctx)
-{
-    return egl_make_current(dpy->wl->egl_display,
-                            window ? window->wl->egl_surface : 0,
-                            ctx ? ctx->wl->egl_context : 0);
-}
-
-void*
-wayland_get_proc_address(
-        union native_platform *native,
-        const char *name)
-{
-    return eglGetProcAddress(name);
-}
-
-/// @}
+struct api_object {
+    /// @brief Display to which object belongs.
+    ///
+    /// For consistency, a `waffle_display` belongs to itself.
+    size_t display_id;
+};

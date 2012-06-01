@@ -23,79 +23,50 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @addtogroup x11
-/// @{
-
-/// @file
-
-#include "x11.h"
+#include <assert.h>
 
 #include <waffle/core/wcore_error.h>
 
-static void
-x11_error(const char *func_call)
-{
-    wcore_errorf(WAFFLE_UNKNOWN_ERROR, "%s", func_call);
-}
-
-bool
-x11_display_connect(
-        const char *name,
-        Display **xlib_dpy,
-        xcb_connection_t **xcb_conn)
-{
-    *xlib_dpy = XOpenDisplay(name);
-    if (!*xlib_dpy) {
-        x11_error("XOpenDisplay");
-        return false;
-    }
-
-    *xcb_conn = XGetXCBConnection(*xlib_dpy);
-    if (!xcb_conn) {
-        XCloseDisplay(*xlib_dpy);
-        return false;
-    }
-
-    return true;
-}
-
-bool
-x11_display_disconnect(Display *dpy)
-{
-    int error = XCloseDisplay(dpy);
-    if (error)
-        x11_error("XCloseDisplay");
-    return !error;
-}
+#include "x11_display.h"
+#include "x11_window.h"
 
 static uint8_t
-x11_get_depth_for_visual(
-        xcb_connection_t *conn,
-        const xcb_screen_t *screen,
-        xcb_visualid_t id)
+x11_winddow_get_depth(xcb_connection_t *conn,
+                      const xcb_screen_t *screen,
+                      xcb_visualid_t id)
 {
-    xcb_depth_iterator_t depth = xcb_screen_allowed_depths_iterator(screen);
-    for (; depth.rem; xcb_depth_next(&depth)) {
-        xcb_visualtype_iterator_t visual =
-            xcb_depth_visuals_iterator (depth.data);
-        for (; visual.rem; xcb_visualtype_next(&visual)) {
+    for (xcb_depth_iterator_t depth =
+            xcb_screen_allowed_depths_iterator(screen);
+         depth.rem;
+         xcb_depth_next(&depth))
+    {
+        for (xcb_visualtype_iterator_t visual =
+                 xcb_depth_visuals_iterator (depth.data);
+             visual.rem;
+             xcb_visualtype_next(&visual))
+        {
             if (visual.data->visual_id == id)
                 return depth.data->depth;
         }
     }
+
     return 0;
 }
 
-xcb_window_t
-x11_window_create(
-        xcb_connection_t *conn,
-        xcb_visualid_t visual_id,
-        int width,
-        int height)
+bool
+x11_window_init(struct x11_window *self,
+                struct x11_display *dpy,
+                xcb_visualid_t visual_id,
+                int width,
+                int height)
 {
+    assert(self);
+    assert(dpy);
+
+    bool ok = true;
+    xcb_connection_t *conn = dpy->xcb;
+
     const xcb_setup_t *setup = xcb_get_setup(conn);
-    xcb_colormap_t colormap = 0;
-    xcb_window_t window = 0;
     if (!setup){
         wcore_errorf(WAFFLE_UNKNOWN_ERROR, "xcb_get_setup() failed");
         goto error;
@@ -107,8 +78,8 @@ x11_window_create(
         goto error;
     }
 
-    colormap = xcb_generate_id(conn);
-    window = xcb_generate_id(conn);
+    xcb_colormap_t colormap = xcb_generate_id(conn);
+    xcb_window_t window = xcb_generate_id(conn);
     if (colormap <= 0 || window <= 0) {
         wcore_errorf(WAFFLE_UNKNOWN_ERROR, "xcb_generate_id() failed");
         goto error;
@@ -140,7 +111,7 @@ x11_window_create(
 
     xcb_void_cookie_t create_cookie = xcb_create_window_checked(
             conn,
-            x11_get_depth_for_visual(conn, screen, visual_id), // depth
+            x11_winddow_get_depth(conn, screen, visual_id),
             window,
             screen->root, // parent
             0, 0, // x, y
@@ -168,57 +139,59 @@ x11_window_create(
         goto error;
     }
 
+    self->display = dpy;
+    self->xcb = window;
     goto end;
 
 error:
-    xcb_free_colormap(conn, colormap);
+    ok = false;
+
+    if (colormap)
+        xcb_free_colormap(conn, colormap);
 
     if (window)
         xcb_destroy_window(conn, window);
-    window = 0;
 
 end:
-
-    return window;
+    return ok;
 }
 
 bool
-x11_window_destroy(
-        xcb_connection_t *conn,
-        xcb_window_t window)
+x11_window_teardown(struct x11_window *self)
 {
-    bool ok = true;
+    xcb_void_cookie_t cookie;
+    xcb_generic_error_t *error;
 
-    xcb_void_cookie_t cookie = xcb_destroy_window_checked(conn, window);
-    xcb_generic_error_t *error = xcb_request_check(conn, cookie);
+    assert(self);
+
+    cookie = xcb_destroy_window_checked(self->display->xcb, self->xcb);
+    error = xcb_request_check(self->display->xcb, cookie);
 
     if (error) {
-        ok = false;
         wcore_errorf(WAFFLE_UNKNOWN_ERROR,
                      "xcb_destroy_window_checked() failed: error=0x%x",
                      error->error_code);
     }
 
-    return ok;
+    return !error;
 }
 
 bool
-x11_window_show(
-        xcb_connection_t *conn,
-        xcb_window_t window)
+x11_window_show(struct x11_window *self)
 {
     xcb_void_cookie_t cookie;
     xcb_generic_error_t *error;
 
-    cookie = xcb_map_window_checked(conn, window);
-    error = xcb_request_check(conn, cookie);
+    assert(self);
+
+    cookie = xcb_map_window_checked(self->display->xcb, self->xcb);
+    error = xcb_request_check(self->display->xcb, cookie);
+
     if (error) {
         wcore_errorf(WAFFLE_UNKNOWN_ERROR,
                      "xcb_map_window_checked() failed: error=0x%x",
                      error->error_code);
     }
 
-    return error == NULL;
+    return !error;
 }
-
-/// @}

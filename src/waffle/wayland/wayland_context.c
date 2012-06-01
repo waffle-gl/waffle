@@ -23,66 +23,76 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @addtogroup wayland_context
-/// @{
-
-/// @file
-
-#include "wayland_context.h"
+#define WL_EGL_PLATFORM 1
 
 #include <stdlib.h>
 
-#include <waffle/native.h>
+#include <waffle/core/wcore_config.h>
 #include <waffle/core/wcore_error.h>
 
+#include "wayland_config.h"
+#include "wayland_context.h"
+#include "wayland_display.h"
 #include "wayland_priv_egl.h"
-#include "wayland_priv_types.h"
 
-union native_context*
-wayland_context_create(
-        union native_config *config,
-        union native_context *share_ctx)
+static const struct wcore_context_vtbl wayland_context_wcore_vtbl;
+
+static bool
+wayland_context_destroy(struct wcore_context *wc_self)
 {
-    union native_display *dpy = config->wl->display;
+    struct wayland_context *self = wayland_context(wc_self);
+    bool ok = true;
 
-    union native_context *self;
-    NATIVE_ALLOC(self, wl);
+    if (!self)
+        return ok;
+
+    if (self->egl)
+        ok &= egl_destroy_context(wayland_display(wc_self->display)->egl,
+                                  self->egl);
+
+    ok &= wcore_context_teardown(wc_self);
+    free(self);
+    return ok;
+}
+
+struct wcore_context*
+wayland_context_create(struct wcore_platform *wc_plat,
+                    struct wcore_config *wc_config,
+                    struct wcore_context *wc_share_ctx)
+{
+    struct wayland_context *self;
+    struct wayland_config *config = wayland_config(wc_config);
+    struct wayland_context *share_ctx = wayland_context(wc_share_ctx);
+    struct wayland_display *dpy = wayland_display(wc_config->display);
+    bool ok = true;
+
+    self = calloc(1, sizeof(*self));
     if (!self) {
         wcore_error(WAFFLE_OUT_OF_MEMORY);
         return NULL;
     }
 
-    self->wl->display = config->wl->display;
-    self->wl->egl_context = egl_create_context(
-                                  dpy->wl->egl_display,
-                                  config->wl->egl_config,
-                                  share_ctx
-                                      ? share_ctx->wl->egl_context
+    ok = wcore_context_init(&self->wcore, wc_config);
+    if (!ok)
+        goto error;
+
+    self->egl = egl_create_context(dpy->egl,
+                                   config->egl,
+                                   share_ctx
+                                      ? share_ctx->egl
                                       : NULL,
-                                  config->wl->waffle_context_api);
+                                   config->waffle_context_api);
+    if (!self->egl)
+        goto error;
 
-    if (!self->wl->egl_context) {
-        free(self);
-        return NULL;
-    }
+    self->wcore.vtbl = &wayland_context_wcore_vtbl;
+    return &self->wcore;
 
-    return self;
+error:
+    wayland_context_destroy(&self->wcore);
+    return NULL;
 }
 
-bool
-wayland_context_destroy(union native_context *self)
-{
-    if (!self)
-        return true;
-
-    bool ok = true;
-    union native_display *dpy = self->wl->display;
-
-    if (self->wl->egl_context)
-        ok &= egl_destroy_context(dpy->wl->egl_display,
-                                  self->wl->egl_context);
-    free(self);
-    return ok;
-}
-
-/// @}
+static const struct wcore_context_vtbl wayland_context_wcore_vtbl = {
+    .destroy = wayland_context_destroy,
+};

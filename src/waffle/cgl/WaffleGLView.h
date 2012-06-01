@@ -26,8 +26,6 @@
 /// @addtogroup cgl
 /// @{
 
-/// @file
-
 #import <Cocoa/Cocoa.h>
 #import <OpenGL/OpenGL.h>
 

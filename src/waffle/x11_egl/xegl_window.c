@@ -23,97 +23,100 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @addtogroup xegl_window
-/// @{
-
-/// @file
-
-#include "xegl_window.h"
-
 #include <stdlib.h>
 #include <string.h>
 
-#include <waffle/native.h>
 #include <waffle/core/wcore_error.h>
-#include <waffle/x11/x11.h>
 
+#include "xegl_config.h"
+#include "xegl_display.h"
 #include "xegl_priv_egl.h"
-#include "xegl_priv_types.h"
+#include "xegl_window.h"
 
-union native_window*
-xegl_window_create(
-        union native_config *config,
-        int width,
-        int height)
+static const struct wcore_window_vtbl xegl_window_wcore_vtbl;
+
+static bool
+xegl_window_destroy(struct wcore_window *wc_self)
 {
-    union native_display *display = config->xegl->display;
+    struct xegl_window *self = xegl_window(wc_self);
+    struct xegl_display *dpy;
+    bool ok = true;
 
-    union native_window *self;
-    NATIVE_ALLOC(self, xegl);
+    if (!self)
+        return ok;
+
+    dpy = xegl_display(wc_self->display);
+
+    if (self->egl)
+        ok &= egl_destroy_surface(dpy->egl, self->egl);
+
+    ok &= x11_window_teardown(&self->x11);
+    ok &= wcore_window_teardown(&self->wcore);
+    free(self);
+    return ok;
+}
+
+struct wcore_window*
+xegl_window_create(struct wcore_platform *wc_plat,
+                   struct wcore_config *wc_config,
+                   int width,
+                   int height)
+{
+    struct xegl_window *self;
+    struct xegl_config *config = xegl_config(wc_config);
+    struct xegl_display *dpy = xegl_display(wc_config->display);
+    bool ok = true;
+
+    self = calloc(1, sizeof(*self));
     if (!self) {
         wcore_error(WAFFLE_OUT_OF_MEMORY);
         return NULL;
     }
 
-    self->xegl->display = display;
-    self->xegl->xcb_window = x11_window_create(
-                                display->xegl->xcb_connection,
-                                config->xegl->xcb_visual_id,
-                                width,
-                                height);
-    if (!self->xegl->xcb_window)
+    ok = wcore_window_init(&self->wcore, wc_config);
+    if (!ok)
         goto error;
 
-    self->xegl->egl_surface = xegl_egl_create_window_surface(
-                                    display->xegl->egl_display,
-                                    config->xegl->egl_config,
-                                    self->xegl->xcb_window,
-                                    config->xegl->egl_render_buffer);
-    if (!self->xegl->egl_surface)
-     goto error;
+    ok = x11_window_init(&self->x11,
+                         &dpy->x11,
+                         config->xcb_visual_id,
+                         width,
+                         height);
+    if (!ok)
+        goto error;
 
-    return self;
+    self->egl = xegl_egl_create_window_surface(dpy->egl,
+                                               config->egl,
+                                               self->x11.xcb,
+                                               config->egl_render_buffer);
+    if (!self->egl)
+        goto error;
+
+    self->wcore.vtbl = &xegl_window_wcore_vtbl;
+    return &self->wcore;
 
 error:
-    xegl_window_destroy(self);
+    xegl_window_destroy(&self->wcore);
     return NULL;
 }
 
-bool
-xegl_window_destroy(union native_window *self)
+static bool
+xegl_window_show(struct wcore_window *wc_self)
 {
-    if (!self)
-        return true;
-
-    bool ok = true;
-    union native_display *dpy = self->xegl->display;
-
-    if (self->xegl->egl_surface)
-        ok &= egl_destroy_surface(dpy->xegl->egl_display,
-                                  self->xegl->egl_surface);
-    if (self->xegl->xcb_window)
-        ok &= x11_window_destroy(dpy->xegl->xcb_connection,
-                                 self->xegl->xcb_window);
-
-    free(self);
-    return ok;
+    return x11_window_show(&xegl_window(wc_self)->x11);
 }
 
-bool
-xegl_window_show(union native_window *native_self)
+static bool
+xegl_window_swap_buffers(struct wcore_window *wc_self)
 {
-    struct xegl_window *self = native_self->xegl;
-    struct xegl_display *display = self->display->xegl;
+    struct xegl_window *self = xegl_window(wc_self);
+    struct xegl_display *dpy = xegl_display(wc_self->display);
 
-    return x11_window_show(display->xcb_connection, self->xcb_window);
+    return egl_swap_buffers(dpy->egl, self->egl);
 }
 
-
-bool
-xegl_window_swap_buffers(union native_window *self)
-{
-    return egl_swap_buffers(self->xegl->display->xegl->egl_display,
-                            self->xegl->egl_surface);
-}
-
-/// @}
+static const struct wcore_window_vtbl xegl_window_wcore_vtbl = {
+    .destroy = xegl_window_destroy,
+    .show = xegl_window_show,
+    .swap_buffers = xegl_window_swap_buffers,
+};

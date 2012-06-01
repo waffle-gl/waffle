@@ -23,66 +23,74 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @addtogroup xegl_context
-/// @{
-
-/// @file
-
-#include "xegl_context.h"
-
 #include <stdlib.h>
 
-#include <waffle/native.h>
+#include <waffle/core/wcore_config.h>
 #include <waffle/core/wcore_error.h>
 
+#include "xegl_config.h"
+#include "xegl_context.h"
+#include "xegl_display.h"
 #include "xegl_priv_egl.h"
-#include "xegl_priv_types.h"
 
-union native_context*
-xegl_context_create(
-        union native_config *config,
-        union native_context *share_ctx)
+static const struct wcore_context_vtbl xegl_context_wcore_vtbl;
+
+static bool
+xegl_context_destroy(struct wcore_context *wc_self)
 {
-    union native_display *dpy = config->xegl->display;
+    struct xegl_context *self = xegl_context(wc_self);
+    bool ok = true;
 
-    union native_context *self;
-    NATIVE_ALLOC(self, xegl);
+    if (!self)
+        return ok;
+
+    if (self->egl)
+        ok &= egl_destroy_context(xegl_display(wc_self->display)->egl,
+                                  self->egl);
+
+    ok &= wcore_context_teardown(wc_self);
+    free(self);
+    return ok;
+}
+
+struct wcore_context*
+xegl_context_create(struct wcore_platform *wc_plat,
+                    struct wcore_config *wc_config,
+                    struct wcore_context *wc_share_ctx)
+{
+    struct xegl_context *self;
+    struct xegl_config *config = xegl_config(wc_config);
+    struct xegl_context *share_ctx = xegl_context(wc_share_ctx);
+    struct xegl_display *dpy = xegl_display(wc_config->display);
+    bool ok = true;
+
+    self = calloc(1, sizeof(*self));
     if (!self) {
         wcore_error(WAFFLE_OUT_OF_MEMORY);
         return NULL;
     }
 
-    self->xegl->display = config->xegl->display;
-    self->xegl->egl_context = egl_create_context(
-                                  dpy->xegl->egl_display,
-                                  config->xegl->egl_config,
-                                  share_ctx
-                                      ? share_ctx->xegl->egl_context
+    ok = wcore_context_init(&self->wcore, wc_config);
+    if (!ok)
+        goto error;
+
+    self->egl = egl_create_context(dpy->egl,
+                                   config->egl,
+                                   share_ctx
+                                      ? share_ctx->egl
                                       : NULL,
-                                  config->xegl->waffle_context_api);
+                                   config->waffle_context_api);
+    if (!self->egl)
+        goto error;
 
-    if (!self->xegl->egl_context) {
-        free(self);
-        return NULL;
-    }
+    self->wcore.vtbl = &xegl_context_wcore_vtbl;
+    return &self->wcore;
 
-    return self;
+error:
+    xegl_context_destroy(&self->wcore);
+    return NULL;
 }
 
-bool
-xegl_context_destroy(union native_context *self)
-{
-    if (!self)
-        return true;
-
-    bool ok = true;
-    union native_display *dpy = self->xegl->display;
-
-    if (self->xegl->egl_context)
-        ok &= egl_destroy_context(dpy->xegl->egl_display,
-                                  self->xegl->egl_context);
-    free(self);
-    return ok;
-}
-
-/// @}
+static const struct wcore_context_vtbl xegl_context_wcore_vtbl = {
+    .destroy = xegl_context_destroy,
+};

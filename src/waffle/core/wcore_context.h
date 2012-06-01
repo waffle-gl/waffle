@@ -23,27 +23,55 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @defgroup glx_dl glx_dl
-/// @ingroup glx
-/// @{
-
-/// @file
-
 #pragma once
 
+#include <assert.h>
 #include <stdbool.h>
-#include <stdint.h>
+#include <stdlib.h>
 
-union native_platform;
+#include <waffle/api/api_object.h>
 
-bool
-glx_dl_can_open(
-        union native_platform *native,
-        int32_t waffle_dl);
-void*
-glx_dl_sym(
-        union native_platform *native,
-        int32_t waffle_dl,
-        const char *name);
+#include "wcore_config.h"
+#include "wcore_util.h"
 
-/// @}
+struct wcore_context;
+struct wcore_display;
+
+struct wcore_context_vtbl {
+    bool
+    (*destroy)(struct wcore_context *self);
+};
+
+struct wcore_context {
+    const struct wcore_context_vtbl *vtbl;
+
+    struct waffle_context {} wfl;
+    struct api_object api;
+
+    struct wcore_display *display;
+};
+
+DEFINE_CONTAINER_CAST_FUNC(wcore_context,
+                           struct wcore_context,
+                           struct waffle_context,
+                           wfl)
+
+static inline bool
+wcore_context_init(struct wcore_context *self,
+                   struct wcore_config *config)
+{
+    assert(self);
+    assert(config);
+
+    self->api.display_id = config->display->api.display_id;
+    self->display = config->display;
+
+    return true;
+}
+
+static inline bool
+wcore_context_teardown(struct wcore_context *self)
+{
+    assert(self);
+    return true;
+}

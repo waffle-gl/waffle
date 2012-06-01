@@ -23,27 +23,20 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @defgroup xegl_dl xegl_dl
-/// @ingroup xegl
-/// @{
-
-/// @file
-
 #pragma once
 
 #include <stdbool.h>
-#include <stdint.h>
 
-union native_platform;
+#include <X11/Xlib-xcb.h>
+
+struct x11_display {
+    Display *xlib;
+    xcb_connection_t *xcb;
+    int screen;
+};
 
 bool
-xegl_dl_can_open(
-        union native_platform *native,
-        int32_t waffle_dl);
-void*
-xegl_dl_sym(
-        union native_platform *native,
-        int32_t waffle_dl,
-        const char *name);
+x11_display_init(struct x11_display *self, const char *name);
 
-/// @}
+bool
+x11_display_teardown(struct x11_display *self);

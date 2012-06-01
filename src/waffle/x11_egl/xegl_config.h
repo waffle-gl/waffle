@@ -23,27 +23,41 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @defgroup xegl_config xegl_config
-/// @ingroup xegl
-/// @{
-
-/// @file
-
 #pragma once
 
 #include <stdbool.h>
 #include <stdint.h>
 
+#include <EGL/egl.h>
+#include <xcb/xcb.h>
+
+#include <waffle/core/wcore_config.h>
+#include <waffle/core/wcore_util.h>
+
 struct wcore_config_attrs;
-union native_config;
-union native_display;
+struct wcore_platform;
 
-union native_config*
-xegl_config_choose(
-        union native_display *dpy,
-        const struct wcore_config_attrs *attrs);
+struct xegl_config {
+    struct wcore_config wcore;
 
-bool
-xegl_config_destroy(union native_config *self);
+    EGLConfig egl;
+    xcb_visualid_t xcb_visual_id;
 
-/// @}
+    /// The value of @c EGL_RENDER_BUFFER that will be set in the attrib_list
+    /// of eglCreateWindowSurface().
+    EGLint egl_render_buffer;
+
+    /// The API given to xegl_config_choose(). This is later used to
+    /// select the value of the EGL_RENDERABLE attribute.
+    int32_t waffle_context_api;
+};
+
+DEFINE_CONTAINER_CAST_FUNC(xegl_config,
+                           struct xegl_config,
+                           struct wcore_config,
+                           wcore)
+
+struct wcore_config*
+xegl_config_choose(struct wcore_platform *wc_plat,
+                   struct wcore_display *wc_dpy,
+                   const struct wcore_config_attrs *attrs);

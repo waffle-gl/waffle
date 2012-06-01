@@ -38,13 +38,12 @@
 
 struct api_object;
 struct wcore_platform;
-union native_config;
-union native_context;
-union native_display;
-union native_window;
 
 /// @brief Managed by waffle_init().
-extern struct wcore_platform *api_current_platform;
+///
+/// This is null if and only if waffle has not been initialized with
+/// waffle_init().
+extern struct wcore_platform *api_platform;
 
 /// @brief Used to validate most API entry points.
 ///
@@ -54,67 +53,8 @@ extern struct wcore_platform *api_current_platform;
 /// Emit an error and return false if any of the following:
 ///     - waffle is not initialized
 ///     - an object pointer is null
-///     - an object has an old platform id
+///     - two objects belong to different displays
 bool
 api_check_entry(const struct api_object *obj_list[], int length);
-
-/// @brief Create a unique id.
-size_t
-api_new_object_id(void);
-
-struct api_object {
-    /// @brief Display to which object belongs.
-    ///
-    /// This is identical to object_id for waffle_display.
-    size_t display_id;
-};
-
-struct waffle_config {
-    struct api_object api;
-    union native_config *native;
-};
-
-struct waffle_context {
-    struct api_object api;
-    union native_context *native;
-};
-
-struct waffle_display {
-    struct api_object api;
-    union native_display *native;
-};
-
-struct waffle_window {
-    struct api_object api;
-    union native_window *native;
-};
-
-/// Return null if @a config is null.
-static inline struct api_object*
-waffle_config_get_api_obj(struct waffle_config *config)
-{
-    return config ? &config->api : NULL;
-}
-
-/// Return null if @a ctx is null.
-static inline struct api_object*
-waffle_context_get_api_obj(struct waffle_context *ctx)
-{
-    return ctx ? &ctx->api : NULL;
-}
-
-/// Return null if @a display is null.
-static inline struct api_object*
-waffle_display_get_api_obj(struct waffle_display *display)
-{
-    return display ? &display->api : NULL;
-}
-
-/// Return null if @a window is null.
-static inline struct api_object*
-waffle_window_get_api_obj(struct waffle_window *window)
-{
-    return window ? &window->api : NULL;
-}
 
 /// @}

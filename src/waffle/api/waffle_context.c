@@ -32,8 +32,7 @@
 
 #include <stdlib.h>
 
-#include <waffle/native.h>
-#include <waffle/core/wcore_error.h>
+#include <waffle/core/wcore_context.h>
 #include <waffle/core/wcore_platform.h>
 
 #include "api_priv.h"
@@ -43,56 +42,42 @@ waffle_context_create(
         struct waffle_config *config,
         struct waffle_context *shared_ctx)
 {
-    struct waffle_context *self;
-    int obj_list_length;
+    struct wcore_context *wc_self;
+    struct wcore_config *wc_config = wcore_config(config);
+    struct wcore_context *wc_shared_ctx = wcore_context(shared_ctx);
 
-    const struct api_object *obj_list[] = {
-        waffle_config_get_api_obj(config),
-        waffle_context_get_api_obj(shared_ctx),
-    };
+    const struct api_object *obj_list[2];
+    int len = 0;
 
-    if (shared_ctx)
-        obj_list_length = 2;
-    else
-        obj_list_length = 1;
+    obj_list[len++] = wc_config ? &wc_config->api : NULL;
+    if (wc_shared_ctx)
+        obj_list[len++] = wc_shared_ctx ? &wc_shared_ctx->api : NULL;
 
-    if (!api_check_entry(obj_list, obj_list_length))
+    if (!api_check_entry(obj_list, len))
         return false;
 
-    self = malloc(sizeof(*self));
-    if (!self) {
-        wcore_error(WAFFLE_OUT_OF_MEMORY);
+    wc_self = api_platform->vtbl->create_context(api_platform,
+                                                 wc_config,
+                                                 wc_shared_ctx);
+    if (!wc_self)
         return NULL;
-    }
 
-    self->api.display_id = config->api.display_id;
-
-    self->native = api_current_platform->dispatch->
-                        context_create(config->native,
-                                       shared_ctx ? shared_ctx->native : NULL);
-    if (!self->native) {
-        free(self);
-        return NULL;
-    }
-
-    return self;
+    return &wc_self->wfl;
 }
 
 bool
 waffle_context_destroy(struct waffle_context *self)
 {
-    bool ok = true;
+    struct wcore_context *wc_self = wcore_context(self);
 
     const struct api_object *obj_list[] = {
-        waffle_context_get_api_obj(self),
+        wc_self ? &wc_self->api : NULL,
     };
 
     if (!api_check_entry(obj_list, 1))
         return false;
 
-    ok &= api_current_platform->dispatch->context_destroy(self->native);
-    free(self);
-    return ok;
+    return wc_self->vtbl->destroy(wc_self);
 }
 
 /// @}

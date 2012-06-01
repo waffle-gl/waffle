@@ -23,37 +23,85 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @defgroup wcore_platform wcore_platform
-/// @ingroup wcore
-///
-/// @brief Abstract native platform.
-/// @{
-
-/// @file
-
 #pragma once
 
+#include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
 
-struct native_dispatch;
-union native_platform;
+struct wcore_config;
+struct wcore_config_attrs;
+struct wcore_context;
+struct wcore_display;
+struct wcore_platform;
+struct wcore_window;
 
-struct wcore_platform {
-    /// @brief Each instance has a unique id.
-    uint64_t id;
+struct wcore_platform_vtbl {
+    bool
+    (*destroy)(struct wcore_platform *self);
 
-    /// @brief One of WAFFLE_PLATFORM_*. Denotes type of `native`.
-    int native_tag;
+    struct wcore_display*
+    (*connect_to_display)(
+            struct wcore_platform *self,
+            const char *name);
 
-    union native_platform *native;
-    const struct native_dispatch *dispatch;
+    struct wcore_config*
+    (*choose_config)(
+            struct wcore_platform *self,
+            struct wcore_display *dpy,
+            const struct wcore_config_attrs *attrs);
+
+    struct wcore_context*
+    (*create_context)(
+            struct wcore_platform *self,
+            struct wcore_config *config,
+            struct wcore_context *share_ctx);
+
+    struct wcore_window*
+    (*create_window)(
+            struct wcore_platform *self,
+            struct wcore_config *config,
+            int width,
+            int height);
+
+    bool
+    (*make_current)(
+            struct wcore_platform *self,
+            struct wcore_display *dpy,
+            struct wcore_window *window,
+            struct wcore_context *ctx);
+
+    void*
+    (*get_proc_address)(
+            struct wcore_platform *self,
+            const char *proc);
+
+    bool
+    (*dl_can_open)(
+            struct wcore_platform *self,
+            int32_t waffle_dl);
+
+    void*
+    (*dl_sym)(
+            struct wcore_platform *self,
+            int32_t waffle_dl,
+            const char *symbol);
 };
 
-struct wcore_platform*
-wcore_platform_create(int platform);
+struct wcore_platform {
+    const struct wcore_platform_vtbl *vtbl;
+};
 
-bool
-wcore_platform_destroy(struct wcore_platform *self);
+static inline bool
+wcore_platform_init(struct wcore_platform *self)
+{
+    assert(self);
+    return true;
+}
 
-/// @}
+static inline bool
+wcore_platform_teardown(struct wcore_platform *self)
+{
+    assert(self);
+    return true;
+}

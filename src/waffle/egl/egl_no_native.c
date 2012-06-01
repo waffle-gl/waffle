@@ -33,9 +33,10 @@
 
 #include <waffle/waffle_enum.h>
 #include <waffle/waffle_attrib_list.h>
+
 #include <waffle/core/wcore_config_attrs.h>
 #include <waffle/core/wcore_error.h>
-#include <waffle/linux/linux_platform.h>
+#include <waffle/core/wcore_platform.h>
 
 void
 egl_get_error(const char *egl_func_call)
@@ -86,7 +87,7 @@ egl_terminate(EGLDisplay dpy)
 /// @brief Check the `wcore_config_attrs.context_` attributes.
 static bool
 egl_config_check_context_attrs(
-        struct linux_platform *platform,
+        struct wcore_platform *plat,
         const struct wcore_config_attrs *attrs)
 {
     int version = 10 * attrs->context_major_version
@@ -100,21 +101,21 @@ egl_config_check_context_attrs(
                              "the default value 1.0");
                 return false;
             }
-            if (!linux_platform_dl_can_open(platform, WAFFLE_DL_OPENGL)) {
+            if (!plat->vtbl->dl_can_open(plat, WAFFLE_DL_OPENGL)) {
                 wcore_errorf(WAFFLE_UNSUPPORTED_ON_PLATFORM,
                              "failed to open the OpenGL library");
                 return false;
             }
             return true;
         case WAFFLE_CONTEXT_OPENGL_ES1:
-            if (!linux_platform_dl_can_open(platform, WAFFLE_DL_OPENGL_ES1)) {
+            if (!plat->vtbl->dl_can_open(plat, WAFFLE_DL_OPENGL_ES1)) {
                 wcore_errorf(WAFFLE_UNSUPPORTED_ON_PLATFORM,
                              "failed to open the OpenGL ES1 library");
                 return false;
             }
             return true;
         case WAFFLE_CONTEXT_OPENGL_ES2:
-            if (!linux_platform_dl_can_open(platform, WAFFLE_DL_OPENGL_ES2)) {
+            if (!plat->vtbl->dl_can_open(plat, WAFFLE_DL_OPENGL_ES2)) {
                 wcore_errorf(WAFFLE_UNSUPPORTED_ON_PLATFORM,
                              "failed to open the OpenGL ES2 library");
                 return false;
@@ -129,13 +130,13 @@ egl_config_check_context_attrs(
 
 EGLConfig
 egl_choose_config(
-        struct linux_platform *platform,
+        struct wcore_platform *plat,
         EGLDisplay dpy,
         const struct wcore_config_attrs *attrs)
 {
     bool ok = true;
 
-    if (!egl_config_check_context_attrs(platform, attrs))
+    if (!egl_config_check_context_attrs(plat, attrs))
         return false;
 
     if (attrs->accum_buffer) {
@@ -328,7 +329,7 @@ egl_get_render_buffer_attrib(
 
 bool
 egl_supports_context_api(
-        struct linux_platform *platform,
+        struct wcore_platform *plat,
         int32_t context_api)
 {
     int32_t waffle_dl;
@@ -344,7 +345,7 @@ egl_supports_context_api(
             return false;
     }
 
-    return linux_platform_dl_can_open(platform, waffle_dl);
+    return plat->vtbl->dl_can_open(plat, waffle_dl);
 }
 
 /// @}

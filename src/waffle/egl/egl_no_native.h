@@ -38,8 +38,8 @@
 #include <stdint.h>
 #include <EGL/egl.h>
 
-struct linux_platform;
 struct wcore_config_attrs;
+struct wcore_platform;
 
 /// @brief Sets the waffle error with info from eglGetError().
 /// @param egl_func_call Examples are "eglMakeCurrent()" and
@@ -52,7 +52,7 @@ egl_terminate(EGLDisplay dpy);
 
 EGLConfig
 egl_choose_config(
-        struct linux_platform *platform,
+        struct wcore_platform *plat,
         EGLDisplay dpy,
         const struct wcore_config_attrs *attrs);
 
@@ -98,7 +98,7 @@ egl_get_render_buffer_attrib(
 /// @brief Helper for waffle_display_supports_context_api().
 bool
 egl_supports_context_api(
-        struct linux_platform *platform,
+        struct wcore_platform *plat,
         int32_t context_api);
 
 /// @}

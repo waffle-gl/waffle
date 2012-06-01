@@ -33,10 +33,12 @@
 #include <stddef.h>
 #include <string.h>
 
-#include <waffle/native.h>
 #include <waffle/waffle_enum.h>
+#include <waffle/core/wcore_context.h>
+#include <waffle/core/wcore_display.h>
 #include <waffle/core/wcore_error.h>
 #include <waffle/core/wcore_platform.h>
+#include <waffle/core/wcore_window.h>
 
 #include "api_priv.h"
 
@@ -83,26 +85,26 @@ waffle_make_current(
         struct waffle_window *window,
         struct waffle_context *ctx)
 {
-    int obj_list_length = 1;
+    struct wcore_display *wc_dpy = wcore_display(dpy);
+    struct wcore_window *wc_window = wcore_window(window);
+    struct wcore_context *wc_ctx = wcore_context(ctx);
 
-    const struct api_object *obj_list[] = {
-        waffle_display_get_api_obj(dpy),
-        0,
-        0,
-    };
+    const struct api_object *obj_list[3];
+    int len = 0;
 
-    if (window)
-        obj_list[obj_list_length++] = waffle_window_get_api_obj(window);
-    if (ctx)
-        obj_list[obj_list_length++] = waffle_context_get_api_obj(ctx);
+    obj_list[len++] = wc_dpy ? &wc_dpy->api : NULL;
+    if (wc_window)
+        obj_list[len++] = wc_window ? &wc_window->api : NULL;
+    if (wc_ctx)
+        obj_list[len++] = wc_ctx ? &wc_ctx->api : NULL;
 
-    if (!api_check_entry(obj_list, obj_list_length))
+    if (!api_check_entry(obj_list, len))
         return false;
 
-    return api_current_platform->dispatch->
-                make_current(dpy->native,
-                             window ? window->native :NULL,
-                             ctx ? ctx->native : NULL);
+    return api_platform->vtbl->make_current(api_platform,
+                                            wc_dpy,
+                                            wc_window,
+                                            wc_ctx);
 }
 
 void*
@@ -111,8 +113,7 @@ waffle_get_proc_address(const char *name)
     if (!api_check_entry(NULL, 0))
         return NULL;
 
-    return api_current_platform->dispatch->
-            get_proc_address(api_current_platform->native, name);
+    return api_platform->vtbl->get_proc_address(api_platform, name);
 }
 
 /// @}

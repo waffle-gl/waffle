@@ -15,8 +15,8 @@ set(waffle_sources
     api/waffle_init.c
     api/waffle_window.c
     core/wcore_config_attrs.c
+    core/wcore_display.c
     core/wcore_error.c
-    core/wcore_platform.c
     core/wcore_tinfo.c
     )
 
@@ -27,7 +27,6 @@ if("${CMAKE_SYSTEM_NAME}" STREQUAL "Darwin")
         cgl/cgl_display.m
         cgl/cgl_dl.m
         cgl/cgl_error.m
-        cgl/cgl_gl_misc.m
         cgl/cgl_platform.m
         cgl/cgl_window.m
 
@@ -54,8 +53,6 @@ if(waffle_has_glx)
         glx/glx_config.c
         glx/glx_context.c
         glx/glx_display.c
-        glx/glx_dl.c
-        glx/glx_gl_misc.c
         glx/glx_platform.c
         glx/glx_window.c
         )
@@ -80,8 +77,6 @@ if(waffle_has_wayland)
         wayland/wayland_config.c
         wayland/wayland_context.c
         wayland/wayland_display.c
-        wayland/wayland_dl.c
-        wayland/wayland_gl_misc.c
         wayland/wayland_platform.c
         wayland/wayland_priv_egl.c
         wayland/wayland_window.c
@@ -94,7 +89,8 @@ endif()
 
 if(waffle_has_x11)
     list(APPEND waffle_sources
-        x11/x11.c
+        x11/x11_display.c
+        x11/x11_window.c
         )
     list(APPEND waffle_libdeps
         ${waffle_X11-xcb_library}
@@ -108,8 +104,6 @@ if(waffle_has_x11_egl)
         x11_egl/xegl_config.c
         x11_egl/xegl_context.c
         x11_egl/xegl_display.c
-        x11_egl/xegl_dl.c
-        x11_egl/xegl_gl_misc.c
         x11_egl/xegl_platform.c
         x11_egl/xegl_priv_egl.c
         x11_egl/xegl_window.c

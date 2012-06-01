@@ -23,77 +23,26 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @addtogroup xegl_platform
-/// @{
-
-/// @file
-
-#include "xegl_platform.h"
-
 #define _POSIX_C_SOURCE 200112 // glib feature macro for unsetenv()
 
-#include <dlfcn.h>
 #include <stdlib.h>
 
-#include <waffle/native.h>
-#include <waffle/waffle_enum.h>
 #include <waffle/core/wcore_error.h>
 #include <waffle/linux/linux_platform.h>
 
 #include "xegl_config.h"
 #include "xegl_context.h"
 #include "xegl_display.h"
-#include "xegl_dl.h"
-#include "xegl_gl_misc.h"
+#include "xegl_platform.h"
 #include "xegl_priv_egl.h"
-#include "xegl_priv_types.h"
 #include "xegl_window.h"
 
-static const struct native_dispatch xegl_dispatch = {
-    .display_connect = xegl_display_connect,
-    .display_disconnect = xegl_display_disconnect,
-    .display_supports_context_api = xegl_display_supports_context_api,
-    .config_choose = xegl_config_choose,
-    .config_destroy = xegl_config_destroy,
-    .context_create = xegl_context_create,
-    .context_destroy = xegl_context_destroy,
-    .dl_can_open = xegl_dl_can_open,
-    .dl_sym = xegl_dl_sym,
-    .window_create = xegl_window_create,
-    .window_destroy = xegl_window_destroy,
-    .window_show = xegl_window_show,
-    .window_swap_buffers = xegl_window_swap_buffers,
-    .make_current = xegl_make_current,
-    .get_proc_address = xegl_get_proc_address,
-};
+static const struct wcore_platform_vtbl xegl_platform_wcore_vtbl;
 
-union native_platform*
-xegl_platform_create(const struct native_dispatch **dispatch)
+static bool
+xegl_platform_destroy(struct wcore_platform *wc_self)
 {
-    union native_platform *self;
-    NATIVE_ALLOC(self, xegl);
-    if (!self) {
-        wcore_error(WAFFLE_OUT_OF_MEMORY);
-        return NULL;
-    }
-
-    self->xegl->linux_ = linux_platform_create();
-    if (!self->xegl->linux_)
-        goto error;
-
-    setenv("EGL_PLATFORM", "x11", true);
-
-    *dispatch = &xegl_dispatch;
-    return self;
-
-error:
-    xegl_platform_destroy(self);
-    return NULL;
-}
-
-bool
-xegl_platform_destroy(union native_platform *self)
-{
+    struct xegl_platform *self = xegl_platform(wc_self);
     bool ok = true;
 
     if (!self)
@@ -101,11 +50,88 @@ xegl_platform_destroy(union native_platform *self)
 
     unsetenv("EGL_PLATFORM");
 
-    if (self->xegl->linux_)
-        ok &= linux_platform_destroy(self->xegl->linux_);
+    if (self->linux)
+        ok &= linux_platform_destroy(self->linux);
 
+    ok &= wcore_platform_teardown(wc_self);
     free(self);
     return ok;
 }
 
-/// @}
+struct wcore_platform*
+xegl_platform_create(void)
+{
+    struct xegl_platform *self;
+    bool ok = true;
+
+    self= calloc(1, sizeof(*self));
+    if (!self) {
+        wcore_error(WAFFLE_OUT_OF_MEMORY);
+        return NULL;
+    }
+
+    ok = wcore_platform_init(&self->wcore);
+    if (!ok)
+        goto error;
+
+    self->linux = linux_platform_create();
+    if (!self->linux)
+        goto error;
+
+    setenv("EGL_PLATFORM", "x11", true);
+
+    self->wcore.vtbl = &xegl_platform_wcore_vtbl;
+    return &self->wcore;
+
+error:
+    xegl_platform_destroy(&self->wcore);
+    return NULL;
+}
+
+static bool
+xegl_platform_make_current(struct wcore_platform *wc_self,
+                           struct wcore_display *wc_dpy,
+                           struct wcore_window *wc_window,
+                           struct wcore_context *wc_ctx)
+{
+    return egl_make_current(xegl_display(wc_dpy)->egl,
+                            wc_window ? xegl_window(wc_window)->egl : NULL,
+                            wc_ctx ? xegl_context(wc_ctx)->egl : NULL);
+}
+
+static void*
+xegl_platform_get_proc_address(struct wcore_platform *wc_self,
+                               const char *name)
+{
+    return eglGetProcAddress(name);
+}
+
+static bool
+xegl_platform_dl_can_open(struct wcore_platform *wc_self,
+                          int32_t waffle_dl)
+{
+    return linux_platform_dl_can_open(xegl_platform(wc_self)->linux,
+                                      waffle_dl);
+}
+
+static void*
+xegl_platform_dl_sym(struct wcore_platform *wc_self,
+                     int32_t waffle_dl,
+                     const char *name)
+{
+    return linux_platform_dl_sym(xegl_platform(wc_self)->linux,
+                                               waffle_dl,
+                                               name);
+}
+
+static const struct wcore_platform_vtbl xegl_platform_wcore_vtbl = {
+    .destroy = xegl_platform_destroy,
+    .connect_to_display = xegl_display_connect,
+    .choose_config = xegl_config_choose,
+    .create_context = xegl_context_create,
+    .create_window = xegl_window_create,
+    .make_current = xegl_platform_make_current,
+    .get_proc_address = xegl_platform_get_proc_address,
+    .dl_can_open = xegl_platform_dl_can_open,
+    .dl_sym = xegl_platform_dl_sym,
+};

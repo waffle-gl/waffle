@@ -28,15 +28,17 @@
 
 /// @file
 
+#include "api_priv.h"
+
 #include <stdio.h>
 #include <stdlib.h>
-
-#include "api_priv.h"
 
 #include <waffle/core/wcore_error.h>
 #include <waffle/core/wcore_platform.h>
 
-struct wcore_platform *api_current_platform = 0;
+#include "api_object.h"
+
+struct wcore_platform *api_platform = 0;
 
 bool
 api_check_entry(const struct api_object *obj_list[], int length)
@@ -45,7 +47,7 @@ api_check_entry(const struct api_object *obj_list[], int length)
 
     wcore_error_reset();
 
-    if (!api_current_platform) {
+    if (!api_platform) {
         wcore_error(WAFFLE_NOT_INITIALIZED);
         return false;
     }
@@ -63,19 +65,6 @@ api_check_entry(const struct api_object *obj_list[], int length)
     }
 
     return true;
-}
-
-size_t
-api_new_object_id(void)
-{
-    static size_t counter = 1;
-
-    if (counter == 0) {
-        fprintf(stderr, "waffle: error: internal counter wrapped to 0\n");
-        abort();
-    }
-
-    return counter++;
 }
 
 /// @}

@@ -23,32 +23,21 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @defgroup cgl_dl cgl_dl
-/// @ingroup cgl
-/// @{
-
-/// @file
-
 #pragma once
 
 #include <stdbool.h>
 #include <stdint.h>
 
-struct cgl_platform;
-union native_platform;
+struct wcore_platform;
 
 bool
-cgl_dl_can_open(
-        union native_platform *native,
-        int32_t waffle_dl);
+cgl_dl_can_open(struct wcore_platform *wc_plat,
+                int32_t waffle_dl);
+
 void*
-cgl_dl_sym(
-        union native_platform *native,
-        int32_t waffle_dl,
-        const char *name);
+cgl_dl_sym(struct wcore_platform *wc_plat,
+          int32_t waffle_dl,
+          const char *name);
 
-/// Used by cgl_platform_destroy().
 bool
-cgl_dl_close(struct cgl_platform *platform);
-
-/// @}
+cgl_dl_close(struct wcore_platform *wc_plat);

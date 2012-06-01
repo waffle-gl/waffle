@@ -23,34 +23,25 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @defgroup cgl_display cgl_display
-/// @ingroup cgl
-/// @{
-
-/// @file
-
 #pragma once
 
 #include <stdbool.h>
 #include <stdint.h>
 
-union native_display;
-union native_platform;
+#include <waffle/core/wcore_display.h>
+#include <waffle/core/wcore_util.h>
+
+struct wcore_platform;
 
 struct cgl_display {
+    struct wcore_display wcore;
 };
 
-union native_display*
-cgl_display_connect(
-        union native_platform *platform,
-        const char *name);
+DEFINE_CONTAINER_CAST_FUNC(cgl_display,
+                           struct cgl_display,
+                           struct wcore_display,
+                           wcore)
 
-bool
-cgl_display_disconnect(union native_display *self);
-
-bool
-cgl_display_supports_context_api(
-        union native_display *self,
-        int32_t context_api);
-
-/// @}
+struct wcore_display*
+cgl_display_connect(struct wcore_platform *wc_plat,
+                    const char *name);

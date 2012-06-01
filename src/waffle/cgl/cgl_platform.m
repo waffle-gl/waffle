@@ -23,70 +23,100 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @addtogroup cgl_platform
-/// @{
-
-/// @file
-
-#include "cgl_platform.h"
-
 #include <stdlib.h>
 
-#include <waffle/native.h>
 #include <waffle/core/wcore_error.h>
 
 #include "cgl_config.h"
 #include "cgl_context.h"
 #include "cgl_display.h"
 #include "cgl_dl.h"
-#include "cgl_gl_misc.h"
+#include "cgl_platform.h"
+
 #include "cgl_window.h"
 
-static const struct native_dispatch cgl_dispatch = {
-    .display_connect = cgl_display_connect,
-    .display_disconnect = cgl_display_disconnect,
-    .display_supports_context_api = cgl_display_supports_context_api,
-    .config_choose = cgl_config_choose,
-    .config_destroy = cgl_config_destroy,
-    .context_create = cgl_context_create,
-    .context_destroy = cgl_context_destroy,
-    .dl_can_open = cgl_dl_can_open,
-    .dl_sym = cgl_dl_sym,
-    .window_create = cgl_window_create,
-    .window_destroy = cgl_window_destroy,
-    .window_show = cgl_window_show,
-    .window_swap_buffers = cgl_window_swap_buffers,
-    .make_current = cgl_make_current,
-    .get_proc_address = cgl_get_proc_address,
-};
+static const struct wcore_platform_vtbl cgl_platform_wcore_vtbl;
 
-union native_platform*
-cgl_platform_create(const struct native_dispatch **dispatch)
+static bool
+cgl_platform_destroy(struct wcore_platform *wc_self)
 {
-    union native_platform *self;
-    NATIVE_ALLOC(self, cgl);
+    struct cgl_platform *self = cgl_platform(wc_self);
+    bool ok = true;
+
+    if (!self)
+        return ok;
+
+    if (self->dl_gl)
+        ok &= cgl_dl_close(&self->wcore);
+
+    ok &= wcore_platform_teardown(wc_self);
+    free(self);
+    return ok;
+}
+
+struct wcore_platform*
+cgl_platform_create(void)
+{
+    struct cgl_platform *self;
+    bool ok = true;
+
+    self= calloc(1, sizeof(*self));
     if (!self) {
         wcore_error(WAFFLE_OUT_OF_MEMORY);
         return NULL;
     }
 
-    *dispatch = &cgl_dispatch;
-    return self;
+    ok = wcore_platform_init(&self->wcore);
+    if (!ok)
+        goto error;
+
+    self->wcore.vtbl = &cgl_platform_wcore_vtbl;
+    return &self->wcore;
+
+error:
+    cgl_platform_destroy(&self->wcore);
+    return NULL;
 }
 
-bool
-cgl_platform_destroy(union native_platform *self)
+static bool
+cgl_platform_make_current(struct wcore_platform *wc_self,
+                          struct wcore_display *wc_dpy,
+                          struct wcore_window *wc_window,
+                          struct wcore_context *wc_ctx)
 {
-    bool ok = true;
+    struct cgl_window *window = cgl_window(wc_window);
+    struct cgl_context *ctx = cgl_context(wc_ctx);
 
-    if (!self)
-        return true;
+    NSOpenGLContext *cocoa_ctx = ctx ? ctx->ns : NULL;
+    WaffleGLView* cocoa_view = window ? window->gl_view : NULL;
 
-    if (self->cgl->dl_gl)
-        ok &= cgl_dl_close(self->cgl);
+    if (cocoa_view)
+        cocoa_view.glContext = cocoa_ctx;
 
-    free(self);
-    return ok;
+    if (cocoa_ctx) {
+        [cocoa_ctx makeCurrentContext];
+        [cocoa_ctx setView:cocoa_view];
+    }
+
+    return true;
 }
 
-/// @}
+static void*
+cgl_platform_get_proc_address(struct wcore_platform *wc_self,
+                              const char *name)
+{
+    // There is no CGLGetProcAddress.
+    return NULL;
+}
+
+static const struct wcore_platform_vtbl cgl_platform_wcore_vtbl = {
+    .destroy = cgl_platform_destroy,
+    .connect_to_display = cgl_display_connect,
+    .choose_config = cgl_config_choose,
+    .create_context = cgl_context_create,
+    .create_window = cgl_window_create,
+    .make_current = cgl_platform_make_current,
+    .get_proc_address = cgl_platform_get_proc_address,
+    .dl_can_open = cgl_dl_can_open,
+    .dl_sym = cgl_dl_sym,
+};

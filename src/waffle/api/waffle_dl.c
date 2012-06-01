@@ -30,7 +30,6 @@
 
 #include <waffle/waffle_dl.h>
 
-#include <waffle/native.h>
 #include <waffle/waffle_enum.h>
 #include <waffle/core/wcore_error.h>
 #include <waffle/core/wcore_platform.h>
@@ -60,8 +59,7 @@ waffle_dl_can_open(int32_t dl)
      if (!waffle_dl_check_enum(dl))
          return false;
 
-     return api_current_platform->dispatch->
-             dl_can_open(api_current_platform->native, dl);
+     return api_platform->vtbl->dl_can_open(api_platform, dl);
 }
 
 void*
@@ -73,8 +71,7 @@ waffle_dl_sym(int32_t dl, const char *name)
     if (!waffle_dl_check_enum(dl))
         return false;
 
-    return api_current_platform->dispatch->
-            dl_sym(api_current_platform->native, dl, name);
+    return api_platform->vtbl->dl_sym(api_platform, dl, name);
 }
 
 /// @}

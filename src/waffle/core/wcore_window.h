@@ -23,34 +23,58 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @addtogroup wayland_dl
-/// @{
+#pragma once
 
-/// @file
+#include <stdbool.h>
+#include <stdlib.h>
 
-#include "wayland_dl.h"
+#include "wcore_config.h"
+#include "wcore_util.h"
 
-#include <waffle/native.h>
-#include <waffle/linux/linux_dl.h>
-#include <waffle/linux/linux_platform.h>
+struct wcore_window;
 
-#include "wayland_priv_types.h"
+struct wcore_window_vtbl {
+    bool
+    (*destroy)(struct wcore_window *self);
 
-bool
-wayland_dl_can_open(
-        union native_platform *native,
-        int32_t waffle_dl)
+    bool
+    (*show)(struct wcore_window *self);
+
+    bool
+    (*swap_buffers)(struct wcore_window *self);
+};
+
+struct wcore_window {
+    const struct wcore_window_vtbl *vtbl;
+
+    struct waffle_window {} wfl;
+    struct api_object api;
+
+    struct wcore_display *display;
+};
+
+DEFINE_CONTAINER_CAST_FUNC(wcore_window,
+                           struct wcore_window,
+                           struct waffle_window,
+                           wfl)
+
+
+static inline bool
+wcore_window_init(struct wcore_window *self,
+                  struct wcore_config *config)
 {
-    return linux_platform_dl_can_open(native->wl->linux_, waffle_dl);
+    assert(self);
+    assert(config);
+
+    self->api.display_id = config->display->api.display_id;
+    self->display = config->display;
+
+    return true;
 }
 
-void*
-wayland_dl_sym(
-        union native_platform *native,
-        int32_t waffle_dl,
-        const char *name)
+static inline bool
+wcore_window_teardown(struct wcore_window *self)
 {
-    return linux_platform_dl_sym(native->wl->linux_, waffle_dl, name);
+    assert(self);
+    return true;
 }
-
-/// @}

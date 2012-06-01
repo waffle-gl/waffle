@@ -23,23 +23,32 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @addtogroup cgl_config
-/// @{
-
-/// @file
-
-#include "cgl_config.h"
-
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include <waffle/native.h>
 #include <waffle/waffle_enum.h>
+
 #include <waffle/core/wcore_config_attrs.h>
 #include <waffle/core/wcore_error.h>
 
+#include "cgl_config.h"
 #include "cgl_error.h"
+
+static const struct wcore_config_vtbl cgl_config_wcore_vtbl;
+
+static bool
+cgl_config_destroy(struct wcore_config *wc_self)
+{
+    bool ok = true;
+
+    if (wc_self == NULL)
+        return ok;
+
+    ok &= wcore_config_teardown(wc_self);
+    free(cgl_config(wc_self));
+    return ok;
+}
 
 /// @brief Check the values of `attrs->context_*`.
 static bool
@@ -138,11 +147,12 @@ cgl_config_fill_pixel_format_attrs(
     return true;
 }
 
-union native_config*
-cgl_config_choose(
-        union native_display *display,
-        const struct wcore_config_attrs *attrs)
+struct wcore_config*
+cgl_config_choose(struct wcore_platform *wc_plat,
+                  struct wcore_display *wc_dpy,
+                  const struct wcore_config_attrs *attrs)
 {
+    struct cgl_config *self;
     bool ok = true;
     int error = 0;
     int ignore;
@@ -151,49 +161,39 @@ cgl_config_choose(
     if (!cgl_config_check_attrs(attrs))
         return NULL;
 
-    union native_config *self;
-    NATIVE_ALLOC(self, cgl);
+    self = calloc(1, sizeof(*self));
     if (!self) {
         wcore_error(WAFFLE_OUT_OF_MEMORY);
         return NULL;
     }
 
+    ok = wcore_config_init(&self->wcore, wc_dpy);
+    if (!ok)
+        goto error;
+
     ok = cgl_config_fill_pixel_format_attrs(attrs, pixel_attrs);
     if (!ok)
         goto error;
 
-    error = CGLChoosePixelFormat(pixel_attrs, &self->cgl->pixel_format, &ignore);
+    error = CGLChoosePixelFormat(pixel_attrs, &self->pixel_format, &ignore);
     if (error) {
         cgl_error_failed_func("CGLChoosePixelFormat", error);
         goto error;
     }
-    if (!self->cgl->pixel_format) {
+    if (!self->pixel_format) {
         wcore_errorf(WAFFLE_UNKNOWN_ERROR,
                      "CGLChoosePixelFormat failed to find a pixel format");
         goto error;
     }
 
-    goto end;
+    self->wcore.vtbl = &cgl_config_wcore_vtbl;
+    return &self->wcore;
 
 error:
-    cgl_config_destroy(self);
-    self = NULL;
-
-end:
-    return self;
+    cgl_config_destroy(&self->wcore);
+    return NULL;
 }
 
-bool
-cgl_config_destroy(union native_config *self)
-{
-    if (!self)
-        return true;
-
-    if (self->cgl->pixel_format)
-        CGLReleasePixelFormat(self->cgl->pixel_format);
-
-    free(self);
-    return true;
-}
-
-/// @}
+static const struct wcore_config_vtbl cgl_config_wcore_vtbl = {
+    .destroy = cgl_config_destroy,
+};

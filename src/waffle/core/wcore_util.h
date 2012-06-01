@@ -23,45 +23,28 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @defgroup x11 x11
-///
-/// @brief Wrappers for X11 functions.
-///
-/// Waffle supports two X11 platforms (GLX and X11/EGL). This header declares
-/// all common code.
-/// @{
-
-/// @file
-
 #pragma once
 
-#include <stdbool.h>
-#include <X11/Xlib-xcb.h>
+#include <stddef.h>
 
-bool
-x11_display_connect(
-        const char *name,
-        Display **xlib_dpy,
-        xcb_connection_t **xcb_conn);
+#define container_of(ptr, type, member) ({                              \
+        const __typeof__(((type *)0)->member ) *__mptr = (ptr);         \
+        (type*)((void*)__mptr - offsetof(type, member));                \
+     })
 
-bool
-x11_display_disconnect(Display *dpy);
-
-xcb_window_t
-x11_window_create(
-        xcb_connection_t *conn,
-        xcb_visualid_t visual_id,
-        int width,
-        int height);
-
-bool
-x11_window_destroy(
-        xcb_connection_t *conn,
-        xcb_window_t window);
-
-bool
-x11_window_show(
-        xcb_connection_t *conn,
-        xcb_window_t window);
-
-/// @}
+/// @brief Safe downcast using container_of().
+///
+/// If given a null pointer, return null.
+#define DEFINE_CONTAINER_CAST_FUNC(func_name,                           \
+                                   container_type,                      \
+                                   member_type,                         \
+                                   member)                              \
+                                                                        \
+    static inline container_type*                                       \
+    func_name(member_type *member##_self)                               \
+    {                                                                   \
+        if (member##_self)                                              \
+            return container_of(member##_self, container_type, member); \
+        else                                                            \
+            return 0;                                                   \
+    }

@@ -23,27 +23,39 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @defgroup glx_config glx_config
-/// @ingroup glx
-/// @{
-
-/// @file
-
 #pragma once
 
 #include <stdbool.h>
 #include <stdint.h>
 
+#include <GL/glx.h>
+#include <xcb/xcb.h>
+
+#include <waffle/core/wcore_config.h>
+#include <waffle/core/wcore_util.h>
+
 struct wcore_config_attrs;
-union native_config;
-union native_display;
+struct wcore_platform;
 
-union native_config*
-glx_config_choose(
-        union native_display *dpy,
-        const struct wcore_config_attrs *attrs);
+struct glx_config {
+    struct wcore_config wcore;
 
-bool
-glx_config_destroy(union native_config *self);
+    GLXFBConfig glx_fbconfig;
+    int32_t glx_fbconfig_id;
+    xcb_visualid_t xcb_visual_id;
 
-/// @}
+    int waffle_context_api;
+    int waffle_context_major_version;
+    int waffle_context_minor_version;
+    int waffle_context_profile;
+};
+
+DEFINE_CONTAINER_CAST_FUNC(glx_config,
+                           struct glx_config,
+                           struct wcore_config,
+                           wcore)
+
+struct wcore_config*
+glx_config_choose(struct wcore_platform *wc_plat,
+                  struct wcore_display *wc_dpy,
+                  const struct wcore_config_attrs *attrs);

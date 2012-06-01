@@ -23,72 +23,78 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @addtogroup xegl_config
-/// @{
-
-/// @file
-
-#include "xegl_config.h"
-
 #include <stdlib.h>
 #include <string.h>
 
-#include <waffle/native.h>
-#include <waffle/waffle_enum.h>
 #include <waffle/core/wcore_config_attrs.h>
 #include <waffle/core/wcore_error.h>
 
+#include "xegl_config.h"
+#include "xegl_display.h"
+#include "xegl_platform.h"
 #include "xegl_priv_egl.h"
-#include "xegl_priv_types.h"
 
-union native_config*
-xegl_config_choose(
-        union native_display *dpy,
-        const struct wcore_config_attrs *attrs)
+static const struct wcore_config_vtbl xegl_config_wcore_vtbl;
+
+static bool
+xegl_config_destroy(struct wcore_config *wc_self)
 {
-    union native_platform *platform = dpy->xegl->platform;
+    struct xegl_config *self = xegl_config(wc_self);
     bool ok = true;
 
-    union native_config *self;
-    NATIVE_ALLOC(self, xegl);
+    if (!self)
+        return ok;
+
+    ok &= wcore_config_teardown(wc_self);
+    free(self);
+    return ok;
+}
+
+struct wcore_config*
+xegl_config_choose(struct wcore_platform *wc_plat,
+                   struct wcore_display *wc_dpy,
+                   const struct wcore_config_attrs *attrs)
+{
+    struct xegl_config *self;
+    struct xegl_display *dpy = xegl_display(wc_dpy);
+    bool ok = true;
+
+    self = calloc(1, sizeof(*self));
     if (!self) {
         wcore_error(WAFFLE_OUT_OF_MEMORY);
         return NULL;
     }
 
-    self->xegl->display = dpy;
-
-    ok &= egl_get_render_buffer_attrib(attrs, &self->xegl->egl_render_buffer);
+    ok = wcore_config_init(&self->wcore, wc_dpy);
     if (!ok)
         goto error;
-    self->xegl->egl_config = egl_choose_config(platform->xegl->linux_,
-                                               dpy->xegl->egl_display,
-                                               attrs);
-    if (!self->xegl->egl_config)
+
+    ok = egl_get_render_buffer_attrib(attrs, &self->egl_render_buffer);
+    if (!ok)
         goto error;
-    ok &= eglGetConfigAttrib(dpy->xegl->egl_display,
-                             self->xegl->egl_config,
-                             EGL_NATIVE_VISUAL_ID,
-                             (EGLint*) &self->xegl->xcb_visual_id);
+
+    self->egl = egl_choose_config(wc_plat, dpy->egl, attrs);
+    if (!self->egl)
+        goto error;
+
+    ok = eglGetConfigAttrib(dpy->egl,
+                            self->egl,
+                            EGL_NATIVE_VISUAL_ID,
+                            (EGLint*) &self->xcb_visual_id);
     if (!ok) {
         egl_get_error("eglGetConfigAttrib(EGL_NATIVE_VISUAL_ID)");
         goto error;
     }
 
-    self->xegl->waffle_context_api = attrs->context_api;
-
-    return self;
+    self->waffle_context_api = attrs->context_api;
+    self->wcore.vtbl = &xegl_config_wcore_vtbl;
+    return &self->wcore;
 
 error:
-    free(self);
+    xegl_config_destroy(&self->wcore);
     return NULL;
 }
 
-bool
-xegl_config_destroy(union native_config *self)
-{
-    free(self);
-    return true;
-}
-
-/// @}
+static const struct wcore_config_vtbl xegl_config_wcore_vtbl = {
+    .destroy = xegl_config_destroy,
+};

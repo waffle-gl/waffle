@@ -23,25 +23,42 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @addtogroup cgl_window
-/// @{
-
-/// @file
-
-#include "cgl_window.h"
-
 #import <Cocoa/Cocoa.h>
 #import <OpenGL/OpenGL.h>
 
-#include <waffle/native.h>
 #include <waffle/core/wcore_error.h>
+
+#include "cgl_config.h"
+#include "cgl_window.h"
+
+static const struct wcore_window_vtbl cgl_window_wcore_vtbl;
+
+static bool
+cgl_window_destroy(struct wcore_window *wc_self)
+{
+    struct cgl_window *self = cgl_window(wc_self);
+    bool ok = true;
+
+    if (!self)
+        return ok;
+
+    if (self->gl_view)
+        [self->gl_view release];
+
+    if (self->ns_window)
+        [self->ns_window release];
+
+    ok &= wcore_window_teardown(&self->wcore);
+    free(self);
+    return ok;
+}
+
 
 static WaffleGLView*
 cgl_window_create_gl_view(int width, int height)
 {
-    WaffleGLView *view = [[[WaffleGLView alloc]
-                           initWithFrame:NSMakeRect(0, 0, width, height)]
-                          autorelease];
+    WaffleGLView *view = [[WaffleGLView alloc]
+                          initWithFrame:NSMakeRect(0, 0, width, height)];
 
     if (!view)
         wcore_errorf(WAFFLE_UNKNOWN_ERROR, "failed to create NSView");
@@ -56,12 +73,11 @@ cgl_window_create_ns_window(NSView *view)
     // WARNING(chad): likely all wrong.
     int styleMask = NSTitledWindowMask | NSClosableWindowMask;
 
-    NSWindow *window = [[[NSWindow alloc]
-                         initWithContentRect:[view frame]
-                                      styleMask:styleMask
-                                        backing:NSBackingStoreBuffered
-                                          defer:NO]
-                        autorelease];
+    NSWindow *window = [[NSWindow alloc]
+                        initWithContentRect:[view frame]
+                                  styleMask:styleMask
+                                    backing:NSBackingStoreBuffered
+                                      defer:NO];
 
     if (!window) {
         wcore_errorf(WAFFLE_UNKNOWN_ERROR, "failed to create NSWindow");
@@ -76,61 +92,58 @@ cgl_window_create_ns_window(NSView *view)
     return window;
 }
 
-union native_window*
-cgl_window_create(
-        union native_config *config,
-        int width,
-        int height)
+struct wcore_window*
+cgl_window_create(struct wcore_platform *wc_plat,
+                  struct wcore_config *wc_config,
+                  int width,
+                  int height)
 {
-    union native_window *self;
-    NATIVE_ALLOC(self, cgl);
+    struct cgl_window *self;
+    bool ok = true;
+
+    self = calloc(1, sizeof(*self));
     if (!self) {
         wcore_error(WAFFLE_OUT_OF_MEMORY);
         return NULL;
     }
 
-    self->cgl->gl_view = cgl_window_create_gl_view(width, height);
-    if (!self->cgl->gl_view)
+    ok = wcore_window_init(&self->wcore, wc_config);
+    if (!ok)
         goto error;
 
-    self->cgl->ns_window = cgl_window_create_ns_window(self->cgl->gl_view);
-    if (!self->cgl->ns_window)
+    self->gl_view = cgl_window_create_gl_view(width, height);
+    if (!self->gl_view)
         goto error;
 
-    return self;
+    self->ns_window = cgl_window_create_ns_window(self->gl_view);
+    if (!self->ns_window)
+        goto error;
+
+    self->wcore.vtbl = &cgl_window_wcore_vtbl;
+    return &self->wcore;
 
 error:
-    cgl_window_destroy(self);
+    cgl_window_destroy(&self->wcore);
     return NULL;
 }
 
-bool
-cgl_window_destroy(union native_window *self)
-{
-    if (!self)
-        return true;
-
-    if (self->cgl->gl_view)
-        [self->cgl->gl_view release];
-
-    if (self->cgl->ns_window)
-        [self->cgl->ns_window release];
-
-    free(self);
-    return true;
-}
-
-bool
-cgl_window_show(union native_window *self)
+static bool
+cgl_window_show(struct wcore_window *wc_self)
 {
     return true;
 }
 
-bool
-cgl_window_swap_buffers(union native_window *self)
+static bool
+cgl_window_swap_buffers(struct wcore_window *wc_self)
 {
-    [self->cgl->gl_view swapBuffers];
+    struct cgl_window *self = cgl_window(wc_self);
+    [self->gl_view swapBuffers];
     return true;
+
 }
 
-/// @}
+static const struct wcore_window_vtbl cgl_window_wcore_vtbl = {
+    .destroy = cgl_window_destroy,
+    .show  = cgl_window_show,
+    .swap_buffers = cgl_window_swap_buffers,
+};

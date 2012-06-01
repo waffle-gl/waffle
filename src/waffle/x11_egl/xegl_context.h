@@ -23,25 +23,28 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @defgroup xegl_context xegl_context
-/// @ingroup xegl
-/// @{
-
-/// @file
-
 #pragma once
 
 #include <stdbool.h>
+#include <EGL/egl.h>
 
-union native_context;
-union native_config;
+#include <waffle/core/wcore_context.h>
+#include <waffle/core/wcore_util.h>
 
-union native_context*
-xegl_context_create(
-        union native_config *config,
-        union native_context *share_ctx);
+struct wcore_config;
+struct wcore_platform;
 
-bool
-xegl_context_destroy(union native_context *self);
+struct xegl_context {
+    struct wcore_context wcore;
+    EGLContext egl;
+};
 
-/// @}
+DEFINE_CONTAINER_CAST_FUNC(xegl_context,
+                           struct xegl_context,
+                           struct wcore_context,
+                           wcore)
+
+struct wcore_context*
+xegl_context_create(struct wcore_platform *wc_plat,
+                    struct wcore_config *wc_config,
+                    struct wcore_context *wc_share_ctx);

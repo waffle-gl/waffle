@@ -23,55 +23,47 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @defgroup xegl_priv_types xegl_priv_types
-/// @ingroup xegl
-/// @{
-
-/// @file
-
 #pragma once
 
-#include <EGL/egl.h>
-#include <X11/Xlib.h>
-#include <xcb/xcb.h>
+#include <stdbool.h>
+#include <stdlib.h>
+#include <stdint.h>
 
-struct linux_platform;
+#include <waffle/api/api_object.h>
 
-union native_display;
-union native_platform;
+#include "wcore_util.h"
 
-struct xegl_platform {
-    struct linux_platform *linux_;
+struct wcore_display;
+struct wcore_platform;
+
+struct wcore_display_vtbl {
+    bool
+    (*destroy)(struct wcore_display *self);
+
+    bool
+    (*supports_context_api)(
+            struct wcore_display *self,
+            int32_t context_api);
 };
 
-struct xegl_display {
-    union native_platform *platform;
-    Display *xlib_display;
-    xcb_connection_t *xcb_connection;
-    EGLDisplay egl_display;
+struct wcore_display {
+    const struct wcore_display_vtbl *vtbl;
+
+    struct waffle_display {} wfl;
+    struct api_object api;
+
+    struct wcore_platform *platform;
 };
 
-struct xegl_config {
-    union native_display *display;
-    EGLConfig egl_config;
-    xcb_visualid_t xcb_visual_id;
+DEFINE_CONTAINER_CAST_FUNC(wcore_display,
+                           struct wcore_display,
+                           struct waffle_display,
+                           wfl)
 
-    /// The value of @c EGL_RENDER_BUFFER that will be set in the attrib_list
-    /// of eglCreateWindowSurface().
-    EGLint egl_render_buffer;
+bool
+wcore_display_init(struct wcore_display *self,
+                   struct wcore_platform *platform);
 
-    int32_t waffle_context_api;
-};
 
-struct xegl_context {
-    union native_display *display;
-    EGLContext egl_context;
-};
-
-struct xegl_window {
-    union native_display *display;
-    xcb_window_t xcb_window;
-    EGLSurface egl_surface;
-};
-
-/// @}
+bool
+wcore_display_teardown(struct wcore_display *self);

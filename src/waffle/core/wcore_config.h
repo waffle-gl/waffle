@@ -23,36 +23,54 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @addtogroup xegl_gl_misc
-/// @{
+#pragma once
 
-/// @file
+#include <assert.h>
+#include <stdbool.h>
+#include <stdlib.h>
 
-#include "xegl_gl_misc.h"
+#include <waffle/api/api_object.h>
 
-#include <waffle/native.h>
-#include <waffle/linux/linux_platform.h>
+#include "wcore_display.h"
+#include "wcore_util.h"
 
-#include "xegl_priv_egl.h"
-#include "xegl_priv_types.h"
+struct wcore_config;
 
-bool
-xegl_make_current(
-        union native_display *dpy,
-        union native_window *window,
-        union native_context *ctx)
+struct wcore_config_vtbl {
+    bool
+    (*destroy)(struct wcore_config *self);
+};
+
+struct wcore_config {
+    const struct wcore_config_vtbl *vtbl;
+
+    struct waffle_config {} wfl;
+    struct api_object api;
+
+    struct wcore_display *display;
+};
+
+DEFINE_CONTAINER_CAST_FUNC(wcore_config,
+                           struct wcore_config,
+                           struct waffle_config,
+                           wfl)
+
+static inline bool
+wcore_config_init(struct wcore_config *self,
+                  struct wcore_display *display)
 {
-    return egl_make_current(dpy->xegl->egl_display,
-                            window ? window->xegl->egl_surface : 0,
-                            ctx ? ctx->xegl->egl_context : 0);
+    assert(self);
+    assert(display);
+
+    self->api.display_id = display->api.display_id;
+    self->display = display;
+
+    return true;
 }
 
-void*
-xegl_get_proc_address(
-        union native_platform *native,
-        const char *name)
+static inline bool
+wcore_config_teardown(struct wcore_config *self)
 {
-    return eglGetProcAddress(name);
+    assert(self);
+    return true;
 }
-
-/// @}

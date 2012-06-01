@@ -23,31 +23,40 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @addtogroup glx_config
-/// @{
-
-/// @file
-
-#include "glx_config.h"
-
 #include <stdlib.h>
 #include <string.h>
 
-#include <waffle/native.h>
 #include <waffle/waffle_enum.h>
+
 #include <waffle/core/wcore_config_attrs.h>
 #include <waffle/core/wcore_error.h>
 #include <waffle/linux/linux_platform.h>
 
-#include "glx_priv_types.h"
+#include "glx_config.h"
+#include "glx_display.h"
+#include "glx_platform.h"
+
+static const struct wcore_config_vtbl glx_config_wcore_vtbl;
+
+static bool
+glx_config_destroy(struct wcore_config *wc_self)
+{
+    bool ok = true;
+
+    if (wc_self == NULL)
+        return ok;
+
+    ok &= wcore_config_teardown(wc_self);
+    free(glx_config(wc_self));
+    return ok;
+}
 
 /// @brief Check the values of `attrs->context_*`.
 static bool
-glx_config_check_context_attrs(
-        struct glx_display *dpy,
-        const struct wcore_config_attrs *attrs)
+glx_config_check_context_attrs(struct glx_display *dpy,
+                               const struct wcore_config_attrs *attrs)
 {
-    struct glx_platform *platform = dpy->platform->glx;
+    struct glx_platform *plat = glx_platform(dpy->wcore.platform);
     int version = 10 * attrs->context_major_version
                 + attrs->context_minor_version;
 
@@ -84,7 +93,7 @@ glx_config_check_context_attrs(
                              "to create an OpenGL ES2 context");
                 return false;
             }
-            if (!linux_platform_dl_can_open(platform->linux_,
+            if (!linux_platform_dl_can_open(plat->linux,
                                             WAFFLE_DL_OPENGL_ES2)) {
                 wcore_errorf(WAFFLE_UNSUPPORTED_ON_PLATFORM,
                              "failed to open the OpenGL ES2 library");
@@ -98,19 +107,32 @@ glx_config_check_context_attrs(
     }
 }
 
-union native_config*
-glx_config_choose(
-        union native_display *dpy,
-        const struct wcore_config_attrs *attrs)
+struct wcore_config*
+glx_config_choose(struct wcore_platform *wc_plat,
+                  struct wcore_display *wc_dpy,
+                  const struct wcore_config_attrs *attrs)
 {
-    bool ok = true;
+    struct glx_config *self;
+    struct glx_display *dpy = glx_display(wc_dpy);
 
     GLXFBConfig *configs = NULL;
-    int num_configs;
+    int num_configs = 0;
     XVisualInfo *vi = NULL;
 
-    if (!glx_config_check_context_attrs(dpy->glx, attrs))
+    bool ok = true;
+
+    if (!glx_config_check_context_attrs(dpy, attrs))
         return NULL;
+
+    self = calloc(1, sizeof(*self));
+    if (!self) {
+        wcore_error(WAFFLE_OUT_OF_MEMORY);
+        return NULL;
+    }
+
+    ok = wcore_config_init(&self->wcore, wc_dpy);
+    if (!ok)
+        goto error;
 
     int attrib_list[] = {
         GLX_BUFFER_SIZE,        attrs->rgba_size,
@@ -140,18 +162,9 @@ glx_config_choose(
         0,
     };
 
-    union native_config *self;
-    NATIVE_ALLOC(self, glx);
-    if (!self) {
-        wcore_error(WAFFLE_OUT_OF_MEMORY);
-        return NULL;
-    }
-
-    self->glx->display = dpy;
-
     // Set glx_fbconfig.
-    configs = glXChooseFBConfig(dpy->glx->xlib_display,
-                                DefaultScreen(dpy->glx->xlib_display),
+    configs = glXChooseFBConfig(dpy->x11.xlib,
+                                dpy->x11.screen,
                                 attrib_list,
                                 &num_configs);
     if (!configs || num_configs == 0) {
@@ -160,56 +173,52 @@ glx_config_choose(
         goto error;
     }
     // Simply take the first.
-    self->glx->glx_fbconfig = configs[0];
+    self->glx_fbconfig = configs[0];
 
     // Set glx_fbconfig_id.
-    ok = !glXGetFBConfigAttrib(dpy->glx->xlib_display,
-                               self->glx->glx_fbconfig,
+    ok = !glXGetFBConfigAttrib(dpy->x11.xlib,
+                               self->glx_fbconfig,
                                GLX_FBCONFIG_ID,
-                               &self->glx->glx_fbconfig_id);
+                               &self->glx_fbconfig_id);
     if (!ok) {
         wcore_errorf(WAFFLE_UNKNOWN_ERROR, "glxGetFBConfigAttrib failed");
         goto error;
     }
 
     // Set xcb_visual_id.
-    vi = glXGetVisualFromFBConfig(dpy->glx->xlib_display,
-                                  self->glx->glx_fbconfig);
+    vi = glXGetVisualFromFBConfig(dpy->x11.xlib,
+                                  self->glx_fbconfig);
     if (!vi) {
         wcore_errorf(WAFFLE_UNKNOWN_ERROR,
                      "glXGetVisualInfoFromFBConfig failed with "
-                     "GLXFBConfigID=0x%x\n", self->glx->glx_fbconfig_id);
+                     "GLXFBConfigID=0x%x\n", self->glx_fbconfig_id);
         goto error;
     }
-    self->glx->xcb_visual_id = vi->visualid;
+    self->xcb_visual_id = vi->visualid;
 
     // Set context attributes.
-    self->glx->context_api                  = attrs->context_api;
-    self->glx->context_major_version        = attrs->context_major_version;
-    self->glx->context_minor_version        = attrs->context_minor_version;
-    self->glx->context_profile              = attrs->context_profile;
+    self->waffle_context_api                  = attrs->context_api;
+    self->waffle_context_major_version        = attrs->context_major_version;
+    self->waffle_context_minor_version        = attrs->context_minor_version;
+    self->waffle_context_profile              = attrs->context_profile;
 
-    goto end;
+    self->wcore.vtbl = &glx_config_wcore_vtbl;
+
+    goto cleanup;
 
 error:
-    glx_config_destroy(self);
+    glx_config_destroy(&self->wcore);
     self = NULL;
 
-end:
+cleanup:
     if (configs)
         XFree(configs);
     if (vi)
         XFree(vi);
 
-    return self;
-
+    return &self->wcore;
 }
 
-bool
-glx_config_destroy(union native_config *self)
-{
-    free(self);
-    return true;
-}
-
-/// @}
+static const struct wcore_config_vtbl glx_config_wcore_vtbl = {
+    .destroy = glx_config_destroy,
+};

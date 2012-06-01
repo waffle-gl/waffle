@@ -23,52 +23,71 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @addtogroup glx_context
-/// @{
-
-/// @file
-
 #define GLX_GLXEXT_PROTOTYPES
-
-#include "glx_context.h"
 
 #include <assert.h>
 #include <stdlib.h>
 
-#include <waffle/native.h>
 #include <waffle/waffle_enum.h>
+
 #include <waffle/core/wcore_error.h>
 
-#include "glx_priv_types.h"
+#include "glx_config.h"
+#include "glx_context.h"
+#include "glx_display.h"
+#include "glx_platform.h"
+
+static const struct wcore_context_vtbl glx_context_wcore_vtbl;
 
 enum {
     WAFFLE_GLX_CONTEXT_ATTRS_LENGTH = 7,
 };
+
+
+static bool
+glx_context_destroy(struct wcore_context *wc_self)
+{
+    struct glx_context *self;
+    struct glx_display *dpy;
+    bool ok = true;
+
+    if (!wc_self)
+        return ok;
+
+    self = glx_context(wc_self);
+    dpy = glx_display(wc_self->display);
+
+    if (self->glx)
+        glXDestroyContext(dpy->x11.xlib, self->glx);
+
+    ok &= wcore_context_teardown(wc_self);
+    free(self);
+    return ok;
+}
 
 /// @brief Fill @a attrib_list, which will be given to glXCreateContextAttribsARB().
 ///
 /// This does not validate the `config->context_*` attributes. That validation
 /// occurred during waffle_config_choose().
 static bool
-glx_context_fill_attrib_list(
-        struct glx_config *config,
-        int attrib_list[])
+glx_context_fill_attrib_list(struct glx_config *config,
+                             int attrib_list[])
 {
-    struct glx_display *dpy = config->display->glx;
+    struct glx_display *dpy = glx_display(config->wcore.display);
     int i = 0;
 
     attrib_list[i++] = GLX_CONTEXT_MAJOR_VERSION_ARB;
-    attrib_list[i++] = config->context_major_version;
+    attrib_list[i++] = config->waffle_context_major_version;
 
     attrib_list[i++] = GLX_CONTEXT_MINOR_VERSION_ARB;
-    attrib_list[i++] = config->context_minor_version;
+    attrib_list[i++] = config->waffle_context_minor_version;
 
     if (dpy->extensions.ARB_create_context_profile) {
         attrib_list[i++] = GLX_CONTEXT_PROFILE_MASK_ARB;
 
-        switch (config->context_api) {
+        switch (config->waffle_context_api) {
             case WAFFLE_CONTEXT_OPENGL:
-                switch (config->context_profile) {
+                switch (config->waffle_context_profile) {
                     case WAFFLE_CONTEXT_CORE_PROFILE:
                         attrib_list[i++] = GLX_CONTEXT_CORE_PROFILE_BIT_ARB;
                         break;
@@ -91,13 +110,13 @@ glx_context_fill_attrib_list(
 }
 
 static GLXContext
-glx_context_create_native(
-        struct glx_config *config,
-        GLXContext share_ctx)
+glx_context_create_native(struct glx_config *config,
+                          struct glx_context *share_ctx)
 {
     GLXContext ctx;
-    struct glx_display *dpy = config->display->glx;
-    struct glx_platform *platform = dpy->platform->glx;
+    GLXContext real_share_ctx = share_ctx ? share_ctx->glx : NULL;
+    struct glx_display *dpy = glx_display(config->wcore.display);
+    struct glx_platform *platform = glx_platform(dpy->wcore.platform);
 
     if (dpy->extensions.ARB_create_context) {
         bool ok;
@@ -107,9 +126,9 @@ glx_context_create_native(
         if (!ok)
             return false;
 
-        ctx = platform->glXCreateContextAttribsARB(dpy->xlib_display,
+        ctx = platform->glXCreateContextAttribsARB(dpy->x11.xlib,
                                                    config->glx_fbconfig,
-                                                   share_ctx,
+                                                   real_share_ctx,
                                                    true /*direct?*/,
                                                    attrib_list);
         if (!ctx) {
@@ -119,10 +138,10 @@ glx_context_create_native(
         }
     }
     else {
-        ctx = glXCreateNewContext(dpy->xlib_display,
+        ctx = glXCreateNewContext(dpy->x11.xlib,
                                   config->glx_fbconfig,
                                   GLX_RGBA_TYPE,
-                                  share_ctx,
+                                  real_share_ctx,
                                   true /*direct?*/);
         if (!ctx) {
             wcore_errorf(WAFFLE_UNKNOWN_ERROR, "glXCreateContext failed");
@@ -133,48 +152,38 @@ glx_context_create_native(
     return ctx;
 }
 
-union native_context*
-glx_context_create(
-        union native_config *config,
-        union native_context *share_ctx)
+struct wcore_context*
+glx_context_create(struct wcore_platform *wc_plat,
+                   struct wcore_config *wc_config,
+                   struct wcore_context *wc_share_ctx)
 {
-    union native_display *dpy = config->glx->display;
+    struct glx_context *self;
+    struct glx_config *config = glx_config(wc_config);
+    struct glx_context *share_ctx = glx_context(wc_share_ctx);
+    bool ok = true;
 
-    union native_context *self;
-    NATIVE_ALLOC(self, glx);
+    self = calloc(1, sizeof(*self));
     if (!self) {
         wcore_error(WAFFLE_OUT_OF_MEMORY);
         return NULL;
     }
 
-    self->glx->display = dpy;
-    self->glx->glx_context = glx_context_create_native(
-                                config->glx,
-                                share_ctx ? share_ctx->glx->glx_context : NULL);
-    if (!self->glx->glx_context)
+    ok = wcore_context_init(&self->wcore, wc_config);
+    if (!ok)
         goto error;
 
-    return self;
+    self->glx = glx_context_create_native(config, share_ctx);
+    if (!self->glx)
+        goto error;
+
+    self->wcore.vtbl = &glx_context_wcore_vtbl;
+    return &self->wcore;
 
 error:
-    free(self);
+    glx_context_destroy(&self->wcore);
     return NULL;
 }
 
-bool
-glx_context_destroy(union native_context *self)
-{
-    if (!self)
-        return true;
-
-    union native_display *dpy = self->glx->display;
-
-    if (self->glx->glx_context)
-        glXDestroyContext(dpy->glx->xlib_display,
-                          self->glx->glx_context);
-
-    free(self);
-    return true;
-}
-
-/// @}
+static const struct wcore_context_vtbl glx_context_wcore_vtbl = {
+    .destroy = glx_context_destroy,
+};

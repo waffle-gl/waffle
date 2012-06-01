@@ -23,23 +23,27 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @defgroup wayland_platform wayland_platform
-/// @ingroup wayland
-/// @{
-
-/// @file
-
 #pragma once
 
 #include <stdbool.h>
+#include <stdlib.h>
 
-struct native_dispatch;
-union native_platform;
+#undef linux
 
-union native_platform*
-wayland_platform_create(const struct native_dispatch **dispatch);
+#include <waffle/core/wcore_platform.h>
+#include <waffle/core/wcore_util.h>
 
-bool
-wayland_platform_destroy(union native_platform *self);
+struct linux_platform;
 
-/// @}
+struct wayland_platform {
+    struct wcore_platform wcore;
+    struct linux_platform *linux;
+};
+
+DEFINE_CONTAINER_CAST_FUNC(wayland_platform,
+                           struct wayland_platform,
+                           struct wcore_platform,
+                           wcore)
+
+struct wcore_platform*
+wayland_platform_create(void);

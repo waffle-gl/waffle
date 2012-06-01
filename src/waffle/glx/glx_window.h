@@ -23,33 +23,29 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @defgroup glx_window glx_window
-/// @ingroup glx
-/// @{
-
-/// @file
-
 #pragma once
 
 #include <stdbool.h>
 
-union native_config;
-union native_display;
-union native_window;
+#include <xcb/xcb.h>
 
-union native_window*
-glx_window_create(
-        union native_config *config,
-        int width,
-        int height);
+#include <waffle/core/wcore_window.h>
+#include <waffle/core/wcore_util.h>
+#include <waffle/x11/x11_window.h>
 
-bool
-glx_window_destroy(union native_window *self);
+struct wcore_platform;
 
-bool
-glx_window_show(union native_window *native_self);
+struct glx_window {
+    struct wcore_window wcore;
+    struct x11_window x11;
+};
 
-bool
-glx_window_swap_buffers(union native_window *self);
-
-/// @}
+DEFINE_CONTAINER_CAST_FUNC(glx_window,
+                           struct glx_window,
+                           struct wcore_window,
+                           wcore)
+struct wcore_window*
+glx_window_create(struct wcore_platform *wc_plat,
+                  struct wcore_config *wc_config,
+                  int width,
+                  int height);

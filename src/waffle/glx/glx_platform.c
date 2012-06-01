@@ -15,7 +15,7 @@
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 // AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 // IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-// DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+// DISCLAIMED. IN NO EVENT SHALL TH E COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
 // FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
 // DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
 // SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
@@ -23,84 +23,110 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @addtogroup glx_platform
-/// @{
-
-/// @file
-
-#include "glx_platform.h"
-
-#include <dlfcn.h>
 #include <stdlib.h>
 
-#include <waffle/native.h>
-#include <waffle/waffle_enum.h>
 #include <waffle/core/wcore_error.h>
 #include <waffle/linux/linux_platform.h>
 
 #include "glx_config.h"
 #include "glx_context.h"
 #include "glx_display.h"
-#include "glx_dl.h"
-#include "glx_gl_misc.h"
-#include "glx_priv_types.h"
+#include "glx_platform.h"
 #include "glx_window.h"
 
-static const struct native_dispatch glx_dispatch = {
-    .display_connect = glx_display_connect,
-    .display_disconnect = glx_display_disconnect,
-    .display_supports_context_api = glx_display_supports_context_api,
-    .config_choose = glx_config_choose,
-    .config_destroy = glx_config_destroy,
-    .context_create = glx_context_create,
-    .context_destroy = glx_context_destroy,
-    .dl_can_open = glx_dl_can_open,
-    .dl_sym = glx_dl_sym,
-    .window_create = glx_window_create,
-    .window_destroy = glx_window_destroy,
-    .window_show = glx_window_show,
-    .window_swap_buffers = glx_window_swap_buffers,
-    .make_current = glx_make_current,
-    .get_proc_address = glx_get_proc_address,
-};
+static const struct wcore_platform_vtbl glx_platform_wcore_vtbl;
 
-union native_platform*
-glx_platform_create(const struct native_dispatch **dispatch)
+static bool
+glx_platform_destroy(struct wcore_platform *wc_self)
 {
-    union native_platform *self;
-    NATIVE_ALLOC(self, glx);
-    if (!self) {
-        wcore_error(WAFFLE_OUT_OF_MEMORY);
-        return NULL;
-    }
-
-    self->glx->glXCreateContextAttribsARB = (PFNGLXCREATECONTEXTATTRIBSARBPROC) glXGetProcAddress((const uint8_t*) "glXCreateContextAttribsARB");
-
-    self->glx->linux_ = linux_platform_create();
-    if (!self->glx->linux_)
-        goto error;
-
-    *dispatch = &glx_dispatch;
-    return self;
-
-error:
-    glx_platform_destroy(self);
-    return NULL;
-}
-
-bool
-glx_platform_destroy(union native_platform *self)
-{
+    struct glx_platform *self = glx_platform(wc_self);
     bool ok = true;
 
     if (!self)
         return true;
 
-    if (self->glx->linux_)
-        ok &= linux_platform_destroy(self->glx->linux_);
+    if (self->linux)
+        ok &= linux_platform_destroy(self->linux);
 
+    ok &= wcore_platform_teardown(wc_self);
     free(self);
     return ok;
 }
 
-/// @}
+struct wcore_platform*
+glx_platform_create(void)
+{
+    struct glx_platform *self;
+    bool ok = true;
+
+    self= calloc(1, sizeof(*self));
+    if (!self) {
+        wcore_error(WAFFLE_OUT_OF_MEMORY);
+        return NULL;
+    }
+
+    ok = wcore_platform_init(&self->wcore);
+    if (!ok)
+        goto error;
+
+    self->linux = linux_platform_create();
+    if (!self->linux)
+        goto error;
+
+    self->glXCreateContextAttribsARB = (PFNGLXCREATECONTEXTATTRIBSARBPROC) glXGetProcAddress((const uint8_t*) "glXCreateContextAttribsARB");
+
+    self->wcore.vtbl = &glx_platform_wcore_vtbl;
+    return &self->wcore;
+
+error:
+    glx_platform_destroy(&self->wcore);
+    return NULL;
+}
+
+static bool
+glx_platform_make_current(struct wcore_platform *wc_self,
+                          struct wcore_display *wc_dpy,
+                          struct wcore_window *wc_window,
+                          struct wcore_context *wc_ctx)
+{
+    return glXMakeCurrent(glx_display(wc_dpy)->x11.xlib,
+                          wc_window ? glx_window(wc_window)->x11.xcb : 0,
+                          wc_ctx ? glx_context(wc_ctx)->glx : NULL);
+}
+
+static void*
+glx_platform_get_proc_address(struct wcore_platform *wc_self,
+                              const char *name)
+{
+    return glXGetProcAddress((const GLubyte*) name);
+}
+
+static bool
+glx_platform_dl_can_open(struct wcore_platform *wc_self,
+                         int32_t waffle_dl)
+{
+    return linux_platform_dl_can_open(glx_platform(wc_self)->linux,
+                                      waffle_dl);
+}
+
+static void*
+glx_platform_dl_sym(struct wcore_platform *wc_self,
+                    int32_t waffle_dl,
+                    const char *name)
+{
+    return linux_platform_dl_sym(glx_platform(wc_self)->linux,
+                                              waffle_dl,
+                                              name);
+}
+
+static const struct wcore_platform_vtbl glx_platform_wcore_vtbl = {
+    .destroy = glx_platform_destroy,
+    .connect_to_display = glx_display_connect,
+    .choose_config = glx_config_choose,
+    .create_context = glx_context_create,
+    .create_window = glx_window_create,
+    .make_current = glx_platform_make_current,
+    .get_proc_address = glx_platform_get_proc_address,
+    .dl_can_open = glx_platform_dl_can_open,
+    .dl_sym = glx_platform_dl_sym,
+};

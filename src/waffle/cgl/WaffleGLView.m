@@ -25,9 +25,6 @@
 
 #include "WaffleGLView.h"
 
-#include <waffle/native.h>
-#include <waffle/core/wcore_error.h>
-
 @implementation WaffleGLView
 
     @synthesize glContext = _glContext;

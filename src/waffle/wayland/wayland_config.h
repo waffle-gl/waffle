@@ -23,27 +23,36 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @defgroup wayland_config wayland_config
-/// @ingroup wayland
-/// @{
-
-/// @file
-
 #pragma once
 
 #include <stdbool.h>
 #include <stdint.h>
 
+#include <EGL/egl.h>
+
+#include <waffle/core/wcore_config.h>
+#include <waffle/core/wcore_util.h>
+
 struct wcore_config_attrs;
-union native_config;
-union native_display;
+struct wcore_platform;
 
-union native_config*
-wayland_config_choose(
-        union native_display *dpy,
-        const struct wcore_config_attrs *attrs);
+struct wayland_config {
+    struct wcore_config wcore;
 
-bool
-wayland_config_destroy(union native_config *self);
+    EGLConfig egl;
+    int32_t waffle_context_api;
 
-/// @}
+    /// The value of @c EGL_RENDER_BUFFER that will be set in the attrib_list
+    /// of eglCreateWindowSurface().
+    EGLint egl_render_buffer;
+};
+
+DEFINE_CONTAINER_CAST_FUNC(wayland_config,
+                           struct wayland_config,
+                           struct wcore_config,
+                           wcore)
+
+struct wcore_config*
+wayland_config_choose(struct wcore_platform *wc_plat,
+                      struct wcore_display *wc_dpy,
+                      const struct wcore_config_attrs *attrs);

@@ -23,23 +23,26 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @defgroup xegl_platform xegl_platform
-/// @ingroup xegl
-/// @{
-
-/// @file
-
 #pragma once
 
 #include <stdbool.h>
+#include <stdlib.h>
+#undef linux
 
-struct native_dispatch;
-union native_platform;
+#include <waffle/core/wcore_platform.h>
+#include <waffle/core/wcore_util.h>
 
-union native_platform*
-xegl_platform_create(const struct native_dispatch **dispatch);
+struct linux_platform;
 
-bool
-xegl_platform_destroy(union native_platform *self);
+struct xegl_platform {
+    struct wcore_platform wcore;
+    struct linux_platform *linux;
+};
 
-/// @}
+DEFINE_CONTAINER_CAST_FUNC(xegl_platform,
+                           struct xegl_platform,
+                           struct wcore_platform,
+                           wcore)
+
+struct wcore_platform*
+xegl_platform_create(void);

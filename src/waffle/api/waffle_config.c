@@ -32,9 +32,9 @@
 
 #include <stdlib.h>
 
-#include <waffle/native.h>
 #include <waffle/core/wcore_config_attrs.h>
-#include <waffle/core/wcore_error.h>
+#include <waffle/core/wcore_config.h>
+#include <waffle/core/wcore_display.h>
 #include <waffle/core/wcore_platform.h>
 
 #include "api_priv.h"
@@ -44,56 +44,44 @@ waffle_config_choose(
         struct waffle_display *dpy,
         const int32_t attrib_list[])
 {
-    struct waffle_config *self = NULL;
+    struct wcore_config *wc_self;
+    struct wcore_display *wc_dpy = wcore_display(dpy);
     struct wcore_config_attrs attrs;
     bool ok = true;
 
     const struct api_object *obj_list[] = {
-        waffle_display_get_api_obj(dpy),
+        wc_dpy ? &wc_dpy->api : NULL,
     };
 
     if (!api_check_entry(obj_list, 1))
         return NULL;
 
-    self = malloc(sizeof(*self));
-    if (!self) {
-        wcore_error(WAFFLE_OUT_OF_MEMORY);
-        return NULL;
-    }
-
     ok = wcore_config_attrs_parse(attrib_list, &attrs);
     if (!ok)
-        goto error;
+        return NULL;
 
-    self->api.display_id = dpy->api.display_id;
+    wc_self = api_platform->vtbl->choose_config(api_platform,
+                                                wc_dpy,
+                                                &attrs);
+    if (!wc_self)
+        return NULL;
 
-    self->native = api_current_platform->dispatch->
-                        config_choose(dpy->native, &attrs);
-    if (!self->native)
-        goto error;
-
-    return self;
-
-error:
-    free(self);
-    return NULL;
+    return &wc_self->wfl;
 }
 
 bool
 waffle_config_destroy(struct waffle_config *self)
 {
-    bool ok = true;
+    struct wcore_config *wc_self = wcore_config(self);
 
     const struct api_object *obj_list[] = {
-        waffle_config_get_api_obj(self),
+        wc_self ? &wc_self->api : NULL,
     };
 
     if (!api_check_entry(obj_list, 1))
         return false;
 
-    ok &= api_current_platform->dispatch->config_destroy(self->native);
-    free(self);
-    return ok;
+    return wc_self->vtbl->destroy(wc_self);
 }
 
 /// @}

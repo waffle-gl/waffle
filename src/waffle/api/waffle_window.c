@@ -32,9 +32,9 @@
 
 #include <stdlib.h>
 
-#include <waffle/native.h>
-#include <waffle/core/wcore_error.h>
+#include <waffle/core/wcore_config.h>
 #include <waffle/core/wcore_platform.h>
+#include <waffle/core/wcore_window.h>
 
 #include "api_priv.h"
 
@@ -43,78 +43,69 @@ waffle_window_create(
         struct waffle_config *config,
         int width, int height)
 {
-    const struct api_object *obj_list[] = {
-        waffle_config_get_api_obj(config),
-    };
+    struct wcore_window *wc_self;
+    struct wcore_config *wc_config = wcore_config(config);
 
-    struct waffle_window *self;
+    const struct api_object *obj_list[] = {
+        wc_config ? &wc_config->api : NULL,
+    };
 
     if (!api_check_entry(obj_list, 1))
         return false;
 
-    self = malloc(sizeof(*self));
-    if (!self) {
-        wcore_error(WAFFLE_OUT_OF_MEMORY);
+    wc_self = api_platform->vtbl->create_window(api_platform,
+                                                wc_config,
+                                                width,
+                                                height);
+    if (!wc_self)
         return NULL;
-    }
 
-    self->api.display_id = config->api.display_id;
-
-    self->native = api_current_platform->dispatch->
-                        window_create(config->native, width, height);
-
-    if (!self->native) {
-        free(self);
-        return NULL;
-    }
-
-    return self;
+    return &wc_self->wfl;
 }
 
 bool
 waffle_window_destroy(struct waffle_window *self)
 {
-    bool ok = true;
+    struct wcore_window *wc_self = wcore_window(self);
 
     const struct api_object *obj_list[] = {
-        waffle_window_get_api_obj(self),
-        0,
+        wc_self ? &wc_self->api : NULL,
     };
 
     if (!api_check_entry(obj_list, 1))
         return false;
 
-    ok &= api_current_platform->dispatch->window_destroy(self->native);
-    free(self);
-    return ok;
+    return wc_self->vtbl->destroy(wc_self);
 }
 
 WAFFLE_API bool
 waffle_window_show(struct waffle_window *self)
 {
+    struct wcore_window *wc_self = wcore_window(self);
+
     const struct api_object *obj_list[] = {
-        waffle_window_get_api_obj(self),
+        wc_self ? &wc_self->api : NULL,
     };
 
     if (!api_check_entry(obj_list, 1))
         return false;
 
-    return api_current_platform->dispatch->
-                window_show(self->native);
+    return wc_self->vtbl->show(wc_self);
 }
 
 bool
 waffle_window_swap_buffers(struct waffle_window *self)
 {
+    struct wcore_window *wc_self = wcore_window(self);
+
     const struct api_object *obj_list[] = {
-        waffle_window_get_api_obj(self),
+        wc_self ? &wc_self->api : NULL,
     };
 
     if (!api_check_entry(obj_list, 1))
         return false;
 
-    return api_current_platform->dispatch->
-            window_swap_buffers(self->native);
+    return wc_self->vtbl->swap_buffers(wc_self);
 }
 
 /// @}

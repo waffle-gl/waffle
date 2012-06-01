@@ -23,28 +23,24 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @defgroup cgl_platform cgl_platform
-/// @ingroup cgl
-/// @{
-
-/// @file
-
 #pragma once
 
-#include <stdbool.h>
+#include <waffle/core/wcore_platform.h>
+#include <waffle/core/wcore_util.h>
 
-struct native_dispatch;
-union native_platform;
+struct linux_platform;
 
 struct cgl_platform {
-    /// @brief OpenGL library, opened with dlopen().
+    struct wcore_platform wcore;
+
+    /// @brief The OpenGL library obtained with dlopen().
     void *dl_gl;
 };
 
-union native_platform*
-cgl_platform_create(const struct native_dispatch **dispatch);
+DEFINE_CONTAINER_CAST_FUNC(cgl_platform,
+                           struct cgl_platform,
+                           struct wcore_platform,
+                           wcore)
 
-bool
-cgl_platform_destroy(union native_platform *self);
-
-/// @}
+struct wcore_platform*
+cgl_platform_create(void);

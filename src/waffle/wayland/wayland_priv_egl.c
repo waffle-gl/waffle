@@ -23,12 +23,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @addtogroup wayland_priv_egl
-/// @{
-
-/// @file
+#define WL_EGL_PLATFORM 1
 
 #include "wayland_priv_egl.h"
 #include <waffle/egl/egl_native_template.c>
-
-/// @}

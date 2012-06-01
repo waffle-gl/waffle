@@ -23,85 +23,92 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @addtogroup glx_window
-/// @{
-
-/// @file
-
-#include "glx_window.h"
-
 #include <stdlib.h>
 #include <string.h>
 
-#include <waffle/native.h>
 #include <waffle/core/wcore_error.h>
-#include <waffle/x11/x11.h>
 
-#include "glx_priv_types.h"
+#include "glx_config.h"
+#include "glx_display.h"
+#include "glx_window.h"
 
-union native_window*
-glx_window_create(
-        union native_config *config,
-        int width,
-        int height)
+static const struct wcore_window_vtbl glx_window_wcore_vtbl;
+
+static bool
+glx_window_destroy(struct wcore_window *wc_self)
 {
-    union native_display *display = config->glx->display;
+    struct glx_window *self;
+    struct glx_display *dpy;
+    bool ok = true;
 
-    union native_window *self;
-    NATIVE_ALLOC(self, glx);
+    if (!wc_self)
+        return ok;
+
+    self = glx_window(wc_self);
+    dpy = glx_display(wc_self->display);
+
+    ok &= x11_window_teardown(&self->x11);
+    ok &= wcore_window_teardown(wc_self);
+    free(self);
+    return ok;
+}
+
+struct wcore_window*
+glx_window_create(struct wcore_platform *wc_plat,
+                  struct wcore_config *wc_config,
+                  int width,
+                  int height)
+{
+    struct glx_window *self;
+    struct glx_display *dpy = glx_display(wc_config->display);
+    struct glx_config *config = glx_config(wc_config);
+    bool ok = true;
+
+    self = calloc(1, sizeof(*self));
     if (!self) {
         wcore_error(WAFFLE_OUT_OF_MEMORY);
         return NULL;
     }
 
-    self->glx->display = display;
-    self->glx->xcb_window = x11_window_create(
-                                display->glx->xcb_connection,
-                                config->glx->xcb_visual_id,
-                                width,
-                                height);
-    if (!self->glx->xcb_window)
+    ok = wcore_window_init(&self->wcore, wc_config);
+    if (!ok)
         goto error;
 
-    return self;
+    ok = x11_window_init(&self->x11,
+                         &dpy->x11,
+                         config->xcb_visual_id,
+                         width,
+                         height);
+    if (!ok)
+        goto error;
+
+    self->wcore.vtbl = &glx_window_wcore_vtbl;
+    return &self->wcore;
 
 error:
-    glx_window_destroy(self);
+    glx_window_destroy(&self->wcore);
     return NULL;
 }
 
-bool
-glx_window_destroy(union native_window *self)
+static bool
+glx_window_show(struct wcore_window *wc_self)
 {
-    if (!self)
-        return true;
-
-    bool ok = true;
-    union native_display *dpy = self->glx->display;
-
-    if (self->glx->xcb_window)
-        ok &= x11_window_destroy(dpy->glx->xcb_connection,
-                                 self->glx->xcb_window);
-
-    free(self);
-    return ok;
+    return x11_window_show(&glx_window(wc_self)->x11);
 }
 
-bool
-glx_window_show(union native_window *native_self)
+static bool
+glx_window_swap_buffers(struct wcore_window *wc_self)
 {
-    struct glx_window *self = native_self->glx;
-    struct glx_display *display = self->display->glx;
+    struct glx_window *self = glx_window(wc_self);
+    struct glx_display *dpy = glx_display(wc_self->display);
 
-    return x11_window_show(display->xcb_connection, self->xcb_window);
-}
+    glXSwapBuffers(dpy->x11.xlib, self->x11.xcb);
 
-bool
-glx_window_swap_buffers(union native_window *self)
-{
-    union native_display *dpy = self->glx->display;
-    glXSwapBuffers(dpy->glx->xlib_display, self->glx->xcb_window);
     return true;
 }
 
-/// @}
+static const struct wcore_window_vtbl glx_window_wcore_vtbl = {
+    .destroy = glx_window_destroy,
+    .show  = glx_window_show,
+    .swap_buffers = glx_window_swap_buffers,
+};
