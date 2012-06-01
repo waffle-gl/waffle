@@ -124,10 +124,19 @@ x11_window_create(
     const uint32_t event_mask = XCB_EVENT_MASK_BUTTON_PRESS
                                | XCB_EVENT_MASK_EXPOSURE
                                | XCB_EVENT_MASK_KEY_PRESS;
-    const uint32_t attrib_mask = XCB_CW_EVENT_MASK
-                                | XCB_CW_COLORMAP
-                                | XCB_CW_BORDER_PIXEL;
-    const uint32_t attrib_list[] = {0, event_mask, colormap, 0};
+
+    // Please keep attrib_mask sorted the same as attrib_list.
+    const uint32_t attrib_mask = XCB_CW_BORDER_PIXEL
+                               | XCB_CW_EVENT_MASK
+                               | XCB_CW_COLORMAP;
+
+    // XCB requires that attrib_list be sorted in the same order as
+    // `enum xcb_cw_t`.
+    const uint32_t attrib_list[] = {
+            /* border_pixel */ 0,
+            event_mask,
+            colormap,
+    };
 
     xcb_void_cookie_t create_cookie = xcb_create_window_checked(
             conn,
