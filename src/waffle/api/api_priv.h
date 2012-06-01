@@ -94,28 +94,28 @@ struct waffle_window {
 
 /// Return null if @a config is null.
 static inline struct api_object*
-waffle_config_cast_to_api_object(struct waffle_config *config)
+waffle_config_get_api_obj(struct waffle_config *config)
 {
     return config ? &config->api : NULL;
 }
 
 /// Return null if @a ctx is null.
 static inline struct api_object*
-waffle_context_cast_to_api_object(struct waffle_context *ctx)
+waffle_context_get_api_obj(struct waffle_context *ctx)
 {
     return ctx ? &ctx->api : NULL;
 }
 
 /// Return null if @a display is null.
 static inline struct api_object*
-waffle_display_cast_to_api_object(struct waffle_display *display)
+waffle_display_get_api_obj(struct waffle_display *display)
 {
     return display ? &display->api : NULL;
 }
 
 /// Return null if @a window is null.
 static inline struct api_object*
-waffle_window_cast_to_api_object(struct waffle_window *window)
+waffle_window_get_api_obj(struct waffle_window *window)
 {
     return window ? &window->api : NULL;
 }

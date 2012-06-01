@@ -44,7 +44,7 @@ waffle_window_create(
         int width, int height)
 {
     const struct api_object *obj_list[] = {
-        waffle_config_cast_to_api_object(config),
+        waffle_config_get_api_obj(config),
     };
 
     struct waffle_window *self;
@@ -79,7 +79,7 @@ waffle_window_destroy(struct waffle_window *self)
     bool ok = true;
 
     const struct api_object *obj_list[] = {
-        waffle_window_cast_to_api_object(self),
+        waffle_window_get_api_obj(self),
         0,
     };
 
@@ -95,7 +95,7 @@ WAFFLE_API bool
 waffle_window_show(struct waffle_window *self)
 {
     const struct api_object *obj_list[] = {
-        waffle_window_cast_to_api_object(self),
+        waffle_window_get_api_obj(self),
     };
 
     if (!api_check_entry(obj_list, 1))
@@ -109,7 +109,7 @@ bool
 waffle_window_swap_buffers(struct waffle_window *self)
 {
     const struct api_object *obj_list[] = {
-        waffle_window_cast_to_api_object(self),
+        waffle_window_get_api_obj(self),
     };
 
     if (!api_check_entry(obj_list, 1))

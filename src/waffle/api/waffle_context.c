@@ -47,8 +47,8 @@ waffle_context_create(
     int obj_list_length;
 
     const struct api_object *obj_list[] = {
-        waffle_config_cast_to_api_object(config),
-        waffle_context_cast_to_api_object(shared_ctx),
+        waffle_config_get_api_obj(config),
+        waffle_context_get_api_obj(shared_ctx),
     };
 
     if (shared_ctx)
@@ -86,7 +86,7 @@ waffle_context_destroy(struct waffle_context *self)
     bool ok = true;
 
     const struct api_object *obj_list[] = {
-        waffle_context_cast_to_api_object(self),
+        waffle_context_get_api_obj(self),
     };
 
     if (!api_check_entry(obj_list, 1))

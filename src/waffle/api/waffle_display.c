@@ -74,7 +74,7 @@ waffle_display_disconnect(struct waffle_display *self)
     bool ok = true;
 
     const struct api_object *obj_list[] = {
-        waffle_display_cast_to_api_object(self),
+        waffle_display_get_api_obj(self),
     };
 
     if (!api_check_entry(obj_list, 1))
@@ -91,7 +91,7 @@ waffle_display_supports_context_api(
         int32_t context_api)
 {
     const struct api_object *obj_list[] = {
-        waffle_display_cast_to_api_object(self),
+        waffle_display_get_api_obj(self),
     };
 
     if (!api_check_entry(obj_list, 1))

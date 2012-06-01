@@ -49,7 +49,7 @@ waffle_config_choose(
     bool ok = true;
 
     const struct api_object *obj_list[] = {
-        waffle_display_cast_to_api_object(dpy),
+        waffle_display_get_api_obj(dpy),
     };
 
     if (!api_check_entry(obj_list, 1))
@@ -87,7 +87,7 @@ waffle_config_destroy(struct waffle_config *self)
     bool ok = true;
 
     const struct api_object *obj_list[] = {
-        waffle_config_cast_to_api_object(self),
+        waffle_config_get_api_obj(self),
     };
 
     if (!api_check_entry(obj_list, 1))

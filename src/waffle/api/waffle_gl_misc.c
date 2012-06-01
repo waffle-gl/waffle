@@ -86,15 +86,15 @@ waffle_make_current(
     int obj_list_length = 1;
 
     const struct api_object *obj_list[] = {
-        waffle_display_cast_to_api_object(dpy),
+        waffle_display_get_api_obj(dpy),
         0,
         0,
     };
 
     if (window)
-        obj_list[obj_list_length++] = waffle_window_cast_to_api_object(window);
+        obj_list[obj_list_length++] = waffle_window_get_api_obj(window);
     if (ctx)
-        obj_list[obj_list_length++] = waffle_context_cast_to_api_object(ctx);
+        obj_list[obj_list_length++] = waffle_context_get_api_obj(ctx);
 
     if (!api_check_entry(obj_list, obj_list_length))
         return false;
