@@ -43,6 +43,20 @@ extern "C" {
 struct waffle_config;
 struct waffle_display;
 
+struct waffle_android_config;
+struct waffle_cgl_config;
+struct waffle_glx_config;
+struct waffle_x11_egl_config;
+struct waffle_wayland_config;
+
+union waffle_native_config {
+    struct waffle_android_config *android;
+    struct waffle_cgl_config *cgl;
+    struct waffle_glx_config *glx;
+    struct waffle_x11_egl_config *x11_egl;
+    struct waffle_wayland_config *wayland;
+};
+
 /// @brief Choose a config satisfying some attributes.
 ///
 ///
@@ -208,6 +222,12 @@ waffle_config_choose(struct waffle_display *dpy, const int32_t attrib_list[]);
 
 WAFFLE_API bool
 waffle_config_destroy(struct waffle_config *self);
+
+/// @brief Get underlying native objects.
+///
+/// Use free() to deallocate the returned pointer.
+WAFFLE_API union waffle_native_config*
+waffle_config_get_native(struct waffle_config *self);
 
 #ifdef __cplusplus
 } // end extern "C"

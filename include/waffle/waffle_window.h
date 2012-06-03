@@ -41,6 +41,20 @@ extern "C" {
 struct waffle_config;
 struct waffle_window;
 
+struct waffle_android_window;
+struct waffle_cgl_window;
+struct waffle_glx_window;
+struct waffle_x11_egl_window;
+struct waffle_wayland_window;
+
+union waffle_native_window {
+    struct waffle_android_window *android;
+    struct waffle_cgl_window *cgl;
+    struct waffle_glx_window *glx;
+    struct waffle_x11_egl_window *x11_egl;
+    struct waffle_wayland_window *wayland;
+};
+
 /// If the platform allows, the window is not displayed onto the screen
 /// after creation. To display the window, call waffle_window_show().
 WAFFLE_API struct waffle_window*
@@ -60,6 +74,12 @@ waffle_window_show(struct waffle_window *self);
 
 WAFFLE_API bool
 waffle_window_swap_buffers(struct waffle_window *self);
+
+/// @brief Get underlying native objects.
+///
+/// Use free() to deallocate the returned pointer.
+WAFFLE_API union waffle_native_window*
+waffle_window_get_native(struct waffle_window *self);
 
 #ifdef __cplusplus
 } // end extern "C"

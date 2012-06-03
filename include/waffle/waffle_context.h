@@ -42,6 +42,20 @@ extern "C" {
 struct waffle_config;
 struct waffle_context;
 
+struct waffle_android_context;
+struct waffle_cgl_context;
+struct waffle_glx_context;
+struct waffle_x11_egl_context;
+struct waffle_wayland_context;
+
+union waffle_native_context {
+    struct waffle_android_context *android;
+    struct waffle_cgl_context *cgl;
+    struct waffle_glx_context *glx;
+    struct waffle_x11_egl_context *x11_egl;
+    struct waffle_wayland_context *wayland;
+};
+
 WAFFLE_API struct waffle_context*
 waffle_context_create(
         struct waffle_config *config,
@@ -49,6 +63,12 @@ waffle_context_create(
 
 WAFFLE_API bool
 waffle_context_destroy(struct waffle_context *self);
+
+/// @brief Get underlying native objects.
+///
+/// Use free() to deallocate the returned pointer.
+WAFFLE_API union waffle_native_context*
+waffle_context_get_native(struct waffle_context *self);
 
 #ifdef __cplusplus
 } // end extern "C"
