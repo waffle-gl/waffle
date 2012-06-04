@@ -45,6 +45,10 @@ struct waffle_display;
 WAFFLE_API struct waffle_display*
 waffle_display_connect(const char *name);
 
+/// @brief Destructor.
+///
+/// Destroying a display invalidates all pointers to waffle objects that
+/// were created, directly or transitively, from that display.
 WAFFLE_API bool
 waffle_display_disconnect(struct waffle_display *self);
 
