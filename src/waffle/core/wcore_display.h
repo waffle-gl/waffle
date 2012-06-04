@@ -35,6 +35,7 @@
 
 struct wcore_display;
 struct wcore_platform;
+union waffle_native_display;
 
 struct wcore_display_vtbl {
     bool
@@ -44,6 +45,9 @@ struct wcore_display_vtbl {
     (*supports_context_api)(
             struct wcore_display *self,
             int32_t context_api);
+
+    union waffle_native_display*
+    (*get_native)(struct wcore_display *self);
 };
 
 struct wcore_display {

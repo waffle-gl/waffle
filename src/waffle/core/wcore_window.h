@@ -32,6 +32,7 @@
 #include "wcore_util.h"
 
 struct wcore_window;
+union waffle_native_window;
 
 struct wcore_window_vtbl {
     bool
@@ -42,6 +43,9 @@ struct wcore_window_vtbl {
 
     bool
     (*swap_buffers)(struct wcore_window *self);
+
+    union waffle_native_window*
+    (*get_native)(struct wcore_window *self);
 };
 
 struct wcore_window {

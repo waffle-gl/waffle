@@ -36,10 +36,14 @@
 
 struct wcore_context;
 struct wcore_display;
+union waffle_native_context;
 
 struct wcore_context_vtbl {
     bool
     (*destroy)(struct wcore_context *self);
+
+    union waffle_native_context*
+    (*get_native)(struct wcore_context *self);
 };
 
 struct wcore_context {
