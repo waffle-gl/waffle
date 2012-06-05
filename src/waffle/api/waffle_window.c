@@ -108,4 +108,19 @@ waffle_window_swap_buffers(struct waffle_window *self)
     return wc_self->vtbl->swap_buffers(wc_self);
 }
 
+union waffle_native_window*
+waffle_window_get_native(struct waffle_window *self)
+{
+    struct wcore_window *wc_self = wcore_window(self);
+
+    const struct api_object *obj_list[] = {
+        wc_self ? &wc_self->api : NULL,
+    };
+
+    if (!api_check_entry(obj_list, 1))
+        return false;
+
+    return wc_self->vtbl->get_native(wc_self);
+}
+
 /// @}
