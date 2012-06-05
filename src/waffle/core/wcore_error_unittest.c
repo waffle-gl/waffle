@@ -33,8 +33,9 @@
 
 #include <pthread.h>
 
-#include <waffle/core/wcore_error.h>
 #include <waffle_test/waffle_test.h>
+
+#include "wcore_error.h"
 
 TESTGROUP_SIMPLE(wcore_error)
 

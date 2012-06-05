@@ -27,9 +27,10 @@
 #include <string.h>
 
 #include <waffle/waffle_enum.h>
-#include <waffle/core/wcore_config_attrs.h>
-#include <waffle/core/wcore_error.h>
 #include <waffle_test/waffle_test.h>
+
+#include "wcore_config_attrs.h"
+#include "wcore_error.h"
 
 static struct wcore_config_attrs actual_attrs;
 static struct wcore_config_attrs expect_attrs;
