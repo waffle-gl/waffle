@@ -113,8 +113,27 @@ xegl_window_swap_buffers(struct wcore_window *wc_self)
     return egl_swap_buffers(dpy->egl, self->egl);
 }
 
+static union waffle_native_window*
+xegl_window_get_native(struct wcore_window *wc_self)
+{
+    struct xegl_window *self = xegl_window(wc_self);
+    struct xegl_display *dpy = xegl_display(wc_self->display);
+    struct waffle_x11_egl_window *n_window;
+
+    n_window = wcore_malloc(sizeof(*n_window));
+    if (n_window == NULL)
+        return NULL;
+
+    xegl_display_fill_native(dpy, &n_window->display);
+    n_window->xlib_window = self->x11.xcb;
+    n_window->egl_surface = self->egl;
+
+    return (union waffle_native_window*) n_window;
+}
+
 static const struct wcore_window_vtbl xegl_window_wcore_vtbl = {
     .destroy = xegl_window_destroy,
+    .get_native = xegl_window_get_native,
     .show = xegl_window_show,
     .swap_buffers = xegl_window_swap_buffers,
 };

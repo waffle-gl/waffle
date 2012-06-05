@@ -89,6 +89,24 @@ error:
     return NULL;
 }
 
+static union waffle_native_context*
+xegl_context_get_native(struct wcore_context *wc_self)
+{
+    struct xegl_context *self = xegl_context(wc_self);
+    struct xegl_display *dpy = xegl_display(wc_self->display);
+    struct waffle_x11_egl_context *n_ctx;
+
+    n_ctx = wcore_malloc(sizeof(*n_ctx));
+    if (n_ctx == NULL)
+        return NULL;
+
+    xegl_display_fill_native(dpy, &n_ctx->display);
+    n_ctx->egl_context = self->egl;
+
+    return (union waffle_native_context*) n_ctx;
+}
+
 static const struct wcore_context_vtbl xegl_context_wcore_vtbl = {
     .destroy = xegl_context_destroy,
+    .get_native = xegl_context_get_native,
 };
