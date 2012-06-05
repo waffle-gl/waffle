@@ -33,7 +33,7 @@
 
 #include <stdbool.h>
 
-#include "waffle_portable.h"
+#include "waffle_portability.h"
 
 #ifdef __cplusplus
 extern "C" {

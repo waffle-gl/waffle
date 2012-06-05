@@ -42,7 +42,7 @@
 #include "waffle_error.h"
 #include "waffle_gl_misc.h"
 #include "waffle_init.h"
-#include "waffle_portable.h"
+#include "waffle_portability.h"
 #include "waffle_window.h"
 
 /// @}

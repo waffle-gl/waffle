@@ -8,6 +8,6 @@ install(FILES waffle/waffle.h
               waffle/waffle_error.h
               waffle/waffle_gl_misc.h
               waffle/waffle_init.h
-              waffle/waffle_portable.h
+              waffle/waffle_portability.h
               waffle/waffle_window.h
         DESTINATION ${waffle_install_includedir}/waffle)

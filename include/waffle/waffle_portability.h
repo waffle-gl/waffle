@@ -23,7 +23,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @defgroup waffle_portable waffle_portable
+/// @defgroup waffle_portability waffle_portability
 /// @ingroup waffle_api
 ///
 /// @brief Cross-platform portability.
