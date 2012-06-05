@@ -32,6 +32,7 @@
 
 #include <waffle/core/wcore_display.h>
 #include <waffle/core/wcore_util.h>
+#include <waffle/native/waffle_wayland.h>
 
 struct wcore_platform;
 struct wl_display;
@@ -56,3 +57,7 @@ DEFINE_CONTAINER_CAST_FUNC(wayland_display,
 struct wcore_display*
 wayland_display_connect(struct wcore_platform *wc_plat,
                         const char *name);
+
+void
+wayland_display_fill_native(struct wayland_display *self,
+                            struct waffle_wayland_display *n_dpy);

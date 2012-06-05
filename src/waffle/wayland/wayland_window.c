@@ -155,8 +155,29 @@ wayland_window_swap_buffers(struct wcore_window *wc_self)
     return egl_swap_buffers(dpy->egl, self->egl);
 }
 
+static union waffle_native_window*
+wayland_window_get_native(struct wcore_window *wc_self)
+{
+    struct wayland_window *self = wayland_window(wc_self);
+    struct wayland_display *dpy = wayland_display(wc_self->display);
+    struct waffle_wayland_window *n_window;
+
+    n_window = wcore_malloc(sizeof(*n_window));
+    if (n_window == NULL)
+        return NULL;
+
+    wayland_display_fill_native(dpy, &n_window->display);
+    n_window->wl_surface = self->wl_surface;
+    n_window->wl_shell_surface = self->wl_shell_surface;
+    n_window->wl_window = self->wl_window;
+    n_window->egl_surface = self->egl;
+
+    return (union waffle_native_window*) n_window;
+}
+
 static const struct wcore_window_vtbl wayland_window_wcore_vtbl = {
     .destroy = wayland_window_destroy,
+    .get_native = wayland_window_get_native,
     .show = wayland_window_show,
     .swap_buffers = wayland_window_swap_buffers,
 };
