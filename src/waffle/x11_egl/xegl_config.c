@@ -59,11 +59,9 @@ xegl_config_choose(struct wcore_platform *wc_plat,
     struct xegl_display *dpy = xegl_display(wc_dpy);
     bool ok = true;
 
-    self = calloc(1, sizeof(*self));
-    if (!self) {
-        wcore_error(WAFFLE_OUT_OF_MEMORY);
+    self = wcore_calloc(sizeof(*self));
+    if (self == NULL)
         return NULL;
-    }
 
     ok = wcore_config_init(&self->wcore, wc_dpy);
     if (!ok)

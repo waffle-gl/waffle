@@ -162,11 +162,9 @@ glx_context_create(struct wcore_platform *wc_plat,
     struct glx_context *share_ctx = glx_context(wc_share_ctx);
     bool ok = true;
 
-    self = calloc(1, sizeof(*self));
-    if (!self) {
-        wcore_error(WAFFLE_OUT_OF_MEMORY);
+    self = wcore_calloc(sizeof(*self));
+    if (self == NULL)
         return NULL;
-    }
 
     ok = wcore_context_init(&self->wcore, wc_config);
     if (!ok)

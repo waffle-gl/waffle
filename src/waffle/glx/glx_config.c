@@ -124,11 +124,9 @@ glx_config_choose(struct wcore_platform *wc_plat,
     if (!glx_config_check_context_attrs(dpy, attrs))
         return NULL;
 
-    self = calloc(1, sizeof(*self));
-    if (!self) {
-        wcore_error(WAFFLE_OUT_OF_MEMORY);
+    self = wcore_calloc(sizeof(*self));
+    if (self == NULL)
         return NULL;
-    }
 
     ok = wcore_config_init(&self->wcore, wc_dpy);
     if (!ok)

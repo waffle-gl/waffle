@@ -34,6 +34,7 @@
 
 #include <waffle/waffle_enum.h>
 #include <waffle/core/wcore_error.h>
+#include <waffle/core/wcore_util.h>
 
 #include "linux_dl.h"
 
@@ -46,13 +47,7 @@ struct linux_platform {
 struct linux_platform*
 linux_platform_create(void)
 {
-    struct linux_platform *self = calloc(1, sizeof(*self));
-    if (!self) {
-        wcore_error(WAFFLE_OUT_OF_MEMORY);
-        return NULL;
-    }
-
-    return self;
+    return wcore_calloc(sizeof(struct linux_platform));
 }
 
 bool

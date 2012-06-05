@@ -61,11 +61,9 @@ wayland_config_choose(struct wcore_platform *wc_plat,
     struct wayland_display *dpy = wayland_display(wc_dpy);
     bool ok = true;
 
-    self = calloc(1, sizeof(*self));
-    if (!self) {
-        wcore_error(WAFFLE_OUT_OF_MEMORY);
+    self = wcore_calloc(sizeof(*self));
+    if (self == NULL)
         return NULL;
-    }
 
     ok = wcore_config_init(&self->wcore, wc_dpy);
     if (!ok)

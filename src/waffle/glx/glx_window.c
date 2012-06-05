@@ -64,11 +64,9 @@ glx_window_create(struct wcore_platform *wc_plat,
     struct glx_config *config = glx_config(wc_config);
     bool ok = true;
 
-    self = calloc(1, sizeof(*self));
-    if (!self) {
-        wcore_error(WAFFLE_OUT_OF_MEMORY);
+    self = wcore_calloc(sizeof(*self));
+    if (self == NULL)
         return NULL;
-    }
 
     ok = wcore_window_init(&self->wcore, wc_config);
     if (!ok)

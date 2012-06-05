@@ -77,11 +77,9 @@ glx_display_connect(struct wcore_platform *wc_plat,
     struct glx_display *self;
     bool ok = true;
 
-    self = calloc(1, sizeof(*self));
-    if (!self) {
-        wcore_error(WAFFLE_OUT_OF_MEMORY);
+    self = wcore_calloc(sizeof(*self));
+    if (self == NULL)
         return NULL;
-    }
 
     ok = wcore_display_init(&self->wcore, wc_plat);
     if (!ok)

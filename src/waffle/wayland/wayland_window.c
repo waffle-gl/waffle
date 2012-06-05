@@ -80,11 +80,9 @@ wayland_window_create(struct wcore_platform *wc_plat,
     struct wayland_display *dpy = wayland_display(wc_config->display);
     bool ok = true;
 
-    self = calloc(1, sizeof(*self));
-    if (!self) {
-        wcore_error(WAFFLE_OUT_OF_MEMORY);
+    self = wcore_calloc(sizeof(*self));
+    if (self == NULL)
         return NULL;
-    }
 
     ok = wcore_window_init(&self->wcore, wc_config);
     if (!ok)

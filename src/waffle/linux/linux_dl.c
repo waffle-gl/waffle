@@ -37,6 +37,7 @@
 
 #include <waffle/waffle_enum.h>
 #include <waffle/core/wcore_error.h>
+#include <waffle/core/wcore_util.h>
 
 struct linux_dl {
     /// @brief For example, "libGLESv2.so".
@@ -64,11 +65,9 @@ linux_dl_get_name(int32_t waffle_dl)
 struct linux_dl*
 linux_dl_open(int32_t waffle_dl)
 {
-    struct linux_dl *self = calloc(1, sizeof(*self));
-    if (!self) {
-        wcore_error(WAFFLE_OUT_OF_MEMORY);
+    struct linux_dl *self = wcore_calloc(sizeof(*self));
+    if (self == NULL)
         return NULL;
-    }
 
     self->name = linux_dl_get_name(waffle_dl);
     if (!self->name)

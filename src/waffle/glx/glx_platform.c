@@ -59,11 +59,9 @@ glx_platform_create(void)
     struct glx_platform *self;
     bool ok = true;
 
-    self= calloc(1, sizeof(*self));
-    if (!self) {
-        wcore_error(WAFFLE_OUT_OF_MEMORY);
+    self = wcore_calloc(sizeof(*self));
+    if (self == NULL)
         return NULL;
-    }
 
     ok = wcore_platform_init(&self->wcore);
     if (!ok)
