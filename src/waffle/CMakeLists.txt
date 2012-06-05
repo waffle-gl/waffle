@@ -18,6 +18,7 @@ set(waffle_sources
     core/wcore_display.c
     core/wcore_error.c
     core/wcore_tinfo.c
+    core/wcore_util.c
     )
 
 if("${CMAKE_SYSTEM_NAME}" STREQUAL "Darwin")

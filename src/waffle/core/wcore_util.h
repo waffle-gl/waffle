@@ -48,3 +48,14 @@
         else                                                            \
             return 0;                                                   \
     }
+
+/// @brief Wrapper around malloc() that emits error if allocation fails.
+void*
+wcore_malloc(size_t size);
+
+/// @brief Wrapper around calloc() that emits error if allocation fails.
+///
+/// This has the signature of malloc(), not calloc(), because calloc is too
+/// easy to use incorrectly.
+void*
+wcore_calloc(size_t size);
