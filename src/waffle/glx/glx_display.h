@@ -33,6 +33,7 @@
 
 #include <waffle/core/wcore_display.h>
 #include <waffle/core/wcore_util.h>
+#include <waffle/native/waffle_glx.h>
 #include <waffle/x11/x11_display.h>
 
 struct wcore_platform;

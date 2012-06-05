@@ -124,7 +124,23 @@ glx_display_supports_context_api(struct wcore_display *wc_self,
     }
 }
 
+static union waffle_native_display*
+glx_display_get_native(struct wcore_display *wc_self)
+{
+    struct glx_display *self = glx_display(wc_self);
+    struct waffle_glx_display *n_dpy;
+
+    n_dpy = wcore_malloc(sizeof(*n_dpy));
+    if (n_dpy == NULL)
+        return NULL;
+
+    n_dpy->xlib_display = self->x11.xlib;
+
+    return (union waffle_native_display*) n_dpy;
+}
+
 static const struct wcore_display_vtbl glx_display_wcore_vtbl = {
     .destroy = glx_display_destroy,
+    .get_native = glx_display_get_native,
     .supports_context_api = glx_display_supports_context_api,
 };
