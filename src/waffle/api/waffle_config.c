@@ -84,4 +84,19 @@ waffle_config_destroy(struct waffle_config *self)
     return wc_self->vtbl->destroy(wc_self);
 }
 
+union waffle_native_config*
+waffle_config_get_native(struct waffle_config *self)
+{
+    struct wcore_config *wc_self = wcore_config(self);
+
+    const struct api_object *obj_list[] = {
+        wc_self ? &wc_self->api : NULL,
+    };
+
+    if (!api_check_entry(obj_list, 1))
+        return false;
+
+    return wc_self->vtbl->get_native(wc_self);
+}
+
 /// @}

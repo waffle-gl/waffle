@@ -91,6 +91,24 @@ error:
     return NULL;
 }
 
+static union waffle_native_context*
+wayland_context_get_native(struct wcore_context *wc_self)
+{
+    struct wayland_context *self = wayland_context(wc_self);
+    struct wayland_display *dpy = wayland_display(wc_self->display);
+    struct waffle_wayland_context *n_ctx;
+
+    n_ctx = wcore_malloc(sizeof(*n_ctx));
+    if (n_ctx == NULL)
+        return NULL;
+
+    wayland_display_fill_native(dpy, &n_ctx->display);
+    n_ctx->egl_context = self->egl;
+
+    return (union waffle_native_context*) n_ctx;
+}
+
 static const struct wcore_context_vtbl wayland_context_wcore_vtbl = {
     .destroy = wayland_context_destroy,
+    .get_native = wayland_context_get_native,
 };

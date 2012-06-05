@@ -29,35 +29,33 @@
 #include <stdint.h>
 
 #include <EGL/egl.h>
+#include <X11/Xlib.h>
 
-#include <waffle/core/wcore_display.h>
-#include <waffle/core/wcore_util.h>
-#include <waffle/native/waffle_wayland.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-struct wcore_platform;
-struct wl_display;
-struct wl_compositor;
-struct wl_shell;
-
-struct wayland_display {
-    struct wcore_display wcore;
-
-    struct wl_display *wl_display;
-    struct wl_compositor *wl_compositor;
-    struct wl_shell *wl_shell;
-
-    EGLDisplay egl;
+struct waffle_x11_egl_display {
+    Display *xlib_display;
+    EGLDisplay egl_display;
 };
 
-DEFINE_CONTAINER_CAST_FUNC(wayland_display,
-                           struct wayland_display,
-                           struct wcore_display,
-                           wcore)
+struct waffle_x11_egl_config {
+    struct waffle_x11_egl_display display;
+    EGLConfig egl_config;
+};
 
-struct wcore_display*
-wayland_display_connect(struct wcore_platform *wc_plat,
-                        const char *name);
+struct waffle_x11_egl_context {
+    struct waffle_x11_egl_display display;
+    EGLContext egl_context;
+};
 
-void
-wayland_display_fill_native(struct wayland_display *self,
-                            struct waffle_wayland_display *n_dpy);
+struct waffle_x11_egl_window {
+    struct waffle_x11_egl_display display;
+    XID xlib_window;
+    EGLSurface egl_surface;
+};
+
+#ifdef __cplusplus
+} // end extern "C"
+#endif

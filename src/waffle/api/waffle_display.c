@@ -98,4 +98,19 @@ waffle_display_supports_context_api(
     return wc_self->vtbl->supports_context_api(wc_self, context_api);
 }
 
+union waffle_native_display*
+waffle_display_get_native(struct waffle_display *self)
+{
+    struct wcore_display *wc_self = wcore_display(self);
+
+    const struct api_object *obj_list[] = {
+        wc_self ? &wc_self->api : NULL,
+    };
+
+    if (!api_check_entry(obj_list, 1))
+        return false;
+
+    return wc_self->vtbl->get_native(wc_self);
+}
+
 /// @}

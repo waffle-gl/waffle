@@ -91,7 +91,31 @@ xegl_display_supports_context_api(struct wcore_display *wc_self,
     return egl_supports_context_api(wc_self->platform, waffle_context_api);
 }
 
+void
+xegl_display_fill_native(struct xegl_display *self,
+                         struct waffle_x11_egl_display *n_dpy)
+{
+    n_dpy->xlib_display = self->x11.xlib;
+    n_dpy->egl_display = self->egl;
+}
+
+static union waffle_native_display*
+xegl_display_get_native(struct wcore_display *wc_self)
+{
+    struct xegl_display *self = xegl_display(wc_self);
+    struct waffle_x11_egl_display *n_dpy;
+
+    n_dpy = wcore_malloc(sizeof(*n_dpy));
+    if (n_dpy == NULL)
+        return NULL;
+
+    xegl_display_fill_native(self, n_dpy);
+
+    return (union waffle_native_display*) n_dpy;
+}
+
 static const struct wcore_display_vtbl xegl_display_wcore_vtbl = {
     .destroy = xegl_display_destroy,
+    .get_native = xegl_display_get_native,
     .supports_context_api = xegl_display_supports_context_api,
 };

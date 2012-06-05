@@ -80,4 +80,19 @@ waffle_context_destroy(struct waffle_context *self)
     return wc_self->vtbl->destroy(wc_self);
 }
 
+union waffle_native_context*
+waffle_context_get_native(struct waffle_context *self)
+{
+    struct wcore_context *wc_self = wcore_context(self);
+
+    const struct api_object *obj_list[] = {
+        wc_self ? &wc_self->api : NULL,
+    };
+
+    if (!api_check_entry(obj_list, 1))
+        return false;
+
+    return wc_self->vtbl->get_native(wc_self);
+}
+
 /// @}

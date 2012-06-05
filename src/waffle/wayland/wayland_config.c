@@ -86,6 +86,24 @@ error:
     return NULL;
 }
 
+static union waffle_native_config*
+wayland_config_get_native(struct wcore_config *wc_self)
+{
+    struct wayland_config *self = wayland_config(wc_self);
+    struct wayland_display *dpy = wayland_display(wc_self->display);
+    struct waffle_wayland_config *n_config;
+
+    n_config = wcore_malloc(sizeof(*n_config));
+    if (n_config == NULL)
+        return NULL;
+
+    wayland_display_fill_native(dpy, &n_config->display);
+    n_config->egl_config = self->egl;
+
+    return (union waffle_native_config*) n_config;
+}
+
 static const struct wcore_config_vtbl wayland_config_wcore_vtbl = {
     .destroy = wayland_config_destroy,
+    .get_native = wayland_config_get_native,
 };

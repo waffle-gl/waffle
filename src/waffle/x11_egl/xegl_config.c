@@ -93,6 +93,24 @@ error:
     return NULL;
 }
 
+static union waffle_native_config*
+xegl_config_get_native(struct wcore_config *wc_self)
+{
+    struct xegl_config *self = xegl_config(wc_self);
+    struct xegl_display *dpy = xegl_display(wc_self->display);
+    struct waffle_x11_egl_config *n_config;
+
+    n_config = wcore_malloc(sizeof(*n_config));
+    if (n_config == NULL)
+        return NULL;
+
+    xegl_display_fill_native(dpy, &n_config->display);
+    n_config->egl_config = self->egl;
+
+    return (union waffle_native_config*) n_config;
+}
+
 static const struct wcore_config_vtbl xegl_config_wcore_vtbl = {
     .destroy = xegl_config_destroy,
+    .get_native = xegl_config_get_native,
 };

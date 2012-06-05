@@ -182,6 +182,24 @@ error:
     return NULL;
 }
 
+static union waffle_native_context*
+glx_context_get_native(struct wcore_context *wc_self)
+{
+    struct glx_context *self = glx_context(wc_self);
+    struct glx_display *dpy = glx_display(wc_self->display);
+    struct waffle_glx_context *n_ctx;
+
+    n_ctx = wcore_malloc(sizeof(*n_ctx));
+    if (n_ctx == NULL)
+        return NULL;
+
+    n_ctx->xlib_display = dpy->x11.xlib;
+    n_ctx->glx_context = self->glx;
+
+    return (union waffle_native_context*) n_ctx;
+}
+
 static const struct wcore_context_vtbl glx_context_wcore_vtbl = {
     .destroy = glx_context_destroy,
+    .get_native = glx_context_get_native,
 };

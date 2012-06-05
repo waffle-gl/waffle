@@ -28,36 +28,31 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include <EGL/egl.h>
+#include <X11/Xlib.h>
 
-#include <waffle/core/wcore_display.h>
-#include <waffle/core/wcore_util.h>
-#include <waffle/native/waffle_wayland.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-struct wcore_platform;
-struct wl_display;
-struct wl_compositor;
-struct wl_shell;
-
-struct wayland_display {
-    struct wcore_display wcore;
-
-    struct wl_display *wl_display;
-    struct wl_compositor *wl_compositor;
-    struct wl_shell *wl_shell;
-
-    EGLDisplay egl;
+struct waffle_glx_display {
+    Display *xlib_display;
 };
 
-DEFINE_CONTAINER_CAST_FUNC(wayland_display,
-                           struct wayland_display,
-                           struct wcore_display,
-                           wcore)
+struct waffle_glx_config {
+    Display *xlib_display;
+    GLXFBConfig glx_fbconfig;
+};
 
-struct wcore_display*
-wayland_display_connect(struct wcore_platform *wc_plat,
-                        const char *name);
+struct waffle_glx_context {
+    Display *xlib_display;
+    GLXContext glx_context;
+};
 
-void
-wayland_display_fill_native(struct wayland_display *self,
-                            struct waffle_wayland_display *n_dpy);
+struct waffle_glx_window {
+    Display *xlib_display;
+    XID xlib_window;
+};
+
+#ifdef __cplusplus
+} // end extern "C"
+#endif

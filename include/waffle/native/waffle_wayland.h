@@ -25,39 +25,49 @@
 
 #pragma once
 
+#define WL_EGL_PLATFORM 1
+
 #include <stdbool.h>
 #include <stdint.h>
 
 #include <EGL/egl.h>
 
-#include <waffle/core/wcore_display.h>
-#include <waffle/core/wcore_util.h>
-#include <waffle/native/waffle_wayland.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-struct wcore_platform;
-struct wl_display;
 struct wl_compositor;
+struct wl_display;
+struct wl_egl_window;
 struct wl_shell;
+struct wl_shell_surface;
+struct wl_surface;
 
-struct wayland_display {
-    struct wcore_display wcore;
-
+struct waffle_wayland_display {
     struct wl_display *wl_display;
     struct wl_compositor *wl_compositor;
     struct wl_shell *wl_shell;
-
-    EGLDisplay egl;
+    EGLDisplay egl_display;
 };
 
-DEFINE_CONTAINER_CAST_FUNC(wayland_display,
-                           struct wayland_display,
-                           struct wcore_display,
-                           wcore)
+struct waffle_wayland_config {
+    struct waffle_wayland_display display;
+    EGLConfig egl_config;
+};
 
-struct wcore_display*
-wayland_display_connect(struct wcore_platform *wc_plat,
-                        const char *name);
+struct waffle_wayland_context {
+    struct waffle_wayland_display display;
+    EGLContext egl_context;
+};
 
-void
-wayland_display_fill_native(struct wayland_display *self,
-                            struct waffle_wayland_display *n_dpy);
+struct waffle_wayland_window {
+    struct waffle_wayland_display display;
+    struct wl_surface *wl_surface;
+    struct wl_shell_surface *wl_shell_surface;
+    struct wl_egl_window *wl_window;
+    EGLSurface egl_surface;
+};
+
+#ifdef __cplusplus
+} // end extern "C"
+#endif

@@ -122,7 +122,33 @@ wayland_display_supports_context_api(struct wcore_display *wc_self,
     return egl_supports_context_api(wc_self->platform, waffle_context_api);
 }
 
+void
+wayland_display_fill_native(struct wayland_display *self,
+                            struct waffle_wayland_display *n_dpy)
+{
+    n_dpy->wl_display = self->wl_display;
+    n_dpy->wl_compositor = self->wl_compositor;
+    n_dpy->wl_shell = self->wl_shell;
+    n_dpy->egl_display = self->egl;
+}
+
+static union waffle_native_display*
+wayland_display_get_native(struct wcore_display *wc_self)
+{
+    struct wayland_display *self = wayland_display(wc_self);
+    struct waffle_wayland_display *n_dpy;
+
+    n_dpy = wcore_malloc(sizeof(*n_dpy));
+    if (n_dpy == NULL)
+        return NULL;
+
+    wayland_display_fill_native(self, n_dpy);
+
+    return (union waffle_native_display*) n_dpy;
+}
+
 static const struct wcore_display_vtbl wayland_display_wcore_vtbl = {
     .destroy = wayland_display_destroy,
+    .get_native = wayland_display_get_native,
     .supports_context_api = wayland_display_supports_context_api,
 };

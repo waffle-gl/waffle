@@ -33,6 +33,7 @@
 
 #include <waffle/core/wcore_display.h>
 #include <waffle/core/wcore_util.h>
+#include <waffle/native/waffle_x11_egl.h>
 #include <waffle/x11/x11_display.h>
 
 struct wcore_platform;
@@ -51,3 +52,7 @@ DEFINE_CONTAINER_CAST_FUNC(xegl_display,
 struct wcore_display*
 xegl_display_connect(struct wcore_platform *wc_plat,
                      const char *name);
+
+void
+xegl_display_fill_native(struct xegl_display *self,
+                         struct waffle_x11_egl_display *n_dpy);

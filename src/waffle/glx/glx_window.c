@@ -105,8 +105,26 @@ glx_window_swap_buffers(struct wcore_window *wc_self)
     return true;
 }
 
+static union waffle_native_window*
+glx_window_get_native(struct wcore_window *wc_self)
+{
+    struct glx_window *self = glx_window(wc_self);
+    struct glx_display *dpy = glx_display(wc_self->display);
+    struct waffle_glx_window *n_window;
+
+    n_window = wcore_malloc(sizeof(*n_window));
+    if (n_window == NULL)
+        return NULL;
+
+    n_window->xlib_display = dpy->x11.xlib;
+    n_window->xlib_window = self->x11.xcb;
+
+    return (union waffle_native_window*) n_window;
+}
+
 static const struct wcore_window_vtbl glx_window_wcore_vtbl = {
     .destroy = glx_window_destroy,
+    .get_native = glx_window_get_native,
     .show  = glx_window_show,
     .swap_buffers = glx_window_swap_buffers,
 };
