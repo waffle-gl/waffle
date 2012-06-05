@@ -45,6 +45,8 @@
 #include <waffle/waffle.h>
 #include <waffle_test/waffle_test.h>
 
+#include "gl_basic_cocoa.h"
+
 enum {
     // Choosing a smaller window would shorten the execution time of pixel
     // validation, but Windows 7 enforces a minimum size.
