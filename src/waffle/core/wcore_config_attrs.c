@@ -81,7 +81,7 @@ wcore_config_attrs_set_defaults(
             return true;
         default:
             wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
-                         "attribute WAFFLE_CONTEXT_API has bad value %#x",
+                         "WAFFLE_CONTEXT_API has bad value %#x",
                          context_api);
             return false;
     }
@@ -111,13 +111,14 @@ wcore_config_attrs_check_context(struct wcore_config_attrs *attrs)
 
             if (version < 10) {
                 wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
-                             "the minimum OpenGL version is 1.0");
+                             "for OpenGL, the requested context version "
+                             "must be >= 1.0");
                 return false;
             }
             else if (version >= 32 && attrs->context_profile == WAFFLE_NONE) {
                 wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
-                             "a profile must be given when the OpenGL "
-                             "version is >= 3.2");
+                             "WAFFLE_CONTEXT_PROFILE must be provided when "
+                             "the requested OpenGL version is >= 3.2");
                 return false;
             }
             else if (version >= 32
@@ -157,7 +158,7 @@ wcore_config_attrs_check_context(struct wcore_config_attrs *attrs)
         }
         default:
             wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
-                         "attribute WAFFLE_CONTEXT_API has bad value %#x",
+                         "WAFFLE_CONTEXT_API has bad value %#x",
                          attrs->context_api);
             return false;
     }
@@ -289,7 +290,7 @@ wcore_config_attrs_parse(
 
 error_context_api_required:
     wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
-                 "the WAFFLE_CONTEXT_API attribute is required");
+                 "attribute WAFFLE_CONTEXT_API is required but missing");
     return false;
 }
 

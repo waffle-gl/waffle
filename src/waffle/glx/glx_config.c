@@ -77,8 +77,8 @@ glx_config_check_context_attrs(struct glx_display *dpy,
             }
             else if (version >= 32 && attrs->context_profile == WAFFLE_NONE) {
                 wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
-                             "a profile must be specified when the GL version "
-                             "is >= 3.2");
+                             "WAFFLE_CONTEXT_PROFILE must be provided when "
+                             "the requested context version is >= 3.2");
                 return false;
             }
             return true;

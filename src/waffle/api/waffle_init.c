@@ -84,7 +84,8 @@ waffle_init_parse_attrib_list(
 
                 break;
             default:
-                wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE, "bad attribute 0x%x", attr);
+                wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
+                             "bad attribute name %#x", attr);
                 return false;
                 break;
         }
