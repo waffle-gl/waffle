@@ -93,45 +93,54 @@ waffle_error_get_info(void);
 WAFFLE_API const char*
 waffle_error_to_string(int32_t e);
 
-/// The documentation for each waffle function lists errors the function can
-/// produce. In addition to each list, all functions can produce the
-/// following errors:
-///     - WAFFLE_FATAL_ERROR
-///     - WAFFLE_UNKOWN_ERROR
-///     - WAFFLE_OUT_OF_MEMORY
-///     - WAFFLE_INTERNAL_ERROR
-///
-/// @see waffle_error_listener
-///
 enum waffle_error {
+    /// The function succeeded.
     WAFFLE_NO_ERROR                     = 0x00,
 
-    /// A terrible thing has happened. The behavior of all future waffle
-    /// calls is undefined. You should clean up and exit as soon as possible.
+    /// Waffle encountered a fatal error.  All future Waffle calls result in
+    /// undefined behavior.
     WAFFLE_ERROR_FATAL                  = 0x01,
 
-    /// @brief Something went wrong, but waffle lacks an error code for it.
-    ///
-    /// This is usually emitted when an underlying native call, such as
+    /// Waffle encountered an error for which it lacks an error code.  This is
+    /// usually produced when an underlying native call, such as
     /// XOpenDisplay(), fails for an unknown reason.
     WAFFLE_ERROR_UNKNOWN                = 0x02,
 
-    /// @brief You've found a bug in waffle.
+    /// You found a bug in Waffle.  Please report it.  The error message,
+    /// obtained by waffle_error_get_info(), should contain a description of
+    /// the bug.
     WAFFLE_ERROR_INTERNAL               = 0x03,
 
+    /// Waffle failed to allocate memory.
     WAFFLE_ERROR_BAD_ALLOC              = 0x04,
 
+    /// The failed function requires Waffle to be initialized with
+    /// waffle_init().
     WAFFLE_ERROR_NOT_INITIALIZED        = 0x05,
+
+    /// If Waffle has already been initialized by a successful call to
+    /// waffle_init(), then subsequent calls to waffle_init() produce this
+    /// error.
     WAFFLE_ERROR_ALREADY_INITIALIZED    = 0x06,
+
+    /// An unrecognized attribute name or attribute value was passed in an
+    /// attribute list.
     WAFFLE_ERROR_BAD_ATTRIBUTE          = 0x08,
+
+    /// The failed function was passed an invalid argument.
     WAFFLE_ERROR_BAD_PARAMETER          = 0x10,
 
-    /// @brief You passed objects to waffle that belong to different displays.
+    /// The Waffle objects passed to the failed function belong to different
+    /// displays.
     WAFFLE_ERROR_BAD_DISPLAY_MATCH      = 0x11,
 
-    /// @brief Requested action is unsupported on the current platform.
-    ///
-    /// For example, on GLX it is not possible to create an OpenGL ES1 context.
+    /// The requested action is unsupported on the current system or platform,
+    /// but is otherwise valid.  For example, the following produce this
+    /// error:
+    ///     - Attemtping to choose a waffle_config whose API is OpenGL ES1
+    ///       when the current platform is GLX.
+    ///     - Calling `waffle_dl_sym(WAFFLE_DL_OPENGL_ES2, ...)` when the
+    ///       OpenGL ES2 library is not present on the system.
     WAFFLE_ERROR_UNSUPPORTED            = 0x12,
 };
 
