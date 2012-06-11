@@ -124,7 +124,6 @@ enum waffle_error {
     WAFFLE_NOT_INITIALIZED              = 0x05,
     WAFFLE_ALREADY_INITIALIZED          = 0x06,
     WAFFLE_BAD_ATTRIBUTE                = 0x08,
-    WAFFLE_INCOMPATIBLE_ATTRIBUTES      = 0x09,
     WAFFLE_BAD_PARAMETER                = 0x10,
 
     /// @brief You passed objects to waffle that belong to different displays.
@@ -134,9 +133,6 @@ enum waffle_error {
     ///
     /// For example, on GLX it is not possible to create an OpenGL ES1 context.
     WAFFLE_UNSUPPORTED_ON_PLATFORM      = 0x12,
-
-    /// @brief You found a feature whose implementation is incomplete.
-    WAFFLE_NOT_IMPLEMENTED              = 0x13,
 };
 
 #ifdef __cplusplus
