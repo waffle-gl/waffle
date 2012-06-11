@@ -90,17 +90,17 @@ wayland_window_create(struct wcore_platform *wc_plat,
         goto error;
 
     if (!dpy->wl_compositor) {
-        wcore_errorf(WAFFLE_UNKNOWN_ERROR, "wayland compositor not found");
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN, "wayland compositor not found");
         goto error;
     }
     if (!dpy->wl_shell) {
-        wcore_errorf(WAFFLE_UNKNOWN_ERROR, "wayland shell not found");
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN, "wayland shell not found");
         goto error;
     }
 
     self->wl_surface = wl_compositor_create_surface(dpy->wl_compositor);
     if (!self->wl_surface) {
-        wcore_errorf(WAFFLE_UNKNOWN_ERROR,
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN,
                      "wl_compositor_create_surface failed");
         goto error;
     }
@@ -108,14 +108,14 @@ wayland_window_create(struct wcore_platform *wc_plat,
     self->wl_shell_surface = wl_shell_get_shell_surface(dpy->wl_shell,
                                                         self->wl_surface);
     if (!self->wl_shell_surface) {
-        wcore_errorf(WAFFLE_UNKNOWN_ERROR,
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN,
                      "wl_shell_get_shell_surface failed");
         goto error;
     }
 
     self->wl_window = wl_egl_window_create(self->wl_surface, width, height);
     if (!self->wl_window) {
-        wcore_errorf(WAFFLE_UNKNOWN_ERROR, "wl_egl_window_create failed");
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN, "wl_egl_window_create failed");
         goto error;
     }
 

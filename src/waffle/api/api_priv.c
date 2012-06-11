@@ -48,18 +48,18 @@ api_check_entry(const struct api_object *obj_list[], int length)
     wcore_error_reset();
 
     if (!api_platform) {
-        wcore_error(WAFFLE_NOT_INITIALIZED);
+        wcore_error(WAFFLE_ERROR_NOT_INITIALIZED);
         return false;
     }
 
     for (i = 0; i < length; ++i) {
         if (obj_list[i] == NULL) {
-            wcore_errorf(WAFFLE_BAD_PARAMETER, "null pointer");
+            wcore_errorf(WAFFLE_ERROR_BAD_PARAMETER, "null pointer");
             return false;
         }
 
         if (obj_list[i]->display_id != obj_list[0]->display_id) {
-            wcore_error(WAFFLE_BAD_DISPLAY_MATCH);
+            wcore_error(WAFFLE_ERROR_BAD_DISPLAY_MATCH);
             return false;
         }
     }

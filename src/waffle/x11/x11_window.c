@@ -68,20 +68,20 @@ x11_window_init(struct x11_window *self,
 
     const xcb_setup_t *setup = xcb_get_setup(conn);
     if (!setup){
-        wcore_errorf(WAFFLE_UNKNOWN_ERROR, "xcb_get_setup() failed");
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN, "xcb_get_setup() failed");
         goto error;
     }
 
     const xcb_screen_t *screen = xcb_setup_roots_iterator(setup).data;
     if (!screen) {
-        wcore_errorf(WAFFLE_UNKNOWN_ERROR, "failed to get xcb screen");
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN, "failed to get xcb screen");
         goto error;
     }
 
     xcb_colormap_t colormap = xcb_generate_id(conn);
     xcb_window_t window = xcb_generate_id(conn);
     if (colormap <= 0 || window <= 0) {
-        wcore_errorf(WAFFLE_UNKNOWN_ERROR, "xcb_generate_id() failed");
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN, "xcb_generate_id() failed");
         goto error;
     }
 
@@ -126,14 +126,14 @@ x11_window_init(struct x11_window *self,
     xcb_generic_error_t *error;
     error = xcb_request_check(conn, colormap_cookie);
     if (error) {
-        wcore_errorf(WAFFLE_UNKNOWN_ERROR,
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN,
                      "xcb_create_colormap() failed on visual_id=0x%x with "
                      "error=0x%x\n", visual_id, error->error_code);
         goto error;
     }
     error = xcb_request_check(conn, create_cookie);
     if (error) {
-        wcore_errorf(WAFFLE_UNKNOWN_ERROR,
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN,
                      "xcb_create_window_checked() failed: error=0x%x",
                      error->error_code);
         goto error;
@@ -168,7 +168,7 @@ x11_window_teardown(struct x11_window *self)
     error = xcb_request_check(self->display->xcb, cookie);
 
     if (error) {
-        wcore_errorf(WAFFLE_UNKNOWN_ERROR,
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN,
                      "xcb_destroy_window_checked() failed: error=0x%x",
                      error->error_code);
     }
@@ -188,7 +188,7 @@ x11_window_show(struct x11_window *self)
     error = xcb_request_check(self->display->xcb, cookie);
 
     if (error) {
-        wcore_errorf(WAFFLE_UNKNOWN_ERROR,
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN,
                      "xcb_map_window_checked() failed: error=0x%x",
                      error->error_code);
     }

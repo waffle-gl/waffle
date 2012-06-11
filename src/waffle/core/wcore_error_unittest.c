@@ -42,8 +42,8 @@ TESTGROUP_SIMPLE(wcore_error)
 TEST(wcore_error, code_unknown_error)
 {
     wcore_error_reset();
-    wcore_error(WAFFLE_UNKNOWN_ERROR);
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_UNKNOWN_ERROR);
+    wcore_error(WAFFLE_ERROR_UNKNOWN);
+    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_UNKNOWN);
     EXPECT_TRUE(!strcmp(wcore_error_get_info()->message, ""));
 
 }
@@ -51,8 +51,8 @@ TEST(wcore_error, code_unknown_error)
 TEST(wcore_error, code_bad_attribute)
 {
     wcore_error_reset();
-    wcore_error(WAFFLE_BAD_ATTRIBUTE);
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_BAD_ATTRIBUTE);
+    wcore_error(WAFFLE_ERROR_BAD_ATTRIBUTE);
+    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
     EXPECT_TRUE(!strcmp(wcore_error_get_info()->message, ""));
 
 }
@@ -60,8 +60,8 @@ TEST(wcore_error, code_bad_attribute)
 TEST(wcore_error, with_message)
 {
     wcore_error_reset();
-    wcore_errorf(WAFFLE_BAD_PARAMETER, "bad %s (0x%x)", "gl_api", 0x17);
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_BAD_PARAMETER);
+    wcore_errorf(WAFFLE_ERROR_BAD_PARAMETER, "bad %s (0x%x)", "gl_api", 0x17);
+    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_PARAMETER);
     EXPECT_TRUE(!strcmp(wcore_error_get_info()->message, "bad gl_api (0x17)"));
 }
 
@@ -72,7 +72,7 @@ TEST(wcore_error, internal_error)
 
     wcore_error_reset();
     wcore_error_internal("%s zoroaster %d", "hello", 5);
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_INTERNAL_ERROR);
+    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_INTERNAL);
     EXPECT_TRUE(strstr(wcore_error_get_info()->message, "hello zoroaster 5"));
     EXPECT_TRUE(strstr(wcore_error_get_info()->message, error_location));
 }
@@ -80,51 +80,51 @@ TEST(wcore_error, internal_error)
 TEST(wcore_error, first_call_without_message_wins)
 {
     wcore_error_reset();
-    wcore_errorf(WAFFLE_UNKNOWN_ERROR, "cookies");
-    wcore_error(WAFFLE_BAD_ATTRIBUTE);
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_UNKNOWN_ERROR);
+    wcore_errorf(WAFFLE_ERROR_UNKNOWN, "cookies");
+    wcore_error(WAFFLE_ERROR_BAD_ATTRIBUTE);
+    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_UNKNOWN);
     EXPECT_TRUE(!strcmp(wcore_error_get_info()->message, "cookies"));
 }
 
 TEST(wcore_error, first_call_with_message_wins)
 {
     wcore_error_reset();
-    wcore_errorf(WAFFLE_UNKNOWN_ERROR, "cookies");
+    wcore_errorf(WAFFLE_ERROR_UNKNOWN, "cookies");
     wcore_errorf(WAFFLE_NO_ERROR, "all is well");
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_UNKNOWN_ERROR);
+    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_UNKNOWN);
     EXPECT_TRUE(!strcmp(wcore_error_get_info()->message, "cookies"));
 }
 
 TEST(wcore_error, disable_then_error)
 {
     wcore_error_reset();
-    wcore_error(WAFFLE_NOT_INITIALIZED);
+    wcore_error(WAFFLE_ERROR_NOT_INITIALIZED);
     WCORE_ERROR_DISABLED(
-        wcore_error(WAFFLE_BAD_ATTRIBUTE);
+        wcore_error(WAFFLE_ERROR_BAD_ATTRIBUTE);
     );
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_NOT_INITIALIZED);
+    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_NOT_INITIALIZED);
 }
 
 TEST(wcore_error, disable_then_errorf)
 {
     wcore_error_reset();
-    wcore_error(WAFFLE_NOT_INITIALIZED);
+    wcore_error(WAFFLE_ERROR_NOT_INITIALIZED);
     WCORE_ERROR_DISABLED(
-        wcore_errorf(WAFFLE_BAD_ATTRIBUTE, "i'm not here");
+        wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE, "i'm not here");
     );
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_NOT_INITIALIZED);
+    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_NOT_INITIALIZED);
 }
 
 TEST(wcore_error, disable_then_error_internal)
 {
     wcore_error_reset();
-    wcore_error(WAFFLE_NOT_INITIALIZED);
+    wcore_error(WAFFLE_ERROR_NOT_INITIALIZED);
     WCORE_ERROR_DISABLED({
         // Compilation fails with gcc when wcore_error_internal() appears
         // here. So directly the macro's implementing function.
         _wcore_error_internal(__FILE__, __LINE__, "this isn't happening");
     });
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_NOT_INITIALIZED);
+    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_NOT_INITIALIZED);
 }
 
 /// Number of threads in test wcore_error.thread_local.
@@ -157,9 +157,9 @@ static bool
 thread_start(struct thread_arg *a)
 {
     static const int error_codes[NUM_THREADS] = {
-        WAFFLE_BAD_ATTRIBUTE,
-        WAFFLE_UNKNOWN_ERROR,
-        WAFFLE_ALREADY_INITIALIZED,
+        WAFFLE_ERROR_BAD_ATTRIBUTE,
+        WAFFLE_ERROR_UNKNOWN,
+        WAFFLE_ERROR_ALREADY_INITIALIZED,
     };
 
     bool ok = true;

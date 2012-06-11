@@ -151,7 +151,7 @@ _wcore_error_internal(const char *file, int line, const char *format, ...)
 
     // If an error has already been emitted, then clobber it. Internal errors
     // get priority.
-    t->code = WAFFLE_INTERNAL_ERROR;
+    t->code = WAFFLE_ERROR_INTERNAL;
 
     printed = snprintf(cur, end - cur,
                        "waffle: internal error: %s:%d: ", file, line);

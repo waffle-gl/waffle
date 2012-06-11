@@ -80,7 +80,7 @@ wcore_config_attrs_set_defaults(
             attrs->context_profile = WAFFLE_NONE;
             return true;
         default:
-            wcore_errorf(WAFFLE_BAD_ATTRIBUTE,
+            wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
                          "attribute WAFFLE_CONTEXT_API has bad value %#x",
                          context_api);
             return false;
@@ -110,12 +110,12 @@ wcore_config_attrs_check_context(struct wcore_config_attrs *attrs)
             }
 
             if (version < 10) {
-                wcore_errorf(WAFFLE_BAD_ATTRIBUTE,
+                wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
                              "the minimum OpenGL version is 1.0");
                 return false;
             }
             else if (version >= 32 && attrs->context_profile == WAFFLE_NONE) {
-                wcore_errorf(WAFFLE_BAD_ATTRIBUTE,
+                wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
                              "a profile must be given when the OpenGL "
                              "version is >= 3.2");
                 return false;
@@ -123,7 +123,7 @@ wcore_config_attrs_check_context(struct wcore_config_attrs *attrs)
             else if (version >= 32
                      && attrs->context_profile == WAFFLE_CONTEXT_CORE_PROFILE
                      && attrs->accum_buffer) {
-                wcore_errorf(WAFFLE_BAD_ATTRIBUTE,
+                wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
                              "core profiles do not support accumulation "
                              "buffers");
                 return false;
@@ -133,7 +133,7 @@ wcore_config_attrs_check_context(struct wcore_config_attrs *attrs)
         }
         case WAFFLE_CONTEXT_OPENGL_ES1: {
             if (version != 10) {
-                wcore_errorf(WAFFLE_BAD_ATTRIBUTE,
+                wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
                              "the context version must be 1.0 for OpenGL ES1");
                 return false;
             }
@@ -145,7 +145,7 @@ wcore_config_attrs_check_context(struct wcore_config_attrs *attrs)
         }
         case WAFFLE_CONTEXT_OPENGL_ES2: {
             if (version != 20) {
-                wcore_errorf(WAFFLE_BAD_ATTRIBUTE,
+                wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
                              "the context version must 2.0 for OpenGL ES2");
                 return false;
             }
@@ -156,14 +156,14 @@ wcore_config_attrs_check_context(struct wcore_config_attrs *attrs)
             return true;
         }
         default:
-            wcore_errorf(WAFFLE_BAD_ATTRIBUTE,
+            wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
                          "attribute WAFFLE_CONTEXT_API has bad value %#x",
                          attrs->context_api);
             return false;
     }
 
 bad_profile:
-    wcore_errorf(WAFFLE_BAD_ATTRIBUTE,
+    wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
                  "WAFFLE_CONTEXT_PROFILE has bad value %#x",
                  attrs->context_profile);
     return false;
@@ -241,7 +241,7 @@ wcore_config_attrs_parse(
                         attrs->double_buffered = true;
                         break;
                     default:
-                        wcore_errorf(WAFFLE_BAD_ATTRIBUTE,
+                        wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
                                      "WAFFLE_DOUBLE_BUFFERED has bad value "
                                      "0x%x", w_value);
                         return false;
@@ -256,14 +256,14 @@ wcore_config_attrs_parse(
                         attrs->accum_buffer = true;
                         break;
                     default:
-                        wcore_errorf(WAFFLE_BAD_ATTRIBUTE,
+                        wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
                                      "WAFFLE_ACCUM_BUFFER has bad value %#x",
                                      w_value);
                         return false;
                 }
                 break;
             default:
-                wcore_errorf(WAFFLE_BAD_ATTRIBUTE,
+                wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
                              "unrecognized attribute 0x%x at attrib_list[%d]",
                              w_attr, i - waffle_attrib_list);
                 return false;
@@ -288,7 +288,7 @@ wcore_config_attrs_parse(
     return attrs;
 
 error_context_api_required:
-    wcore_errorf(WAFFLE_BAD_ATTRIBUTE,
+    wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
                  "the WAFFLE_CONTEXT_API attribute is required");
     return false;
 }

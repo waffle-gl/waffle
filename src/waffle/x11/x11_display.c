@@ -36,13 +36,13 @@ x11_display_init(struct x11_display *self, const char *name)
 
     self->xlib = XOpenDisplay(name);
     if (!self->xlib) {
-        wcore_errorf(WAFFLE_UNKNOWN_ERROR, "XOpenDisplay failed");
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN, "XOpenDisplay failed");
         return false;
     }
 
     self->xcb = XGetXCBConnection(self->xlib);
     if (!self->xcb) {
-        wcore_errorf(WAFFLE_UNKNOWN_ERROR, "XGetXCBConnection failed");
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN, "XGetXCBConnection failed");
         XCloseDisplay(self->xlib);
         return false;
     }
@@ -62,7 +62,7 @@ x11_display_teardown(struct x11_display *self)
 
     error = XCloseDisplay(self->xlib);
     if (error)
-        wcore_errorf(WAFFLE_UNKNOWN_ERROR, "XCloseDisplay failed");
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN, "XCloseDisplay failed");
 
     return !error;
 }

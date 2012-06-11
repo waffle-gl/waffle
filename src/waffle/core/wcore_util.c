@@ -32,7 +32,7 @@ wcore_malloc(size_t size)
 {
     void *p = malloc(size);
     if (p == NULL)
-        wcore_error(WAFFLE_OUT_OF_MEMORY);
+        wcore_error(WAFFLE_ERROR_BAD_ALLOC);
     return p;
 }
 
@@ -41,6 +41,6 @@ wcore_calloc(size_t size)
 {
     void *p = calloc(1, size);
     if (p == NULL)
-        wcore_error(WAFFLE_OUT_OF_MEMORY);
+        wcore_error(WAFFLE_ERROR_BAD_ALLOC);
     return p;
 }

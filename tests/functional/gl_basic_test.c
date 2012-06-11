@@ -198,7 +198,7 @@ gl_basic_draw(int32_t waffle_context_api, int32_t alpha)
 
     config = waffle_config_choose(dpy, config_attrib_list);
     if (!config) {
-        if (waffle_error_get_code() == WAFFLE_UNSUPPORTED_ON_PLATFORM)
+        if (waffle_error_get_code() == WAFFLE_ERROR_UNSUPPORTED)
             TEST_SKIP();
         else
             TEST_FAIL();
@@ -210,7 +210,7 @@ gl_basic_draw(int32_t waffle_context_api, int32_t alpha)
 
     ctx = waffle_context_create(config, NULL);
     if (!ctx) {
-        if (waffle_error_get_code() == WAFFLE_UNSUPPORTED_ON_PLATFORM)
+        if (waffle_error_get_code() == WAFFLE_ERROR_UNSUPPORTED)
             TEST_SKIP();
         else
             TEST_FAIL();

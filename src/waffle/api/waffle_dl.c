@@ -45,7 +45,7 @@ waffle_dl_check_enum(int32_t dl)
         case WAFFLE_DL_OPENGL_ES2:
             return true;
         default:
-            wcore_errorf(WAFFLE_BAD_PARAMETER, "dl has bad value %#x");
+            wcore_errorf(WAFFLE_ERROR_BAD_PARAMETER, "dl has bad value %#x");
             return false;
     }
 }

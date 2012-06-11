@@ -81,7 +81,7 @@ testgroup_wcore_config_attrs_teardown(void)
 TEST(wcore_config_attrs, null_attrib_list)
 {
     ASSERT_TRUE(!wcore_config_attrs_parse(NULL, &actual_attrs));
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_BAD_ATTRIBUTE);
+    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
 }
 
 TEST(wcore_config_attrs, empty_attrib_list)
@@ -89,7 +89,7 @@ TEST(wcore_config_attrs, empty_attrib_list)
     const int32_t attrib_list[] = {0};
 
     ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_BAD_ATTRIBUTE);
+    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
 }
 
 TEST(wcore_config_attrs, bad_attr)
@@ -101,7 +101,7 @@ TEST(wcore_config_attrs, bad_attr)
     };
 
     ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_BAD_ATTRIBUTE);
+    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
     EXPECT_TRUE(strstr(wcore_error_get_info()->message, "WAFFLE_CONTEXT_OPENGL_ES2")
                 || strstr(wcore_error_get_info()->message, "0x20d"));
 }
@@ -166,7 +166,7 @@ TEST(wcore_config_attrs, double_buffered_is_bad)
     };
 
     ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_BAD_ATTRIBUTE);
+    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
     EXPECT_TRUE(strstr(wcore_error_get_info()->message, "WAFFLE_DOUBLE_BUFFERED"));
     EXPECT_TRUE(strstr(wcore_error_get_info()->message, "0x31415926"));
 }
@@ -185,7 +185,7 @@ TEST(wcore_config_attrs, core_profile_and_accum_buffer)
     };
 
     ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_BAD_ATTRIBUTE);
+    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
 }
 
 void

@@ -58,7 +58,7 @@ glx_display_set_extensions(struct glx_display *self)
     const char *s = glXQueryExtensionsString(self->x11.xlib,
                                              self->x11.screen);
     if (!s) {
-        wcore_errorf(WAFFLE_UNKNOWN_ERROR,
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN,
                      "glXQueryExtensionsString failed");
         return false;
     }

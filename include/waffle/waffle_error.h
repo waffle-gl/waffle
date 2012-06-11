@@ -108,31 +108,31 @@ enum waffle_error {
 
     /// A terrible thing has happened. The behavior of all future waffle
     /// calls is undefined. You should clean up and exit as soon as possible.
-    WAFFLE_FATAL_ERROR                  = 0x01,
+    WAFFLE_ERROR_FATAL                  = 0x01,
 
     /// @brief Something went wrong, but waffle lacks an error code for it.
     ///
     /// This is usually emitted when an underlying native call, such as
     /// XOpenDisplay(), fails for an unknown reason.
-    WAFFLE_UNKNOWN_ERROR                = 0x02,
+    WAFFLE_ERROR_UNKNOWN                = 0x02,
 
     /// @brief You've found a bug in waffle.
-    WAFFLE_INTERNAL_ERROR               = 0x03,
+    WAFFLE_ERROR_INTERNAL               = 0x03,
 
-    WAFFLE_OUT_OF_MEMORY                = 0x04,
+    WAFFLE_ERROR_BAD_ALLOC              = 0x04,
 
-    WAFFLE_NOT_INITIALIZED              = 0x05,
-    WAFFLE_ALREADY_INITIALIZED          = 0x06,
-    WAFFLE_BAD_ATTRIBUTE                = 0x08,
-    WAFFLE_BAD_PARAMETER                = 0x10,
+    WAFFLE_ERROR_NOT_INITIALIZED        = 0x05,
+    WAFFLE_ERROR_ALREADY_INITIALIZED    = 0x06,
+    WAFFLE_ERROR_BAD_ATTRIBUTE          = 0x08,
+    WAFFLE_ERROR_BAD_PARAMETER          = 0x10,
 
     /// @brief You passed objects to waffle that belong to different displays.
-    WAFFLE_BAD_DISPLAY_MATCH            = 0x11,
+    WAFFLE_ERROR_BAD_DISPLAY_MATCH      = 0x11,
 
     /// @brief Requested action is unsupported on the current platform.
     ///
     /// For example, on GLX it is not possible to create an OpenGL ES1 context.
-    WAFFLE_UNSUPPORTED_ON_PLATFORM      = 0x12,
+    WAFFLE_ERROR_UNSUPPORTED            = 0x12,
 };
 
 #ifdef __cplusplus

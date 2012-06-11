@@ -63,39 +63,39 @@ glx_config_check_context_attrs(struct glx_display *dpy,
     switch (attrs->context_api) {
         case WAFFLE_CONTEXT_OPENGL:
             if (version != 10 && !dpy->extensions.ARB_create_context) {
-                wcore_errorf(WAFFLE_UNSUPPORTED_ON_PLATFORM,
+                wcore_errorf(WAFFLE_ERROR_UNSUPPORTED,
                              "GLX_ARB_create_context is required in order to "
                              "request a GL version not equal to the default "
                              "value 1.0");
                 return false;
             }
             else if (version >= 32 && !dpy->extensions.EXT_create_context_es2_profile) {
-                wcore_errorf(WAFFLE_UNSUPPORTED_ON_PLATFORM,
+                wcore_errorf(WAFFLE_ERROR_UNSUPPORTED,
                              "GLX_EXT_create_context_es2_profile is required "
                              "to create a context with version >= 3.2");
                 return false;
             }
             else if (version >= 32 && attrs->context_profile == WAFFLE_NONE) {
-                wcore_errorf(WAFFLE_BAD_ATTRIBUTE,
+                wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
                              "a profile must be specified when the GL version "
                              "is >= 3.2");
                 return false;
             }
             return true;
         case WAFFLE_CONTEXT_OPENGL_ES1:
-            wcore_errorf(WAFFLE_UNSUPPORTED_ON_PLATFORM,
+            wcore_errorf(WAFFLE_ERROR_UNSUPPORTED,
                          "GLX does not support OpenGL ES1");
             return false;
         case WAFFLE_CONTEXT_OPENGL_ES2:
             if (!dpy->extensions.EXT_create_context_es2_profile) {
-                wcore_errorf(WAFFLE_UNSUPPORTED_ON_PLATFORM,
+                wcore_errorf(WAFFLE_ERROR_UNSUPPORTED,
                              "GLX_EXT_create_context_es2_profile is required "
                              "to create an OpenGL ES2 context");
                 return false;
             }
             if (!linux_platform_dl_can_open(plat->linux,
                                             WAFFLE_DL_OPENGL_ES2)) {
-                wcore_errorf(WAFFLE_UNSUPPORTED_ON_PLATFORM,
+                wcore_errorf(WAFFLE_ERROR_UNSUPPORTED,
                              "failed to open the OpenGL ES2 library");
                 return false;
             }
@@ -166,7 +166,7 @@ glx_config_choose(struct wcore_platform *wc_plat,
                                 attrib_list,
                                 &num_configs);
     if (!configs || num_configs == 0) {
-        wcore_errorf(WAFFLE_UNKNOWN_ERROR,
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN,
                      "glXChooseFBConfig returned no matching configs");
         goto error;
     }
@@ -179,7 +179,7 @@ glx_config_choose(struct wcore_platform *wc_plat,
                                GLX_FBCONFIG_ID,
                                &self->glx_fbconfig_id);
     if (!ok) {
-        wcore_errorf(WAFFLE_UNKNOWN_ERROR, "glxGetFBConfigAttrib failed");
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN, "glxGetFBConfigAttrib failed");
         goto error;
     }
 
@@ -187,7 +187,7 @@ glx_config_choose(struct wcore_platform *wc_plat,
     vi = glXGetVisualFromFBConfig(dpy->x11.xlib,
                                   self->glx_fbconfig);
     if (!vi) {
-        wcore_errorf(WAFFLE_UNKNOWN_ERROR,
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN,
                      "glXGetVisualInfoFromFBConfig failed with "
                      "GLXFBConfigID=0x%x\n", self->glx_fbconfig_id);
         goto error;

@@ -76,7 +76,7 @@ waffle_init_parse_attrib_list(
                         *platform = value;
                         break;
                     default:
-                        wcore_errorf(WAFFLE_BAD_ATTRIBUTE,
+                        wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
                                      "WAFFLE_PLATFORM has bad value 0x%x",
                                      value);
                         return false;
@@ -84,14 +84,14 @@ waffle_init_parse_attrib_list(
 
                 break;
             default:
-                wcore_errorf(WAFFLE_BAD_ATTRIBUTE, "bad attribute 0x%x", attr);
+                wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE, "bad attribute 0x%x", attr);
                 return false;
                 break;
         }
     }
 
     if (!found_platform) {
-        wcore_errorf(WAFFLE_BAD_ATTRIBUTE,
+        wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
                      "attribute list is missing WAFFLE_PLATFORM");
         return false;
     }
@@ -138,7 +138,7 @@ waffle_init(const int32_t *attrib_list)
     wcore_error_reset();
 
     if (api_platform) {
-        wcore_error(WAFFLE_ALREADY_INITIALIZED);
+        wcore_error(WAFFLE_ERROR_ALREADY_INITIALIZED);
         return false;
     }
 

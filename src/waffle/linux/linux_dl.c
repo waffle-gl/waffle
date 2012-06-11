@@ -75,7 +75,7 @@ linux_dl_open(int32_t waffle_dl)
 
     self->dl = dlopen(self->name, RTLD_LAZY);
     if (!self->dl) {
-        wcore_errorf(WAFFLE_UNKNOWN_ERROR,
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN,
                      "dlopen(\"%s\") failed: %s", self->name, dlerror());
         goto error;
     }
@@ -98,7 +98,7 @@ linux_dl_close(struct linux_dl *self)
     if (self->dl) {
         error = dlclose(self->dl);
         if (error) {
-            wcore_errorf(WAFFLE_UNKNOWN_ERROR,
+            wcore_errorf(WAFFLE_ERROR_UNKNOWN,
                          "dlclose(libname=\"%s\") failed: %s",
                          self->name, dlerror());
         }
@@ -118,7 +118,7 @@ linux_dl_sym(struct linux_dl *self, const char *symbol)
 
     const char *error = dlerror();
     if (error) {
-        wcore_errorf(WAFFLE_UNKNOWN_ERROR,
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN,
                      "dlsym(libname=\"%s\", \"%s\") failed: %s",
                      self->name, symbol, error);
         return NULL;

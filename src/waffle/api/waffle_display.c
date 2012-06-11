@@ -90,7 +90,7 @@ waffle_display_supports_context_api(
         case WAFFLE_CONTEXT_OPENGL_ES2:
             break;
         default:
-            wcore_errorf(WAFFLE_BAD_PARAMETER,
+            wcore_errorf(WAFFLE_ERROR_BAD_PARAMETER,
                          "context_api has bad value %#x", context_api);
             return false;
     }

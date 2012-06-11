@@ -132,7 +132,7 @@ glx_context_create_native(struct glx_config *config,
                                                    true /*direct?*/,
                                                    attrib_list);
         if (!ctx) {
-            wcore_errorf(WAFFLE_UNKNOWN_ERROR,
+            wcore_errorf(WAFFLE_ERROR_UNKNOWN,
                          "glXCreateContextAttribsARB failed");
             return NULL;
         }
@@ -144,7 +144,7 @@ glx_context_create_native(struct glx_config *config,
                                   real_share_ctx,
                                   true /*direct?*/);
         if (!ctx) {
-            wcore_errorf(WAFFLE_UNKNOWN_ERROR, "glXCreateContext failed");
+            wcore_errorf(WAFFLE_ERROR_UNKNOWN, "glXCreateContext failed");
             return NULL;
         }
     }
