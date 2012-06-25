@@ -37,15 +37,11 @@ static const struct wcore_window_vtbl glx_window_wcore_vtbl;
 static bool
 glx_window_destroy(struct wcore_window *wc_self)
 {
-    struct glx_window *self;
-    struct glx_display *dpy;
+    struct glx_window *self = glx_window(wc_self);
     bool ok = true;
 
     if (!wc_self)
         return ok;
-
-    self = glx_window(wc_self);
-    dpy = glx_display(wc_self->display);
 
     ok &= x11_window_teardown(&self->x11);
     ok &= wcore_window_teardown(wc_self);
