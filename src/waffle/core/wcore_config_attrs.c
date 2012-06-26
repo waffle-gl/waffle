@@ -286,7 +286,7 @@ wcore_config_attrs_parse(
     if (!wcore_config_attrs_check_context(attrs))
         return false;
 
-    return attrs;
+    return true;
 
 error_context_api_required:
     wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
