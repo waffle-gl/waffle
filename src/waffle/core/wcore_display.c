@@ -26,6 +26,7 @@
 #include "wcore_display.h"
 
 #include <assert.h>
+#include <pthread.h>
 #include <stdio.h>
 
 bool
@@ -33,12 +34,15 @@ wcore_display_init(struct wcore_display *self,
                    struct wcore_platform *platform)
 {
     static size_t id_counter = 0;
+    static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
     assert(self);
     assert(platform);
 
-    // FIXME: Not thread safe.
+    pthread_mutex_lock(&mutex);
     self->api.display_id = ++id_counter;
+    pthread_mutex_unlock(&mutex);
+
     self->platform = platform;
 
     if (self->api.display_id == 0) {
