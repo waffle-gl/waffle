@@ -105,7 +105,7 @@ glx_context_fill_attrib_list(struct glx_config *config,
         }
     }
 
-    attrib_list[i++] = GLX_NONE;
+    attrib_list[i++] = 0;
     return true;
 }
 
