@@ -53,7 +53,7 @@ static const char*
 linux_dl_get_name(int32_t waffle_dl)
 {
     switch (waffle_dl) {
-        case WAFFLE_DL_OPENGL:     return "libGL.so";
+        case WAFFLE_DL_OPENGL:     return "libGL.so.1";
         case WAFFLE_DL_OPENGL_ES1: return "libGLESv1_CM.so";
         case WAFFLE_DL_OPENGL_ES2: return "libGLESv2.so";
         default:
