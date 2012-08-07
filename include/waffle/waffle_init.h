@@ -44,7 +44,7 @@ extern "C" {
 ///
 /// This function must be called before calling any other waffle functions
 /// If waffle is already initialized, then calling waffle_init() produces the
-/// error @c WAFFLE_ALREADY_INITIALIZED.
+/// error @c WAFFLE_ERROR_ALREADY_INITIALIZED.
 ///
 ///
 /// ### Attributes ###
@@ -77,11 +77,11 @@ extern "C" {
 ///
 /// ### Errors ###
 ///
-/// - WAFFLE_ALREADY_INITIALIZED @n
+/// - WAFFLE_ERROR_ALREADY_INITIALIZED @n
 ///     The library's global state has already been initialized with a call
 ///     to waffle_init().
 ///
-/// - WAFFLE_BAD_ATTRIBUTE @n
+/// - WAFFLE_ERROR_BAD_ATTRIBUTE @n
 ///     An item in @a attrib_list is unrecognized, missing, or has an
 ///     invalid value.
 ///
