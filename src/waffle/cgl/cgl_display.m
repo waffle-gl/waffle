@@ -91,7 +91,15 @@ cgl_display_supports_context_api(struct wcore_display *wc_self,
     }
 }
 
+static union waffle_native_display*
+cgl_display_get_native(struct wcore_display *wc_self)
+{
+    wcore_error(WAFFLE_ERROR_UNSUPPORTED);
+    return NULL;
+}
+
 static const struct wcore_display_vtbl cgl_display_wcore_vtbl = {
     .destroy = cgl_display_destroy,
+    .get_native = cgl_display_get_native,
     .supports_context_api = cgl_display_supports_context_api,
 };

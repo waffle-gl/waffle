@@ -101,6 +101,14 @@ fail:
     return NULL;
 }
 
+static union waffle_native_context*
+cgl_context_get_native(struct wcore_context *wc_self)
+{
+    wcore_error(WAFFLE_ERROR_UNSUPPORTED);
+    return NULL;
+}
+
 static const struct wcore_context_vtbl cgl_context_wcore_vtbl = {
     .destroy = cgl_context_destroy,
+    .get_native = cgl_cotext_get_native,
 };

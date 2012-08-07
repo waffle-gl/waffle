@@ -142,8 +142,16 @@ cgl_window_swap_buffers(struct wcore_window *wc_self)
 
 }
 
+static union waffle_native_window*
+cgl_window_get_native(struct wcore_window *wc_self)
+{
+    wcore_error(WAFFLE_ERROR_UNSUPPORTED);
+    return NULL;
+}
+
 static const struct wcore_window_vtbl cgl_window_wcore_vtbl = {
     .destroy = cgl_window_destroy,
+    .get_native = cgl_window_get_native,
     .show  = cgl_window_show,
     .swap_buffers = cgl_window_swap_buffers,
 };

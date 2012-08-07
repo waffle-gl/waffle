@@ -194,6 +194,14 @@ error:
     return NULL;
 }
 
+static union waffle_native_config*
+cgl_config_get_native(struct wcore_config *wc_self)
+{
+    wcore_error(WAFFLE_ERROR_UNSUPPORTED);
+    return NULL;
+}
+
 static const struct wcore_config_vtbl cgl_config_wcore_vtbl = {
     .destroy = cgl_config_destroy,
+    .get_native = cgl_config_get_native,
 };
