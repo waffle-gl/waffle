@@ -111,6 +111,9 @@ enum {
     GL_COLOR_BUFFER_BIT = 0x00004000,
 };
 
+#define WINDOW_WIDTH  320
+#define WINDOW_HEIGHT 240
+
 static void (*glClearColor)(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha);
 static void (*glClear)(GLbitfield mask);
 
@@ -357,7 +360,7 @@ main(int argc, char **argv)
     if (!ctx)
         error_waffle();
 
-    window = waffle_window_create(config, 320, 240);
+    window = waffle_window_create(config, WINDOW_WIDTH, WINDOW_HEIGHT);
     if (!window)
         error_waffle();
 
