@@ -105,9 +105,15 @@ error_get_gl_symbol(const char *name)
 
 typedef float GLclampf;
 typedef unsigned int GLbitfield;
+typedef unsigned int GLint;
+typedef int GLsizei;
+typedef unsigned int GLenum;
+typedef void GLvoid;
 
 enum {
     // Copied for <GL/gl.h>.
+    GL_UNSIGNED_BYTE =    0x00001401,
+    GL_RGBA =             0x00001908,
     GL_COLOR_BUFFER_BIT = 0x00004000,
 };
 
@@ -116,6 +122,8 @@ enum {
 
 static void (*glClearColor)(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha);
 static void (*glClear)(GLbitfield mask);
+static void (*glReadPixels)(GLint x, GLint y, GLsizei width, GLsizei height,
+                            GLenum format, GLenum type, GLvoid* data);
 
 /// @}
 /// @defgroup Parsing Options
@@ -334,6 +342,10 @@ main(int argc, char **argv)
     glClearColor = waffle_dl_sym(opts.dl, "glClearColor");
     if (!glClearColor)
         error_get_gl_symbol("glClearColor");
+
+    glReadPixels = waffle_dl_sym(opts.dl, "glReadPixels");
+    if (!glReadPixels)
+        error_get_gl_symbol("glReadPixels");
 
     dpy = waffle_display_connect(opts.display_name);
     if (!dpy)
