@@ -91,6 +91,14 @@ error_waffle(void)
 }
 
 static void
+gl_basic_error(const char *str)
+{
+    fflush(stdout);
+    fprintf(stderr, "gl_basic: error: %s\n", str);
+    exit(EXIT_FAILURE);
+}
+
+static void
 error_get_gl_symbol(const char *name)
 {
     fflush(stdout);
@@ -244,8 +252,9 @@ parse_args(int argc, char *argv[], struct options *opts)
 static bool
 draw(struct waffle_window *window)
 {
-    int i;
+    int i, j;
     bool ok;
+    unsigned char *colors;
 
     static const struct timespec sleep_time = {
          // 0.5 sec
@@ -262,6 +271,23 @@ draw(struct waffle_window *window)
         }
 
         glClear(GL_COLOR_BUFFER_BIT);
+
+        colors = calloc(WINDOW_WIDTH * WINDOW_HEIGHT * 4, sizeof(*colors));
+        glReadPixels(0, 0,
+                     WINDOW_WIDTH, WINDOW_HEIGHT,
+                     GL_RGBA, GL_UNSIGNED_BYTE,
+                     colors);
+        for (j = 0; j < WINDOW_WIDTH * WINDOW_HEIGHT * 4; j += 4) {
+           if ((colors[j]   != (i == 0 ? 0xff : 0)) ||
+               (colors[j+1] != (i == 1 ? 0xff : 0)) ||
+               (colors[j+2] != (i == 2 ? 0xff : 0)) ||
+               (colors[j+3] != 0xff)) {
+              free(colors);
+              gl_basic_error("glReadPixels returned unexpected result");
+           }
+        }
+        free(colors);
+
         ok = waffle_window_swap_buffers(window);
         if (!ok)
             return false;
