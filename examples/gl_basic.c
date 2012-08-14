@@ -434,5 +434,6 @@ main(int argc, char **argv)
         cocoa_finish();
     #endif
 
+    printf("gl_basic: run was successful\n");
     return EXIT_SUCCESS;
 }
