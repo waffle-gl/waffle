@@ -1,0 +1,11 @@
+*.cmake
+*.so
+*_test
+*unittest
+gl_basic
+install_manifest.txt
+lib/
+waffle.pc
+CMakeCache.txt
+CMakeFiles
+Makefile
