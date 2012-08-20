@@ -26,8 +26,20 @@
 project(waffle C)
 cmake_minimum_required(VERSION 2.8)
 
-# Release version.
-set(waffle_version 0.3.1)
+# -----------------------------------------------------------------------------
+# Version Numbers
+# -----------------------------------------------------------------------------
+
+# See /doc/versioning-rules.txt.
+
+#
+# Release versions.
+#
+set(waffle_major_version "0")
+set(waffle_minor_version "3")
+set(waffle_patch_version "1")
+
+set(waffle_version "${waffle_major_version}.${waffle_minor_version}.${waffle_patch_version}")
 
 # Library version.
 #
