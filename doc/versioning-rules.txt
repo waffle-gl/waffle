@@ -1,0 +1,375 @@
+Versioning Scheme
+=================
+
+Waffle's version numbering scheme follows the rules [1] set by the Apache Portable Runtime Project, which are
+reproduced [2] below. The scheme allows multiple versions of a library and its headers to be installed in parallel.
+
+[1] http://apr.apache.org/versioning.html
+[2] Downloaded on 2012-08-19 and converted from html to text with `html2text -width 120 -style pretty -nobs`.
+
+-----------------------------------------------------------------------------------------------------------------------
+
+
+_The_Apache_Portable_Runtime_Project_
+
+Get Involved
+                     APR's Version Numbering
+  Subversion
+  Mailing_Lists           This document covers how the APR projects are versioned. Since the APR projects
+  Snapshots               are libraries, it is very important to define a stable API for users of the
+  Build_on_Win32          libraries. However, we also need to move the libraries forward, technologically.
+  Build_on_Unix           To balance these two needs, a strict policy of versioning is required, which
+                          users can rely upon to understand the limitations, restrictions, and the changes
+Download!                 that can occur from one release of APR to the next.
+
+  from_a_mirror           * The_Basics
+                          * Source_Compatibility
+APR Docs                  * Binary_Compatibility
+                          * Examples
+  Version_1.4             * Strategy
+  Version_0.9             * Version_Checking
+  Trunk (dev)             * Parallel_Installation
+                          * Other_Notes
+APR-util Docs
+
+  Version_1.4
+  Version_0.9
+  Trunk (dev)        The Basics
+
+APR-iconv Docs            Versions are denoted using a standard triplet of integers: MAJOR.MINOR.PATCH. The
+                          basic intent is that MAJOR versions are incompatible, large-scale upgrades of the
+  Version_1.2             API. MINOR versions retain source and binary compatibility with older minor
+  Version_0.9             versions, and changes in the PATCH level are perfectly compatible, forwards and
+  Trunk (dev)             backwards.
+                          It is important to note that a library that has not reached 1.0.0 is not subject to
+Guidelines                the guidelines described in this document. Before a 1.0 release (version 0.x.y),
+                          the API can and will be changing freely, without regard to the restrictions
+  Project_Guidelines      detailed below.
+  Contributing
+  Version_Numbers
+
+Miscellaneous        Source Compatibility
+
+  License                 We define "source compatible" to mean that an application will continue to build
+  Security_Reports        without error, and that the semantics will remain unchanged.
+  Projects_using_APR      Applications that write against a particular version will remain source-compatible
+  Sponsors                against later versions, until the major number changes. However, if an application
+  Sponsorship             uses an API which has become available in a particular minor version, it
+                          (obviously) will no longer build or operate against previous minor versions.
+
+
+
+                     Binary Compatibility
+
+                          We define "binary compatible" to mean that a compiled application can be linked
+                          (possibly dynamically) against the library and continue to function properly.
+                          Similar to source compatibility, an application that has been compiled against a
+                          particular version will continue to be linkable against later versions (unless the
+                          major number changes). It is possible that an application will not be able to
+                          successfully link against a previous minor version.
+
+
+
+                     Examples
+
+                          Here are some examples to demonstrate the compatibility:
+
+                          Original Version New Version Compatible?
+                          2.2.3            2.2.4       Yes
+                                                       Compatibility across patch versions is guaranteed.
+                          2.2.3            2.2.1       Yes
+                                                       Compatibility across patch versions is guaranteed.
+                          2.2.3            2.3.1       Yes
+                                                       Compatibility with later minor versions is
+                                                       guaranteed.
+                          2.2.3            2.1.7       No
+                                                       Compatibility with prior minor versions is not
+                                                       guaranteed.
+                          2.2.3            3.0.0       No
+                                                       Compatibility with different major versions is not
+                                                       guaranteed.
+                          2.2.3            1.4.7       No
+                                                       Compatibility with different major versions is not
+                                                       guaranteed.
+
+                          Note: while some of the cells say "no", it is possible that the versions may be
+                          compatible, depending very precisely upon the particular APIs used by the
+                          application.
+
+
+
+                     Strategy
+
+                          This section details how we will build the code to meet the above
+                          requirements and guidelines.
+
+                          Patch Version
+
+                               To retain perfect source and binary compatibility, a patch
+                               release can only change function implementations. Changes to
+                               the API, to the signatures of public functions, or to the
+                               interpretation of function parameters is not allowed.
+                               Effectively, these releases are pure bug fix releases.
+
+
+
+                          Minor Versions
+
+                               Minor releases can introduce new functions, new symbolic and
+                               enumerated constants, and deprecate existing functions.
+
+
+                                 New functions
+                                     An application coded against an older minor release will
+                                     still have all of its functions available with their
+                                     original signatures. Once an application begins to use a
+                                     new function, however, they will be unable to work
+                                     against older minor versions.
+                                     It is tempting to say that introducing new functions
+                                     might create incompatibility across minor releases. If
+                                     an application takes advantage of an API that was
+                                     introduced in version 2.3 of a library, then it is not
+                                     going to work against version 2.2. However, we have
+                                     stated that an any application built against version 2.2
+                                     will continue to work for all 2.x releases. Thus, an
+                                     application that states "requires 2.3 or later" is
+                                     perfectly acceptable -- the user or administrator simply
+                                     upgrades the installed library to 2.3. This is a safe
+                                     operation and will not break any other application that
+                                     was using the 2.2 library.
+                                     In other words, yes an incompatibility arises by
+                                     mandating that a specific version needs to be installed.
+                                     But in practice, this will not be a problem since
+                                     upgrading to newer versions is always safe.
+
+                                 New constants
+                                     Similar to functions, all of the original (old)
+                                     constants will be available to an application. An
+                                     application can then choose to use new constants to pick
+                                     up new semantics and features.
+
+                                 Replacing functions
+                                     This gets a bit trickier. The original function must
+                                     remain available at the link-level so that an
+                                     application compiled against a minor version will
+                                     continue to work with later minor versions. Further, if
+                                     an application is designed to work with an earlier minor
+                                     version, then we don't want to suddenly change the
+                                     requirements for that application. This means that the
+                                     headers cannot silently map an old function into a newer
+                                     function, as that would turn an application, say, based
+                                     on 1.2 into an application requiring the 1.4 or later
+                                     release.
+                                     This means that functions cannot truly be replaced. The
+                                     new, alternate function can be made available in the
+                                     header and applications can choose to use it (and become
+                                     dependent upon the minor release where the function
+                                     appears).
+                                     It is possible to design a set of headers where a macro
+                                     will always refer to the "latest" function available. Of
+                                     course, if an application chooses to use this macro,
+                                     then the resulting compiled-binary will be dependent
+                                     upon whatever version it was compiled against. This
+                                     strategy adds the new functionality for applications,
+                                     yet retains the necessary source and binary
+                                     compatibility for applications designed or built against
+                                     previous minor releases.
+                                     Constants (enumerated values and preprocessor macros)
+                                     are not allowed to change since an older application
+                                     will still be using them. Similarly, function signatures
+                                     at the link-level may not change, so that support for
+                                     older, compiled applications is maintained.
+
+                                 Deprecating functions
+                                     Since a function must remain available for applications
+                                     coded against a previous minor release, it is only
+                                     possible to "deprecate" a function. It cannot be removed
+                                     from the headers (so that source compatibility is
+                                     retained) and it cannot be removed from the library (so
+                                     that binary compatibility is retained).
+                                     If you deprecate a function in APR, please mark it as
+                                     such in the function documentation, using the doxygen
+                                     "\deprecated" tag. Deprecated functions can only be
+                                     removed in major releases.
+                                     A deprecated function should remain available through
+                                     the original header. The function prototype should
+                                     remain in the same header, or if moved to a "deprecated
+                                     functions" header, then the alternate header should be
+                                     included by the original header. This requirement is to
+                                     ensure that source compatibility is retained.
+                                     Finally, if you are deprecating a function so that you
+                                     can change the name of the function, please use the
+                                     method described above under "Replacing functions", so
+                                     that projects which use APR can retain binary
+                                     compatibility.
+                                     Note that all deprecated functions will be removed at
+                                     the next major version bump.
+
+
+
+
+                          Major Versions
+
+                               Any kind of change can be made during a major version
+                               release. Particular types of changes that might occur:
+
+                               * remove or change constants
+                               * remove (deprecated) functions
+                               * fold together macro-ized function replacements
+
+
+
+
+
+
+                     Version Checking
+
+                          In many cases, the user of a library will need to check the version that they
+                          are compiling against, or that is being used at runtime. Because of the strict
+                          rules of source and binary compatibility, these checks can be simpler and more
+                          complicated depending on what is needed.
+
+                          Compile-time Checks
+
+                               Libraries should make their version number available as
+                               compile-time constants. For example:
+
+                                    #define FOO_MAJOR_VERSION 1
+                                    #define FOO_MINOR_VERSION 4
+                                    #define FOO_PATCH_VERSION 0
+
+                               The above symbols are the minimum required for this
+                               specification.
+                               An application that desires, at compile-time, to decide on
+                               whether and how to use a particular library feature needs to
+                               only check two values: the major and the minor version. Since,
+                               by definition, there are no API changes across patch versions,
+                               that symbol can be safely ignored. Note that any kind of a
+                               check for a minimum version will then pin that application to
+                               at least that version. The application's installation mechanism
+                               should then ensure that that minimal version has been installed
+                               (for example, using RPM dependency checks).
+                               If the feature changes across minor versions are source
+                               compatible, but are (say) simply different choices of values to
+                               pass into the library, then an application can support a wider
+                               variety of installed libraries if it avoids compile-time
+                               checks.
+
+
+
+                          Run-time Checks
+
+                               A library meeting this specification should support a way for
+                               an application to determine the library's version at run-time.
+                               This will usually be emboded as a simple function which returns
+                               the MAJOR, MINOR, and PATCH triplet in some form.
+                               Run-time checks are preferable in all cases. This type of check
+                               enables an application to run against a wider variety of minor
+                               releases of a library (the application is "less coupled" to a
+                               particular library release). Of course, if an application
+                               requires a function that was introduced in a later, minor
+                               release, then the application will require that, at least, that
+                               release is installed on the target system.
+                               Run-time checks are particurly important if the application is
+                               trying to determine if the library has a particular bug that
+                               may need to be worked around, but has been fixed in a later
+                               release. If the bug is fixed in a patch release, then the only
+                               avenue for an application is to perform a runtime check. This
+                               is because an application cannot require a specific patch level
+                               of the library to be installed -- those libraries are perfectly
+                               forward and backwards compatible, and the administrator is free
+                               to choose any patch release, knowing that all applications will
+                               continue to function properly. If the bug was fixed in a minor
+                               release, then it is possible to use a compile-time check, but
+                               that would create a tighter coupling to the library.
+
+
+
+
+
+                     Parallel Installation
+
+                          Parallel installation refers to the ability to install multiple versions of a
+                          library simultaneously -- they exist in parallel. This document will not discuss
+                          the full rationale for why this is important, but will instead detail how this
+                          versioning specification maps onto those concepts. Please refer to Havoc
+                          Pennington's_document for futher details and the rationale behind this form of
+                          parallel installation.
+
+                          Library Naming
+
+                               On Unix-ish platforms, the library name should include the MAJOR
+                               version number:
+
+                                    libFOO-MAJOR.so
+
+                               This strategy allows an application to explicitly state which
+                               version of the library that it wants to link against. If the
+                               application was built for version 2 of the API, then it can link
+                               against libFOO-2.so. If another application was built against
+                               version 3 of the API, then it links against libFOO-3.so. Since both
+                               libraries can reside on the system at the same time, both
+                               applications' needs can be satisfied.
+                               Typically, shared libraries on Unix-ish platforms will set up
+                               symlinks from the .so library to specific versions of that library.
+                               For example:
+
+                                    libFOO-MAJOR.so -> libFOO-MAJOR.so.0
+                                    libFOO-MAJOR.so.0 -> libFOO-MAJOR.so.0.MINOR.PATCH
+
+                               In this configuration, applications will be bound to the .so.0
+                               library. The minor version does not come into play here because we
+                               want applications to dynamically load and link to the new library
+                               when a new minor version is installed. Thus, the MINOR and the
+                               PATCH values are relegated to the library name after the .so.0
+                               portion.
+                               The implication here is that build systems for libraries should
+                               arrange to generate .so libraries matching the above pattern.
+
+
+
+                          Include Directories
+
+                               The default installation directory for a library's include files
+                               should specify the MAJOR version number, and should normally be
+                               installed as a subdirectory in some standard location. For example:
+
+                                     /usr/include/FOO-MAJOR/
+
+                               An application can place the FOO-MAJOR directory on its include
+                               path and include the files normally:
+
+                                    #include <FOO-stuff.h>
+                                    #include <FOO-more.h>
+
+                               Depending upon the API that the application is designed to work
+                               against, it can simply include different versions of the include
+                               directory.
+
+
+
+                          Other Files
+
+                               NOTE: There is no recommendation at this time for the best and
+                               proper handling of, say, FOO-config types of files. Or non-code
+                               types of files (e.g. things that typically get installed into areas
+                               like /usr/shared).
+                               Further thought and exploration is needed here.
+
+
+
+
+
+                     Other Notes
+
+                          It is expected that other libraries, besides those in the APR project, will want
+                          to use the above definitions of versioning. This is quite fine, and those
+                          libraries can simply reference this document. Its canonical location is:
+
+                               http://apr.apache.org/versioning.html
+
+
+
+-----------------------------------------------------------------------------------------------------------------------
+                                                    Copyright © 2008, The Apache Software Foundation
+
