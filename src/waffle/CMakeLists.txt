@@ -126,7 +126,8 @@ target_link_libraries(${waffle_libname} ${waffle_libdeps})
 set_target_properties(${waffle_libname}
     PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib
-    SOVERSION ${waffle_so_version})
+    SOVERSION ${waffle_soversion}
+    VERSION ${waffle_soversion}.${waffle_minor_version}.${waffle_patch_version})
 
 install(TARGETS ${waffle_libname}
     LIBRARY DESTINATION ${waffle_install_libdir})

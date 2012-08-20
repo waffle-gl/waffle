@@ -41,15 +41,15 @@ set(waffle_patch_version "1")
 
 set(waffle_version "${waffle_major_version}.${waffle_minor_version}.${waffle_patch_version}")
 
-set(waffle_libname "waffle-${waffle_major_version}")
 
-# Library version.
 #
-# The library version scheme follows the libtool guidelines and is independent
-# of the release version. It is appended to libwaffle.so as libwaffle.so.X.X.X.
-# See http://www.gnu.org/software/libtool/manual/html_node/Updating-version-info.html.
-set(waffle_so_version "2.1.0")
-
+# Library versions.
+#
+# On Linux, libwaffle's filename is:
+#   libwaffle-MAJOR.so.0.MINOR.PATCH
+#
+set(waffle_libname "waffle-${waffle_major_version}")
+set(waffle_soversion "0")
 
 # ------------------------------------------------------------------------------
 # Includes
