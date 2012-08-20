@@ -218,12 +218,27 @@ endif()
 # Target: check
 # ------------------------------------------------------------------------------
 
-# The unit tests are ran first. If they fail, then no subsequent tests are ran.
+# Run only unit tests.
 
 if(waffle_build_tests)
     add_custom_target(check
-        DEPENDS waffle-unittest gl_basic_test
+        DEPENDS waffle-unittest
         COMMAND ${CMAKE_BINARY_DIR}/tests/unittests/waffle-unittest
+        )
+endif()
+
+# ------------------------------------------------------------------------------
+# Target: check-func
+# ------------------------------------------------------------------------------
+
+# Run functional and unit tests.
+#
+# The unit tests are ran first (due to the depenency on 'check'). If they
+# fail, then no subsequent tests are ran.
+
+if(waffle_build_tests)
+    add_custom_target(check-func
+        DEPENDS check gl_basic_test
         COMMAND ${CMAKE_BINARY_DIR}/tests/functional/gl_basic_test
         )
 endif()
