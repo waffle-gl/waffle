@@ -66,9 +66,6 @@ struct waffle_error_info {
 
 /// @brief Get the current thread's error code.
 ///
-/// This may be called when waffle is uninitialized (that is, before
-/// waffle_init() and after waffle_finish()).
-///
 /// Calling this function is equivalent to obtaining the error code with
 /// `waffle_error_get_info()->code`.
 ///
@@ -80,8 +77,8 @@ waffle_error_get_code(void);
 /// This function never returns null. The returned pointer becomes invalid
 /// when the thread-local error state changes.
 ///
-/// This may be called when waffle is uninitialized (that is, before
-/// waffle_init() and after waffle_finish()).
+/// This may be called when waffle is uninitialized [that is, before
+/// waffle_init()].
 WAFFLE_API const struct waffle_error_info*
 waffle_error_get_info(void);
 
