@@ -7,7 +7,10 @@ install(FILES waffle/waffle.h
               waffle/waffle_enum.h
               waffle/waffle_error.h
               waffle/waffle_gl_misc.h
+              waffle/waffle_glx.h
               waffle/waffle_init.h
               waffle/waffle_portability.h
+              waffle/waffle_wayland.h
               waffle/waffle_window.h
+              waffle/waffle_x11_egl.h
         DESTINATION ${waffle_install_includedir}/waffle)
