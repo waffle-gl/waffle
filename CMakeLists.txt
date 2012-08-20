@@ -261,9 +261,9 @@ endif()
 # Install: waffle.pc
 # ------------------------------------------------------------------------------
 
-configure_file(waffle.pc.in waffle.pc @ONLY)
+configure_file(waffle.pc.in ${waffle_libname}.pc @ONLY)
 
-install(FILES ${CMAKE_BINARY_DIR}/waffle.pc
+install(FILES ${CMAKE_BINARY_DIR}/${waffle_libname}.pc
         DESTINATION ${waffle_install_libdir}/pkgconfig)
 
 # ------------------------------------------------------------------------------

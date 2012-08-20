@@ -3,7 +3,7 @@ exec_prefix=${prefix}
 libdir=@waffle_install_libdir@
 includedir=@waffle_install_includedir@
 
-Name: waffle
+Name: @waffle_libname@
 Description: a library for selecting GL API and window system at runtime
 Version: @waffle_version@
 Libs: -L${libdir} -l@waffle_libname@
