@@ -28,12 +28,12 @@
 
 /// @file
 
-#include <waffle/waffle_gl_misc.h>
+#include "waffle_gl_misc.h"
 
 #include <stddef.h>
 #include <string.h>
 
-#include <waffle/waffle_enum.h>
+#include "waffle_enum.h"
 #include <waffle/core/wcore_context.h>
 #include <waffle/core/wcore_display.h>
 #include <waffle/core/wcore_error.h>

@@ -26,7 +26,7 @@
 
 #include <stdlib.h>
 
-#include <waffle/waffle_enum.h>
+#include "waffle_enum.h"
 #include <waffle/core/wcore_error.h>
 
 #include "cgl_display.h"

@@ -28,11 +28,11 @@
 
 /// @file
 
-#include <waffle/waffle_display.h>
+#include "waffle_display.h"
 
 #include <stdlib.h>
 
-#include <waffle/waffle_enum.h>
+#include "waffle_enum.h"
 #include <waffle/core/wcore_error.h>
 #include <waffle/core/wcore_display.h>
 #include <waffle/core/wcore_platform.h>

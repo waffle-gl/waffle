@@ -32,7 +32,7 @@
 
 #include <waffle/core/wcore_display.h>
 #include <waffle/core/wcore_util.h>
-#include <waffle/waffle_wayland.h>
+#include "waffle_wayland.h"
 
 struct wcore_platform;
 struct wl_display;

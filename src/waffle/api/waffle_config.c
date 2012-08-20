@@ -28,7 +28,7 @@
 
 /// @file
 
-#include <waffle/waffle_config.h>
+#include "waffle_config.h"
 
 #include <stdlib.h>
 

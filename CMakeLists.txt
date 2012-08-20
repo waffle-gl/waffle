@@ -215,7 +215,7 @@ endif()
 # Add subdirectories
 # ------------------------------------------------------------------------------
 
-include_directories(include src)
+include_directories(include/waffle src)
 
 add_subdirectory(src)
 add_subdirectory(include)

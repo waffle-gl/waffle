@@ -28,9 +28,9 @@
 
 /// @file
 
-#include <waffle/waffle_init.h>
+#include "waffle_init.h"
 
-#include <waffle/waffle_enum.h>
+#include "waffle_enum.h"
 #include <waffle/core/wcore_error.h>
 #include <waffle/core/wcore_platform.h>
 

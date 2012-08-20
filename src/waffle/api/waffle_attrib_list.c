@@ -29,7 +29,7 @@
 /// @file
 /// @ingroup api
 
-#include <waffle/waffle_attrib_list.h>
+#include "waffle_attrib_list.h"
 
 #include <waffle/core/wcore_error.h>
 

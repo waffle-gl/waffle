@@ -45,7 +45,7 @@
 #    include <Cocoa/Cocoa.h>
 #endif
 
-#include <waffle/waffle.h>
+#include "waffle.h"
 
 static const char *usage_message =
     "usage:\n"

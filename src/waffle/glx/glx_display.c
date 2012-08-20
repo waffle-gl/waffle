@@ -25,8 +25,8 @@
 
 #include <stdlib.h>
 
-#include <waffle/waffle_enum.h>
-#include <waffle/waffle_gl_misc.h>
+#include "waffle_enum.h"
+#include "waffle_gl_misc.h"
 
 #include <waffle/core/wcore_error.h>
 #include <waffle/linux/linux_platform.h>

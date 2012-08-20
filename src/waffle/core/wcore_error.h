@@ -38,7 +38,7 @@
 
 #include <stdbool.h>
 
-#include <waffle/waffle_error.h>
+#include "waffle_error.h"
 
 
 /// @brief Thread-local info for the wcore_error module.
