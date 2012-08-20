@@ -1,6 +1,6 @@
 prefix=@CMAKE_INSTALL_PREFIX@
 exec_prefix=${prefix}
-libdir=@lwaffle_install_ibdir@
+libdir=@waffle_install_libdir@
 includedir=@waffle_install_includedir@
 
 Name: waffle
