@@ -31,7 +31,7 @@
 
 #include "waffle_attrib_list.h"
 
-#include <waffle/core/wcore_error.h>
+#include "waffle/core/wcore_error.h"
 
 int32_t
 waffle_attrib_list_length(const int32_t attrib_list[])

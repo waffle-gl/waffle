@@ -27,8 +27,8 @@
 
 #include <stdbool.h>
 
-#include <waffle/core/wcore_window.h>
-#include <waffle/core/wcore_util.h>
+#include "waffle/core/wcore_window.h"
+#include "waffle/core/wcore_util.h"
 
 #include "WaffleGLView.h"
 

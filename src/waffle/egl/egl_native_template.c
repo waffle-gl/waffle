@@ -32,7 +32,7 @@
 #include <stdlib.h>
 
 #include "waffle_enum.h"
-#include <waffle/core/wcore_error.h>
+#include "waffle/core/wcore_error.h"
 
 #include "egl_no_native.h"
 

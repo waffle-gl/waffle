@@ -27,8 +27,8 @@
 
 #include <stdlib.h>
 
-#include <waffle/core/wcore_config.h>
-#include <waffle/core/wcore_error.h>
+#include "waffle/core/wcore_config.h"
+#include "waffle/core/wcore_error.h"
 
 #include "wayland_config.h"
 #include "wayland_context.h"

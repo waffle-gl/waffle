@@ -26,7 +26,7 @@
 #import <Cocoa/Cocoa.h>
 #import <OpenGL/OpenGL.h>
 
-#include <waffle/core/wcore_error.h>
+#include "waffle/core/wcore_error.h"
 
 #include "cgl_config.h"
 #include "cgl_window.h"

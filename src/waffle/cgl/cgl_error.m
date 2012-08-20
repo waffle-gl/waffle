@@ -36,7 +36,7 @@
 
 #include <OpenGL/OpenGL.h>
 
-#include <waffle/core/wcore_error.h>
+#include "waffle/core/wcore_error.h"
 
 const char*
 cgl_error_to_string(int error_code)

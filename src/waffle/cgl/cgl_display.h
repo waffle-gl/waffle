@@ -28,8 +28,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include <waffle/core/wcore_display.h>
-#include <waffle/core/wcore_util.h>
+#include "waffle/core/wcore_display.h"
+#include "waffle/core/wcore_util.h"
 
 struct wcore_platform;
 

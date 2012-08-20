@@ -33,8 +33,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <waffle/core/wcore_error.h>
-#include <waffle/core/wcore_platform.h>
+#include "waffle/core/wcore_error.h"
+#include "waffle/core/wcore_platform.h"
 
 #include "api_object.h"
 

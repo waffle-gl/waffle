@@ -32,8 +32,8 @@
 
 #include <stdlib.h>
 
-#include <waffle/core/wcore_context.h>
-#include <waffle/core/wcore_platform.h>
+#include "waffle/core/wcore_context.h"
+#include "waffle/core/wcore_platform.h"
 
 #include "api_priv.h"
 

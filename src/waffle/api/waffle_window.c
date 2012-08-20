@@ -32,9 +32,9 @@
 
 #include <stdlib.h>
 
-#include <waffle/core/wcore_config.h>
-#include <waffle/core/wcore_platform.h>
-#include <waffle/core/wcore_window.h>
+#include "waffle/core/wcore_config.h"
+#include "waffle/core/wcore_platform.h"
+#include "waffle/core/wcore_window.h"
 
 #include "api_priv.h"
 

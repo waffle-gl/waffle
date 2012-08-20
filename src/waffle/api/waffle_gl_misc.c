@@ -34,11 +34,11 @@
 #include <string.h>
 
 #include "waffle_enum.h"
-#include <waffle/core/wcore_context.h>
-#include <waffle/core/wcore_display.h>
-#include <waffle/core/wcore_error.h>
-#include <waffle/core/wcore_platform.h>
-#include <waffle/core/wcore_window.h>
+#include "waffle/core/wcore_context.h"
+#include "waffle/core/wcore_display.h"
+#include "waffle/core/wcore_error.h"
+#include "waffle/core/wcore_platform.h"
+#include "waffle/core/wcore_window.h"
 
 #include "api_priv.h"
 

@@ -23,7 +23,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include <waffle_test/waffle_test.h>
+#include "waffle_test/waffle_test.h"
 
 void testsuite_waffle_attrib_list(void);
 void testsuite_wcore_config_attrs(void);

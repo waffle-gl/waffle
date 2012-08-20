@@ -26,4 +26,4 @@
 #define WL_EGL_PLATFORM 1
 
 #include "wayland_priv_egl.h"
-#include <waffle/egl/egl_native_template.c>
+#include "waffle/egl/egl_native_template.c"

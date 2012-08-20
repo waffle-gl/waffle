@@ -31,7 +31,7 @@
 #include <wayland-egl.h>
 #undef container_of
 
-#include <waffle/core/wcore_error.h>
+#include "waffle/core/wcore_error.h"
 #include "waffle_wayland.h"
 
 #include "wayland_config.h"

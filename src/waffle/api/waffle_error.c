@@ -29,7 +29,7 @@
 /// @file
 
 #include <string.h>
-#include <waffle/core/wcore_error.h>
+#include "waffle/core/wcore_error.h"
 
 int32_t
 waffle_error_get_code(void)

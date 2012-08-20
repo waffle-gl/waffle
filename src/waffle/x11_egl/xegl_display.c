@@ -25,8 +25,8 @@
 
 #include <stdlib.h>
 
-#include <waffle/core/wcore_error.h>
-#include <waffle/core/wcore_display.h>
+#include "waffle/core/wcore_error.h"
+#include "waffle/core/wcore_display.h"
 
 #include "xegl_display.h"
 #include "xegl_platform.h"

@@ -30,8 +30,8 @@
 
 #include <EGL/egl.h>
 
-#include <waffle/core/wcore_display.h>
-#include <waffle/core/wcore_util.h>
+#include "waffle/core/wcore_display.h"
+#include "waffle/core/wcore_util.h"
 #include "waffle_wayland.h"
 
 struct wcore_platform;

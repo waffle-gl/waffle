@@ -30,8 +30,8 @@
 
 #undef linux
 
-#include <waffle/core/wcore_platform.h>
-#include <waffle/core/wcore_util.h>
+#include "waffle/core/wcore_platform.h"
+#include "waffle/core/wcore_util.h"
 
 struct linux_platform;
 

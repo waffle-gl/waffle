@@ -34,9 +34,9 @@
 #include "waffle_enum.h"
 #include "waffle_attrib_list.h"
 
-#include <waffle/core/wcore_config_attrs.h>
-#include <waffle/core/wcore_error.h>
-#include <waffle/core/wcore_platform.h>
+#include "waffle/core/wcore_config_attrs.h"
+#include "waffle/core/wcore_error.h"
+#include "waffle/core/wcore_platform.h"
 
 void
 egl_get_error(const char *egl_func_call)

@@ -32,10 +32,10 @@
 
 #include <stdlib.h>
 
-#include <waffle/core/wcore_config_attrs.h>
-#include <waffle/core/wcore_config.h>
-#include <waffle/core/wcore_display.h>
-#include <waffle/core/wcore_platform.h>
+#include "waffle/core/wcore_config_attrs.h"
+#include "waffle/core/wcore_config.h"
+#include "waffle/core/wcore_display.h"
+#include "waffle/core/wcore_platform.h"
 
 #include "api_priv.h"
 

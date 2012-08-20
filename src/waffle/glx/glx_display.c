@@ -28,8 +28,8 @@
 #include "waffle_enum.h"
 #include "waffle_gl_misc.h"
 
-#include <waffle/core/wcore_error.h>
-#include <waffle/linux/linux_platform.h>
+#include "waffle/core/wcore_error.h"
+#include "waffle/linux/linux_platform.h"
 
 #include "glx_display.h"
 #include "glx_platform.h"

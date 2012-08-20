@@ -29,7 +29,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-#include <waffle/api/api_object.h>
+#include "waffle/api/api_object.h"
 
 #include "wcore_util.h"
 

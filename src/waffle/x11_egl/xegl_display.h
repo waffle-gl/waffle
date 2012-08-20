@@ -31,10 +31,10 @@
 #include <EGL/egl.h>
 #include <X11/Xlib-xcb.h>
 
-#include <waffle/core/wcore_display.h>
-#include <waffle/core/wcore_util.h>
+#include "waffle/core/wcore_display.h"
+#include "waffle/core/wcore_util.h"
 #include "waffle_x11_egl.h"
-#include <waffle/x11/x11_display.h>
+#include "waffle/x11/x11_display.h"
 
 struct wcore_platform;
 

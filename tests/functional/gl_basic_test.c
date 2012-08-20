@@ -43,7 +43,7 @@
 #include <sys/wait.h>
 
 #include "waffle.h"
-#include <waffle_test/waffle_test.h>
+#include "waffle_test/waffle_test.h"
 
 #include "gl_basic_cocoa.h"
 

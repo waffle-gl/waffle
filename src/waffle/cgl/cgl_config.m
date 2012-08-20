@@ -29,8 +29,8 @@
 
 #include "waffle_enum.h"
 
-#include <waffle/core/wcore_config_attrs.h>
-#include <waffle/core/wcore_error.h>
+#include "waffle/core/wcore_config_attrs.h"
+#include "waffle/core/wcore_error.h"
 
 #include "cgl_config.h"
 #include "cgl_error.h"

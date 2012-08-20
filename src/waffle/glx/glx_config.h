@@ -31,8 +31,8 @@
 #include <GL/glx.h>
 #include <xcb/xcb.h>
 
-#include <waffle/core/wcore_config.h>
-#include <waffle/core/wcore_util.h>
+#include "waffle/core/wcore_config.h"
+#include "waffle/core/wcore_util.h"
 
 struct wcore_config_attrs;
 struct wcore_platform;

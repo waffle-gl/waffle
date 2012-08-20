@@ -28,8 +28,8 @@
 
 #include <stdlib.h>
 
-#include <waffle/core/wcore_error.h>
-#include <waffle/linux/linux_platform.h>
+#include "waffle/core/wcore_error.h"
+#include "waffle/linux/linux_platform.h"
 
 #include "wayland_config.h"
 #include "wayland_context.h"

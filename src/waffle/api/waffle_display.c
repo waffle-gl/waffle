@@ -33,10 +33,10 @@
 #include <stdlib.h>
 
 #include "waffle_enum.h"
-#include <waffle/core/wcore_error.h>
-#include <waffle/core/wcore_display.h>
-#include <waffle/core/wcore_platform.h>
-#include <waffle/core/wcore_util.h>
+#include "waffle/core/wcore_error.h"
+#include "waffle/core/wcore_display.h"
+#include "waffle/core/wcore_platform.h"
+#include "waffle/core/wcore_util.h"
 
 #include "api_priv.h"
 

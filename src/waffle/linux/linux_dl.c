@@ -36,8 +36,8 @@
 #include <dlfcn.h>
 
 #include "waffle_enum.h"
-#include <waffle/core/wcore_error.h>
-#include <waffle/core/wcore_util.h>
+#include "waffle/core/wcore_error.h"
+#include "waffle/core/wcore_util.h"
 
 struct linux_dl {
     /// @brief For example, "libGLESv2.so".

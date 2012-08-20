@@ -24,4 +24,4 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "xegl_priv_egl.h"
-#include <waffle/egl/egl_native_template.c>
+#include "waffle/egl/egl_native_template.c"

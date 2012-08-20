@@ -27,4 +27,4 @@
 
 #define NATIVE_EGL(basename) xegl_egl_##basename
 
-#include <waffle/egl/egl.h>
+#include "waffle/egl/egl.h"

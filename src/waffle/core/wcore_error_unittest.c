@@ -33,7 +33,7 @@
 
 #include <pthread.h>
 
-#include <waffle_test/waffle_test.h>
+#include "waffle_test/waffle_test.h"
 
 #include "wcore_error.h"
 

@@ -25,7 +25,7 @@
 
 #include <assert.h>
 
-#include <waffle/core/wcore_error.h>
+#include "waffle/core/wcore_error.h"
 
 #include "x11_display.h"
 #include "x11_window.h"

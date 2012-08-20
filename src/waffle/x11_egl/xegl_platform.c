@@ -27,8 +27,8 @@
 
 #include <stdlib.h>
 
-#include <waffle/core/wcore_error.h>
-#include <waffle/linux/linux_platform.h>
+#include "waffle/core/wcore_error.h"
+#include "waffle/linux/linux_platform.h"
 
 #include "xegl_config.h"
 #include "xegl_context.h"

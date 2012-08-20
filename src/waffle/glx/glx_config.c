@@ -28,9 +28,9 @@
 
 #include "waffle_enum.h"
 
-#include <waffle/core/wcore_config_attrs.h>
-#include <waffle/core/wcore_error.h>
-#include <waffle/linux/linux_platform.h>
+#include "waffle/core/wcore_config_attrs.h"
+#include "waffle/core/wcore_error.h"
+#include "waffle/linux/linux_platform.h"
 
 #include "glx_config.h"
 #include "glx_display.h"
