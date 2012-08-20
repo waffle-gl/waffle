@@ -41,15 +41,11 @@ extern "C" {
 struct waffle_config;
 struct waffle_window;
 
-struct waffle_android_window;
-struct waffle_cgl_window;
 struct waffle_glx_window;
 struct waffle_x11_egl_window;
 struct waffle_wayland_window;
 
 union waffle_native_window {
-    struct waffle_android_window *android;
-    struct waffle_cgl_window *cgl;
     struct waffle_glx_window *glx;
     struct waffle_x11_egl_window *x11_egl;
     struct waffle_wayland_window *wayland;

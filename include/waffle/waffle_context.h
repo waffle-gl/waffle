@@ -42,15 +42,11 @@ extern "C" {
 struct waffle_config;
 struct waffle_context;
 
-struct waffle_android_context;
-struct waffle_cgl_context;
 struct waffle_glx_context;
 struct waffle_x11_egl_context;
 struct waffle_wayland_context;
 
 union waffle_native_context {
-    struct waffle_android_context *android;
-    struct waffle_cgl_context *cgl;
     struct waffle_glx_context *glx;
     struct waffle_x11_egl_context *x11_egl;
     struct waffle_wayland_context *wayland;
