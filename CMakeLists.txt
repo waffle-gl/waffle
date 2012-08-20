@@ -35,9 +35,9 @@ cmake_minimum_required(VERSION 2.8)
 #
 # Release versions.
 #
-set(waffle_major_version "0")
-set(waffle_minor_version "3")
-set(waffle_patch_version "1")
+set(waffle_major_version "1")
+set(waffle_minor_version "0")
+set(waffle_patch_version "0")
 
 set(waffle_version "${waffle_major_version}.${waffle_minor_version}.${waffle_patch_version}")
 
