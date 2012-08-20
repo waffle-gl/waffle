@@ -6,5 +6,5 @@ includedir=@waffle_install_includedir@
 Name: waffle
 Description: a library for selecting GL API and window system at runtime
 Version: @waffle_version@
-Libs: -L${libdir} -lwaffle
+Libs: -L${libdir} -l@waffle_libname@
 Cflags: -I${includedir}

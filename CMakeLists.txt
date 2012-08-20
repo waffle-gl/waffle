@@ -41,6 +41,8 @@ set(waffle_patch_version "1")
 
 set(waffle_version "${waffle_major_version}.${waffle_minor_version}.${waffle_patch_version}")
 
+set(waffle_libname "waffle-${waffle_major_version}")
+
 # Library version.
 #
 # The library version scheme follows the libtool guidelines and is independent

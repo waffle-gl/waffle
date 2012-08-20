@@ -120,13 +120,13 @@ set_source_files_properties(
     PROPERTIES LANGUAGE C
     )
 
-add_library(waffle SHARED ${waffle_sources})
-target_link_libraries(waffle ${waffle_libdeps})
+add_library(${waffle_libname} SHARED ${waffle_sources})
+target_link_libraries(${waffle_libname} ${waffle_libdeps})
 
-set_target_properties(waffle
+set_target_properties(${waffle_libname}
     PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib
     SOVERSION ${waffle_so_version})
 
-install(TARGETS waffle
+install(TARGETS ${waffle_libname}
     LIBRARY DESTINATION ${waffle_install_libdir})

@@ -1,5 +1,5 @@
 link_libraries(
-    waffle
+    ${waffle_libname}
     waffle_test
     )
 
