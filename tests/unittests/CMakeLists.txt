@@ -12,6 +12,6 @@ add_executable(waffle-unittest
 
 target_link_libraries(waffle-unittest
     pthread
-    ${waffle_libname}
+    waffle_static
     waffle_test
     )

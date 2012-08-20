@@ -131,3 +131,26 @@ set_target_properties(${waffle_libname}
 
 install(TARGETS ${waffle_libname}
     LIBRARY DESTINATION ${waffle_install_libdir})
+
+# ----------------------------------------------------------------------------
+# Target: waffle_static
+# ----------------------------------------------------------------------------
+
+# The unittest executable needs access to waffle's internal symbols. Yet, the
+# sources in libwaffle.so [will soon be] compiled with -fvisibility=hidden.
+# One solution is to additionally build a static libwaffle and let the
+# unittest executable link to that. Visibility options do not apply to static
+# libraries; that is, all symbols are public.
+
+add_library(waffle_static
+    STATIC
+    EXCLUDE_FROM_ALL
+    ${waffle_sources}
+    )
+
+target_link_libraries(waffle_static ${waffle_libdeps})
+
+set_target_properties(waffle_static
+    PROPERTIES
+    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib
+    )
