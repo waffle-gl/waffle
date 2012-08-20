@@ -30,6 +30,15 @@
 
 TESTGROUP_SIMPLE(waffle_attrib_list_get)
 
+TEST(waffle_attrib_list_get, null)
+{
+    int32_t *attrib_list = NULL;
+    int32_t key = 0;
+    int32_t value;
+
+    EXPECT_TRUE(!waffle_attrib_list_get(attrib_list, key, &value));
+}
+
 TEST(waffle_attrib_list_get, empty)
 {
     int32_t attrib_list[] = { 0 };
@@ -108,6 +117,12 @@ TEST(waffle_attrib_list_get, key_is_last)
 
 TESTGROUP_SIMPLE(waffle_attrib_list_length)
 
+TEST(waffle_attrib_list_length, null)
+{
+    int32_t *attrib_list = NULL;
+    ASSERT_TRUE(waffle_attrib_list_length(attrib_list) == 0);
+}
+
 TEST(waffle_attrib_list_length, is_0)
 {
     int32_t attrib_list[] = {0};
@@ -158,6 +173,12 @@ TEST(waffle_attrib_list_length, trailing_items)
 }
 
 TESTGROUP_SIMPLE(waffle_attrib_list_update)
+
+TEST(waffle_attrib_list_update, null)
+{
+    int32_t *attrib_list = NULL;
+    ASSERT_TRUE(!waffle_attrib_list_update(attrib_list, 7, 7));
+}
 
 TEST(waffle_attrib_list_update, empty_list)
 {
@@ -210,17 +231,20 @@ TEST(waffle_attrib_list_update, missing_key)
 void
 testsuite_waffle_attrib_list()
 {
+    TEST_RUN(waffle_attrib_list_get, null);
     TEST_RUN(waffle_attrib_list_get, empty);
     TEST_RUN(waffle_attrib_list_get, missing_value);
     TEST_RUN(waffle_attrib_list_get, trailing_items);
     TEST_RUN(waffle_attrib_list_get, value_not_modified_if_not_found);
     TEST_RUN(waffle_attrib_list_get, key_is_first);
     TEST_RUN(waffle_attrib_list_get, key_is_last);
+    TEST_RUN(waffle_attrib_list_length, null);
     TEST_RUN(waffle_attrib_list_length, is_0);
     TEST_RUN(waffle_attrib_list_length, is_1);
     TEST_RUN(waffle_attrib_list_length, is_2);
     TEST_RUN(waffle_attrib_list_length, is_37);
     TEST_RUN(waffle_attrib_list_length, trailing_items);
+    TEST_RUN(waffle_attrib_list_update, null);
     TEST_RUN(waffle_attrib_list_update, empty_list);
     TEST_RUN(waffle_attrib_list_update, at_0);
     TEST_RUN(waffle_attrib_list_update, at_1);
