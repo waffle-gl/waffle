@@ -68,6 +68,7 @@ waffle_window_destroy(struct waffle_window *self);
 WAFFLE_API bool
 waffle_window_show(struct waffle_window *self);
 
+/// @brief Analogous to eglSwapBuffers.
 WAFFLE_API bool
 waffle_window_swap_buffers(struct waffle_window *self);
 

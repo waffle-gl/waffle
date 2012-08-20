@@ -57,12 +57,14 @@ waffle_is_extension_in_string(
         const char *restrict extension_string,
         const char *restrict extension_name);
 
+/// @brief Analogous to eglMakeCurrent.
 WAFFLE_API bool
 waffle_make_current(
         struct waffle_display *dpy,
         struct waffle_window *window,
         struct waffle_context *ctx);
 
+/// @brief Analogous to eglGetProcAddress.
 WAFFLE_API void*
 waffle_get_proc_address(const char *name);
 
