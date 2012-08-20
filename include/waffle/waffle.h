@@ -33,6 +33,8 @@
 
 #pragma once
 
+#include "waffle_version.h"
+
 #include "waffle_attrib_list.h"
 #include "waffle_config.h"
 #include "waffle_context.h"

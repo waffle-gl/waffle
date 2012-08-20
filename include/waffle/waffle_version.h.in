@@ -1,0 +1,5 @@
+#pragma once
+
+#define WAFFLE_MAJOR_VERSION @waffle_major_version@
+#define WAFFLE_MINOR_VERSION @waffle_minor_version@
+#define WAFFLE_PATCH_VERSION @waffle_patch_version@
