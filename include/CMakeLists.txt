@@ -13,4 +13,4 @@ install(FILES waffle/waffle.h
               waffle/waffle_wayland.h
               waffle/waffle_window.h
               waffle/waffle_x11_egl.h
-        DESTINATION ${waffle_install_includedir}/waffle)
+        DESTINATION ${waffle_install_includedir}/${waffle_libname})
