@@ -32,7 +32,7 @@
 #undef container_of
 
 #include <waffle/core/wcore_error.h>
-#include <waffle/native/waffle_wayland.h>
+#include <waffle/waffle_wayland.h>
 
 #include "wayland_config.h"
 #include "wayland_display.h"
