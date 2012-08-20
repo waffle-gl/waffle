@@ -117,7 +117,9 @@ endif()
 # C sources.
 set_source_files_properties(
     ${waffle_sources}
-    PROPERTIES LANGUAGE C
+    PROPERTIES
+    LANGUAGE C
+    COMPILE_FLAGS "-fvisibility=hidden"
     )
 
 add_library(${waffle_libname} SHARED ${waffle_sources})
@@ -137,7 +139,7 @@ install(TARGETS ${waffle_libname}
 # ----------------------------------------------------------------------------
 
 # The unittest executable needs access to waffle's internal symbols. Yet, the
-# sources in libwaffle.so [will soon be] compiled with -fvisibility=hidden.
+# sources in libwaffle.so are compiled with -fvisibility=hidden.
 # One solution is to additionally build a static libwaffle and let the
 # unittest executable link to that. Visibility options do not apply to static
 # libraries; that is, all symbols are public.
