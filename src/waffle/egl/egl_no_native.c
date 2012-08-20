@@ -96,27 +96,27 @@ egl_config_check_context_attrs(
     switch (attrs->context_api) {
         case WAFFLE_CONTEXT_OPENGL:
             if (version != 10) {
-                wcore_errorf(WAFFLE_ERROR_UNSUPPORTED,
+                wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
                              "on EGL, the requested version of OpenGL must be "
                              "the default value 1.0");
                 return false;
             }
             if (!plat->vtbl->dl_can_open(plat, WAFFLE_DL_OPENGL)) {
-                wcore_errorf(WAFFLE_ERROR_UNSUPPORTED,
+                wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
                              "failed to open the OpenGL library");
                 return false;
             }
             return true;
         case WAFFLE_CONTEXT_OPENGL_ES1:
             if (!plat->vtbl->dl_can_open(plat, WAFFLE_DL_OPENGL_ES1)) {
-                wcore_errorf(WAFFLE_ERROR_UNSUPPORTED,
+                wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
                              "failed to open the OpenGL ES1 library");
                 return false;
             }
             return true;
         case WAFFLE_CONTEXT_OPENGL_ES2:
             if (!plat->vtbl->dl_can_open(plat, WAFFLE_DL_OPENGL_ES2)) {
-                wcore_errorf(WAFFLE_ERROR_UNSUPPORTED,
+                wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
                              "failed to open the OpenGL ES2 library");
                 return false;
             }
@@ -140,7 +140,7 @@ egl_choose_config(
         return false;
 
     if (attrs->accum_buffer) {
-        wcore_errorf(WAFFLE_ERROR_UNSUPPORTED,
+        wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
                      "accum buffers do not exist on EGL");
         return false;
     }

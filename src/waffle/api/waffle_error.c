@@ -58,7 +58,7 @@ waffle_error_to_string(int32_t e)
         CASE(WAFFLE_ERROR_BAD_ATTRIBUTE);
         CASE(WAFFLE_ERROR_BAD_PARAMETER);
         CASE(WAFFLE_ERROR_BAD_DISPLAY_MATCH);
-        CASE(WAFFLE_ERROR_UNSUPPORTED);
+        CASE(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM);
         default: return 0;
 #undef CASE
     }

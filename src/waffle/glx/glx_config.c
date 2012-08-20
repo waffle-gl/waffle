@@ -63,14 +63,14 @@ glx_config_check_context_attrs(struct glx_display *dpy,
     switch (attrs->context_api) {
         case WAFFLE_CONTEXT_OPENGL:
             if (version != 10 && !dpy->extensions.ARB_create_context) {
-                wcore_errorf(WAFFLE_ERROR_UNSUPPORTED,
+                wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
                              "GLX_ARB_create_context is required in order to "
                              "request a GL version not equal to the default "
                              "value 1.0");
                 return false;
             }
             else if (version >= 32 && !dpy->extensions.EXT_create_context_es2_profile) {
-                wcore_errorf(WAFFLE_ERROR_UNSUPPORTED,
+                wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
                              "GLX_EXT_create_context_es2_profile is required "
                              "to create a context with version >= 3.2");
                 return false;
@@ -83,19 +83,19 @@ glx_config_check_context_attrs(struct glx_display *dpy,
             }
             return true;
         case WAFFLE_CONTEXT_OPENGL_ES1:
-            wcore_errorf(WAFFLE_ERROR_UNSUPPORTED,
+            wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
                          "GLX does not support OpenGL ES1");
             return false;
         case WAFFLE_CONTEXT_OPENGL_ES2:
             if (!dpy->extensions.EXT_create_context_es2_profile) {
-                wcore_errorf(WAFFLE_ERROR_UNSUPPORTED,
+                wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
                              "GLX_EXT_create_context_es2_profile is required "
                              "to create an OpenGL ES2 context");
                 return false;
             }
             if (!linux_platform_dl_can_open(plat->linux,
                                             WAFFLE_DL_OPENGL_ES2)) {
-                wcore_errorf(WAFFLE_ERROR_UNSUPPORTED,
+                wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
                              "failed to open the OpenGL ES2 library");
                 return false;
             }

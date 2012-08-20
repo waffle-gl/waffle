@@ -138,7 +138,7 @@ enum waffle_error {
     ///       when the current platform is GLX.
     ///     - Calling `waffle_dl_sym(WAFFLE_DL_OPENGL_ES2, ...)` when the
     ///       OpenGL ES2 library is not present on the system.
-    WAFFLE_ERROR_UNSUPPORTED            = 0x12,
+    WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM = 0x12,
 };
 
 #ifdef __cplusplus

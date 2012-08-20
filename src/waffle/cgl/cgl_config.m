@@ -197,7 +197,7 @@ error:
 static union waffle_native_config*
 cgl_config_get_native(struct wcore_config *wc_self)
 {
-    wcore_error(WAFFLE_ERROR_UNSUPPORTED);
+    wcore_error(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM);
     return NULL;
 }
 

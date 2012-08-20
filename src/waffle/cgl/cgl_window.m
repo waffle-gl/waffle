@@ -145,7 +145,7 @@ cgl_window_swap_buffers(struct wcore_window *wc_self)
 static union waffle_native_window*
 cgl_window_get_native(struct wcore_window *wc_self)
 {
-    wcore_error(WAFFLE_ERROR_UNSUPPORTED);
+    wcore_error(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM);
     return NULL;
 }
 
