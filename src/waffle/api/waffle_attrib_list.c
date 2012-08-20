@@ -40,6 +40,9 @@ waffle_attrib_list_length(const int32_t attrib_list[])
 
     wcore_error_reset();
 
+    if (attrib_list == NULL)
+        return 0;
+
     while (*i != 0)
         i += 2;
 
@@ -55,6 +58,9 @@ waffle_attrib_list_get(
     int i;
 
     wcore_error_reset();
+
+    if (attrib_list == NULL)
+        return false;
 
     for (i = 0; attrib_list[i] != 0; i += 2) {
         if (attrib_list[i] != key)
@@ -92,6 +98,9 @@ waffle_attrib_list_update(
     int32_t *i = attrib_list;
 
     wcore_error_reset();
+
+    if (attrib_list == NULL)
+        return false;
 
     while (*i != 0 && *i != key)
         i += 2;
