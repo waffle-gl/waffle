@@ -1,0 +1,9 @@
+Version 0.1 - 9 Apr 2012
+========================
+
+New Features
+-------------
+- Initial release.
+- Support for X11/EGL.
+- Support for choosing GL API at waffle initialization.
+- Support for creating GL contexts and windows.

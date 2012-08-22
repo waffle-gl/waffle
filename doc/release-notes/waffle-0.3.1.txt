@@ -1,0 +1,22 @@
+Waffle 0.3.1 - 23 May 2012
+==========================
+
+This is a bugfix release.
+
+
+Bug Fixes
+---------
+- Fixes an X error produced by piglit_glx_window_set_no_input() in Piglit.
+
+
+Changes
+-------
+
+Chad Versace (4):
+      readme: Fix typo in example code
+      glx: Fix glx_window, don't use glXCreateWindow
+      cmake: Bump version to 0.3.1
+      doc: Update release notes to 0.3.1
+
+Pauli Nieminen (1):
+      readme: Fix Chad's mail address
