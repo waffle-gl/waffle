@@ -1,0 +1,40 @@
+Waffle 1.0.0 - 22 Aug 2012
+==========================
+
+Waffle 1.0.0 is now available. Downloads and documentation are available at
+    http://people.freedesktop.org/~chadversary/waffle/releases.html#1.0.0
+
+Waffle is a cross-platform library that allows one to defer selection of GL
+API and of window system until runtime. For example, on Linux, Waffle enables
+an application to select X11/EGL with an OpenGL 3.3 core profile, Wayland with
+OpenGL ES2, and other window system / API combinations.
+
+
+API/ABI Stability
+-----------------
+Until version 1.0, Waffle's API was rapidly evolving and unstable.  Version
+1.0 marks a stability milestone: all future 1.x releases will be API and ABI
+compatibile with previous 1.x releases.
+
+(Note that waffle-1.0 is not backwards compatible with waffle-0.3).
+
+
+New Features since 0.3
+----------------------
+- Ability to obtain the underlying native objects of each waffle object with
+  the waffle_${object}_get_native methods. This feature allows users to
+  implement interactions with the native objects, such as keyboard input, that
+  lie outside Waffle's scope.
+
+
+Acknowledgements
+----------------
+Contributors to this release:
+    Ben Widawski <ben@bwidawsk.net>
+    Chad Versace <chad.versace@linux.intel.com>
+    Jordan Justen <jordan.l.justen@intel.com>
+    Pauli Nieminen <pauli.nieminen@linux.intel.com>
+
+Testers:
+    Kenneth Graunke <kenneth@whitecape.org>
+    Dylan Baker <baker.dylan.c@gmail.com>
