@@ -211,16 +211,16 @@ parse_args(int argc, char *argv[], struct options *opts)
     arg = argv[1];
     ok = enum_map_translate_str(platform_map, arg, &opts->platform);
     if (!ok) {
-        fprintf(stderr, "error: '%s' is not a valid platform", arg);
-        return false;
+        fprintf(stderr, "error: '%s' is not a valid platform\n", arg);
+        error_usage();
     }
 
     // Set context_api.
     arg = argv[2];
     ok = enum_map_translate_str(context_api_map, arg, &opts->context_api);
     if (!ok) {
-        fprintf(stderr, "error: '%s' is not a valid API for a GL context", arg);
-        return false;
+        fprintf(stderr, "error: '%s' is not a valid API for a GL context\n", arg);
+        error_usage();
     }
 
     // Set dl.
