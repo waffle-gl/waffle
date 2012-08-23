@@ -35,6 +35,7 @@
 
 #define _POSIX_C_SOURCE 199309L // glibc feature macro for nanosleep.
 
+#include <stdarg.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -68,6 +69,21 @@ static const char *usage_message =
 ///
 
 static void
+gl_basic_error(const char *fmt, ...)
+{
+    va_list ap;
+
+    fflush(stdout);
+
+    va_start(ap, fmt);
+    fprintf(stderr, "gl_basic: error: ");
+    vfprintf(stderr, fmt, ap);
+    fprintf(stderr, "\n");
+    va_end(ap);
+
+    exit(EXIT_FAILURE);
+}
+static void
 error_usage(void)
 {
     fprintf(stderr, "usage error\n\n");
@@ -80,31 +96,18 @@ static void
 error_waffle(void)
 {
     const struct waffle_error_info *info = waffle_error_get_info();
+    const char *code = waffle_error_to_string(info->code);
 
-    fflush(stdout);
-    fprintf(stderr, "waffle: error: %s", waffle_error_to_string(info->code));
     if (info->message_length > 0)
-        fprintf(stderr, ": %s", info->message);
-    fprintf(stderr, "\n");
-
-    exit(EXIT_FAILURE);
-}
-
-static void
-gl_basic_error(const char *str)
-{
-    fflush(stdout);
-    fprintf(stderr, "gl_basic: error: %s\n", str);
-    exit(EXIT_FAILURE);
+        gl_basic_error("%s: %s", code, info->message);
+    else
+        gl_basic_error("%s", code);
 }
 
 static void
 error_get_gl_symbol(const char *name)
 {
-    fflush(stdout);
-    fprintf(stderr,
-            "gl_basic: error: failed to get function pointer for %s\n", name);
-    exit(EXIT_FAILURE);
+    gl_basic_error("failed to get function pointer for %s", name);
 }
 
 /// @}
