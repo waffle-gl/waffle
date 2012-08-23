@@ -79,7 +79,7 @@ Install options:
         Directory where libraries will be installed.
 
     - waffle_install_docdir
-        [default=${CMAKE_INSTALL_PREFIX}/share/doc/waffle]
+        [default=${CMAKE_INSTALL_PREFIX}/share/doc/waffle-MAJOR]
         Directory where documentation will be instaled.
 
 Miscellaneous options:

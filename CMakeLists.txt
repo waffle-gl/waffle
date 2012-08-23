@@ -83,7 +83,7 @@ set(waffle_install_includedir "${CMAKE_INSTALL_PREFIX}/include"
 set(waffle_install_libdir "${CMAKE_INSTALL_PREFIX}/lib"
     CACHE PATH "Directory where libraries will be installed")
 
-set(waffle_install_docdir "${CMAKE_INSTALL_PREFIX}/share/doc/waffle"
+set(waffle_install_docdir "${CMAKE_INSTALL_PREFIX}/share/doc/waffle-${waffle_major_version}"
     CACHE PATH "Directory where documentation will be installed")
 
 #
