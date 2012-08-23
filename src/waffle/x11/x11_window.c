@@ -60,6 +60,9 @@ x11_window_init(struct x11_window *self,
                 int width,
                 int height)
 {
+    xcb_colormap_t colormap = 0;
+    xcb_window_t window = 0;
+
     assert(self);
     assert(dpy);
 
@@ -78,8 +81,8 @@ x11_window_init(struct x11_window *self,
         goto error;
     }
 
-    xcb_colormap_t colormap = xcb_generate_id(conn);
-    xcb_window_t window = xcb_generate_id(conn);
+    colormap = xcb_generate_id(conn);
+    window = xcb_generate_id(conn);
     if (colormap <= 0 || window <= 0) {
         wcore_errorf(WAFFLE_ERROR_UNKNOWN, "xcb_generate_id() failed");
         goto error;
