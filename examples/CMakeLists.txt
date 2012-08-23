@@ -5,6 +5,9 @@
 if("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
     add_executable(simple-x11-egl simple-x11-egl.c)
     target_link_libraries(simple-x11-egl ${waffle_libname})
+
+    install(FILES simple-x11-egl.c
+            DESTINATION ${waffle_install_docdir}/examples)
 endif()
 
 # ----------------------------------------------------------------------------
@@ -20,3 +23,6 @@ if("${CMAKE_SYSTEM_NAME}" STREQUAL Darwin)
         COMPILE_FLAGS "-ObjC"
         )
 endif()
+
+install(FILES gl_basic.c
+        DESTINATION ${waffle_install_docdir}/examples)
