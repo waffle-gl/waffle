@@ -380,6 +380,11 @@ main(int argc, char **argv)
     if (!dpy)
         error_waffle();
 
+    if (!waffle_display_supports_context_api(dpy, opts.context_api)) {
+        gl_basic_error("Display does not support %s",
+                       waffle_enum_to_string(opts.context_api));
+    }
+
     i = 0;
     config_attrib_list[i++] = WAFFLE_CONTEXT_API;
     config_attrib_list[i++] = opts.context_api;
