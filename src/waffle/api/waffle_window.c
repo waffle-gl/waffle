@@ -51,7 +51,7 @@ waffle_window_create(
     };
 
     if (!api_check_entry(obj_list, 1))
-        return false;
+        return NULL;
 
     wc_self = api_platform->vtbl->create_window(api_platform,
                                                 wc_config,
@@ -118,7 +118,7 @@ waffle_window_get_native(struct waffle_window *self)
     };
 
     if (!api_check_entry(obj_list, 1))
-        return false;
+        return NULL;
 
     return wc_self->vtbl->get_native(wc_self);
 }
