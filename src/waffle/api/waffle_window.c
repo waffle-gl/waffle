@@ -78,7 +78,7 @@ waffle_window_destroy(struct waffle_window *self)
     return wc_self->vtbl->destroy(wc_self);
 }
 
-WAFFLE_API bool
+bool
 waffle_window_show(struct waffle_window *self)
 {
     struct wcore_window *wc_self = wcore_window(self);
