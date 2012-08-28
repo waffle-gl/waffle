@@ -36,8 +36,8 @@
 
 #include "api_priv.h"
 
-struct wcore_platform* droid_platform_create(void);
 struct wcore_platform* cgl_platform_create(void);
+struct wcore_platform* droid_platform_create(void);
 struct wcore_platform* glx_platform_create(void);
 struct wcore_platform* wayland_platform_create(void);
 struct wcore_platform* xegl_platform_create(void);
