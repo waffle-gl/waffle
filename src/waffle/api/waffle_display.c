@@ -108,7 +108,7 @@ waffle_display_get_native(struct waffle_display *self)
     };
 
     if (!api_check_entry(obj_list, 1))
-        return false;
+        return NULL;
 
     return wc_self->vtbl->get_native(wc_self);
 }

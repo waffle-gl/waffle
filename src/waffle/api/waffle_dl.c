@@ -54,7 +54,7 @@ bool
 waffle_dl_can_open(int32_t dl)
 {
     if (!api_check_entry(NULL, 0))
-         return NULL;
+         return false;
 
      if (!waffle_dl_check_enum(dl))
          return false;
@@ -69,7 +69,7 @@ waffle_dl_sym(int32_t dl, const char *name)
         return NULL;
 
     if (!waffle_dl_check_enum(dl))
-        return false;
+        return NULL;
 
     return api_platform->vtbl->dl_sym(api_platform, dl, name);
 }

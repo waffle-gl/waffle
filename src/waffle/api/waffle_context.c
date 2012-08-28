@@ -54,7 +54,7 @@ waffle_context_create(
         obj_list[len++] = wc_shared_ctx ? &wc_shared_ctx->api : NULL;
 
     if (!api_check_entry(obj_list, len))
-        return false;
+        return NULL;
 
     wc_self = api_platform->vtbl->create_context(api_platform,
                                                  wc_config,
@@ -90,7 +90,7 @@ waffle_context_get_native(struct waffle_context *self)
     };
 
     if (!api_check_entry(obj_list, 1))
-        return false;
+        return NULL;
 
     return wc_self->vtbl->get_native(wc_self);
 }
