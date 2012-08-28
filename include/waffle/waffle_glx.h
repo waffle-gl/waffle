@@ -28,7 +28,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include <X11/Xlib.h>
+#include <GL/glx.h>
 
 #ifdef __cplusplus
 extern "C" {
