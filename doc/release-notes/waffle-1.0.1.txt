@@ -1,0 +1,18 @@
+Waffle 1.0.1 - 29 Aug 2012
+==========================
+
+Waffle 1.0.1 is a bugfix release. It fixes bugs discovered since the 1.0.0
+release. Downloads and documentation are available at
+    http://people.freedesktop.org/~chadversary/waffle/releases.html#1.0.1
+
+
+Changes
+-------
+
+The full set changes can be viewed with `git log waffle-1.0.0..waffle-1.0.1`.
+
+Chad Versace (4):
+      include: Fix #include's in waffle_glx.h
+      api: Fix return values
+      waffle: Fix waffle_*_get_native functions
+      waffle: Bump version to 1.0.1
