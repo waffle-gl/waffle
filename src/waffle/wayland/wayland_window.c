@@ -160,19 +160,19 @@ wayland_window_get_native(struct wcore_window *wc_self)
 {
     struct wayland_window *self = wayland_window(wc_self);
     struct wayland_display *dpy = wayland_display(wc_self->display);
-    struct waffle_wayland_window *n_window;
+    union waffle_native_window *n_window;
 
-    n_window = wcore_malloc(sizeof(*n_window));
-    if (n_window == NULL)
+    WCORE_CREATE_NATIVE_UNION(n_window, wayland);
+    if (!n_window)
         return NULL;
 
-    wayland_display_fill_native(dpy, &n_window->display);
-    n_window->wl_surface = self->wl_surface;
-    n_window->wl_shell_surface = self->wl_shell_surface;
-    n_window->wl_window = self->wl_window;
-    n_window->egl_surface = self->egl;
+    wayland_display_fill_native(dpy, &n_window->wayland->display);
+    n_window->wayland->wl_surface = self->wl_surface;
+    n_window->wayland->wl_shell_surface = self->wl_shell_surface;
+    n_window->wayland->wl_window = self->wl_window;
+    n_window->wayland->egl_surface = self->egl;
 
-    return (union waffle_native_window*) n_window;
+    return n_window;
 }
 
 static const struct wcore_window_vtbl wayland_window_wcore_vtbl = {

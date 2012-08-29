@@ -118,17 +118,17 @@ xegl_window_get_native(struct wcore_window *wc_self)
 {
     struct xegl_window *self = xegl_window(wc_self);
     struct xegl_display *dpy = xegl_display(wc_self->display);
-    struct waffle_x11_egl_window *n_window;
+    union waffle_native_window *n_window;
 
-    n_window = wcore_malloc(sizeof(*n_window));
-    if (n_window == NULL)
+    WCORE_CREATE_NATIVE_UNION(n_window, x11_egl);
+    if (!n_window)
         return NULL;
 
-    xegl_display_fill_native(dpy, &n_window->display);
-    n_window->xlib_window = self->x11.xcb;
-    n_window->egl_surface = self->egl;
+    xegl_display_fill_native(dpy, &n_window->x11_egl->display);
+    n_window->x11_egl->xlib_window = self->x11.xcb;
+    n_window->x11_egl->egl_surface = self->egl;
 
-    return (union waffle_native_window*) n_window;
+    return n_window;
 }
 
 static const struct wcore_window_vtbl xegl_window_wcore_vtbl = {

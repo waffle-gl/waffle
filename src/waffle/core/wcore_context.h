@@ -29,6 +29,8 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
+#include "waffle_context.h"
+
 #include "waffle/api/api_object.h"
 
 #include "wcore_config.h"

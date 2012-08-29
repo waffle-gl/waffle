@@ -91,16 +91,16 @@ wayland_config_get_native(struct wcore_config *wc_self)
 {
     struct wayland_config *self = wayland_config(wc_self);
     struct wayland_display *dpy = wayland_display(wc_self->display);
-    struct waffle_wayland_config *n_config;
+    union waffle_native_config *n_config;
 
-    n_config = wcore_malloc(sizeof(*n_config));
-    if (n_config == NULL)
+    WCORE_CREATE_NATIVE_UNION(n_config, wayland);
+    if (!n_config)
         return NULL;
 
-    wayland_display_fill_native(dpy, &n_config->display);
-    n_config->egl_config = self->egl;
+    wayland_display_fill_native(dpy, &n_config->wayland->display);
+    n_config->wayland->egl_config = self->egl;
 
-    return (union waffle_native_config*) n_config;
+    return n_config;
 }
 
 static const struct wcore_config_vtbl wayland_config_wcore_vtbl = {

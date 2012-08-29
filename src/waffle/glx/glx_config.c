@@ -222,16 +222,16 @@ glx_config_get_native(struct wcore_config *wc_self)
 {
     struct glx_config *self = glx_config(wc_self);
     struct glx_display *dpy = glx_display(wc_self->display);
-    struct waffle_glx_config *n_config;
+    union waffle_native_config *n_config;
 
-    n_config = wcore_malloc(sizeof(*n_config));
-    if (n_config == NULL)
+    WCORE_CREATE_NATIVE_UNION(n_config, glx);
+    if (!n_config)
         return NULL;
 
-    n_config->xlib_display = dpy->x11.xlib;
-    n_config->glx_fbconfig = self->glx_fbconfig;
+    n_config->glx->xlib_display = dpy->x11.xlib;
+    n_config->glx->glx_fbconfig = self->glx_fbconfig;
 
-    return (union waffle_native_config*) n_config;
+    return n_config;
 }
 
 static const struct wcore_config_vtbl glx_config_wcore_vtbl = {

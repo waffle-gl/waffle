@@ -106,16 +106,16 @@ glx_window_get_native(struct wcore_window *wc_self)
 {
     struct glx_window *self = glx_window(wc_self);
     struct glx_display *dpy = glx_display(wc_self->display);
-    struct waffle_glx_window *n_window;
+    union waffle_native_window *n_window;
 
-    n_window = wcore_malloc(sizeof(*n_window));
-    if (n_window == NULL)
+    WCORE_CREATE_NATIVE_UNION(n_window, glx);
+    if (!n_window)
         return NULL;
 
-    n_window->xlib_display = dpy->x11.xlib;
-    n_window->xlib_window = self->x11.xcb;
+    n_window->glx->xlib_display = dpy->x11.xlib;
+    n_window->glx->xlib_window = self->x11.xcb;
 
-    return (union waffle_native_window*) n_window;
+    return n_window;
 }
 
 static const struct wcore_window_vtbl glx_window_wcore_vtbl = {

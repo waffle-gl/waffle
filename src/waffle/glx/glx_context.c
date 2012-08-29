@@ -187,16 +187,16 @@ glx_context_get_native(struct wcore_context *wc_self)
 {
     struct glx_context *self = glx_context(wc_self);
     struct glx_display *dpy = glx_display(wc_self->display);
-    struct waffle_glx_context *n_ctx;
+    union waffle_native_context *n_ctx;
 
-    n_ctx = wcore_malloc(sizeof(*n_ctx));
-    if (n_ctx == NULL)
+    WCORE_CREATE_NATIVE_UNION(n_ctx, glx);
+    if (!n_ctx)
         return NULL;
 
-    n_ctx->xlib_display = dpy->x11.xlib;
-    n_ctx->glx_context = self->glx;
+    n_ctx->glx->xlib_display = dpy->x11.xlib;
+    n_ctx->glx->glx_context = self->glx;
 
-    return (union waffle_native_context*) n_ctx;
+    return n_ctx;
 }
 
 static const struct wcore_context_vtbl glx_context_wcore_vtbl = {
