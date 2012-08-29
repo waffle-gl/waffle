@@ -30,6 +30,8 @@
 
 #undef linux
 
+#include "waffle_wayland.h"
+
 #include "waffle/core/wcore_platform.h"
 #include "waffle/core/wcore_util.h"
 

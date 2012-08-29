@@ -128,15 +128,15 @@ static union waffle_native_display*
 glx_display_get_native(struct wcore_display *wc_self)
 {
     struct glx_display *self = glx_display(wc_self);
-    struct waffle_glx_display *n_dpy;
+    union waffle_native_display *n_dpy;
 
-    n_dpy = wcore_malloc(sizeof(*n_dpy));
-    if (n_dpy == NULL)
+    WCORE_CREATE_NATIVE_UNION(n_dpy, glx);
+    if (!n_dpy)
         return NULL;
 
-    n_dpy->xlib_display = self->x11.xlib;
+    n_dpy->glx->xlib_display = self->x11.xlib;
 
-    return (union waffle_native_display*) n_dpy;
+    return n_dpy;
 }
 
 static const struct wcore_display_vtbl glx_display_wcore_vtbl = {

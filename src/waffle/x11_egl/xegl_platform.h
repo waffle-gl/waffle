@@ -29,6 +29,8 @@
 #include <stdlib.h>
 #undef linux
 
+#include "waffle_x11_egl.h"
+
 #include "waffle/core/wcore_platform.h"
 #include "waffle/core/wcore_util.h"
 

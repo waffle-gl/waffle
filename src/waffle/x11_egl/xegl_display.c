@@ -103,15 +103,14 @@ static union waffle_native_display*
 xegl_display_get_native(struct wcore_display *wc_self)
 {
     struct xegl_display *self = xegl_display(wc_self);
-    struct waffle_x11_egl_display *n_dpy;
+    union waffle_native_display *n_dpy;
 
-    n_dpy = wcore_malloc(sizeof(*n_dpy));
-    if (n_dpy == NULL)
+    WCORE_CREATE_NATIVE_UNION(n_dpy, x11_egl);
+    if (!n_dpy)
         return NULL;
 
-    xegl_display_fill_native(self, n_dpy);
-
-    return (union waffle_native_display*) n_dpy;
+    xegl_display_fill_native(self, n_dpy->x11_egl);
+    return n_dpy;
 }
 
 static const struct wcore_display_vtbl xegl_display_wcore_vtbl = {

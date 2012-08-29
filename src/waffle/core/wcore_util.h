@@ -59,3 +59,21 @@ wcore_malloc(size_t size);
 /// easy to use incorrectly.
 void*
 wcore_calloc(size_t size);
+
+/// @brief Create one of `union waffle_native_*`.
+///
+/// The example below allocates n_dpy and n_dpy->glx, then sets both
+/// variables.
+///
+/// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.c}
+/// union waffle_native_display *n_dpy;
+/// WCORE_CREATE_NATIVE_UNION(n_dpy, glx);
+/// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+///
+#define WCORE_CREATE_NATIVE_UNION(union_var, union_member)              \
+        do {                                                            \
+            union_var = wcore_malloc(sizeof(*union_var) +               \
+                                     sizeof(*union_var->union_member)); \
+            if (union_var)                                              \
+                union_var->union_member = (void*) (union_var + 1);      \
+        } while (0)

@@ -28,6 +28,8 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
+#include "waffle_window.h"
+
 #include "wcore_config.h"
 #include "wcore_util.h"
 

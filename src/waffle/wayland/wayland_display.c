@@ -136,15 +136,15 @@ static union waffle_native_display*
 wayland_display_get_native(struct wcore_display *wc_self)
 {
     struct wayland_display *self = wayland_display(wc_self);
-    struct waffle_wayland_display *n_dpy;
+    union waffle_native_display *n_dpy;
 
-    n_dpy = wcore_malloc(sizeof(*n_dpy));
-    if (n_dpy == NULL)
+    WCORE_CREATE_NATIVE_UNION(n_dpy, wayland);
+    if (!n_dpy)
         return NULL;
 
-    wayland_display_fill_native(self, n_dpy);
+    wayland_display_fill_native(self, n_dpy->wayland);
 
-    return (union waffle_native_display*) n_dpy;
+    return n_dpy;
 }
 
 static const struct wcore_display_vtbl wayland_display_wcore_vtbl = {

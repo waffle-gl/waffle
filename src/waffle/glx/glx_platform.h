@@ -30,6 +30,8 @@
 #include <xcb/xcb.h>
 #undef linux
 
+#include "waffle_glx.h"
+
 #include "waffle/core/wcore_platform.h"
 #include "waffle/core/wcore_util.h"
 
