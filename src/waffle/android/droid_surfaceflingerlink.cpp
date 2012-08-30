@@ -23,10 +23,14 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifdef BUILD_FOR_ICS
-#include <surfaceflinger/SurfaceComposerClient.h>
+#if WAFFLE_ANDROID_MAJOR_VERSION >= 4 && \
+	WAFFLE_ANDROID_MINOR_VERSION >= 1
+#	include <gui/SurfaceComposerClient.h>
+#elif WAFFLE_ANROID_MAJOR_VERSION >= 4 && \
+	  WAFFLE_ANDROID_MINOR_VERSION == 0
+#	include <surfaceflinger/SurfaceComposerClient.h>
 #else
-#include <gui/SurfaceComposerClient.h>
+#	error "android >= 4.0 is required"
 #endif
 
 #include <EGL/egl.h>

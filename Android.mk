@@ -7,6 +7,9 @@ waffle_major_version := 1
 waffle_minor_version := 0
 waffle_patch_version := 1
 
+waffle_android_major_version := $(word 1, $(subst ., , $(PLATFORM_VERSION)))
+waffle_android_minor_version := $(word 2, $(subst ., , $(PLATFORM_VERSION)))
+
 $(waffle_top)/include/waffle_version.h: \
     $(waffle_top)/Android.mk \
     $(waffle_top)/include/waffle/waffle_version.h.in
@@ -23,6 +26,8 @@ LOCAL_MODULE := libwaffle
 LOCAL_CFLAGS := \
     -DANDROID_STUB \
     -DWAFFLE_HAS_ANDROID \
+    -DWAFFLE_ANDROID_MAJOR_VERSION=$(waffle_android_major_version) \
+    -DWAFFLE_ANDROID_MINOR_VERSION=$(waffle_android_minor_version) \
     -Wno-pointer-arith
 
 LOCAL_C_INCLUDES := \
