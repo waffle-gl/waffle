@@ -98,7 +98,7 @@ droid_context_get_native(struct wcore_context *wc_self)
 {
     wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
                  "droid_context_get_native not supported");
-    return (union waffle_native_context*) NULL;
+    return NULL;
 }
 
 static const struct wcore_context_vtbl droid_context_wcore_vtbl = {

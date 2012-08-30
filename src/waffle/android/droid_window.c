@@ -119,7 +119,7 @@ droid_window_get_native(struct wcore_window *wc_self)
 {
     wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
                  "droid_window_get_native not supported");
-    return (union waffle_native_window*) NULL;
+    return NULL;
 }
 
 

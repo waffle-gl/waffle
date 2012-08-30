@@ -104,7 +104,7 @@ droid_config_get_native(struct wcore_config *wc_self)
 {
     wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
                  "droid_config_get_native not supported");
-    return (union waffle_native_config*) NULL;
+    return NULL;
 }
 
 static const struct wcore_config_vtbl droid_config_wcore_vtbl = {
