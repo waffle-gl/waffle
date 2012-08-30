@@ -95,8 +95,7 @@ droid_display_disconnect(struct wcore_display *wc_self)
 static union waffle_native_display*
 droid_display_get_native(struct wcore_display *wc_self)
 {
-    wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
-                 "droid_window_get_native not supported");
+    wcore_error(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM);
     return NULL;
 }
 

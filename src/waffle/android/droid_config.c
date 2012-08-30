@@ -102,8 +102,7 @@ droid_config_destroy(struct wcore_config *wc_self)
 static union waffle_native_config*
 droid_config_get_native(struct wcore_config *wc_self)
 {
-    wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
-                 "droid_config_get_native not supported");
+    wcore_error(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM);
     return NULL;
 }
 
