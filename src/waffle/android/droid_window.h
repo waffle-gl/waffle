@@ -36,8 +36,9 @@ struct wcore_platform;
 struct droid_window {
     struct wcore_window wcore;
     EGLSurface egl;
-    struct droid_ANativeWindow_container *pANWContainer; /*!< see this \
-structure at droid_surfaceflinger.cpp*/
+
+    /// Used by droid_surfaceflinger.cpp.
+    struct droid_ANativeWindow_container *pANWContainer;
 };
 
 DEFINE_CONTAINER_CAST_FUNC(droid_window,

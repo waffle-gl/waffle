@@ -39,8 +39,9 @@ struct droid_surfaceflinger_container;
 struct droid_display {
     struct wcore_display wcore;
     EGLDisplay egl;
-    struct droid_surfaceflinger_container *pSFContainer; /*!< see this \
-structure at droid_surfaceflinger.cpp*/
+
+    /// Used by droid_surfaceflinger.cpp.
+    struct droid_surfaceflinger_container *pSFContainer;
 };
 
 DEFINE_CONTAINER_CAST_FUNC(droid_display,
