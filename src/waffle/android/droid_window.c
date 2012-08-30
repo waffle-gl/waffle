@@ -28,7 +28,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <waffle/core/wcore_error.h>
+#include "waffle/core/wcore_error.h"
 
 #include "droid_priv_egl.h"
 #include "droid_config.h"

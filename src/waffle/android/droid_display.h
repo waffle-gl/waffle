@@ -29,9 +29,9 @@
 #include <stdint.h>
 
 #include <EGL/egl.h>
-#include <waffle/core/wcore_display.h>
-#include <waffle/core/wcore_util.h>
-//#include <waffle/native/waffle_droid.h>
+#include "waffle/core/wcore_display.h"
+#include "waffle/core/wcore_util.h"
+//#include "waffle/native/waffle_droid.h"
 
 struct wcore_platform;
 struct droid_surfaceflinger_container;

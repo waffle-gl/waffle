@@ -27,7 +27,7 @@
 
 #include <stdlib.h>
 
-#include <waffle/core/wcore_error.h>
+#include "waffle/core/wcore_error.h"
 
 #include "droid_display.h"
 #include "droid_config.h"

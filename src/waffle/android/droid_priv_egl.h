@@ -26,4 +26,4 @@
 #pragma once
 
 #define NATIVE_EGL(basename) droid_egl_##basename
-#include <waffle/egl/egl.h>
+#include "waffle/egl/egl.h"

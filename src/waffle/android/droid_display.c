@@ -28,9 +28,9 @@
 
 #include <stdlib.h>
 
-#include <waffle/linux/linux_platform.h>
-#include <waffle/core/wcore_error.h>
-#include <waffle/core/wcore_display.h>
+#include "waffle/linux/linux_platform.h"
+#include "waffle/core/wcore_error.h"
+#include "waffle/core/wcore_display.h"
 
 #include "droid_priv_egl.h"
 #include "droid_surfaceflingerlink.h"

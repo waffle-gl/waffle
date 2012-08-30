@@ -28,11 +28,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <waffle/core/wcore_config_attrs.h>
-#include <waffle/core/wcore_error.h>
+#include "waffle/core/wcore_config_attrs.h"
+#include "waffle/core/wcore_error.h"
 
-#include <waffle/linux/linux_platform.h>
-#include <waffle/egl/egl_no_native.h>
+#include "waffle/linux/linux_platform.h"
+#include "waffle/egl/egl_no_native.h"
 
 #include "droid_display.h"
 #include "droid_surfaceflingerlink.h"
