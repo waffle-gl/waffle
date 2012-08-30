@@ -23,6 +23,7 @@ LOCAL_MODULE := libwaffle
 LOCAL_CFLAGS := \
     -DANDROID_STUB \
     -DWAFFLE_HAS_ANDROID \
+    -Wno-pointer-arith
 
 LOCAL_C_INCLUDES := \
     $(LOCAL_PATH)/include/waffle \
