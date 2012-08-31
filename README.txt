@@ -15,18 +15,17 @@ window system at runtime. A future goal is to enable the ability to record
 operating system or window system, and then replay that trace on a different
 system.
 
-For more information, refer to Waffle's website [3].
+For more information, visit to Waffle's website.
 
 
 [1] http://cgit.freedesktop.org/piglit/tree/README
 [2] http://github.com/apitrace/apitrace#readme
-[3] http://people.freedesktop.org/~chadversary/waffle
 
 
 Links
 =====
 
-homepage:       http://people.freedesktop.org/~chadversary/waffle
+website:        http://people.freedesktop.org/~chadversary/waffle
 mailing-list:   waffle@lists.freedesktop.org
 maintainer:     Chad Versace <chad.versace@linux.intel.com>
 source:         git://people.freedesktop.org/~chadversary/waffle.git
