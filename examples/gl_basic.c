@@ -205,7 +205,13 @@ parse_args(int argc, char *argv[], struct options *opts)
     const char *arg;
     bool ok;
 
+#ifdef __APPLE__
+    // Running from Xcode adds extra arguments like
+    // -ApplePersistenceIgnoreState and -NSDocumentRevisionsDebugMode.
+    if (argc < 3)
+#else
     if (argc != 3)
+#endif
         error_usage();
 
     // Set platform.

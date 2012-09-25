@@ -1,0 +1,274 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1FC0C210161149ED005993C4 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1FC0C20D161149ED005993C4 /* Info.plist */; };
+		1FC0C211161149ED005993C4 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1FC0C20E161149ED005993C4 /* InfoPlist.strings */; };
+		1FC0C212161149ED005993C4 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1FC0C20F161149ED005993C4 /* MainMenu.xib */; };
+		1FD783D616113C4300E298F9 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FD783D516113C4300E298F9 /* Cocoa.framework */; };
+		1FD783FC16113C8000E298F9 /* libwaffle_cgl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FD783F916113C7000E298F9 /* libwaffle_cgl.a */; };
+		1FD783FE16113D0500E298F9 /* gl_basic.c in Sources */ = {isa = PBXBuildFile; fileRef = 1FD783FD16113D0500E298F9 /* gl_basic.c */; };
+		1FD784421611411000E298F9 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FD784411611411000E298F9 /* OpenGL.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		1FD783F816113C7000E298F9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1FD783F116113C6F00E298F9 /* waffle_cgl.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 1FCDE1ED161139AD00E1247C;
+			remoteInfo = waffle_cgl;
+		};
+		1FD783FA16113C7C00E298F9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1FD783F116113C6F00E298F9 /* waffle_cgl.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 1FCDE1EC161139AD00E1247C;
+			remoteInfo = waffle_cgl;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		1FC0C20D161149ED005993C4 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = gl_basic.xcodeproj/Info.plist; sourceTree = SOURCE_ROOT; };
+		1FC0C20E161149ED005993C4 /* InfoPlist.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = InfoPlist.strings; path = gl_basic.xcodeproj/InfoPlist.strings; sourceTree = SOURCE_ROOT; };
+		1FC0C20F161149ED005993C4 /* MainMenu.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MainMenu.xib; path = gl_basic.xcodeproj/MainMenu.xib; sourceTree = SOURCE_ROOT; };
+		1FD783D116113C4300E298F9 /* gl_basic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = gl_basic.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1FD783D516113C4300E298F9 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		1FD783D816113C4300E298F9 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		1FD783D916113C4300E298F9 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		1FD783DA16113C4300E298F9 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		1FD783F116113C6F00E298F9 /* waffle_cgl.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = waffle_cgl.xcodeproj; path = ../waffle_cgl.xcodeproj; sourceTree = "<group>"; };
+		1FD783FD16113D0500E298F9 /* gl_basic.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = gl_basic.c; sourceTree = "<group>"; };
+		1FD784411611411000E298F9 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		1FD783CE16113C4300E298F9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1FD784421611411000E298F9 /* OpenGL.framework in Frameworks */,
+				1FD783FC16113C8000E298F9 /* libwaffle_cgl.a in Frameworks */,
+				1FD783D616113C4300E298F9 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1FD783B916113BFB00E298F9 = {
+			isa = PBXGroup;
+			children = (
+				1FD784431611426D00E298F9 /* Source */,
+				1FD783DB16113C4300E298F9 /* Resources */,
+				1FD783D416113C4300E298F9 /* Frameworks */,
+				1FD783D216113C4300E298F9 /* Products */,
+				1FD783F116113C6F00E298F9 /* waffle_cgl.xcodeproj */,
+			);
+			sourceTree = "<group>";
+		};
+		1FD783D216113C4300E298F9 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1FD783D116113C4300E298F9 /* gl_basic.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		1FD783D416113C4300E298F9 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1FD783D816113C4300E298F9 /* AppKit.framework */,
+				1FD783D516113C4300E298F9 /* Cocoa.framework */,
+				1FD783D916113C4300E298F9 /* CoreData.framework */,
+				1FD783DA16113C4300E298F9 /* Foundation.framework */,
+				1FD784411611411000E298F9 /* OpenGL.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		1FD783DB16113C4300E298F9 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				1FC0C20D161149ED005993C4 /* Info.plist */,
+				1FC0C20E161149ED005993C4 /* InfoPlist.strings */,
+				1FC0C20F161149ED005993C4 /* MainMenu.xib */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		1FD783F216113C6F00E298F9 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1FD783F916113C7000E298F9 /* libwaffle_cgl.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		1FD784431611426D00E298F9 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				1FD783FD16113D0500E298F9 /* gl_basic.c */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		1FD783D016113C4300E298F9 /* gl_basic */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1FD783ED16113C4300E298F9 /* Build configuration list for PBXNativeTarget "gl_basic" */;
+			buildPhases = (
+				1FD783CD16113C4300E298F9 /* Sources */,
+				1FD783CE16113C4300E298F9 /* Frameworks */,
+				1FD783CF16113C4300E298F9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1FD783FB16113C7C00E298F9 /* PBXTargetDependency */,
+			);
+			name = gl_basic;
+			productName = gl_basic;
+			productReference = 1FD783D116113C4300E298F9 /* gl_basic.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		1FD783BB16113BFB00E298F9 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0450;
+			};
+			buildConfigurationList = 1FD783BE16113BFB00E298F9 /* Build configuration list for PBXProject "gl_basic" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 1FD783B916113BFB00E298F9;
+			productRefGroup = 1FD783D216113C4300E298F9 /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 1FD783F216113C6F00E298F9 /* Products */;
+					ProjectRef = 1FD783F116113C6F00E298F9 /* waffle_cgl.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				1FD783D016113C4300E298F9 /* gl_basic */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		1FD783F916113C7000E298F9 /* libwaffle_cgl.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libwaffle_cgl.a;
+			remoteRef = 1FD783F816113C7000E298F9 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXResourcesBuildPhase section */
+		1FD783CF16113C4300E298F9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1FC0C210161149ED005993C4 /* Info.plist in Resources */,
+				1FC0C211161149ED005993C4 /* InfoPlist.strings in Resources */,
+				1FC0C212161149ED005993C4 /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		1FD783CD16113C4300E298F9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1FD783FE16113D0500E298F9 /* gl_basic.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		1FD783FB16113C7C00E298F9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = waffle_cgl;
+			targetProxy = 1FD783FA16113C7C00E298F9 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		1FD783C016113BFB00E298F9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../include/waffle";
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = gl_basic;
+			};
+			name = Debug;
+		};
+		1FD783C116113BFB00E298F9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../include/waffle";
+				PRODUCT_NAME = gl_basic;
+			};
+			name = Release;
+		};
+		1FD783EE16113C4300E298F9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = "$(PROJECT_DIR)/gl_basic.xcodeproj/Info.plist";
+			};
+			name = Debug;
+		};
+		1FD783EF16113C4300E298F9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = "$(PROJECT_DIR)/gl_basic.xcodeproj/Info.plist";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1FD783BE16113BFB00E298F9 /* Build configuration list for PBXProject "gl_basic" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1FD783C016113BFB00E298F9 /* Debug */,
+				1FD783C116113BFB00E298F9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1FD783ED16113C4300E298F9 /* Build configuration list for PBXNativeTarget "gl_basic" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1FD783EE16113C4300E298F9 /* Debug */,
+				1FD783EF16113C4300E298F9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 1FD783BB16113BFB00E298F9 /* Project object */;
+}
