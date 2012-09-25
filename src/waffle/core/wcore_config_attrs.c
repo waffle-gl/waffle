@@ -208,6 +208,16 @@ wcore_config_attrs_parse(
                     attrs->struct_memb = w_value;                              \
                     break;
 
+            #define CASE_BOOL(enum_name, struct_memb)                              \
+                case enum_name:                                                    \
+                    if (w_value != true && w_value != false) {                     \
+                        wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,                   \
+                                     #enum_name " has bad value 0x%x", w_value);   \
+                                     return false;                                 \
+                    }                                                              \
+                    attrs->struct_memb = w_value;                                  \
+                    break;
+
             case WAFFLE_CONTEXT_API:
                 attrs->context_api = w_value;
                 break;
@@ -228,39 +238,11 @@ wcore_config_attrs_parse(
             CASE_INT(WAFFLE_DEPTH_SIZE, depth_size)
             CASE_INT(WAFFLE_STENCIL_SIZE, stencil_size)
             CASE_INT(WAFFLE_SAMPLES, samples)
-            case WAFFLE_SAMPLE_BUFFERS:
-                attrs->sample_buffers = w_value;
-                break;
-            case WAFFLE_DOUBLE_BUFFERED:
-                switch (w_value) {
-                    case 0:
-                        attrs->double_buffered = false;
-                        break;
-                    case 1:
-                        attrs->double_buffered = true;
-                        break;
-                    default:
-                        wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
-                                     "WAFFLE_DOUBLE_BUFFERED has bad value "
-                                     "0x%x", w_value);
-                        return false;
-                }
-                break;
-            case WAFFLE_ACCUM_BUFFER:
-                switch (w_value) {
-                    case 0:
-                        attrs->accum_buffer = false;
-                        break;
-                    case 1:
-                        attrs->accum_buffer = true;
-                        break;
-                    default:
-                        wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
-                                     "WAFFLE_ACCUM_BUFFER has bad value %#x",
-                                     w_value);
-                        return false;
-                }
-                break;
+
+            CASE_BOOL(WAFFLE_SAMPLE_BUFFERS, sample_buffers);
+            CASE_BOOL(WAFFLE_DOUBLE_BUFFERED, double_buffered);
+            CASE_BOOL(WAFFLE_ACCUM_BUFFER, accum_buffer);
+
             default:
                 wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
                              "unrecognized attribute 0x%x at attrib_list[%d]",
@@ -269,6 +251,7 @@ wcore_config_attrs_parse(
         }
 
         #undef CASE_INT
+        #undef CASE_BOOL
     }
 
     attrs->rgb_size = 0;
