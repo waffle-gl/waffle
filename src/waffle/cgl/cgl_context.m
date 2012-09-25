@@ -66,7 +66,7 @@ cgl_context_create(struct wcore_platform *wc_plat,
 
     self = calloc(1, sizeof(*self));
     if (!self) {
-        wcore_error(WAFFLE_OUT_OF_MEMORY);
+        wcore_error(WAFFLE_ERROR_BAD_ALLOC);
         return NULL;
     }
 
@@ -85,7 +85,7 @@ cgl_context_create(struct wcore_platform *wc_plat,
 
     self->ns = [[NSOpenGLContext alloc] initWithCGLContextObj:cgl_self];
     if (!self->ns) {
-        wcore_errorf(WAFFLE_UNKNOWN_ERROR,
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN,
                      "NSOpenGLContext.initWithCGLContextObj failed");
         goto fail;
     }
@@ -110,5 +110,5 @@ cgl_context_get_native(struct wcore_context *wc_self)
 
 static const struct wcore_context_vtbl cgl_context_wcore_vtbl = {
     .destroy = cgl_context_destroy,
-    .get_native = cgl_cotext_get_native,
+    .get_native = cgl_context_get_native,
 };

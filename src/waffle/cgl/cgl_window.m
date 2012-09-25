@@ -61,7 +61,7 @@ cgl_window_create_gl_view(int width, int height)
                           initWithFrame:NSMakeRect(0, 0, width, height)];
 
     if (!view)
-        wcore_errorf(WAFFLE_UNKNOWN_ERROR, "failed to create NSView");
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN, "failed to create NSView");
 
     return view;
 }
@@ -80,7 +80,7 @@ cgl_window_create_ns_window(NSView *view)
                                       defer:NO];
 
     if (!window) {
-        wcore_errorf(WAFFLE_UNKNOWN_ERROR, "failed to create NSWindow");
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN, "failed to create NSWindow");
         return NULL;
     }
 
@@ -103,7 +103,7 @@ cgl_window_create(struct wcore_platform *wc_plat,
 
     self = calloc(1, sizeof(*self));
     if (!self) {
-        wcore_error(WAFFLE_OUT_OF_MEMORY);
+        wcore_error(WAFFLE_ERROR_BAD_ALLOC);
         return NULL;
     }
 

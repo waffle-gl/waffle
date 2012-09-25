@@ -67,7 +67,7 @@ cgl_config_check_attrs(const struct wcore_config_attrs *attrs)
                         case WAFFLE_CONTEXT_CORE_PROFILE:
                             return true;
                         case WAFFLE_CONTEXT_COMPATIBILITY_PROFILE:
-                            wcore_errorf(WAFFLE_UNSUPPORTED_ON_PLATFORM,
+                            wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
                                          "CGL does not support the OpenGL 3.2 "
                                          "Compatibility Profile");
                             return false;
@@ -76,18 +76,18 @@ cgl_config_check_attrs(const struct wcore_config_attrs *attrs)
                             return false;
                     }
                 default:
-                    wcore_errorf(WAFFLE_UNSUPPORTED_ON_PLATFORM,
+                    wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
                                  "On CGL, the requested OpenGL version must "
                                  "be 1.0 or 3.2");
                     assert(false);
                     return false;
             }
         case WAFFLE_CONTEXT_OPENGL_ES1:
-            wcore_errorf(WAFFLE_UNSUPPORTED_ON_PLATFORM,
+            wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
                          "CGL does not support OpenGL ES1");
             return false;
         case WAFFLE_CONTEXT_OPENGL_ES2:
-            wcore_errorf(WAFFLE_UNSUPPORTED_ON_PLATFORM,
+            wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
                          "CGL does not support OpenGL ES2");
             return false;
         default:
@@ -163,7 +163,7 @@ cgl_config_choose(struct wcore_platform *wc_plat,
 
     self = calloc(1, sizeof(*self));
     if (!self) {
-        wcore_error(WAFFLE_OUT_OF_MEMORY);
+        wcore_error(WAFFLE_ERROR_BAD_ALLOC);
         return NULL;
     }
 
@@ -181,7 +181,7 @@ cgl_config_choose(struct wcore_platform *wc_plat,
         goto error;
     }
     if (!self->pixel_format) {
-        wcore_errorf(WAFFLE_UNKNOWN_ERROR,
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN,
                      "CGLChoosePixelFormat failed to find a pixel format");
         goto error;
     }

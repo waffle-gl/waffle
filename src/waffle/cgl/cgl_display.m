@@ -57,7 +57,7 @@ cgl_display_connect(struct wcore_platform *wc_plat,
 
     self = calloc(1, sizeof(*self));
     if (!self) {
-        wcore_error(WAFFLE_OUT_OF_MEMORY);
+        wcore_error(WAFFLE_ERROR_BAD_ALLOC);
         return NULL;
     }
 

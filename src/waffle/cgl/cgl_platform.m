@@ -62,7 +62,7 @@ cgl_platform_create(void)
 
     self= calloc(1, sizeof(*self));
     if (!self) {
-        wcore_error(WAFFLE_OUT_OF_MEMORY);
+        wcore_error(WAFFLE_ERROR_BAD_ALLOC);
         return NULL;
     }
 

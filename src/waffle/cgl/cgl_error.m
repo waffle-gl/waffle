@@ -73,7 +73,7 @@ cgl_error_to_string(int error_code)
 void
 cgl_error_failed_func(const char *func_name, int error_code)
 {
-    wcore_errorf(WAFFLE_UNKNOWN_ERROR,
+    wcore_errorf(WAFFLE_ERROR_UNKNOWN,
                  "%s failed with %s: %s",
                  func_name,
                  cgl_error_to_string(error_code),

@@ -43,11 +43,11 @@ cgl_dl_check_enum(int32_t waffle_dl)
         case WAFFLE_DL_OPENGL:
             return true;
         case WAFFLE_DL_OPENGL_ES1:
-            wcore_errorf(WAFFLE_UNSUPPORTED_ON_PLATFORM,
+            wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
                          "CGL does not support OpenGL ES1");
             return false;
         case WAFFLE_DL_OPENGL_ES2:
-            wcore_errorf(WAFFLE_UNSUPPORTED_ON_PLATFORM,
+            wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
                          "CGL does not support OpenGL ES2");
             return false;
         default:
@@ -62,7 +62,7 @@ cgl_dl_open(struct cgl_platform *plat)
     plat->dl_gl = dlopen(cgl_dl_gl_path, RTLD_LAZY);
 
     if (!plat->dl_gl) {
-        wcore_errorf(WAFFLE_UNKNOWN_ERROR,
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN,
                      "dlopen(\"%s\") failed", cgl_dl_gl_path);
         return false;
     }
@@ -116,7 +116,7 @@ cgl_dl_sym(struct wcore_platform *wc_plat,
     // dlsym returned NULL. Check if an error occured.
     const char *error = dlerror();
     if (error) {
-        wcore_errorf(WAFFLE_UNKNOWN_ERROR,
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN,
                      "dlsym(libname=\"%s\", symbol=\"%s\") failed: %s",
                      cgl_dl_gl_path, name, error);
     }
@@ -143,12 +143,12 @@ cgl_dl_close(struct wcore_platform *wc_plat)
     error_msg = dlerror();
 
     if (error_msg) {
-        wcore_errorf(WAFFLE_UNKNOWN_ERROR,
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN,
                      "dlclose(libname=\"%s\") failed: %s",
                      error_msg);
     }
     else {
-        wcore_errorf(WAFFLE_UNKNOWN_ERROR,
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN,
                      "dlclose(libname=\"%s\") failed");
     }
 
