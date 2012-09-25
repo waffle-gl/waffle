@@ -43,7 +43,8 @@
 #include <time.h>
 
 #ifdef __APPLE__
-#    include <Cocoa/Cocoa.h>
+#    import <Foundation/NSAutoreleasePool.h>
+#    import <Appkit/NSApplication.h>
 #endif
 
 #include "waffle.h"
