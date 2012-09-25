@@ -197,6 +197,17 @@ wcore_config_attrs_parse(
         int32_t w_value = i[1];
 
         switch (w_attr) {
+
+            #define CASE_INT(enum_name, struct_memb)                           \
+                case enum_name:                                                \
+                    if (w_value < -1) {                                        \
+                        wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,               \
+                                     #enum_name " has bad value %d", w_value); \
+                                     return false;                             \
+                    }                                                          \
+                    attrs->struct_memb = w_value;                              \
+                    break;
+
             case WAFFLE_CONTEXT_API:
                 attrs->context_api = w_value;
                 break;
@@ -209,29 +220,16 @@ wcore_config_attrs_parse(
             case WAFFLE_CONTEXT_PROFILE:
                 attrs->context_profile = w_value;
                 break;
-            case WAFFLE_RED_SIZE:
-                attrs->red_size = w_value;
-                break;
-            case WAFFLE_GREEN_SIZE:
-                attrs->green_size = w_value;
-                break;
-            case WAFFLE_BLUE_SIZE:
-                attrs->blue_size = w_value;
-                break;
-            case WAFFLE_ALPHA_SIZE:
-                attrs->alpha_size = w_value;
-                break;
-            case WAFFLE_DEPTH_SIZE:
-                attrs->depth_size = w_value;
-                break;
-            case WAFFLE_STENCIL_SIZE:
-                attrs->stencil_size = w_value;
-                break;
+
+            CASE_INT(WAFFLE_RED_SIZE, red_size)
+            CASE_INT(WAFFLE_GREEN_SIZE, green_size)
+            CASE_INT(WAFFLE_BLUE_SIZE, blue_size)
+            CASE_INT(WAFFLE_ALPHA_SIZE, alpha_size)
+            CASE_INT(WAFFLE_DEPTH_SIZE, depth_size)
+            CASE_INT(WAFFLE_STENCIL_SIZE, stencil_size)
+            CASE_INT(WAFFLE_SAMPLES, samples)
             case WAFFLE_SAMPLE_BUFFERS:
                 attrs->sample_buffers = w_value;
-                break;
-            case WAFFLE_SAMPLES:
-                attrs->samples = w_value;
                 break;
             case WAFFLE_DOUBLE_BUFFERED:
                 switch (w_value) {
@@ -269,6 +267,8 @@ wcore_config_attrs_parse(
                              w_attr, i - waffle_attrib_list);
                 return false;
         }
+
+        #undef CASE_INT
     }
 
     attrs->rgb_size = 0;
