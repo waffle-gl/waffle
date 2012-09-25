@@ -171,6 +171,34 @@ TEST(wcore_config_attrs, double_buffered_is_bad)
     EXPECT_TRUE(strstr(wcore_error_get_info()->message, "0x31415926"));
 }
 
+TEST(wcore_config_attrs, sample_buffers_is_bad)
+{
+    const int32_t attrib_list[] = {
+        WAFFLE_CONTEXT_API,     WAFFLE_CONTEXT_OPENGL,
+        WAFFLE_SAMPLE_BUFFERS,  0x31415926,
+        0,
+    };
+
+    ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
+    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
+    EXPECT_TRUE(strstr(wcore_error_get_info()->message, "WAFFLE_SAMPLE_BUFFERS"));
+    EXPECT_TRUE(strstr(wcore_error_get_info()->message, "0x31415926"));
+}
+
+TEST(wcore_config_attrs, accum_buffer_is_bad)
+{
+    const int32_t attrib_list[] = {
+        WAFFLE_CONTEXT_API,     WAFFLE_CONTEXT_OPENGL,
+        WAFFLE_ACCUM_BUFFER,    0x31415926,
+        0,
+    };
+
+    ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
+    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
+    EXPECT_TRUE(strstr(wcore_error_get_info()->message, "WAFFLE_ACCUM_BUFFER"));
+    EXPECT_TRUE(strstr(wcore_error_get_info()->message, "0x31415926"));
+}
+
 TEST(wcore_config_attrs, core_profile_and_accum_buffer)
 {
     const int32_t attrib_list[] = {
@@ -296,6 +324,8 @@ testsuite_wcore_config_attrs(void)
     TEST_RUN(wcore_config_attrs, double_buffered_is_true);
     TEST_RUN(wcore_config_attrs, double_buffered_is_false);
     TEST_RUN(wcore_config_attrs, double_buffered_is_bad);
+    TEST_RUN(wcore_config_attrs, sample_buffers_is_bad);
+    TEST_RUN(wcore_config_attrs, accum_buffer_is_bad);
     TEST_RUN(wcore_config_attrs, core_profile_and_accum_buffer);
     TEST_RUN(wcore_config_attrs, negative_red);
     TEST_RUN(wcore_config_attrs, negative_green);
