@@ -70,6 +70,7 @@ enum waffle_enum {
         WAFFLE_PLATFORM_GLX                                     = 0x0013,
         WAFFLE_PLATFORM_WAYLAND                                 = 0x0014,
         WAFFLE_PLATFORM_X11_EGL                                 = 0x0015,
+        WAFFLE_PLATFORM_GBM                                     = 0x0016,
 
     // ------------------------------------------------------------------
     // For waffle_config_choose()
