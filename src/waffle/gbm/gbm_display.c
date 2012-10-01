@@ -27,6 +27,7 @@
 #define _GNU_SOURCE
 
 #include <stdlib.h>
+#include <unistd.h>
 
 #include <gbm.h>
 #include <libudev.h>
@@ -47,13 +48,101 @@ static const struct wcore_display_vtbl gbm_display_wcore_vtbl;
 static bool
 gbm_display_destroy(struct wcore_display *wc_self)
 {
-    return false;
+    struct gbm_display *self = gbm_display(wc_self);
+    bool ok = true;
+    int fd;
+
+    if (!self)
+        return ok;
+
+    if (self->egl)
+        ok &= egl_terminate(self->egl);
+
+    if (self->gbm_device) {
+        fd = gbm_device_get_fd(self->gbm_device);
+        gbm_device_destroy(self->gbm_device);
+        close(fd);
+    }
+
+    ok &= wcore_display_teardown(&self->wcore);
+    free(self);
+    return ok;
+}
+
+static int
+gbm_get_fd(void)
+{
+    struct udev *ud;
+    struct udev_enumerate *en;
+    struct udev_list_entry *entry;
+    const char *path, *filename;
+    struct udev_device *device;
+    int fd;
+
+    ud = udev_new();
+    en = udev_enumerate_new(ud);
+    udev_enumerate_add_match_subsystem(en, "drm");
+    udev_enumerate_add_match_sysname(en, "card[0-9]*");
+    udev_enumerate_scan_devices(en);
+
+    udev_list_entry_foreach(entry, udev_enumerate_get_list_entry(en)) {
+        path = udev_list_entry_get_name(entry);
+        device = udev_device_new_from_syspath(ud, path);
+        filename = udev_device_get_devnode(device);
+        fd = open(filename, O_RDWR | O_CLOEXEC);
+        udev_device_unref(device);
+        if (fd >= 0) {
+            return fd;
+        }
+    }
+
+    return -1;
 }
 
 struct wcore_display*
 gbm_display_connect(struct wcore_platform *wc_plat,
                     const char *name)
 {
+    struct gbm_display *self;
+    bool ok = true;
+    int fd;
+
+    self = wcore_calloc(sizeof(*self));
+    if (self == NULL)
+        return NULL;
+
+    ok = wcore_display_init(&self->wcore, wc_plat);
+    if (!ok)
+        goto error;
+
+    if (name != NULL) {
+        fd = open(name, O_RDWR | O_CLOEXEC);
+    } else {
+        fd = gbm_get_fd();
+    }
+
+    if (fd < 0) {
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN, "open drm file for gbm failed");
+        goto error;
+    }
+
+    self->gbm_device = gbm_create_device(fd);
+    if (!self->gbm_device) {
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN, "gbm_create_device failed");
+        goto error;
+    }
+
+    self->egl = gbm_egl_initialize(self->gbm_device);
+    if (!self->egl) {
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN, "gbm_egl_initialize failed");
+        goto error;
+    }
+
+    self->wcore.vtbl = &gbm_display_wcore_vtbl;
+    return &self->wcore;
+
+error:
+    gbm_display_destroy(&self->wcore);
     return NULL;
 }
 
@@ -62,13 +151,30 @@ static bool
 gbm_display_supports_context_api(struct wcore_display *wc_self,
                                  int32_t waffle_context_api)
 {
-    return false;
+    return egl_supports_context_api(wc_self->platform, waffle_context_api);
+}
+
+void
+gbm_display_fill_native(struct gbm_display *self,
+                        struct waffle_gbm_display *n_dpy)
+{
+    n_dpy->gbm_device = self->gbm_device;
+    n_dpy->egl_display = self->egl;
 }
 
 static union waffle_native_display*
 gbm_display_get_native(struct wcore_display *wc_self)
 {
-    return NULL;
+    struct gbm_display *self = gbm_display(wc_self);
+    union waffle_native_display *n_dpy;
+
+    WCORE_CREATE_NATIVE_UNION(n_dpy, gbm);
+    if (n_dpy == NULL)
+        return NULL;
+
+    gbm_display_fill_native(self, n_dpy->gbm);
+
+    return n_dpy;
 }
 
 static const struct wcore_display_vtbl gbm_display_wcore_vtbl = {

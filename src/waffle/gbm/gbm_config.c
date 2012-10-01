@@ -45,7 +45,36 @@ static const struct wcore_config_vtbl gbm_config_wcore_vtbl;
 static bool
 gbm_config_destroy(struct wcore_config *wc_self)
 {
-    return false;
+    struct gbm_config *self = gbm_config(wc_self);
+    bool ok = true;
+
+    if (!self)
+        return ok;
+
+    ok &= wcore_config_teardown(wc_self);
+    free(self);
+    return ok;
+}
+
+static uint32_t
+get_gbm_format(const struct wcore_config_attrs *attrs)
+{
+    if (attrs->depth_size > 0 || attrs->stencil_size > 0) {
+        return 0;
+    }
+
+    if (attrs->red_size > 8 || attrs->blue_size > 8 ||
+        attrs->green_size > 8 || attrs->alpha_size > 8) {
+        return 0;
+    }
+
+    if (attrs->alpha_size > 0) {
+        return GBM_FORMAT_ABGR8888;
+    } else {
+        return GBM_FORMAT_XRGB8888;
+    }
+
+    return 0;
 }
 
 struct wcore_config*
@@ -53,13 +82,57 @@ gbm_config_choose(struct wcore_platform *wc_plat,
                   struct wcore_display *wc_dpy,
                   const struct wcore_config_attrs *attrs)
 {
+    struct gbm_config *self;
+    struct gbm_display *dpy = gbm_display(wc_dpy);
+    bool ok = true;
+
+    self = wcore_calloc(sizeof(*self));
+    if (self == NULL)
+        return NULL;
+
+    ok = wcore_config_init(&self->wcore, wc_dpy);
+    if (!ok)
+        goto error;
+
+    self->gbm_format = get_gbm_format(attrs);
+    if (self->gbm_format == 0) {
+        wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
+                     "gbm_config_choose: unsupported config");
+        goto error;
+    }
+
+    ok = egl_get_render_buffer_attrib(attrs, &self->egl_render_buffer);
+    if (!ok)
+        goto error;
+
+    self->egl = egl_choose_config(wc_plat, dpy->egl, attrs);
+    if (!self->egl)
+        goto error;
+
+    self->waffle_context_api = attrs->context_api;
+    self->wcore.vtbl = &gbm_config_wcore_vtbl;
+    return &self->wcore;
+
+error:
+    gbm_config_destroy(&self->wcore);
     return NULL;
 }
 
 static union waffle_native_config*
 gbm_config_get_native(struct wcore_config *wc_self)
 {
-    return NULL;
+    struct gbm_config *self = gbm_config(wc_self);
+    struct gbm_display *dpy = gbm_display(wc_self->display);
+    union waffle_native_config *n_config;
+
+    WCORE_CREATE_NATIVE_UNION(n_config, gbm);
+    if (n_config == NULL)
+        return NULL;
+
+    gbm_display_fill_native(dpy, &n_config->gbm->display);
+    n_config->gbm->egl_config = self->egl;
+
+    return n_config;
 }
 
 static const struct wcore_config_vtbl gbm_config_wcore_vtbl = {

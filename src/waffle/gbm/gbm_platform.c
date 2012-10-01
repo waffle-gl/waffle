@@ -43,12 +43,47 @@ static const struct wcore_platform_vtbl gbm_platform_wcore_vtbl;
 static bool
 gbm_platform_destroy(struct wcore_platform *wc_self)
 {
-    return false;
+    struct gbm_platform *self = gbm_platform(wc_self);
+    bool ok = true;
+
+    if (!self)
+        return true;
+
+    unsetenv("EGL_PLATFORM");
+
+    if (self->linux)
+        ok &= linux_platform_destroy(self->linux);
+
+    ok &= wcore_platform_teardown(wc_self);
+    free(self);
+    return ok;
 }
 
 struct wcore_platform*
 gbm_platform_create(void)
 {
+    struct gbm_platform *self;
+    bool ok = true;
+
+    self = wcore_calloc(sizeof(*self));
+    if (self == NULL)
+        return NULL;
+
+    ok = wcore_platform_init(&self->wcore);
+    if (!ok)
+        goto error;
+
+    self->linux = linux_platform_create();
+    if (!self->linux)
+        goto error;
+
+    setenv("EGL_PLATFORM", "drm", true);
+
+    self->wcore.vtbl = &gbm_platform_wcore_vtbl;
+    return &self->wcore;
+
+error:
+    gbm_platform_destroy(&self->wcore);
     return NULL;
 }
 
@@ -58,21 +93,24 @@ gbm_platform_make_current(struct wcore_platform *wc_self,
                           struct wcore_window *wc_window,
                           struct wcore_context *wc_ctx)
 {
-    return false;
+    return egl_make_current(gbm_display(wc_dpy)->egl,
+                            wc_window ? gbm_window(wc_window)->egl : NULL,
+                            wc_ctx ? gbm_context(wc_ctx)->egl : NULL);
 }
 
 static void*
 gbm_platform_get_proc_address(struct wcore_platform *wc_self,
                               const char *name)
 {
-    return NULL;
+    return eglGetProcAddress(name);
 }
 
 static bool
 gbm_platform_dl_can_open(struct wcore_platform *wc_self,
                          int32_t waffle_dl)
 {
-    return false;
+    return linux_platform_dl_can_open(gbm_platform(wc_self)->linux,
+                                      waffle_dl);
 }
 
 static void*
@@ -80,7 +118,9 @@ gbm_platform_dl_sym(struct wcore_platform *wc_self,
                     int32_t waffle_dl,
                     const char *name)
 {
-    return NULL;
+    return linux_platform_dl_sym(gbm_platform(wc_self)->linux,
+                                                  waffle_dl,
+                                                  name);
 }
 
 static const struct wcore_platform_vtbl gbm_platform_wcore_vtbl = {
