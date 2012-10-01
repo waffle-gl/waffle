@@ -23,53 +23,46 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @defgroup waffle_context waffle_context
-/// @ingroup waffle_api
-/// @{
+#define __GBM__ 1
 
-/// @file
+#include <stdlib.h>
+#include <string.h>
 
-#pragma once
+#include <gbm.h>
 
-#include <stdbool.h>
+#include <waffle/core/wcore_config_attrs.h>
+#include <waffle/core/wcore_error.h>
 
-#include "waffle_portability.h"
+#include "waffle.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include "gbm_config.h"
+#include "gbm_display.h"
+#include "gbm_platform.h"
+#include "gbm_priv_egl.h"
 
-struct waffle_config;
-struct waffle_context;
+static const struct wcore_config_vtbl gbm_config_wcore_vtbl;
 
-struct waffle_gbm_context;
-struct waffle_glx_context;
-struct waffle_x11_egl_context;
-struct waffle_wayland_context;
+static bool
+gbm_config_destroy(struct wcore_config *wc_self)
+{
+    return false;
+}
 
-union waffle_native_context {
-    struct waffle_gbm_context *gbm;
-    struct waffle_glx_context *glx;
-    struct waffle_x11_egl_context *x11_egl;
-    struct waffle_wayland_context *wayland;
+struct wcore_config*
+gbm_config_choose(struct wcore_platform *wc_plat,
+                  struct wcore_display *wc_dpy,
+                  const struct wcore_config_attrs *attrs)
+{
+    return NULL;
+}
+
+static union waffle_native_config*
+gbm_config_get_native(struct wcore_config *wc_self)
+{
+    return NULL;
+}
+
+static const struct wcore_config_vtbl gbm_config_wcore_vtbl = {
+    .destroy = gbm_config_destroy,
+    .get_native = gbm_config_get_native,
 };
-
-WAFFLE_API struct waffle_context*
-waffle_context_create(
-        struct waffle_config *config,
-        struct waffle_context *shared_ctx);
-
-WAFFLE_API bool
-waffle_context_destroy(struct waffle_context *self);
-
-/// @brief Get underlying native objects.
-///
-/// Use free() to deallocate the returned pointer.
-WAFFLE_API union waffle_native_context*
-waffle_context_get_native(struct waffle_context *self);
-
-#ifdef __cplusplus
-} // end extern "C"
-#endif
-
-/// @}

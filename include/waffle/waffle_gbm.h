@@ -23,65 +23,43 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @defgroup waffle_window waffle_window
-/// @ingroup waffle_api
-/// @{
-
 #pragma once
+
+#define __GBM__ 1
 
 #include <stdbool.h>
 #include <stdint.h>
 
-#include "waffle_portability.h"
+#include <EGL/egl.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-struct waffle_config;
-struct waffle_window;
+struct gbm_device;
+struct gbm_surface;
 
-struct waffle_gbm_window;
-struct waffle_glx_window;
-struct waffle_x11_egl_window;
-struct waffle_wayland_window;
-
-union waffle_native_window {
-    struct waffle_gbm_window *gbm;
-    struct waffle_glx_window *glx;
-    struct waffle_x11_egl_window *x11_egl;
-    struct waffle_wayland_window *wayland;
+struct waffle_gbm_display {
+    struct gbm_device *gbm_device;
+    EGLDisplay egl_display;
 };
 
-/// If the platform allows, the window is not displayed onto the screen
-/// after creation. To display the window, call waffle_window_show().
-WAFFLE_API struct waffle_window*
-waffle_window_create(
-        struct waffle_config *config,
-        int32_t width,
-        int32_t height);
+struct waffle_gbm_config {
+    struct waffle_gbm_display display;
+    EGLConfig egl_config;
+};
 
-WAFFLE_API bool
-waffle_window_destroy(struct waffle_window *self);
+struct waffle_gbm_context {
+    struct waffle_gbm_display display;
+    EGLContext egl_context;
+};
 
-/// @brief Show the window on the screen.
-///
-/// If the window is already shown, this does nothing.
-WAFFLE_API bool
-waffle_window_show(struct waffle_window *self);
-
-/// @brief Analogous to eglSwapBuffers.
-WAFFLE_API bool
-waffle_window_swap_buffers(struct waffle_window *self);
-
-/// @brief Get underlying native objects.
-///
-/// Use free() to deallocate the returned pointer.
-WAFFLE_API union waffle_native_window*
-waffle_window_get_native(struct waffle_window *self);
+struct waffle_gbm_window {
+    struct waffle_gbm_display display;
+    struct gbm_surface *gbm_surface;
+    EGLSurface egl_surface;
+};
 
 #ifdef __cplusplus
 } // end extern "C"
 #endif
-
-/// @}

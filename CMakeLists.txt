@@ -76,6 +76,7 @@ set(waffle_build_examples "Build examples" ON)
 option(waffle_has_glx "Build support for GLX" OFF)
 option(waffle_has_wayland "Build support for Wayland" OFF)
 option(waffle_has_x11_egl "Build support for X11/EGL" OFF)
+option(waffle_has_gbm "Build support for GBM" OFF)
 
 set(waffle_install_includedir "${CMAKE_INSTALL_PREFIX}/include"
     CACHE PATH "Directory where header files will be installed")
@@ -95,7 +96,7 @@ set(waffle_install_docdir "${CMAKE_INSTALL_PREFIX}/share/doc/waffle-${waffle_maj
 #     waffle_tls_model_initial_exec
 check_thread_local_storage()
 
-if(waffle_has_wayland OR waffle_has_x11_egl)
+if(waffle_has_wayland OR waffle_has_x11_egl OR waffle_has_gbm)
     set(waffle_has_egl TRUE)
 else(waffle_has_wayland OR waffle_has_x11_egl)
     set(waffle_has_egl FALSE)
@@ -112,8 +113,12 @@ endif()
 # ----------------------------------------------
 
 if("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
-    if(NOT waffle_has_glx AND NOT waffle_has_wayland AND NOT waffle_has_x11_egl)
-        message(FATAL_ERROR "Must enable at least one of: waffle_has_glx, waffle_has_wayland, waffle_has_x11_egl.")
+    if(NOT waffle_has_glx AND NOT waffle_has_wayland AND
+       NOT waffle_has_x11_egl AND NOT waffle_has_gbm)
+        message(FATAL_ERROR
+                "Must enable at least one of: "
+                "waffle_has_glx, waffle_has_wayland, "
+                "waffle_has_x11_egl, waffle_has_gbm.")
     endif()
 elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "Darwin")
     if(waffle_has_glx)
@@ -167,6 +172,11 @@ if(waffle_has_x11)
     waffle_find_library(waffle_X11-xcb_library X11-xcb)
 endif()
 
+if(waffle_has_gbm)
+    waffle_find_library(waffle_gbm_library gbm)
+    waffle_find_library(waffle_udev_library udev)
+endif()
+
 
 # ------------------------------------------------------------------------------
 # Compiler Flags
@@ -209,6 +219,10 @@ endif()
 
 if(waffle_has_x11_egl)
     add_definitions(-DWAFFLE_HAS_X11_EGL)
+endif()
+
+if(waffle_has_gbm)
+    add_definitions(-DWAFFLE_HAS_GBM)
 endif()
 
 # ------------------------------------------------------------------------------
@@ -288,6 +302,9 @@ endif()
 if(waffle_has_x11_egl)
     message("    x11_egl")
 endif()
+if(waffle_has_gbm)
+    message("    gbm")
+endif()
 message("")
 message("Libraries:")
 if(DEFINED waffle_EGL_library)
@@ -304,6 +321,9 @@ if(DEFINED waffle_X11-xcb_library)
     message("    xcb: ${waffle_xcb_library}")
     message("    X11: ${waffle_X11_library}")
     message("    X11-xcb: ${waffle_X11-xcb_library}")
+endif()
+if(DEFINED waffle_gbm_library)
+    message("    gbm: ${waffle_gbm_library}")
 endif()
 message("")
 message("Build type:")

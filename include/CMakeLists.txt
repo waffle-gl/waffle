@@ -14,6 +14,7 @@ install(FILES waffle/waffle.h
               waffle/waffle_enum.h
               waffle/waffle_error.h
               waffle/waffle_gl_misc.h
+              waffle/waffle_gbm.h
               waffle/waffle_glx.h
               waffle/waffle_init.h
               waffle/waffle_portability.h

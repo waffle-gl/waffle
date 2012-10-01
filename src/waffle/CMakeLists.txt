@@ -111,6 +111,21 @@ if(waffle_has_x11_egl)
     )
 endif()
 
+if(waffle_has_gbm)
+    list(APPEND waffle_sources
+        gbm/gbm_config.c
+        gbm/gbm_context.c
+        gbm/gbm_display.c
+        gbm/gbm_platform.c
+        gbm/gbm_priv_egl.c
+        gbm/gbm_window.c
+    )
+    list(APPEND waffle_libdeps
+        ${waffle_gbm_library}
+        ${waffle_udev_library}
+        )
+endif()
+
 # CMake will pass to the C compiler only C sources. CMake does not recognize the
 # .m extension and ignores any such files in the source lists. To coerce CMake
 # to pass .m files to the compiler, we must lie and claim that they are
