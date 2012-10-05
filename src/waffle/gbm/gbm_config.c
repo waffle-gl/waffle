@@ -97,7 +97,7 @@ gbm_config_choose(struct wcore_platform *wc_plat,
     self->gbm_format = get_gbm_format(attrs);
     if (self->gbm_format == 0) {
         wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
-                     "gbm_config_choose: unsupported config");
+                     "requested config is unsupported on GBM");
         goto error;
     }
 
