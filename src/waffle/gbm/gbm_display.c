@@ -133,10 +133,8 @@ gbm_display_connect(struct wcore_platform *wc_plat,
     }
 
     self->egl = gbm_egl_initialize(self->gbm_device);
-    if (!self->egl) {
-        wcore_errorf(WAFFLE_ERROR_UNKNOWN, "gbm_egl_initialize failed");
+    if (!self->egl)
         goto error;
-    }
 
     self->wcore.vtbl = &gbm_display_wcore_vtbl;
     return &self->wcore;
