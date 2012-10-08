@@ -2,10 +2,13 @@
 *.so
 *_test
 *unittest
+examples/simple-x11-egl
 gl_basic
 install_manifest.txt
 lib/
+src/waffle/libwaffle_static.a
 waffle.pc
+waffle-1.pc
 CMakeCache.txt
 CMakeFiles
 Makefile
