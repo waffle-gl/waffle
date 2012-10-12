@@ -147,7 +147,7 @@ set_target_properties(${waffle_libname}
     VERSION ${waffle_soversion}.${waffle_minor_version}.${waffle_patch_version})
 
 install(TARGETS ${waffle_libname}
-    LIBRARY DESTINATION ${waffle_install_libdir})
+        LIBRARY DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR})
 
 # ----------------------------------------------------------------------------
 # Target: waffle_static

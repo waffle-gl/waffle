@@ -58,6 +58,38 @@ set(waffle_soversion "0")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules")
 include(CheckThreadLocalStorage)
 
+#
+# ***Before*** including GNUInstallDirs, set CMAKE_INSTALL_DATAROOTDIR and
+# CMAKE_INSTALL_DOCDIR.
+#
+# The default value of CMAKE_INSTALL_DOCDIR is "DATAROOTDIR/doc/PROJECT_NAME",
+# which evaluates to the undesirable "DATAROOTDIR/doc/waffle". Instead, we
+# want to install to "DATAROOTDIR/doc/waffle-MAJOR_VERSION".
+#
+# From the GNUInstallDirs documentation:
+#
+#       If the includer  does  not  define  a  value  [for a CMAKE_INSTALL
+#       variable, then a] default will  be  used  and  the  value  will appear
+#       in the cache for editing by the user.
+#
+
+if(NOT DEFINED CMAKE_INSTALL_DATAROOTDIR)
+    set(CMAKE_INSTALL_DATAROOTDIR "share" CACHE PATH "read-only architecture-independent data root (share)")
+endif()
+
+#
+# The default value of DOCDIR is relative to DATAROOTDIR. Store an empty value
+# in the cache and store the default in a local variables if the cache value
+# is non-empty. This ensures that DOCDIR is automatically updated with
+# DATAROOTDIR changes.
+#
+if(NOT CMAKE_INSTALL_DOCDIR)
+    set(CMAKE_INSTALL_DOCDIR "" CACHE PATH "documentation root (DATAROOTDIR/doc/waffle-${waffle_major_version})")
+    set(CMAKE_INSTALL_DOCDIR "${CMAKE_INSTALL_DATAROOTDIR}/doc/waffle-${waffle_major_version}")
+endif()
+
+include(GNUInstallDirs)
+
 
 # ------------------------------------------------------------------------------
 # Waffle Options
@@ -78,14 +110,30 @@ option(waffle_has_wayland "Build support for Wayland" OFF)
 option(waffle_has_x11_egl "Build support for X11/EGL" OFF)
 option(waffle_has_gbm "Build support for GBM" OFF)
 
-set(waffle_install_includedir "${CMAKE_INSTALL_PREFIX}/include"
-    CACHE PATH "Directory where header files will be installed")
+# ----------------------------------------------
+# Emit errors for removed options
+# ----------------------------------------------
 
-set(waffle_install_libdir "${CMAKE_INSTALL_PREFIX}/lib"
-    CACHE PATH "Directory where libraries will be installed")
+if(DEFINED waffle_install_includedir)
+    message(FATAL_ERROR "Option waffle_install_includedir has been "
+            "replaced by CMAKE_INSTALL_INCLUDEDIR. You may need to edit the "
+            "CMakeCache to delete the option. See /doc/building.txt for "
+            "details.")
+endif()
 
-set(waffle_install_docdir "${CMAKE_INSTALL_PREFIX}/share/doc/waffle-${waffle_major_version}"
-    CACHE PATH "Directory where documentation will be installed")
+if(DEFINED waffle_install_libdir)
+    message(FATAL_ERROR "Option waffle_install_libdir has been "
+            "replaced by CMAKE_INSTALL_LIBDIR. You may need to edit the "
+            "CMakeCache to delete the option. See /doc/building.txt for "
+            "details.")
+endif()
+
+if(DEFINED waffle_install_docdir)
+    message(FATAL_ERROR "Option waffle_install_docdir has been "
+            "replaced by CMAKE_INSTALL_DOCDIR. You may need to edit the "
+            "CMakeCache to delete the option. See /doc/building.txt for "
+            "details.")
+endif()
 
 #
 # Set internal options.
@@ -279,7 +327,7 @@ endif()
 configure_file(waffle.pc.in ${waffle_libname}.pc @ONLY)
 
 install(FILES ${CMAKE_BINARY_DIR}/${waffle_libname}.pc
-        DESTINATION ${waffle_install_libdir}/pkgconfig)
+        DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}/pkgconfig)
 
 # ------------------------------------------------------------------------------
 # Print summary
@@ -336,7 +384,8 @@ message("    CFLAGS_debug: ${CMAKE_C_FLAGS_DEBUG}")
 message("    CFLAGS_release: ${CMAKE_C_FLAGS_RELEASE}")
 message("")
 message("Install paths:")
-message("    includedir: ${waffle_install_includedir}")
-message("    libdir: ${waffle_install_libdir}")
-message("    docdir: ${waffle_install_docdir}")
+message("    CMAKE_INSTALL_PREFIX:          ${CMAKE_INSTALL_PREFIX}")
+message("    CMAKE_INSTALL_INCLUDEDIR:      ${CMAKE_INSTALL_INCLUDEDIR}")
+message("    CMAKE_INSTALL_LIBDIR:          ${CMAKE_INSTALL_LIBDIR}")
+message("    CMAKE_INSTALL_DOCDIR:          ${CMAKE_INSTALL_DOCDIR}")
 message("-----------------------------------------------")

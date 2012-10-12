@@ -1,7 +1,7 @@
 install(FILES Makefile.example
               gl_basic.c
               simple-x11-egl.c
-        DESTINATION ${waffle_install_docdir}/examples)
+        DESTINATION "${CMAKE_INSTALL_FULL_DOCDIR}/examples")
 
 # ----------------------------------------------------------------------------
 # Target: simple-x11-egl (executable)

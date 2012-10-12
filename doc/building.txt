@@ -30,6 +30,25 @@ CMake builtin options:
     LIBRARY_PATH and CFLAGS. You need to set some of the options below to get
     that behavior.
 
+    - CMAKE_INSTALL_PREFIX
+        [default=/usr/local]
+        Equivalent to autoconf's --prefix.
+
+    - CMAKE_INSTALL_INCLUDEDIR
+        [default=include]
+        Equivalent to autoconf's --includedir.
+        Relative paths are interpreted relative to CMAKE_INSTALL_PREFIX.
+
+    - CMAKE_INSTALL_LIBDIR
+        [default=lib or lib64, system-dependent]
+        Equivalent to autoconf's --libdir.
+        Relative paths are interpreted relative to CMAKE_INSTALL_PREFIX.
+
+    - CMAKE_INSTALL_DOCDIR
+        [default=${CMAKE_INSTALL_DATAROOTDIR}/doc/waffle-${MAJOR_VERSION}]
+        Equivalent to autoconf's --docdir.
+        Relative paths are interpreted relative to CMAKE_INSTALL_PREFIX.
+
     - CMAKE_BUILD_TYPE
         [default=?; choices=debug,release]
         This affects compilation flags.
@@ -50,10 +69,6 @@ CMake builtin options:
         A semicolon-separated list of directories in which to search for
         libraries.
 
-    - CMAKE_INSTALL_PREFIX
-        [default=/usr/local]
-        Equivalent to autoconf's --prefix.
-
 Platform options;
 
     - waffle_has_glx
@@ -67,20 +82,6 @@ Platform options;
     - waffle_has_x11_egl
         [default=0] [choices=0,1]
         Build Waffle with support for X11/EGL.
-
-Install options:
-
-    - waffle_install_includedir
-        [default=${CMAKE_INSTALL_PREFIX}/include]
-        Directory where libraries will be instaled.
-
-    - waffle_install_libdir
-        [default=${CMAKE_INSTALL_PREFIX}/lib]
-        Directory where libraries will be installed.
-
-    - waffle_install_docdir
-        [default=${CMAKE_INSTALL_PREFIX}/share/doc/waffle-MAJOR]
-        Directory where documentation will be instaled.
 
 Miscellaneous options:
 

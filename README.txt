@@ -36,7 +36,8 @@ license:        BSD [http://www.opensource.org/licenses/bsd-license.php]
 Installing
 ==========
 
-On Linux, you likely want to do this:
+On Linux, you likely want to the command below. It will install into
+/usr/local.
 
     cmake \
         -DCMAKE_LIBRARY_PATH=$(echo $LIBRARY_PATH | sed 's/:/;/g') \
@@ -46,6 +47,17 @@ On Linux, you likely want to do this:
     make
     make check
     make install
+
+If you need to install into a custom location, autoconf-esque variables such
+as CMAKE_INSTALL_LIBDIR are supported. For example,
+
+    cmake \
+        -DCMAKE_INSTALL_PREFIX=$HOME \
+        -DCMAKE_INSTALL_LIBDIR=lib \
+        -DCMAKE_LIBRARY_PATH=$(echo $LIBRARY_PATH | sed 's/:/;/g') \
+        -Dwaffle_has_glx=1 \
+        -Dwaffle_has_x11_egl=1 \
+        $WAFFLE_SOURCE_DIR
 
 For full details on configuring, building, and installing Waffle, see
 /doc/building.txt.
