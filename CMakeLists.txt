@@ -59,36 +59,16 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules")
 include(CheckThreadLocalStorage)
 
 #
-# ***Before*** including GNUInstallDirs, set CMAKE_INSTALL_DATAROOTDIR and
-# CMAKE_INSTALL_DOCDIR.
+# Include GNUInstallDirs.
 #
-# The default value of CMAKE_INSTALL_DOCDIR is "DATAROOTDIR/doc/PROJECT_NAME",
+# Hackishly rename PROJECT_NAME temporarily in order to workaround the default
+# of CMAKE_INSTALL_DOCDIR. The default value is "DATAROOTDIR/doc/PROJECT_NAME",
 # which evaluates to the undesirable "DATAROOTDIR/doc/waffle". Instead, we
 # want to install to "DATAROOTDIR/doc/waffle-MAJOR_VERSION".
 #
-# From the GNUInstallDirs documentation:
-#
-#       If the includer  does  not  define  a  value  [for a CMAKE_INSTALL
-#       variable, then a] default will  be  used  and  the  value  will appear
-#       in the cache for editing by the user.
-#
-
-if(NOT DEFINED CMAKE_INSTALL_DATAROOTDIR)
-    set(CMAKE_INSTALL_DATAROOTDIR "share" CACHE PATH "read-only architecture-independent data root (share)")
-endif()
-
-#
-# The default value of DOCDIR is relative to DATAROOTDIR. Store an empty value
-# in the cache and store the default in a local variables if the cache value
-# is non-empty. This ensures that DOCDIR is automatically updated with
-# DATAROOTDIR changes.
-#
-if(NOT CMAKE_INSTALL_DOCDIR)
-    set(CMAKE_INSTALL_DOCDIR "" CACHE PATH "documentation root (DATAROOTDIR/doc/waffle-${waffle_major_version})")
-    set(CMAKE_INSTALL_DOCDIR "${CMAKE_INSTALL_DATAROOTDIR}/doc/waffle-${waffle_major_version}")
-endif()
-
+set(PROJECT_NAME "waffle-${waffle_major_version}")
 include(GNUInstallDirs)
+set(PROJECT_NAME "waffle")
 
 
 # ------------------------------------------------------------------------------
