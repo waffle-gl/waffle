@@ -4,8 +4,8 @@ include $(CLEAR_VARS)
 waffle_top := $(LOCAL_PATH)
 
 waffle_major_version := 1
-waffle_minor_version := 0
-waffle_patch_version := 1
+waffle_minor_version := 1
+waffle_patch_version := 0
 
 waffle_android_major_version := $(word 1, $(subst ., , $(PLATFORM_VERSION)))
 waffle_android_minor_version := $(word 2, $(subst ., , $(PLATFORM_VERSION)))
