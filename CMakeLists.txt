@@ -35,6 +35,8 @@ cmake_minimum_required(VERSION 2.8)
 #
 # Release versions.
 #
+# !!! Must be updated in tandem with the Android.mk !!!
+#
 set(waffle_major_version "1")
 set(waffle_minor_version "1")
 set(waffle_patch_version "0")
