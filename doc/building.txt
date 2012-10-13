@@ -71,6 +71,10 @@ CMake builtin options:
 
 Platform options;
 
+    - waffle_has_gbm
+        [default=0] [choices=0,1]
+        Build Waffle with support for GBM.
+
     - waffle_has_glx
         [default=0] [choices=0,1]
         Build Waffle with support for GLX.
@@ -87,7 +91,8 @@ Miscellaneous options:
 
     - waffle_build_tests
         [default=1; choices=0,1]
-        Build the unit tests and functional tests ran by `make check`.
+        Build the unit tests and functional tests ran by `make check` and
+        `make check-func`.
 
     - waffle_build_examples
         [default=1; choices=0,1]
@@ -112,10 +117,12 @@ Generic targets:
         Build everything.
 
     - check
-        Run all tests, unit tests and functional tests.
+        Run unit tests.
+
+    - check-func
+        Run functional tests as well as unit tests.
 
     - install
-        Install libraries and headers.
 
 Libraries:
 
@@ -133,6 +140,7 @@ Test programs:
 Example programs:
 
     - gl_basic
+    - simple-x11-egl
 
 CMake targets:
 
