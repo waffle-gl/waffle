@@ -58,32 +58,62 @@ waffle_init_parse_attrib_list(
         switch (attr) {
             case WAFFLE_PLATFORM:
                 switch (value) {
+                    #define CASE_DEFINED_PLATFORM(name) \
+                        case WAFFLE_PLATFORM_##name : \
+                            found_platform = true; \
+                            *platform = value; \
+                            break;
+
+                    #define CASE_UNDEFINED_PLATFORM(name) \
+                        case WAFFLE_PLATFORM_##name : \
+                            wcore_errorf(WAFFLE_ERROR_BUILT_WITHOUT_SUPPORT, \
+                                         "waffle was built without support for WAFFLE_PLATFORM_" #name); \
+                            return false;
+
 #ifdef WAFFLE_HAS_ANDROID
-                    case WAFFLE_PLATFORM_ANDROID:
+                    CASE_DEFINED_PLATFORM(ANDROID)
+#else
+                    CASE_UNDEFINED_PLATFORM(ANDROID)
 #endif
+
 #ifdef WAFFLE_HAS_CGL
-                    case WAFFLE_PLATFORM_CGL:
+                    CASE_DEFINED_PLATFORM(CGL)
+#else
+                    CASE_UNDEFINED_PLATFORM(CGL)
 #endif
+
 #ifdef WAFFLE_HAS_GLX
-                    case WAFFLE_PLATFORM_GLX:
+                    CASE_DEFINED_PLATFORM(GLX)
+#else
+                    CASE_UNDEFINED_PLATFORM(GLX)
 #endif
+
 #ifdef WAFFLE_HAS_WAYLAND
-                    case  WAFFLE_PLATFORM_WAYLAND:
+                    CASE_DEFINED_PLATFORM(WAYLAND)
+#else
+                    CASE_UNDEFINED_PLATFORM(WAYLAND)
 #endif
+
 #ifdef WAFFLE_HAS_X11_EGL
-                    case WAFFLE_PLATFORM_X11_EGL:
+                    CASE_DEFINED_PLATFORM(X11_EGL)
+#else
+                    CASE_UNDEFINED_PLATFORM(X11_EGL)
 #endif
+
 #ifdef WAFFLE_HAS_GBM
-                    case WAFFLE_PLATFORM_GBM:
+                    CASE_DEFINED_PLATFORM(GBM)
+#else
+                    CASE_UNDEFINED_PLATFORM(GBM)
 #endif
-                        found_platform = true;
-                        *platform = value;
-                        break;
+
                     default:
                         wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
                                      "WAFFLE_PLATFORM has bad value 0x%x",
                                      value);
                         return false;
+
+                    #undef CASE_DEFINED_PLATFORM
+                    #undef CASE_UNDEFINED_PLATFORM
                 }
 
                 break;
