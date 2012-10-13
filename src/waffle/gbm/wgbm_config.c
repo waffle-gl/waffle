@@ -57,10 +57,6 @@ wgbm_config_destroy(struct wcore_config *wc_self)
 static uint32_t
 get_gbm_format(const struct wcore_config_attrs *attrs)
 {
-    if (attrs->depth_size > 0 || attrs->stencil_size > 0) {
-        return 0;
-    }
-
     if (attrs->red_size > 8 || attrs->blue_size > 8 ||
         attrs->green_size > 8 || attrs->alpha_size > 8) {
         return 0;
