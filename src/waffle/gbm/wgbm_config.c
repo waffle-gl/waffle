@@ -35,10 +35,10 @@
 
 #include "waffle.h"
 
-#include "gbm_config.h"
-#include "gbm_display.h"
-#include "gbm_platform.h"
-#include "gbm_priv_egl.h"
+#include "wgbm_config.h"
+#include "wgbm_display.h"
+#include "wgbm_platform.h"
+#include "wgbm_priv_egl.h"
 
 static const struct wcore_config_vtbl wgbm_config_wcore_vtbl;
 

@@ -30,10 +30,10 @@
 #include <waffle/core/wcore_config.h>
 #include <waffle/core/wcore_error.h>
 
-#include "gbm_config.h"
-#include "gbm_context.h"
-#include "gbm_display.h"
-#include "gbm_priv_egl.h"
+#include "wgbm_config.h"
+#include "wgbm_context.h"
+#include "wgbm_display.h"
+#include "wgbm_priv_egl.h"
 
 static const struct wcore_context_vtbl wgbm_context_wcore_vtbl;
 

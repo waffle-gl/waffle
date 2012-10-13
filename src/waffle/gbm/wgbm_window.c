@@ -33,10 +33,10 @@
 #include <waffle/core/wcore_error.h>
 #include <waffle_gbm.h>
 
-#include "gbm_config.h"
-#include "gbm_display.h"
-#include "gbm_priv_egl.h"
-#include "gbm_window.h"
+#include "wgbm_config.h"
+#include "wgbm_display.h"
+#include "wgbm_priv_egl.h"
+#include "wgbm_window.h"
 
 static const struct wcore_window_vtbl wgbm_window_wcore_vtbl;
 

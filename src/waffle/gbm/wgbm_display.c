@@ -39,9 +39,9 @@
 #include <waffle/core/wcore_error.h>
 #include <waffle/core/wcore_display.h>
 
-#include "gbm_display.h"
-#include "gbm_platform.h"
-#include "gbm_priv_egl.h"
+#include "wgbm_display.h"
+#include "wgbm_platform.h"
+#include "wgbm_priv_egl.h"
 
 static const struct wcore_display_vtbl wgbm_display_wcore_vtbl;
 

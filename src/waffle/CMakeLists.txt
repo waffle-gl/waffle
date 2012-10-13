@@ -113,12 +113,12 @@ endif()
 
 if(waffle_has_gbm)
     list(APPEND waffle_sources
-        gbm/gbm_config.c
-        gbm/gbm_context.c
-        gbm/gbm_display.c
-        gbm/gbm_platform.c
-        gbm/gbm_priv_egl.c
-        gbm/gbm_window.c
+        gbm/wgbm_config.c
+        gbm/wgbm_context.c
+        gbm/wgbm_display.c
+        gbm/wgbm_platform.c
+        gbm/wgbm_priv_egl.c
+        gbm/wgbm_window.c
     )
     list(APPEND waffle_libdeps
         ${waffle_gbm_library}

@@ -31,12 +31,12 @@
 #include <waffle/core/wcore_error.h>
 #include <waffle/linux/linux_platform.h>
 
-#include "gbm_config.h"
-#include "gbm_context.h"
-#include "gbm_display.h"
-#include "gbm_platform.h"
-#include "gbm_priv_egl.h"
-#include "gbm_window.h"
+#include "wgbm_config.h"
+#include "wgbm_context.h"
+#include "wgbm_display.h"
+#include "wgbm_platform.h"
+#include "wgbm_priv_egl.h"
+#include "wgbm_window.h"
 
 static const struct wcore_platform_vtbl wgbm_platform_wcore_vtbl;
 

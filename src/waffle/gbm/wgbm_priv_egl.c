@@ -25,5 +25,5 @@
 
 #define __GBM__ 1
 
-#include "gbm_priv_egl.h"
+#include "wgbm_priv_egl.h"
 #include <waffle/egl/egl_native_template.c>
