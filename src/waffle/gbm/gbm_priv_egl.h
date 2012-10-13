@@ -25,6 +25,6 @@
 
 #pragma once
 
-#define NATIVE_EGL(basename) gbm_egl_##basename
+#define NATIVE_EGL(basename) wgbm_egl_##basename
 
 #include <waffle/egl/egl.h>

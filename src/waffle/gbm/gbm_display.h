@@ -37,7 +37,7 @@
 struct wcore_platform;
 struct gbm_device;
 
-struct gbm_display {
+struct wgbm_display {
     struct wcore_display wcore;
 
     struct gbm_device *gbm_device;
@@ -45,15 +45,15 @@ struct gbm_display {
     EGLDisplay egl;
 };
 
-DEFINE_CONTAINER_CAST_FUNC(gbm_display,
-                           struct gbm_display,
+DEFINE_CONTAINER_CAST_FUNC(wgbm_display,
+                           struct wgbm_display,
                            struct wcore_display,
                            wcore)
 
 struct wcore_display*
-gbm_display_connect(struct wcore_platform *wc_plat,
-                    const char *name);
+wgbm_display_connect(struct wcore_platform *wc_plat,
+                     const char *name);
 
 void
-gbm_display_fill_native(struct gbm_display *self,
-                        struct waffle_gbm_display *n_dpy);
+wgbm_display_fill_native(struct wgbm_display *self,
+                         struct waffle_gbm_display *n_dpy);

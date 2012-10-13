@@ -34,7 +34,7 @@
 
 struct wcore_platform;
 
-struct gbm_window {
+struct wgbm_window {
     struct wcore_window wcore;
 
     struct gbm_surface *gbm_surface;
@@ -42,12 +42,12 @@ struct gbm_window {
     EGLSurface egl;
 };
 
-DEFINE_CONTAINER_CAST_FUNC(gbm_window,
-                           struct gbm_window,
+DEFINE_CONTAINER_CAST_FUNC(wgbm_window,
+                           struct wgbm_window,
                            struct wcore_window,
                            wcore)
 struct wcore_window*
-gbm_window_create(struct wcore_platform *wc_plat,
-                  struct wcore_config *wc_config,
-                  int width,
-                  int height);
+wgbm_window_create(struct wcore_platform *wc_plat,
+                   struct wcore_config *wc_config,
+                   int width,
+                   int height);

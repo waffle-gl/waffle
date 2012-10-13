@@ -36,7 +36,7 @@
 struct wcore_config_attrs;
 struct wcore_platform;
 
-struct gbm_config {
+struct wgbm_config {
     struct wcore_config wcore;
 
     EGLConfig egl;
@@ -49,12 +49,12 @@ struct gbm_config {
     uint32_t gbm_format;
 };
 
-DEFINE_CONTAINER_CAST_FUNC(gbm_config,
-                           struct gbm_config,
+DEFINE_CONTAINER_CAST_FUNC(wgbm_config,
+                           struct wgbm_config,
                            struct wcore_config,
                            wcore)
 
 struct wcore_config*
-gbm_config_choose(struct wcore_platform *wc_plat,
-                  struct wcore_display *wc_dpy,
-                  const struct wcore_config_attrs *attrs);
+wgbm_config_choose(struct wcore_platform *wc_plat,
+                   struct wcore_display *wc_dpy,
+                   const struct wcore_config_attrs *attrs);

@@ -35,15 +35,15 @@
 
 struct linux_platform;
 
-struct gbm_platform {
+struct wgbm_platform {
     struct wcore_platform wcore;
     struct linux_platform *linux;
 };
 
-DEFINE_CONTAINER_CAST_FUNC(gbm_platform,
-                           struct gbm_platform,
+DEFINE_CONTAINER_CAST_FUNC(wgbm_platform,
+                           struct wgbm_platform,
                            struct wcore_platform,
                            wcore)
 
 struct wcore_platform*
-gbm_platform_create(void);
+wgbm_platform_create(void);

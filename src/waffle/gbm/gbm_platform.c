@@ -38,12 +38,12 @@
 #include "gbm_priv_egl.h"
 #include "gbm_window.h"
 
-static const struct wcore_platform_vtbl gbm_platform_wcore_vtbl;
+static const struct wcore_platform_vtbl wgbm_platform_wcore_vtbl;
 
 static bool
-gbm_platform_destroy(struct wcore_platform *wc_self)
+wgbm_platform_destroy(struct wcore_platform *wc_self)
 {
-    struct gbm_platform *self = gbm_platform(wc_self);
+    struct wgbm_platform *self = wgbm_platform(wc_self);
     bool ok = true;
 
     if (!self)
@@ -60,9 +60,9 @@ gbm_platform_destroy(struct wcore_platform *wc_self)
 }
 
 struct wcore_platform*
-gbm_platform_create(void)
+wgbm_platform_create(void)
 {
-    struct gbm_platform *self;
+    struct wgbm_platform *self;
     bool ok = true;
 
     self = wcore_calloc(sizeof(*self));
@@ -79,58 +79,58 @@ gbm_platform_create(void)
 
     setenv("EGL_PLATFORM", "drm", true);
 
-    self->wcore.vtbl = &gbm_platform_wcore_vtbl;
+    self->wcore.vtbl = &wgbm_platform_wcore_vtbl;
     return &self->wcore;
 
 error:
-    gbm_platform_destroy(&self->wcore);
+    wgbm_platform_destroy(&self->wcore);
     return NULL;
 }
 
 static bool
-gbm_platform_make_current(struct wcore_platform *wc_self,
-                          struct wcore_display *wc_dpy,
-                          struct wcore_window *wc_window,
-                          struct wcore_context *wc_ctx)
+wgbm_platform_make_current(struct wcore_platform *wc_self,
+                           struct wcore_display *wc_dpy,
+                           struct wcore_window *wc_window,
+                           struct wcore_context *wc_ctx)
 {
-    return egl_make_current(gbm_display(wc_dpy)->egl,
-                            wc_window ? gbm_window(wc_window)->egl : NULL,
-                            wc_ctx ? gbm_context(wc_ctx)->egl : NULL);
+    return egl_make_current(wgbm_display(wc_dpy)->egl,
+                            wc_window ? wgbm_window(wc_window)->egl : NULL,
+                            wc_ctx ? wgbm_context(wc_ctx)->egl : NULL);
 }
 
 static void*
-gbm_platform_get_proc_address(struct wcore_platform *wc_self,
-                              const char *name)
+wgbm_platform_get_proc_address(struct wcore_platform *wc_self,
+                               const char *name)
 {
     return eglGetProcAddress(name);
 }
 
 static bool
-gbm_platform_dl_can_open(struct wcore_platform *wc_self,
-                         int32_t waffle_dl)
+wgbm_platform_dl_can_open(struct wcore_platform *wc_self,
+                          int32_t waffle_dl)
 {
-    return linux_platform_dl_can_open(gbm_platform(wc_self)->linux,
+    return linux_platform_dl_can_open(wgbm_platform(wc_self)->linux,
                                       waffle_dl);
 }
 
 static void*
-gbm_platform_dl_sym(struct wcore_platform *wc_self,
-                    int32_t waffle_dl,
-                    const char *name)
+wgbm_platform_dl_sym(struct wcore_platform *wc_self,
+                     int32_t waffle_dl,
+                     const char *name)
 {
-    return linux_platform_dl_sym(gbm_platform(wc_self)->linux,
-                                                  waffle_dl,
-                                                  name);
+    return linux_platform_dl_sym(wgbm_platform(wc_self)->linux,
+                                 waffle_dl,
+                                 name);
 }
 
-static const struct wcore_platform_vtbl gbm_platform_wcore_vtbl = {
-    .destroy = gbm_platform_destroy,
-    .connect_to_display = gbm_display_connect,
-    .choose_config = gbm_config_choose,
-    .create_context = gbm_context_create,
-    .create_window = gbm_window_create,
-    .make_current = gbm_platform_make_current,
-    .get_proc_address = gbm_platform_get_proc_address,
-    .dl_can_open = gbm_platform_dl_can_open,
-    .dl_sym = gbm_platform_dl_sym,
+static const struct wcore_platform_vtbl wgbm_platform_wcore_vtbl = {
+    .destroy = wgbm_platform_destroy,
+    .connect_to_display = wgbm_display_connect,
+    .choose_config = wgbm_config_choose,
+    .create_context = wgbm_context_create,
+    .create_window = wgbm_window_create,
+    .make_current = wgbm_platform_make_current,
+    .get_proc_address = wgbm_platform_get_proc_address,
+    .dl_can_open = wgbm_platform_dl_can_open,
+    .dl_sym = wgbm_platform_dl_sym,
 };

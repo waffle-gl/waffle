@@ -35,19 +35,19 @@
 #include "gbm_display.h"
 #include "gbm_priv_egl.h"
 
-static const struct wcore_context_vtbl gbm_context_wcore_vtbl;
+static const struct wcore_context_vtbl wgbm_context_wcore_vtbl;
 
 static bool
-gbm_context_destroy(struct wcore_context *wc_self)
+wgbm_context_destroy(struct wcore_context *wc_self)
 {
-    struct gbm_context *self = gbm_context(wc_self);
+    struct wgbm_context *self = wgbm_context(wc_self);
     bool ok = true;
 
     if (!self)
         return ok;
 
     if (self->egl)
-        ok &= egl_destroy_context(gbm_display(wc_self->display)->egl,
+        ok &= egl_destroy_context(wgbm_display(wc_self->display)->egl,
                                   self->egl);
 
     ok &= wcore_context_teardown(wc_self);
@@ -56,14 +56,14 @@ gbm_context_destroy(struct wcore_context *wc_self)
 }
 
 struct wcore_context*
-gbm_context_create(struct wcore_platform *wc_plat,
-                   struct wcore_config *wc_config,
-                   struct wcore_context *wc_share_ctx)
+wgbm_context_create(struct wcore_platform *wc_plat,
+                    struct wcore_config *wc_config,
+                    struct wcore_context *wc_share_ctx)
 {
-    struct gbm_context *self;
-    struct gbm_config *config = gbm_config(wc_config);
-    struct gbm_context *share_ctx = gbm_context(wc_share_ctx);
-    struct gbm_display *dpy = gbm_display(wc_config->display);
+    struct wgbm_context *self;
+    struct wgbm_config *config = wgbm_config(wc_config);
+    struct wgbm_context *share_ctx = wgbm_context(wc_share_ctx);
+    struct wgbm_display *dpy = wgbm_display(wc_config->display);
     bool ok = true;
 
     self = wcore_calloc(sizeof(*self));
@@ -83,32 +83,32 @@ gbm_context_create(struct wcore_platform *wc_plat,
     if (!self->egl)
         goto error;
 
-    self->wcore.vtbl = &gbm_context_wcore_vtbl;
+    self->wcore.vtbl = &wgbm_context_wcore_vtbl;
     return &self->wcore;
 
 error:
-    gbm_context_destroy(&self->wcore);
+    wgbm_context_destroy(&self->wcore);
     return NULL;
 }
 
 static union waffle_native_context*
-gbm_context_get_native(struct wcore_context *wc_self)
+wgbm_context_get_native(struct wcore_context *wc_self)
 {
-    struct gbm_context *self = gbm_context(wc_self);
-    struct gbm_display *dpy = gbm_display(wc_self->display);
+    struct wgbm_context *self = wgbm_context(wc_self);
+    struct wgbm_display *dpy = wgbm_display(wc_self->display);
     union waffle_native_context *n_ctx;
 
     WCORE_CREATE_NATIVE_UNION(n_ctx, gbm);
     if (n_ctx == NULL)
         return NULL;
 
-    gbm_display_fill_native(dpy, &n_ctx->gbm->display);
+    wgbm_display_fill_native(dpy, &n_ctx->gbm->display);
     n_ctx->gbm->egl_context = self->egl;
 
     return n_ctx;
 }
 
-static const struct wcore_context_vtbl gbm_context_wcore_vtbl = {
-    .destroy = gbm_context_destroy,
-    .get_native = gbm_context_get_native,
+static const struct wcore_context_vtbl wgbm_context_wcore_vtbl = {
+    .destroy = wgbm_context_destroy,
+    .get_native = wgbm_context_get_native,
 };

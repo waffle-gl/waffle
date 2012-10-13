@@ -38,19 +38,19 @@
 #include "gbm_priv_egl.h"
 #include "gbm_window.h"
 
-static const struct wcore_window_vtbl gbm_window_wcore_vtbl;
+static const struct wcore_window_vtbl wgbm_window_wcore_vtbl;
 
 static bool
-gbm_window_destroy(struct wcore_window *wc_self)
+wgbm_window_destroy(struct wcore_window *wc_self)
 {
-    struct gbm_window *self = gbm_window(wc_self);
-    struct gbm_display *dpy;
+    struct wgbm_window *self = wgbm_window(wc_self);
+    struct wgbm_display *dpy;
     bool ok = true;
 
     if (!self)
         return ok;
 
-    dpy = gbm_display(wc_self->display);
+    dpy = wgbm_display(wc_self->display);
 
     if (self->egl)
         ok &= egl_destroy_surface(dpy->egl, self->egl);
@@ -61,14 +61,14 @@ gbm_window_destroy(struct wcore_window *wc_self)
 }
 
 struct wcore_window*
-gbm_window_create(struct wcore_platform *wc_plat,
-                  struct wcore_config *wc_config,
-                  int width,
-                  int height)
+wgbm_window_create(struct wcore_platform *wc_plat,
+                   struct wcore_config *wc_config,
+                   int width,
+                   int height)
 {
-    struct gbm_window *self;
-    struct gbm_config *config = gbm_config(wc_config);
-    struct gbm_display *dpy = gbm_display(wc_config->display);
+    struct wgbm_window *self;
+    struct wgbm_config *config = wgbm_config(wc_config);
+    struct wgbm_display *dpy = wgbm_display(wc_config->display);
     bool ok = true;
 
     self = wcore_calloc(sizeof(*self));
@@ -88,58 +88,58 @@ gbm_window_create(struct wcore_platform *wc_plat,
         goto error;
     }
 
-    self->egl = gbm_egl_create_window_surface(dpy->egl,
-                                              config->egl,
-                                              self->gbm_surface,
-                                              config->egl_render_buffer);
+    self->egl = wgbm_egl_create_window_surface(dpy->egl,
+                                               config->egl,
+                                               self->gbm_surface,
+                                               config->egl_render_buffer);
     if (!self->egl)
         goto error;
 
-    self->wcore.vtbl = &gbm_window_wcore_vtbl;
+    self->wcore.vtbl = &wgbm_window_wcore_vtbl;
     return &self->wcore;
 
 error:
-    gbm_window_destroy(&self->wcore);
+    wgbm_window_destroy(&self->wcore);
     return NULL;
 }
 
 
 static bool
-gbm_window_show(struct wcore_window *wc_self)
+wgbm_window_show(struct wcore_window *wc_self)
 {
     return true;
 }
 
 static bool
-gbm_window_swap_buffers(struct wcore_window *wc_self)
+wgbm_window_swap_buffers(struct wcore_window *wc_self)
 {
-    struct gbm_window *self = gbm_window(wc_self);
-    struct gbm_display *dpy = gbm_display(wc_self->display);
+    struct wgbm_window *self = wgbm_window(wc_self);
+    struct wgbm_display *dpy = wgbm_display(wc_self->display);
 
     return egl_swap_buffers(dpy->egl, self->egl);
 }
 
 static union waffle_native_window*
-gbm_window_get_native(struct wcore_window *wc_self)
+wgbm_window_get_native(struct wcore_window *wc_self)
 {
-    struct gbm_window *self = gbm_window(wc_self);
-    struct gbm_display *dpy = gbm_display(wc_self->display);
+    struct wgbm_window *self = wgbm_window(wc_self);
+    struct wgbm_display *dpy = wgbm_display(wc_self->display);
     union waffle_native_window *n_window;
 
     WCORE_CREATE_NATIVE_UNION(n_window, gbm);
     if (n_window == NULL)
         return NULL;
 
-    gbm_display_fill_native(dpy, &n_window->gbm->display);
+    wgbm_display_fill_native(dpy, &n_window->gbm->display);
     n_window->gbm->egl_surface = self->egl;
     n_window->gbm->gbm_surface = self->gbm_surface;
 
     return n_window;
 }
 
-static const struct wcore_window_vtbl gbm_window_wcore_vtbl = {
-    .destroy = gbm_window_destroy,
-    .get_native = gbm_window_get_native,
-    .show = gbm_window_show,
-    .swap_buffers = gbm_window_swap_buffers,
+static const struct wcore_window_vtbl wgbm_window_wcore_vtbl = {
+    .destroy = wgbm_window_destroy,
+    .get_native = wgbm_window_get_native,
+    .show = wgbm_window_show,
+    .swap_buffers = wgbm_window_swap_buffers,
 };

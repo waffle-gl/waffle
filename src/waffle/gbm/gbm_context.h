@@ -35,17 +35,17 @@
 struct wcore_config;
 struct wcore_platform;
 
-struct gbm_context {
+struct wgbm_context {
     struct wcore_context wcore;
     EGLContext egl;
 };
 
-DEFINE_CONTAINER_CAST_FUNC(gbm_context,
-                           struct gbm_context,
+DEFINE_CONTAINER_CAST_FUNC(wgbm_context,
+                           struct wgbm_context,
                            struct wcore_context,
                            wcore)
 
 struct wcore_context*
-gbm_context_create(struct wcore_platform *wc_plat,
-                   struct wcore_config *wc_config,
-                   struct wcore_context *wc_share_ctx);
+wgbm_context_create(struct wcore_platform *wc_plat,
+                    struct wcore_config *wc_config,
+                    struct wcore_context *wc_share_ctx);

@@ -41,7 +41,7 @@ struct wcore_platform* droid_platform_create(void);
 struct wcore_platform* glx_platform_create(void);
 struct wcore_platform* wayland_platform_create(void);
 struct wcore_platform* xegl_platform_create(void);
-struct wcore_platform* gbm_platform_create(void);
+struct wcore_platform* wgbm_platform_create(void);
 
 static bool
 waffle_init_parse_attrib_list(
@@ -160,7 +160,7 @@ waffle_init_create_platform(int32_t waffle_platform)
 #endif
 #ifdef WAFFLE_HAS_GBM
         case WAFFLE_PLATFORM_GBM:
-            return gbm_platform_create();
+            return wgbm_platform_create();
 #endif
         default:
             assert(false);

@@ -40,12 +40,12 @@
 #include "gbm_platform.h"
 #include "gbm_priv_egl.h"
 
-static const struct wcore_config_vtbl gbm_config_wcore_vtbl;
+static const struct wcore_config_vtbl wgbm_config_wcore_vtbl;
 
 static bool
-gbm_config_destroy(struct wcore_config *wc_self)
+wgbm_config_destroy(struct wcore_config *wc_self)
 {
-    struct gbm_config *self = gbm_config(wc_self);
+    struct wgbm_config *self = wgbm_config(wc_self);
     bool ok = true;
 
     if (!self)
@@ -78,12 +78,12 @@ get_gbm_format(const struct wcore_config_attrs *attrs)
 }
 
 struct wcore_config*
-gbm_config_choose(struct wcore_platform *wc_plat,
-                  struct wcore_display *wc_dpy,
-                  const struct wcore_config_attrs *attrs)
+wgbm_config_choose(struct wcore_platform *wc_plat,
+                   struct wcore_display *wc_dpy,
+                   const struct wcore_config_attrs *attrs)
 {
-    struct gbm_config *self;
-    struct gbm_display *dpy = gbm_display(wc_dpy);
+    struct wgbm_config *self;
+    struct wgbm_display *dpy = wgbm_display(wc_dpy);
     bool ok = true;
 
     self = wcore_calloc(sizeof(*self));
@@ -110,32 +110,32 @@ gbm_config_choose(struct wcore_platform *wc_plat,
         goto error;
 
     self->waffle_context_api = attrs->context_api;
-    self->wcore.vtbl = &gbm_config_wcore_vtbl;
+    self->wcore.vtbl = &wgbm_config_wcore_vtbl;
     return &self->wcore;
 
 error:
-    gbm_config_destroy(&self->wcore);
+    wgbm_config_destroy(&self->wcore);
     return NULL;
 }
 
 static union waffle_native_config*
-gbm_config_get_native(struct wcore_config *wc_self)
+wgbm_config_get_native(struct wcore_config *wc_self)
 {
-    struct gbm_config *self = gbm_config(wc_self);
-    struct gbm_display *dpy = gbm_display(wc_self->display);
+    struct wgbm_config *self = wgbm_config(wc_self);
+    struct wgbm_display *dpy = wgbm_display(wc_self->display);
     union waffle_native_config *n_config;
 
     WCORE_CREATE_NATIVE_UNION(n_config, gbm);
     if (n_config == NULL)
         return NULL;
 
-    gbm_display_fill_native(dpy, &n_config->gbm->display);
+    wgbm_display_fill_native(dpy, &n_config->gbm->display);
     n_config->gbm->egl_config = self->egl;
 
     return n_config;
 }
 
-static const struct wcore_config_vtbl gbm_config_wcore_vtbl = {
-    .destroy = gbm_config_destroy,
-    .get_native = gbm_config_get_native,
+static const struct wcore_config_vtbl wgbm_config_wcore_vtbl = {
+    .destroy = wgbm_config_destroy,
+    .get_native = wgbm_config_get_native,
 };

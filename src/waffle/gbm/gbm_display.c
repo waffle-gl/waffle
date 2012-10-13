@@ -43,12 +43,12 @@
 #include "gbm_platform.h"
 #include "gbm_priv_egl.h"
 
-static const struct wcore_display_vtbl gbm_display_wcore_vtbl;
+static const struct wcore_display_vtbl wgbm_display_wcore_vtbl;
 
 static bool
-gbm_display_destroy(struct wcore_display *wc_self)
+wgbm_display_destroy(struct wcore_display *wc_self)
 {
-    struct gbm_display *self = gbm_display(wc_self);
+    struct wgbm_display *self = wgbm_display(wc_self);
     bool ok = true;
     int fd;
 
@@ -70,7 +70,7 @@ gbm_display_destroy(struct wcore_display *wc_self)
 }
 
 static int
-gbm_get_fd(void)
+wgbm_get_fd(void)
 {
     struct udev *ud;
     struct udev_enumerate *en;
@@ -100,10 +100,10 @@ gbm_get_fd(void)
 }
 
 struct wcore_display*
-gbm_display_connect(struct wcore_platform *wc_plat,
-                    const char *name)
+wgbm_display_connect(struct wcore_platform *wc_plat,
+                     const char *name)
 {
-    struct gbm_display *self;
+    struct wgbm_display *self;
     bool ok = true;
     int fd;
 
@@ -118,7 +118,7 @@ gbm_display_connect(struct wcore_platform *wc_plat,
     if (name != NULL) {
         fd = open(name, O_RDWR | O_CLOEXEC);
     } else {
-        fd = gbm_get_fd();
+        fd = wgbm_get_fd();
     }
 
     if (fd < 0) {
@@ -132,51 +132,51 @@ gbm_display_connect(struct wcore_platform *wc_plat,
         goto error;
     }
 
-    self->egl = gbm_egl_initialize(self->gbm_device);
+    self->egl = wgbm_egl_initialize(self->gbm_device);
     if (!self->egl)
         goto error;
 
-    self->wcore.vtbl = &gbm_display_wcore_vtbl;
+    self->wcore.vtbl = &wgbm_display_wcore_vtbl;
     return &self->wcore;
 
 error:
-    gbm_display_destroy(&self->wcore);
+    wgbm_display_destroy(&self->wcore);
     return NULL;
 }
 
 
 static bool
-gbm_display_supports_context_api(struct wcore_display *wc_self,
-                                 int32_t waffle_context_api)
+wgbm_display_supports_context_api(struct wcore_display *wc_self,
+                                  int32_t waffle_context_api)
 {
     return egl_supports_context_api(wc_self->platform, waffle_context_api);
 }
 
 void
-gbm_display_fill_native(struct gbm_display *self,
-                        struct waffle_gbm_display *n_dpy)
+wgbm_display_fill_native(struct wgbm_display *self,
+                         struct waffle_gbm_display *n_dpy)
 {
     n_dpy->gbm_device = self->gbm_device;
     n_dpy->egl_display = self->egl;
 }
 
 static union waffle_native_display*
-gbm_display_get_native(struct wcore_display *wc_self)
+wgbm_display_get_native(struct wcore_display *wc_self)
 {
-    struct gbm_display *self = gbm_display(wc_self);
+    struct wgbm_display *self = wgbm_display(wc_self);
     union waffle_native_display *n_dpy;
 
     WCORE_CREATE_NATIVE_UNION(n_dpy, gbm);
     if (n_dpy == NULL)
         return NULL;
 
-    gbm_display_fill_native(self, n_dpy->gbm);
+    wgbm_display_fill_native(self, n_dpy->gbm);
 
     return n_dpy;
 }
 
-static const struct wcore_display_vtbl gbm_display_wcore_vtbl = {
-    .destroy = gbm_display_destroy,
-    .get_native = gbm_display_get_native,
-    .supports_context_api = gbm_display_supports_context_api,
+static const struct wcore_display_vtbl wgbm_display_wcore_vtbl = {
+    .destroy = wgbm_display_destroy,
+    .get_native = wgbm_display_get_native,
+    .supports_context_api = wgbm_display_supports_context_api,
 };
