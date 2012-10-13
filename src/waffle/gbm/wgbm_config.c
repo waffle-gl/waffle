@@ -62,11 +62,10 @@ get_gbm_format(const struct wcore_config_attrs *attrs)
         return 0;
     }
 
-    if (attrs->alpha_size > 0) {
-        return GBM_FORMAT_ABGR8888;
-    } else {
+    if (attrs->alpha_size <= 0)
         return GBM_FORMAT_XRGB8888;
-    }
+    else if (attrs->alpha_size <= 8)
+        return GBM_FORMAT_ABGR8888;
 
     return 0;
 }
