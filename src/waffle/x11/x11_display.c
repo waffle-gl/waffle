@@ -60,6 +60,9 @@ x11_display_teardown(struct x11_display *self)
 
     assert(self);
 
+    if (!self->xlib)
+       return !error;
+
     error = XCloseDisplay(self->xlib);
     if (error)
         wcore_errorf(WAFFLE_ERROR_UNKNOWN, "XCloseDisplay failed");
