@@ -29,8 +29,8 @@
 
 #include <EGL/egl.h>
 
-#include <waffle/core/wcore_window.h>
-#include <waffle/core/wcore_util.h>
+#include "waffle/core/wcore_window.h"
+#include "waffle/core/wcore_util.h"
 
 struct wcore_platform;
 

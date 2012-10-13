@@ -30,10 +30,8 @@
 
 #include <gbm.h>
 
-#include <waffle/core/wcore_config_attrs.h>
-#include <waffle/core/wcore_error.h>
-
-#include "waffle.h"
+#include "waffle/core/wcore_config_attrs.h"
+#include "waffle/core/wcore_error.h"
 
 #include "wgbm_config.h"
 #include "wgbm_display.h"

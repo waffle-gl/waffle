@@ -28,8 +28,8 @@
 
 #include <stdlib.h>
 
-#include <waffle/core/wcore_error.h>
-#include <waffle/linux/linux_platform.h>
+#include "waffle/core/wcore_error.h"
+#include "waffle/linux/linux_platform.h"
 
 #include "wgbm_config.h"
 #include "wgbm_context.h"
