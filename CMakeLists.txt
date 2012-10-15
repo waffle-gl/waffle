@@ -275,6 +275,10 @@ add_subdirectory(doc)
 add_subdirectory(src)
 add_subdirectory(include)
 
+if(waffle_build_manpages)
+    add_subdirectory(man)
+endif()
+
 if(waffle_build_tests)
     add_subdirectory(tests)
 endif()
