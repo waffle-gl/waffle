@@ -1,0 +1,84 @@
+<?xml version='1.0'?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+  "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+
+<!--
+  Copyright Intel 2012
+
+  This manual page is licensed under the Creative Commons Attribution-ShareAlike 3.0 United States License (CC BY-SA 3.0
+  US). To view a copy of this license, visit http://creativecommons.org.license/by-sa/3.0/us.
+-->
+
+<refentry
+    id="waffle_native"
+    xmlns:xi="http://www.w3.org/2001/XInclude">
+
+  <!-- See http://www.docbook.org/tdg/en/html/refentry.html. -->
+
+  <refmeta>
+    <refentrytitle>waffle_wayland</refentrytitle>
+    <manvolnum>3</manvolnum>
+  </refmeta>
+
+  <refnamediv>
+    <refname>waffle_wayland</refname>
+    <refname>waffle_wayland_display</refname>
+    <refname>waffle_wayland_config</refname>
+    <refname>waffle_wayland_context</refname>
+    <refname>waffle_wayland_window</refname>
+    <refpurpose>Containers for underlying native Wayland objects</refpurpose>
+  </refnamediv>
+
+  <refentryinfo>
+    <title>Waffle Manual</title>
+    <productname>waffle</productname>
+    <xi:include href="common/author-chad.versace.xml"/>
+    <xi:include href="common/copyright.xml"/>
+    <xi:include href="common/legalnotice.xml"/>
+  </refentryinfo>
+
+  <refsynopsisdiv>
+
+    <synopsis language="C">
+#include &lt;waffle_wayland.h&gt;
+
+struct waffle_wayland_display {
+    struct wl_display *wl_display;
+    struct wl_compositor *wl_compositor;
+    struct wl_shell *wl_shell;
+    EGLDisplay egl_display;
+};
+
+struct waffle_wayland_config {
+    struct waffle_wayland_display display;
+    EGLConfig egl_config;
+};
+
+struct waffle_wayland_context {
+    struct waffle_wayland_display display;
+    EGLContext egl_context;
+};
+
+struct waffle_wayland_window {
+    struct waffle_wayland_display display;
+    struct wl_surface *wl_surface;
+    struct wl_shell_surface *wl_shell_surface;
+    struct wl_egl_window *wl_window;
+    EGLSurface egl_surface;
+};
+    </synopsis>
+  </refsynopsisdiv>
+
+  <refsect1>
+    <title>See Also</title>
+    <para>
+      <citerefentry><refentrytitle>waffle</refentrytitle><manvolnum>7</manvolnum></citerefentry>,
+      <citerefentry><refentrytitle>waffle_native</refentrytitle><manvolnum>3</manvolnum></citerefentry>
+    </para>
+  </refsect1>
+
+</refentry>
+
+<!--
+vim:tw=120 et ts=2 sw=2:
+-->

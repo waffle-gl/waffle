@@ -1,0 +1,552 @@
+<?xml version='1.0'?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+  "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+
+<!--
+  Copyright Intel 2012
+
+  This manual page is licensed under the Creative Commons Attribution-ShareAlike 3.0 United States License (CC BY-SA 3.0
+  US). To view a copy of this license, visit http://creativecommons.org.license/by-sa/3.0/us.
+-->
+
+<refentry
+    id="waffle_config"
+    xmlns:xi="http://www.w3.org/2001/XInclude">
+
+  <!-- See http://www.docbook.org/tdg/en/html/refentry.html. -->
+
+  <refmeta>
+    <refentrytitle>waffle_config</refentrytitle>
+    <manvolnum>3</manvolnum>
+  </refmeta>
+
+  <refnamediv>
+    <refname>waffle_config</refname>
+    <refname>waffle_config_choose</refname>
+    <refname>waffle_config_destroy</refname>
+    <refname>waffle_config_get_native</refname>
+    <refpurpose>class <classname>waffle_config</classname></refpurpose>
+  </refnamediv>
+
+  <refentryinfo>
+    <title>Waffle Manual</title>
+    <productname>waffle</productname>
+    <xi:include href="common/author-chad.versace.xml"/>
+    <xi:include href="common/copyright.xml"/>
+    <xi:include href="common/legalnotice.xml"/>
+  </refentryinfo>
+
+  <refsynopsisdiv>
+
+    <funcsynopsis language="C">
+
+      <funcsynopsisinfo>
+#include &lt;waffle.h&gt;
+
+struct waffle_config;
+      </funcsynopsisinfo>
+
+      <funcprototype>
+        <funcdef>struct waffle_config* <function>waffle_config_choose</function></funcdef>
+        <paramdef>struct waffle_display *<parameter>display</parameter></paramdef>
+        <paramdef>const int32_t <parameter>attrib_list</parameter>[]</paramdef>
+      </funcprototype>
+
+      <funcprototype>
+        <funcdef>bool <function>waffle_config_destroy</function></funcdef>
+        <paramdef>struct waffle_config *<parameter>self</parameter></paramdef>
+      </funcprototype>
+
+      <funcprototype>
+        <funcdef>union waffle_native_config* <function>waffle_config_get_native</function></funcdef>
+        <paramdef>struct waffle_config *<parameter>self</parameter></paramdef>
+      </funcprototype>
+
+    </funcsynopsis>
+  </refsynopsisdiv>
+
+  <refsect1>
+    <title>Description</title>
+
+    <variablelist>
+
+      <varlistentry>
+        <term>
+          <type>struct waffle_config</type>
+        </term>
+        <listitem>
+          <para>
+            An opaque type.
+          </para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+          <function>waffle_config_choose()</function>
+        </term>
+        <listitem>
+          <para>
+            Choose a config on <parameter>display</parameter> that satifisfies the set of attributes specified by
+            <parameter>attrib_list</parameter>. 
+          </para>
+
+          <para>
+            <parameter>attrib_list</parameter> consists of a zero-terminated sequence of name/value pairs.  If an
+            attribute is absent from <parameter>attrib_list</parameter>, then it assumes its default value.  If
+            <parameter>attrib_list</parameter> is null, then it is intrepreted the same as the empty list, which an
+            list that contains only the terminal zero.
+            See <xref linkend="sect.attributes"/> below for details which attributes that
+            <parameter>attrib_list</parameter> may contain.
+          </para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+          <function>waffle_config_destroy()</function>
+        </term>
+        <listitem>
+          <para>
+            Destroy the config and release its memory.
+          </para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+          <function>waffle_config_get_native()</function>
+        </term>
+        <listitem>
+          <para>
+            Get the config's underlying native objects. Use
+            <citerefentry><refentrytitle>free</refentrytitle><manvolnum>3</manvolnum></citerefentry> to deallocate the
+            returned pointer.
+            See <citerefentry><refentrytitle>waffle_native</refentrytitle><manvolnum>3</manvolnum></citerefentry>
+            for the definition of <type>union waffle_native_config</type>.
+          </para>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+  </refsect1>
+
+  <refsect1>
+    <title>Discussion</title>
+
+    <para>
+      The context attributes (<constant>WAFFLE_CONTEXT_*</constant>) have quirks that are specific to the native
+      platform. Waffle attempts to accomdate those quirks in a platform-neutral way as much as possible, but not all
+      quirks can be eliminated through a platform abstraction layer. The quirks are documented below in detail.
+    </para>
+    <para>
+      For example, one quirk that Waffle is able to accomodate is that some platforms require specification of context
+      attributes at different times.  GLX requires that the context attributes be specified at time of context creation
+      (<function>glXCreateContextAttribsARB</function>), but MacOS requires the attributes to be specified when choosing
+      a config (<function>CGLChoosePixelFormat</function>).  Therefore, Waffle is constrained by MacOS to require the
+      attributes at time of
+      <citerefentry><refentrytitle>waffle_config_choose</refentrytitle><manvolnum>3</manvolnum></citerefentry>
+    </para>
+    <para>
+      Waffle's method of working around these quirks still needs improvement.  It currently imposes some unnecessary
+      restrictions in its workarounds, restrictions that are documented in
+      <xref linkend="sect.attributes"/> below. And, of course, there are likely some
+      undiscovered bugs and undocumented behavior.
+    </para>
+    <para>
+      For additional documentation on the behavior of the context attributes on each platform, refer to the following:
+      for GLX, refer to the <ulink url="http://www.opengl.org/registry/doc/glx1.4.pdf">GLX 1.4 Specification</ulink>
+      and the extension specifications for
+      <ulink url="http://www.opengl.org/registry/specs/ARB/glx_create_context.txt">GLX_ARB_create_context_profile</ulink> and
+      <ulink url="http://www.opengl.org/registry/specs/EXT/glx_create_context_es2_profile.txt">GLX_EXT_create_context_es2_profile</ulink>;
+      for EGL, refer to the <ulink url="http://www.khronos.org/registry/egl/specs/eglspec.1.4.20110406.pdf">EGL 1.4 Specification</ulink>;
+      for CGL, refer to the documentation of <function>kCGLPFAOpenGLProfile</function> in the <ulink url="https://developer.apple.com/library/mac/#documentation/graphicsimaging/reference/CGL_OpenGL/Reference/reference.html">CGL Reference</ulink>.
+    </para>
+  </refsect1>
+
+  <refsect1
+      id="sect.attributes">
+
+    <title>Attributes</title>
+
+    <variablelist>
+
+      <varlistentry>
+        <term>
+          <constant>WAFFLE_CONTEXT_API</constant>
+        </term>
+        <listitem>
+          <para>
+            This is a required attribute; it has no default value. It must be one of:
+            <simplelist>
+              <member><constant>WAFFLE_CONTEXT_OPENGL</constant></member>
+              <member><constant>WAFFLE_CONTEXT_OPENGL_ES1</constant></member>
+              <member><constant>WAFFLE_CONTEXT_OPENGL_ES2</constant></member>
+            </simplelist>
+          </para>
+          <para>
+            The actual set of supported values depends on the native platform.  To check if the system supports a given
+            API, use
+            <citerefentry><refentrytitle>waffle_display_supports_context_api</refentrytitle><manvolnum>3</manvolnum></citerefentry>.
+            Invariants and expectations for each platform are discussed below.
+          </para>
+          <para>
+            On Android, <constant>WAFFLE_CONTEXT_OPENGL_ES1</constant> is always supported.  Beginning with Ice Cream
+            Sandwich (that is, Android 4.0), <constant>WAFFLE_CONTEXT_OPENGL_ES2</constant> is also supported.  Systems
+            with earlier versions of Android may optionally support <constant>WAFFLE_CONTEXT_OPENGL_ES2</constant>. No
+            other API is supported.
+          </para>
+          <para>
+            On GLX, <constant>WAFFLE_CONTEXT_OPENGL</constant> is always supported. The system may optionally support
+            additional APIs.
+          </para>
+          <para>
+            On X11/EGL and Wayland, no API is guaranteed to be supported. One must use
+            <citerefentry><refentrytitle>waffle_display_supports_context_api</refentrytitle><manvolnum>3</manvolnum></citerefentry>
+            to check for supported APIs.
+          </para>
+          <para>
+            On MacOS, only <constant>WAFFLE_CONTEXT_OPENGL</constant> is supported. This may change in the future if
+            Apple adds support for additional APIs.
+          </para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+          <simplelist type="inline">
+            <member><constant>WAFFLE_CONTEXT_MAJOR_VERSION</constant></member>
+            <member><constant>WAFFLE_CONTEXT_MINOR_VERSION</constant></member>
+          </simplelist>
+        </term>
+        <listitem>
+          <para>
+            The default and supported values of the context version attributes depend on the native platform and the
+            value of <constant>WAFFLE_CONTEXT_API</constant>.
+          </para>
+          <para>
+            If the requested API is <constant>WAFFLE_CONTEXT_OPENGL_ES1</constant>, then the default and only supported
+            version is 1.0.  Waffle or the native system may promote the version to 1.1.
+          </para>
+          <para>
+            If the requested API is <constant>WAFFLE_CONTEXT_OPENGL_ES2</constant>, then the default and only supported
+            version is 2.0.
+          </para>
+          <para>
+            On all platforms, if the requested API is <constant>WAFFLE_CONTEXT_OPENGL</constant>, then the default
+            version is 1.0. If the requested version is less than 3.2, then <constant>WAFFLE_CONTEXT_PROFILE</constant>
+            is ignored.  Waffle or the native platform may choose a version other than requested one as described below.
+            <itemizedlist>
+              <listitem>
+                <para>
+                  If the requested version is less than or equal to 3.0, then waffle or the native platform may choose
+                  any of:
+                  <simplelist type="vert">
+                    <member>3.0</member>
+                    <member>3.1, if the GL_ARB_compatibility extension is implemented</member>
+                    <member>the compatibility profile of 3.2 or greater</member>
+                  </simplelist>
+                </para>
+              </listitem>
+
+              <listitem>
+                <para>
+                  If version 3.1 is requested, then waffle or the native platform may choose any of:
+                  <simplelist type="vert">
+                    <member>3.1 with or without the GL_ARB_compatibility extension</member>
+                    <member>the core profile of 3.2 or greater</member>
+                  </simplelist>
+                </para>
+              </listitem>
+
+              <listitem>
+                <para>
+                  If version 3.2 or greater is requested, then waffle or the native platform may choose the requested
+                  profile of any version equal to or greater than the requested version.
+                </para>
+              </listitem>
+            </itemizedlist>
+          </para>
+          <para>
+            On MacOS, if the requested API is <constant>WAFFLE_CONTEXT_OPENGL</constant>, then the requested version
+            must be 1.0 or 3.2. (This restriction will be removed in the future when waffle begins to more
+            intelligently handle version requests on MacOS).
+          </para>
+          <para>
+            On GLX, if the requested API is <constant>WAFFLE_CONTEXT_OPENGL</constant>, then version 1.0 is always
+            accepted.
+          </para>
+          <para>
+            On GLX, if the requested API is <constant>WAFFLE_CONTEXT_OPENGL</constant> and the requested version is
+            greater than 1.0 and GLX_ARB_create_context is supported, then requested version is passed directly to
+            <function>glXCreateContextAttribsARB</function>.  If GLX_ARB_create_context is not supported, then
+            <constant>WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM</constant> is emitted.
+          </para>
+          <para>
+            On all EGL platforms, if the requested API is <constant>WAFFLE_CONTEXT_OPENGL</constant>, then the version
+            must be 1.0. (This restriction will be removed when waffle gains support for the EGL_KHR_create_context
+            extension).
+          </para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+          <constant>WAFFLE_CONTEXT_PROFILE</constant>
+        </term>
+        <listitem>
+          <para>
+            The default and supported values for <constant>WAFFLE_CONTEXT_PROFILE</constant> depend on the native
+            platform and the requested value of <constant>WAFFLE_CONTEXT_API</constant>.
+          </para>
+          <para>
+            If the requested API is <constant>WAFFLE_CONTEXT_OPENGL_ES1</constant> or
+            <constant>WAFFLE_CONTEXT_OPENGL_ES2</constant>, then the default and only supported value is
+            <constant>WAFFLE_NONE</constant>.
+          </para>
+          <para>
+            If the requested API is <constant>WAFFLE_CONTEXT_OPENGL</constant>, then the default value is
+            <constant>WAFFLE_CONTEXT_CORE_PROFILE</constant>. If the requested version is less than 3.2, then
+            <constant>WAFFLE_CONTEXT_PROFILE</constant> is ignored.
+          </para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+          <simplelist type="inline">
+            <member><constant>WAFFLE_RED_SIZE</constant></member>
+            <member><constant>WAFFLE_GREEN_SIZE</constant></member>
+            <member><constant>WAFFLE_BLUE_SIZE</constant></member>
+            <member><constant>WAFFLE_ALPHA_SIZE</constant></member>
+            <member><constant>WAFFLE_DEPTH_SIZE</constant></member>
+            <member><constant>WAFFLE_STENCIL_SIZE</constant></member>
+          </simplelist>
+        </term>
+        <listitem>
+          <para>
+            The default value for each size attribute is <constant>WAFFLE_DONT_CARE</constant>. If the requested size
+            for a channel is 0, then any surface created with the config will lack that channel. If the requested size
+            for a channel is positive, then the number of bits in that channel for any surface created with the config
+            will be at least the requested size.
+          </para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+          <simplelist type="inline">
+            <member><constant>WAFFLE_SAMPLE_BUFFERS</constant></member>
+            <member><constant>WAFFLE_SAMPLES</constant></member>
+          </simplelist>
+        </term>
+        <listitem>
+          <para>
+            The valid values for <constant>WAFFLE_SAMPLE_BUFFERS</constant> are true and false. The default value is
+            false. If false, then any surface created with the config will not be multisampled. If true, the any surface
+            created with the config will be multisampled, where the number of samples will be at least
+            <constant>WAFFLE_SAMPLES</constant>. The default value of <constant>WAFFLE_SAMPLES</constant> is 0.
+          </para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+          <constant>WAFFLE_DOUBLE_BUFFERED</constant>
+        </term>
+        <listitem>
+          <para>
+            The valid values are true and false. The default is true. This attribute specifies if a surface created with
+            this config is double-buffered.
+          </para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+          <constant>WAFFLE_ACCUM_BUFFER</constant>
+        </term>
+        <listitem>
+          <para>
+            The valid values are true and false. The default is false. This attribute specifies if a surface created with
+            this config possesses an accumulation buffer.
+          </para>
+        </listitem>
+      </varlistentry>
+      
+    </variablelist>
+  </refsect1>
+
+  <refsect1>
+    <title>Return Value</title>
+    <xi:include href="common/return-value.xml"/>
+  </refsect1>
+
+  <refsect1>
+    <title>Errors</title>
+
+    <xi:include href="common/error-codes.xml"/>
+
+    <para>
+      Listed below are the errors specific to the <type>waffle_config</type> functions.
+    </para>
+
+    <variablelist>
+
+      <varlistentry>
+        <term>
+          <function>waffle_config_choose()</function>
+        </term>
+        <listitem>
+          <variablelist>
+
+            <varlistentry>
+              <term>
+                <errorcode>WAFFLE_ERROR_BAD_ATTRIBUTE</errorcode>
+              </term>
+              <listitem>
+                <para>
+                  An item in <parameter>attrib_list</parameter> is unrecognized or has an invalid value, or a required
+                  attribute is missing.
+                </para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>
+                <errorcode>WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM</errorcode>
+              </term>
+              <listitem>
+                <para>
+                  The attribute list is valid, but platform does not support the requested config. For example,
+                  <itemizedlist>
+                    <listitem>
+                      <para>
+                        GLX supports creation of an OpenGL ES2 context only if libGLESv2.so is installed and if
+                        GLX_EXT_create_context_es2_profile is exposed as both a server and client extension.
+                      </para>
+                    </listitem>
+                    <listitem>
+                      <para>
+                      MacOS does not support the OpenGL 3.2 Compatibility Profile, and it supports the OpenGL 3.2 Core Profile
+                      only for MacOS >= 10.7 on select GPU's.
+                    </para>
+                    </listitem>
+                  </itemizedlist>
+                </para>
+              </listitem>
+            </varlistentry>
+
+          </variablelist>
+
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
+  </refsect1>
+
+  <refsect1>
+    <title>Examples</title>
+
+    <refsect2>
+      <title>Example 1</title>
+
+      <para>
+        Choose a config for an OpenGL legacy context that has at least 8 bits in each of the RGBA channels.
+
+        <programlisting>
+<![CDATA[
+#include <stdlib.h>
+#include <waffle.h>
+
+static const int32_t init_attrib_list[] = {
+    WAFFLE_PLATFORM, WAFFLE_PLATFORM_GLX,
+    0,
+};
+
+static const int32_t config_attrib_list[] = {
+    WAFFLE_CONTEXT_API, WAFFLE_CONTEXT_OPENGL,
+
+    WAFFLE_RED_SIZE,    8,
+    WAFFLE_GREEN_SIZE,  8,
+    WAFFLE_BLUE_SIZE,   8,
+    WAFFLE_ALPHA_SIZE,  8,
+
+    0,
+};
+
+int
+main()
+{
+    struct waffle_display *display;
+    struct waffle_config *config;
+    bool ok;
+
+
+    ok = waffle_init(init_attrib_list);
+    if (!ok)
+      exit(EXIT_FAILURE);
+
+    display = waffle_display_connect(NULL);
+    if (!display)
+      exit(EXIT_FAILURE);
+
+    config = waffle_config_choose(config_attrib_list);
+    if (!config)
+      exit(EXIT_FAILURE);
+
+    // Now clean up.
+    waffle_config_destroy(config);
+    waffle_display_disconnect(display);
+    return EXIT_SUCCESS;
+}
+]]>
+        </programlisting>
+      </para>
+    </refsect2>
+
+    <refsect2>
+      <title>Example 2</title>
+
+      <para>
+        An attribute list for creating an OpenGL 3.2 Core Profile context that has depth and stencil buffers and some
+        non-zero number of bits in each of the RGB channels.  Since the default value of
+        <constant>WAFFLE_ALPHA_SIZE</constant> is <constant>WAFFLE_DONT_CARE</constant>, the config may not have an
+        alpha channel.
+
+        <programlisting>
+<![CDATA[
+const int32_t attrib_list[] = {
+    WAFFLE_CONTEXT_API,             WAFFLE_CONTEXT_OPENGL,
+    WAFFLE_CONTEXT_MAJOR_VERSION,   3,
+    WAFFLE_CONTEXT_MINOR_VERSION,   2,
+    WAFFLE_CONTEXT_PROFILE,         WAFFLE_CONTEXT_CORE_PROFILE,
+
+    WAFFLE_RED_SIZE,                1,
+    WAFFLE_GREEN_SIZE,              1,
+    WAFFLE_BLUE_SIZE,               1,
+
+    WAFFLE_DEPTH_SIZE,             24,
+    WAFFLE_STENCIL_SIZE,            8,
+
+    0,
+};
+]]>
+        </programlisting>
+      </para>
+    </refsect2>
+  </refsect1>
+
+  <refsect1>
+    <title>See Also</title>
+    <para>
+      <citerefentry><refentrytitle>waffle</refentrytitle><manvolnum>7</manvolnum></citerefentry>
+    </para>
+  </refsect1>
+
+</refentry>
+
+<!--
+vim:tw=120 et ts=2 sw=2:
+-->

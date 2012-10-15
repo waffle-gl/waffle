@@ -1,0 +1,12 @@
+<?xml version='1.0'?>
+
+<para>
+  Functions whose return type is <type>bool</type> return true on success and false on failure. Functions whose return
+  type is a pointer return <constant>NULL</constant> on failure. Use
+  <citerefentry><refentrytitle>waffle_error_get_info</refentrytitle><manvolnum>3</manvolnum></citerefentry> to get
+  information about any errors.
+</para>
+
+<!--
+vim:tw=120 et ts=2 sw=2:
+-->

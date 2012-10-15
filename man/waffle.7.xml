@@ -1,0 +1,118 @@
+<?xml version='1.0'?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+  "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+
+<!--
+  Copyright Intel 2012
+
+  This manual page is licensed under the Creative Commons Attribution-ShareAlike 3.0 United States License (CC BY-SA 3.0
+  US). To view a copy of this license, visit http://creativecommons.org.license/by-sa/3.0/us.
+-->
+
+<refentry
+    id="waffle_display"
+    xmlns:xi="http://www.w3.org/2001/XInclude">
+
+  <!-- See http://www.docbook.org/tdg/en/html/refentry.html. -->
+
+  <refmeta>
+    <refentrytitle>waffle</refentrytitle>
+    <manvolnum>7</manvolnum>
+  </refmeta>
+
+  <refnamediv>
+    <refname>waffle</refname>
+    <refpurpose>a library for selecting GL API and window system at runtime</refpurpose>
+  </refnamediv>
+
+  <refentryinfo>
+    <title>Waffle Manual</title>
+    <productname>waffle</productname>
+    <xi:include href="common/author-chad.versace.xml"/>
+    <xi:include href="common/copyright.xml"/>
+    <xi:include href="common/legalnotice.xml"/>
+  </refentryinfo>
+
+  <refsynopsisdiv>
+    <synopsis>
+#include &lt;waffle.h&gt;
+
+Link with -lwaffle-1.
+    </synopsis>
+  </refsynopsisdiv>
+
+  <refsect1>
+    <title>Description</title>
+
+    <para>
+      Waffle is a cross-platform library that allows one to defer selection of GL API and of window system until
+      runtime. For example, on Linux, Waffle enables an application to select X11/EGL with an OpenGL 3.3 core profile,
+      Wayland with OpenGL ES2, and other window system / API combinations.
+    </para>
+
+    <para>
+      Waffle's immediate goal is to enable
+      <ulink url="http://cgit.freedesktop.org/piglit/tree/README">Piglit</ulink>,
+      <ulink url="http://mesa3d.org">Mesa</ulink>'s OpenGL test suite,
+      to test multiple GL flavors in a cross-platform way, and to allow each Piglit test to choose its GL API and window
+      system at runtime. A future goal is to enable the ability to record,
+      with another tool such as <ulink url="http://github.com/apitrace/apitrace#readme">APITrace</ulink>,
+      an application's GL calls on one operating system or window system, and then replay that trace on a different
+      system.
+    </para>
+
+    <para>
+      <ulink url="http://people.freedesktop.org/~chadversary/waffle">waffle</ulink>'s website.
+    </para>
+
+  </refsect1>
+
+  <refsect1>
+    <title>Examples</title>
+
+    <para>
+      Your distribution should have installed
+      example source code that demonstrates how to use waffle at
+      <filename>/usr/share/doc/waffle-${version}/examples</filename>.
+      You can also find example code on
+      <ulink url="http://people.freedesktop.org/~chadversary/waffle">waffle</ulink>'s website.
+    </para>
+
+  </refsect1>
+
+  <refsect1>
+    <title>See Also</title>
+
+    <para>
+      <simplelist>
+        <member>Website: http://people.freedesktop.org/~chadversary/waffle</member>
+        <member>Source: git://people.freedesktop.org/~chadversary/waffle.git</member>
+      </simplelist>
+    </para>
+
+    <para>
+      <simplelist>
+        <member><citerefentry><refentrytitle>waffle_attrib_list</refentrytitle><manvolnum>3</manvolnum></citerefentry>,</member>
+        <member><citerefentry><refentrytitle>waffle_config</refentrytitle><manvolnum>3</manvolnum></citerefentry>,</member>
+        <member><citerefentry><refentrytitle>waffle_context</refentrytitle><manvolnum>3</manvolnum></citerefentry>,</member>
+        <member><citerefentry><refentrytitle>waffle_display</refentrytitle><manvolnum>3</manvolnum></citerefentry>,</member>
+        <member><citerefentry><refentrytitle>waffle_dl</refentrytitle><manvolnum>3</manvolnum></citerefentry>,</member>
+        <member><citerefentry><refentrytitle>waffle_enum</refentrytitle><manvolnum>3</manvolnum></citerefentry>,</member>
+        <member><citerefentry><refentrytitle>waffle_error</refentrytitle><manvolnum>3</manvolnum></citerefentry>,</member>
+        <member><citerefentry><refentrytitle>waffle_gbm</refentrytitle><manvolnum>3</manvolnum></citerefentry>,</member>
+        <member><citerefentry><refentrytitle>waffle_gl_misc</refentrytitle><manvolnum>3</manvolnum></citerefentry>,</member>
+        <member><citerefentry><refentrytitle>waffle_glx</refentrytitle><manvolnum>3</manvolnum></citerefentry>,</member>
+        <member><citerefentry><refentrytitle>waffle_init</refentrytitle><manvolnum>3</manvolnum></citerefentry>,</member>
+        <member><citerefentry><refentrytitle>waffle_native</refentrytitle><manvolnum>3</manvolnum></citerefentry>,</member>
+        <member><citerefentry><refentrytitle>waffle_wayland</refentrytitle><manvolnum>3</manvolnum></citerefentry>,</member>
+        <member><citerefentry><refentrytitle>waffle_window</refentrytitle><manvolnum>3</manvolnum></citerefentry>,</member>
+        <member><citerefentry><refentrytitle>waffle_x11_egl</refentrytitle><manvolnum>3</manvolnum></citerefentry></member>
+      </simplelist>
+    </para>
+  </refsect1>
+
+</refentry>
+
+<!--
+vim:tw=120 et ts=2 sw=2:
+-->

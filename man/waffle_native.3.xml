@@ -1,0 +1,113 @@
+<?xml version='1.0'?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+  "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+
+<!--
+  Copyright Intel 2012
+
+  This manual page is licensed under the Creative Commons Attribution-ShareAlike 3.0 United States License (CC BY-SA 3.0
+  US). To view a copy of this license, visit http://creativecommons.org.license/by-sa/3.0/us.
+-->
+
+<refentry
+    id="waffle_native"
+    xmlns:xi="http://www.w3.org/2001/XInclude">
+
+  <!-- See http://www.docbook.org/tdg/en/html/refentry.html. -->
+
+  <refmeta>
+    <refentrytitle>waffle_native</refentrytitle>
+    <manvolnum>3</manvolnum>
+  </refmeta>
+
+  <refnamediv>
+    <refname>waffle_native</refname>
+    <refname>waffle_native_display</refname>
+    <refname>waffle_native_config</refname>
+    <refname>waffle_native_context</refname>
+    <refname>waffle_native_window</refname>
+    <refpurpose>Containers for underlying native objects</refpurpose>
+  </refnamediv>
+
+  <refentryinfo>
+    <title>Waffle Manual</title>
+    <productname>waffle</productname>
+    <xi:include href="common/author-chad.versace.xml"/>
+    <xi:include href="common/copyright.xml"/>
+    <xi:include href="common/legalnotice.xml"/>
+  </refentryinfo>
+
+  <refsynopsisdiv>
+
+    <synopsis language="C">
+#include &lt;waffle.h&gt;
+
+union waffle_native_display {
+    struct waffle_gbm_display *gbm;
+    struct waffle_glx_display *glx;
+    struct waffle_wayland_display *wayland;
+    struct waffle_x11_egl_display *x11_egl;
+};
+
+union waffle_native_config {
+    struct waffle_gbm_config *gbm;
+    struct waffle_glx_config *glx;
+    struct waffle_wayland_config *wayland;
+    struct waffle_x11_egl_config *x11_egl;
+};
+
+union waffle_native_context {
+    struct waffle_gbm_context *gbm;
+    struct waffle_glx_context *glx;
+    struct waffle_wayland_context *wayland;
+    struct waffle_x11_egl_context *x11_egl;
+};
+
+union waffle_native_window {
+    struct waffle_gbm_window *gbm;
+    struct waffle_glx_window *glx;
+    struct waffle_wayland_window *wayland;
+    struct waffle_x11_egl_window *x11_egl;
+};
+    </synopsis>
+  </refsynopsisdiv>
+
+  <refsect1>
+    <title>Description</title>
+
+    <para>
+      Each of the <function>waffle_${obj}_get_native()</function> functions returns a correspondingly named
+      <type>union waffle_native_${obj}*</type>.
+      For example, <function>waffle_window_get_native()</function> returns a <type>untion waffle_native_window*</type>
+    </para>
+
+    <para>
+      For each platform, the header <filename>&lt;waffle_${platform}.h&gt;</filename> defines the native container structs.  For
+      example, <filename>&lt;waffle_glx.h&gt;</filename> defines the structs <type>waffle_glx_${obj}</type>.
+    </para>
+
+    <para>
+      Observerve that native container structs are not defined for all platforms that waffle supports. In
+      particular, waffle supports Android (<constant>WAFFLE_PLATFORM_ANDROID</constant>) and MacOS via CGL
+      (<constant>WAFFLE_PLATFORM_CGL</constant>), but no container structs are defined for those platforms.
+      Presently, waffle does not expose the native objects for those platforms due to implementation difficulties.
+    </para>
+
+  </refsect1>
+
+  <refsect1>
+    <title>See Also</title>
+    <para>
+      <citerefentry><refentrytitle>waffle</refentrytitle><manvolnum>7</manvolnum></citerefentry>,
+      <citerefentry><refentrytitle>waffle_gbm</refentrytitle><manvolnum>3</manvolnum></citerefentry>,
+      <citerefentry><refentrytitle>waffle_glx</refentrytitle><manvolnum>3</manvolnum></citerefentry>,
+      <citerefentry><refentrytitle>waffle_wayland</refentrytitle><manvolnum>3</manvolnum></citerefentry>,
+      <citerefentry><refentrytitle>waffle_x11_egl</refentrytitle><manvolnum>3</manvolnum></citerefentry>
+    </para>
+  </refsect1>
+
+</refentry>
+
+<!--
+vim:tw=120 et ts=2 sw=2:
+-->

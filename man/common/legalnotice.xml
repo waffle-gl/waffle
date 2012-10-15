@@ -1,0 +1,14 @@
+<?xml version='1.0'?>
+<!DOCTYPE legalnotic PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+  "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+
+<legalnotice>
+  <para>
+    This manual page is licensed under the Creative Commons Attribution-ShareAlike 3.0 United States License (CC BY-SA
+    3.0). To view a copy of this license, visit <ulink url="http://creativecommons.org.license/by-sa/3.0/us"/>.
+  </para>
+</legalnotice>
+
+<!--
+vim:tw=120 et ts=2 sw=2:
+-->

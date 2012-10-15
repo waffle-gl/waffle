@@ -1,0 +1,191 @@
+<?xml version='1.0'?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+  "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+
+<!--
+  Copyright Intel 2012
+
+  This manual page is licensed under the Creative Commons Attribution-ShareAlike 3.0 United States License (CC BY-SA 3.0
+  US). To view a copy of this license, visit http://creativecommons.org.license/by-sa/3.0/us.
+-->
+
+<refentry
+    id="waffle_display"
+    xmlns:xi="http://www.w3.org/2001/XInclude">
+
+  <!-- See http://www.docbook.org/tdg/en/html/refentry.html. -->
+
+  <refmeta>
+    <refentrytitle>waffle_display</refentrytitle>
+    <manvolnum>3</manvolnum>
+  </refmeta>
+
+  <refnamediv>
+    <refname>waffle_display</refname>
+    <refname>waffle_display_connect</refname>
+    <refname>waffle_display_disconnect</refname>
+    <refname>waffle_display_supports_context_api</refname>
+    <refname>waffle_display_get_native</refname>
+    <refpurpose>class <classname>waffle_display</classname></refpurpose>
+  </refnamediv>
+
+  <refentryinfo>
+    <title>Waffle Manual</title>
+    <productname>waffle</productname>
+    <xi:include href="common/author-chad.versace.xml"/>
+    <xi:include href="common/copyright.xml"/>
+    <xi:include href="common/legalnotice.xml"/>
+  </refentryinfo>
+
+  <refsynopsisdiv>
+
+    <funcsynopsis language="C">
+
+      <funcsynopsisinfo>
+#include &lt;waffle.h&gt;
+
+struct waffle_display;
+      </funcsynopsisinfo>
+
+      <funcprototype>
+        <funcdef>struct waffle_display* <function>waffle_display_connect</function></funcdef>
+        <paramdef>const char* <parameter>name</parameter></paramdef>
+      </funcprototype>
+
+      <funcprototype>
+        <funcdef>bool <function>waffle_display_disconnect</function></funcdef>
+        <paramdef>struct waffle_display *<parameter>self</parameter></paramdef>
+      </funcprototype>
+
+      <funcprototype>
+        <funcdef>bool <function>waffle_display_supports_context_api</function></funcdef>
+        <paramdef>struct waffle_display *<parameter>self</parameter></paramdef>
+        <paramdef>int32_t <parameter>context_api</parameter></paramdef>
+      </funcprototype>
+
+      <funcprototype>
+        <funcdef>union waffle_native_display* <function>waffle_display_get_native</function></funcdef>
+        <paramdef>struct waffle_display *<parameter>self</parameter></paramdef>
+      </funcprototype>
+
+    </funcsynopsis>
+  </refsynopsisdiv>
+
+  <refsect1>
+    <title>Description</title>
+
+    <variablelist>
+
+      <varlistentry>
+        <term>
+          <type>struct waffle_display</type>
+        </term>
+        <listitem>
+          <para>
+            An opaque type.
+          </para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+          <function>waffle_display_connect()</function>
+        </term>
+        <listitem>
+          <para>
+            Connect to a display. The interpretation of <parameter>name</parameter> differs according to the platform
+            given to <citerefentry><refentrytitle>waffle_init</refentrytitle><manvolnum>3</manvolnum></citerefentry>.
+          </para>
+          <para>
+            On Android and CGL, <parameter>name</parameter> is ignored.
+          </para>
+          <para>
+            On the X11 platforms, GLX and X11/EGL, the function connects to the X11 display with the given
+            <parameter>name</parameter>. If <parameter>name</parameter> is null, then it uses the value of the
+            environment variable <envar>DISPLAY</envar>.
+          </para>
+          <para>
+            On Wayland, the function connects to the Wayland display with the given name. If <parameter>name</parameter> is null, then it
+            uses the value of the environment variable <envar>WAYLAND_DISPLAY</envar>.
+          </para>
+          <para>
+            On GBM, the function opens the device at the filepath <parameter>name</parameter>. If
+            <parameter>name</parameter> is null, then it iterates using udev through the set of card devices in the drm
+            subsystem, which are usually located in <filename>/dev/dri</filename>, and attempts to open each in turn
+            with <code>open(O_RDWR | O_CLOEXEC)</code> until successful.
+          </para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+          <function>waffle_display_disconnect()</function>
+        </term>
+        <listitem>
+          <para>
+            Disconnect from the <type>waffle_display</type> and release it's memory. All pointers to waffle objects that
+            were created with the display become invalid.
+          </para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+          <function>waffle_display_supports_context_api()</function>
+        </term>
+        <listitem>
+          <para>
+            Check if the display is capable of creating
+            a <citerefentry><refentrytitle>waffle_context</refentrytitle><manvolnum>3</manvolnum></citerefentry> with
+            the given <parameter>context_api</parameter>. See
+            <citerefentry><refentrytitle>waffle_config</refentrytitle><manvolnum>3</manvolnum></citerefentry> for
+            choices of <parameter>context_api</parameter> and expectations for each platform.
+          </para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+          <function>waffle_display_get_native()</function>
+        </term>
+        <listitem>
+          <para>
+            Get the display's underlying native objects. Use
+            <citerefentry><refentrytitle>free</refentrytitle><manvolnum>3</manvolnum></citerefentry> to deallocate the
+            returned pointer.
+            See <citerefentry><refentrytitle>waffle_native</refentrytitle><manvolnum>3</manvolnum></citerefentry>
+            for the definition of <type>union waffle_native_display</type>.
+          </para>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+  </refsect1>
+
+  <refsect1>
+    <title>Return Value</title>
+    <xi:include href="common/return-value.xml"/>
+  </refsect1>
+
+  <refsect1>
+    <title>Errors</title>
+
+    <xi:include href="common/error-codes.xml"/>
+
+    <para>
+      No errors are specific to any of the <type>waffle_display</type> functions.
+    </para>
+  </refsect1>
+
+  <refsect1>
+    <title>See Also</title>
+    <para>
+      <citerefentry><refentrytitle>waffle</refentrytitle><manvolnum>7</manvolnum></citerefentry>
+    </para>
+  </refsect1>
+
+</refentry>
+
+<!--
+vim:tw=120 et ts=2 sw=2:
+-->

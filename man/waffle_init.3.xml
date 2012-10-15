@@ -1,0 +1,256 @@
+<?xml version='1.0'?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+  "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+
+<!--
+  Copyright Intel 2012
+
+  This manual page is licensed under the Creative Commons Attribution-ShareAlike 3.0 United States License (CC BY-SA 3.0
+  US). To view a copy of this license, visit http://creativecommons.org.license/by-sa/3.0/us.
+-->
+
+<refentry
+    id="waffle_init"
+    xmlns:xi="http://www.w3.org/2001/XInclude">
+
+  <!-- See http://www.docbook.org/tdg/en/html/refentry.html. -->
+
+  <refmeta>
+    <refentrytitle>waffle_init</refentrytitle>
+    <manvolnum>3</manvolnum>
+  </refmeta>
+
+  <refnamediv>
+    <refname>waffle_init</refname>
+    <refpurpose>Initialize waffle's per-process global state</refpurpose>
+  </refnamediv>
+
+  <refentryinfo>
+    <title>Waffle Manual</title>
+    <productname>waffle</productname>
+    <xi:include href="common/author-chad.versace.xml"/>
+    <xi:include href="common/copyright.xml"/>
+    <xi:include href="common/legalnotice.xml"/>
+  </refentryinfo>
+
+  <refsynopsisdiv>
+    <funcsynopsis>
+      <funcsynopsisinfo><![CDATA[#include <waffle.h>]]></funcsynopsisinfo>
+      <funcprototype>
+        <funcdef>bool <function>waffle_init</function></funcdef>
+        <paramdef>const int32_t <parameter>attrib_list</parameter>[]</paramdef>
+      </funcprototype>
+    </funcsynopsis>
+  </refsynopsisdiv>
+
+  <refsect1>
+    <title>Description</title>
+
+    <para>
+      <function>waffle_init()</function> initializes the per-process global state of the waffle library with the
+      attributes specified in <parameter>attrib_list</parameter>.  The set of attributes is documented below.
+      <parameter>attrib_list</parameter> consists of a zero-terminated sequence of name/value pairs.
+    </para>
+
+    <para>
+      Most waffle functions emit an error if called when waffle is unitialized.  The small set of functions that can be
+      successfully called before initialization are explicitly documented as such.
+    </para>
+
+    <para>
+      If a call to <function>waffle_init()</function> fails, no global state is initialized and the caller may safely
+      attempt to call <function>waffle_init()</function> again.  If waffle has already been initialized by a successful
+      call to <function>waffle_init()</function>, then calling <function>waffle_init()</function> again emits the error
+      <errorcode>WAFFLE_ERROR_ALREADY_INITIALIZED</errorcode>.
+    </para>
+
+  </refsect1>
+
+  <refsect1>
+    <title>Attributes</title>
+
+    <variablelist>
+
+      <varlistentry>
+        <term>
+          <constant>WAFFLE_PLATFORM</constant>
+        </term>
+        <listitem>
+          <para>
+            This attribute is required. Possible values are:
+
+            <variablelist>
+
+              <varlistentry>
+                <term>
+                  <constant>WAFFLE_PLATFORM_ANDROID</constant>
+                </term>
+                <listitem>
+                  <para>
+                    [Android] Use EGL on Android.
+                  </para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>
+                  <constant>WAFFLE_PLATFORM_GBM</constant>
+                </term>
+                <listitem>
+                  <para>
+                    [Linux] Use EGL with GBM, the "Generic Buffer Manager" provided by libgbm. This platform is
+                    capable of OpenGL rendering without a display manager.
+                  </para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>
+                  <constant>WAFFLE_PLATFORM_CGL</constant>
+                </term>
+                <listitem>
+                  <para>
+                    [MacOS] Use CGL to create the
+                    <citerefentry><refentrytitle>waffle_config</refentrytitle><manvolnum>3</manvolnum></citerefentry>
+                    and
+                    <citerefentry><refentrytitle>waffle_context</refentrytitle><manvolnum>3</manvolnum></citerefentry>.
+                    Use Cocoa to create the
+                    <citerefentry><refentrytitle>waffle_window</refentrytitle><manvolnum>3</manvolnum></citerefentry>.
+                  </para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>
+                  <constant>WAFFLE_PLATFORM_GLX</constant>
+                </term>
+                <listitem>
+                  <para>
+                    [Linux only, MacOS not yet supported]
+                  </para>
+                </listitem>
+              </varlistentry>
+              <varlistentry>
+                <term>
+                  <constant>WAFFLE_PLATFORM_WAYLAND</constant>
+                </term>
+                <listitem>
+                  <para>
+                    [Linux] Use EGL with the Wayland display server.
+                  </para>
+                </listitem>
+              </varlistentry>
+              <varlistentry>
+                <term>
+                  <constant>WAFFLE_PLATFORM_X11_EGL</constant>
+                </term>
+                <listitem>
+                  <para>
+                    [Linux] Use EGL with the X11 display server.
+                  </para>
+                </listitem>
+              </varlistentry>
+
+            </variablelist>
+          </para>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+  </refsect1>
+
+  <refsect1>
+    <title>Return Value</title>
+    <xi:include href="common/return-value.xml"/>
+  </refsect1>
+
+  <refsect1>
+    <title>Errors</title>
+
+    <xi:include href="common/error-codes.xml"/>
+
+    <para>
+      Listed are the errors specific to <function>waffle_init()</function>.
+    </para>
+
+    <variablelist>
+
+      <varlistentry>
+        <term>
+          <errorcode>WAFFLE_ERROR_ALREADY_INITIALIZED</errorcode>
+        </term>
+        <listitem>
+          <para>
+            Waffle has already been initialized with a successfull call to <function>waffle_init()</function>.
+          </para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+          <errorcode>WAFFLE_ERROR_BAD_ATTRIBUTE</errorcode>
+        </term>
+        <listitem>
+          <para>
+            An item in <parameter>attrib_list</parameter> is unrecognized or has an invalid value, or a required
+            attribute is missing.
+          </para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+          <errorcode>WAFFLE_ERROR_BUILT_WITHOUT_SUPPORT</errorcode>
+        </term>
+        <listitem>
+          <para>
+            Waffle was built without support for the requested attribute.
+          </para>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
+  </refsect1>
+
+  <refsect1>
+    <title>Example</title>
+
+    <para>
+      Initialize waffle for X11/EGL.
+    </para>
+
+    <programlisting>
+<![CDATA[
+#include <waffle.h>
+
+static const int32_t init_attrib_list[] = {
+    WAFFLE_PLATFORM, WAFFLE_PLATFORM_X11_EGL,
+    0,
+};
+
+int
+main()
+{
+    bool ok = waffle_init(init_attrib_list);
+    if (ok)
+        return EXIT_SUCCESS;
+    else
+        return EXIT_FAILURE;
+}
+]]>
+    </programlisting>
+  </refsect1>
+
+  <refsect1>
+    <title>See Also</title>
+    <para>
+      <citerefentry><refentrytitle>waffle</refentrytitle><manvolnum>7</manvolnum></citerefentry>
+    </para>
+  </refsect1>
+
+</refentry>
+
+<!--
+vim:tw=120 et ts=2 sw=2:
+-->

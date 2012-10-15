@@ -1,0 +1,12 @@
+<?xml version='1.0'?>
+
+<author>
+  <firstname>Chad</firstname>
+  <surname>Versace</surname>
+  <email>chad.versace@linux.intel.com</email>
+  <contrib>Maintainer</contrib>
+</author>
+
+<!--
+vim:tw=120 et ts=2 sw=2:
+-->

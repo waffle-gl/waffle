@@ -1,0 +1,169 @@
+<?xml version='1.0'?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+  "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+
+<!--
+  Copyright Intel 2012
+
+  This manual page is licensed under the Creative Commons Attribution-ShareAlike 3.0 United States License (CC BY-SA 3.0
+  US). To view a copy of this license, visit http://creativecommons.org.license/by-sa/3.0/us.
+-->
+
+<refentry
+    id="waffle_attrib_list"
+    xmlns:xi="http://www.w3.org/2001/XInclude">
+
+  <!-- See http://www.docbook.org/tdg/en/html/refentry.html. -->
+
+  <refmeta>
+    <refentrytitle>waffle_attrib_list</refentrytitle>
+    <manvolnum>3</manvolnum>
+  </refmeta>
+
+  <refnamediv>
+    <refname>waffle_attrib_list</refname>
+    <refname>waffle_attrib_list_length</refname>
+    <refname>waffle_attrib_list_get</refname>
+    <refname>waffle_attrib_list_get_with_default</refname>
+    <refname>waffle_attrib_list_update</refname>
+    <refpurpose>Utilities for attribute lists</refpurpose>
+  </refnamediv>
+
+  <refentryinfo>
+    <title>Waffle Manual</title>
+    <productname>waffle</productname>
+    <xi:include href="common/author-chad.versace.xml"/>
+    <xi:include href="common/copyright.xml"/>
+    <xi:include href="common/legalnotice.xml"/>
+  </refentryinfo>
+
+  <refsynopsisdiv>
+
+    <funcsynopsis language="C">
+
+      <funcsynopsisinfo>#include &lt;waffle.h&gt;</funcsynopsisinfo>
+
+      <funcprototype>
+        <funcdef>bool <function>waffle_attrib_list_length</function></funcdef>
+        <paramdef>const int32_t <parameter>attrib_list</parameter>[]</paramdef>
+      </funcprototype>
+
+      <funcprototype>
+        <funcdef>bool <function>waffle_attrib_list_get</function></funcdef>
+        <paramdef>const int32_t <parameter>attrib_list</parameter>[]</paramdef>
+        <paramdef>int32_t <parameter>key</parameter></paramdef>
+        <paramdef>int32_t *<parameter>value</parameter></paramdef>
+      </funcprototype>
+
+      <funcprototype>
+        <funcdef>bool <function>waffle_attrib_list_get_with_default</function></funcdef>
+        <paramdef>const int32_t <parameter>attrib_list</parameter>[]</paramdef>
+        <paramdef>int32_t <parameter>key</parameter></paramdef>
+        <paramdef>int32_t *<parameter>value</parameter></paramdef>
+        <paramdef>int32_t <parameter>default_value</parameter></paramdef>
+      </funcprototype>
+
+      <funcprototype>
+        <funcdef>bool <function>waffle_attrib_list_update</function></funcdef>
+        <paramdef>int32_t <parameter>attrib_list</parameter>[]</paramdef>
+        <paramdef>int32_t <parameter>key</parameter></paramdef>
+        <paramdef>int32_t *<parameter>value</parameter></paramdef>
+      </funcprototype>
+
+    </funcsynopsis>
+  </refsynopsisdiv>
+
+  <refsect1>
+    <title>Description</title>
+
+    <para>
+      An attribute list is a zero-terminated list of <type>int32_t</type> key/value pairs or a null pointer. A null
+      pointer is interpreted as an empty list, whose only member is the terminal zero. For concrete examples of
+      attribute lists, see the "Examples" section in
+      <citerefentry><refentrytitle>waffle_config</refentrytitle><manvolnum>3</manvolnum></citerefentry>.
+    </para>
+
+    <para>
+      All attribute list functions can be called before waffle has been successfully initialized with
+      <citerefentry><refentrytitle>waffle_init</refentrytitle><manvolnum>3</manvolnum></citerefentry>.
+    </para>
+
+    <variablelist>
+
+      <varlistentry>
+        <term>
+          <function>waffle_attrib_list_length()</function>
+        </term>
+        <listitem>
+          <para>
+            Return the number of key/value pairs in the list.
+          </para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+          <function>waffle_attrib_list_get()</function>
+        </term>
+        <listitem>
+          <para>
+            Get the <parameter>value</parameter> associated with <parameter>key</parameter>.  If the list does not
+            contain the <parameter>key</parameter>, then <parameter>value</parameter> is not dereferenced.
+            Return true if and only if the list contains the <parameter>key</parameter>.
+          </para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+          <function>waffle_attrib_list_get_with_default()</function>
+        </term>
+        <listitem>
+          <para>
+            Equivalent to <function>waffle_attrib_list_get()</function> except that if the list does not contain the
+            <parameter>key</parameter> then <parameter>value</parameter> is set to a <parameter>default_value</parameter>.
+          </para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+          <function>waffle_attrib_list_update()</function>
+        </term>
+        <listitem>
+          <para>
+            Update the <parameter>value</parameter> associated with <parameter>key</parameter>.
+            If the list does not contain the <parameter>key</parameter> then the list is not modified.
+            Return true if and only if the list contains the <parameter>key</parameter>.
+          </para>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+  </refsect1>
+
+  <refsect1>
+    <title>Errors</title>
+
+    <para>
+      All attribute list functions set the error code to <constant>WAFFLE_NO_ERROR</constant> and can be called before
+      waffle has been successfully initialized with
+      <citerefentry><refentrytitle>waffle_init</refentrytitle><manvolnum>3</manvolnum></citerefentry>.
+    </para>
+
+    <xi:include href="common/error-codes.xml"/>
+
+  </refsect1>
+
+  <refsect1>
+    <title>See Also</title>
+    <para>
+      <citerefentry><refentrytitle>waffle</refentrytitle><manvolnum>7</manvolnum></citerefentry>
+    </para>
+  </refsect1>
+
+</refentry>
+
+<!--
+vim:tw=120 et ts=2 sw=2:
+-->

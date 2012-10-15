@@ -1,0 +1,341 @@
+<?xml version='1.0'?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+  "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+
+<!--
+  Copyright Intel 2012
+
+  This manual page is licensed under the Creative Commons Attribution-ShareAlike 3.0 United States License (CC BY-SA 3.0
+  US). To view a copy of this license, visit http://creativecommons.org.license/by-sa/3.0/us.
+-->
+
+<refentry
+    id="waffle_init"
+    xmlns:xi="http://www.w3.org/2001/XInclude">
+
+  <!-- See http://www.docbook.org/tdg/en/html/refentry.html. -->
+
+  <refmeta>
+    <refentrytitle>waffle_init</refentrytitle>
+    <manvolnum>3</manvolnum>
+  </refmeta>
+
+  <refnamediv>
+    <refname>waffle_error</refname>
+    <refname>waffle_error_get_info</refname>
+    <refname>waffle_error_get_code</refname>
+    <refname>waffle_error_to_string</refname>
+    <refpurpose>Thread-local error state</refpurpose>
+  </refnamediv>
+
+  <refentryinfo>
+    <title>Waffle Manual</title>
+    <productname>waffle</productname>
+    <xi:include href="common/author-chad.versace.xml"/>
+    <xi:include href="common/copyright.xml"/>
+    <xi:include href="common/legalnotice.xml"/>
+  </refentryinfo>
+
+  <refsynopsisdiv>
+
+    <funcsynopsis language="C">
+
+      <funcsynopsisinfo>
+#include &lt;waffle.h&gt;
+
+enum waffle_error {...};
+
+struct waffle_error_info {
+    int32_t code;
+    const char *message;
+    size_t message_length;
+};
+      </funcsynopsisinfo>
+
+      <funcprototype>
+        <funcdef>const struct waffle_error_info* <function>waffle_error_get_info</function></funcdef>
+        <void/>
+      </funcprototype>
+
+      <funcprototype>
+        <funcdef>int32_t <function>waffle_error_get_code</function></funcdef>
+        <void/>
+      </funcprototype>
+
+      <funcprototype>
+        <funcdef>const char* <function>waffle_error_to_string</function></funcdef>
+        <paramdef>int32_t <parameter>e</parameter></paramdef>
+      </funcprototype>
+
+    </funcsynopsis>
+  </refsynopsisdiv>
+
+  <refsect1>
+    <title>Description</title>
+
+    <para>
+      Waffle functions usually return either a <type>bool</type>, in which false indicates failure, or a pointer, in
+      which null indicates failure. In addition to returning a flag indicating failure, most functions also clear and
+      then set some thread-local error state.
+    </para>
+    <para>
+      The only functions that do not alter waffle's error state are listed here and are explicitly documented as such.
+      All functions listed here can be called before waffle has been successfully initialized with
+      <citerefentry><refentrytitle>waffle_init</refentrytitle><manvolnum>3</manvolnum></citerefentry>
+    </para>
+
+    <variablelist>
+
+      <varlistentry>
+        <term>
+          <type>struct waffle_error_info</type>
+        </term>
+        <listitem>
+          <para>
+            This struct contains the user-visible portion of waffle's thread-local error state.
+          </para>
+          <para>
+            <structfield>code</structfield> may be any token from <type>enum waffle_error</type>.
+          </para>
+          <para>
+            <structfield>message</structfield> often contains a descriptive message about the error.
+            It is never null, though it may be the empty string.
+          </para>
+          <para>
+            <structfield>message_length</structfield> is the length of <structfield>message</structfield> according to
+            <citerefentry><refentrytitle>strlen</refentrytitle><manvolnum>3</manvolnum></citerefentry>.
+          </para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+          <function>waffle_error_to_string()</function>
+        </term>
+        <listitem>
+          <para>
+            Convert a <type>waffle_error</type> token to a string.
+            For example, convert <constant>WAFFLE_ERROR_UNKNOWN</constant> to <code>"WAFFLE_ERROR_UNKNOWN"</code>.
+            Return null if the token is not a valid error token.
+          </para>
+          <para>
+            This function always sets the error code to <constant>WAFFLE_ERROR_NONE</constant>.
+          </para>
+        </listitem>
+      </varlistentry>
+
+
+      <varlistentry>
+        <term>
+          <function>waffle_error_get_info()</function>
+        </term>
+        <listitem>
+          <para>
+            Get information about the current thread's error state.
+          </para>
+          <para>
+            This function never returns null. The returned pointer becomes invalid when the thread-local error state
+            changes.
+          </para>
+          <para>
+            This function does not alter waffle's error state.
+          </para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+          <function>waffle_error_get_code()</function>
+        </term>
+        <listitem>
+          <para>
+            Get the current thread's error code. Calling this function is equivalent to obtaining the error code with
+            <code>waffle_error_get_info()->code</code>.
+          </para>
+          <para>
+            This function does not alter waffle's error state.
+          </para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+          <type>enum waffle_error</type>
+        </term>
+        <listitem>
+          <para>
+            For reference, below is the complete list of waffle's error codes.
+
+            <variablelist>
+
+              <varlistentry>
+                <term>
+                  <constant>WAFFLE_NO_ERROR</constant> = 0x00
+                </term>
+                <listitem>
+                  <para>
+                    The function succeeded.
+                  </para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>
+                  <constant>WAFFLE_ERROR_FATAL</constant> = 0x01
+                </term>
+                <listitem>
+                  <para>
+                    Waffle encountered a fatal error.  All future waffle calls result in
+                    undefined behavior.
+                  </para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>
+                  <constant>WAFFLE_ERROR_UNKNOWN</constant> = 0x02
+                </term>
+                <listitem>
+                  <para>
+                    Waffle encountered an error for which it lacks an error code.  This is
+                    usually produced when an underlying native call, such as
+                    <citerefentry><refentrytitle>XOpenDisplay</refentrytitle><manvolnum>3</manvolnum></citerefentry>,
+                    fails for an unknown reason.
+                  </para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>
+                  <constant>WAFFLE_ERROR_INTERNAL</constant> = 0x03
+                </term>
+                <listitem>
+                  <para>
+                    You found a bug in waffle.  Please report it.  The error message, obtained by
+                    <function>waffle_error_get_info()</function>, should contain a description of the bug.
+                  </para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>
+                  <constant>WAFFLE_ERROR_BAD_ALLOC</constant> = 0x04
+                </term>
+                <listitem>
+                  <para>
+                    Waffle failed to allocate memory.
+                  </para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>
+                  <constant>WAFFLE_ERROR_NOT_INITIALIZED</constant> = 0x05
+                </term>
+                <listitem>
+                  <para>
+                    The failed function requires waffle to be initialized with
+                    <citerefentry><refentrytitle>waffle_init</refentrytitle><manvolnum>3</manvolnum></citerefentry>.
+                  </para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>
+                  <constant>WAFFLE_ERROR_ALREADY_INITIALIZED</constant> = 0x06
+                </term>
+                <listitem>
+                  <para>
+                    If waffle has already been initialized by a successful call to
+                    <citerefentry><refentrytitle>waffle_init</refentrytitle><manvolnum>3</manvolnum></citerefentry>,
+                    then subsequent calls to <function>waffle_init()</function> produce this error.
+                  </para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>
+                  <constant>WAFFLE_ERROR_BAD_ATTRIBUTE</constant> = 0x08
+                </term>
+                <listitem>
+                  <para>
+                    An unrecognized attribute name or attribute value was passed in an
+                    attribute list.
+                  </para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>
+                  <constant>WAFFLE_ERROR_BAD_PARAMETER</constant> = 0x10
+                </term>
+                <listitem>
+                  <para>
+                    The failed function was passed an invalid argument.
+                  </para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>
+                  <constant>WAFFLE_ERROR_BAD_DISPLAY_MATCH</constant> = 0x11
+                </term>
+                <listitem>
+                  <para>
+                    The waffle objects passed to the failed function belong to different
+                    displays.
+                  </para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>
+                  <constant>WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM</constant> = 0x12
+                </term>
+                <listitem>
+                  <para>
+                    The requested action is unsupported on the current system or platform, but is otherwise valid.
+                  </para>
+                  <para>
+                    For example, attempting to choose a <type>waffle_config</type> whose API is OpenGL ES1 on a system
+                    that doesn't OpenGL ES1 will produce this error.
+                  </para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>
+                  <constant>WAFFLE_ERROR_BUILT_WITHOUT_SUPPORT</constant> = 0x13
+                </term>
+                <listitem>
+                  <para>
+                    Waffle was built without support for the requested action.
+                  </para>
+                  <para>
+                    For example, if waffle was built without support for GBM, then calling <code>waffle_init()</code>
+                    with attribute <code>WAFFLE_PLATFORM=WAFFLE_PLATFORM_GBM</code> will produce this error.
+                </para>
+                </listitem>
+              </varlistentry>
+
+            </variablelist>
+          </para>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
+  </refsect1>
+
+  <refsect1>
+    <title>See Also</title>
+    <para>
+      <citerefentry><refentrytitle>waffle</refentrytitle><manvolnum>7</manvolnum></citerefentry>
+    </para>
+  </refsect1>
+
+</refentry>
+
+<!--
+vim:tw=120 et ts=2 sw=2:
+-->

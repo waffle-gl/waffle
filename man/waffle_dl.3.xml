@@ -1,0 +1,131 @@
+<?xml version='1.0'?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+  "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+
+<!--
+  Copyright Intel 2012
+
+  This manual page is licensed under the Creative Commons Attribution-ShareAlike 3.0 United States License (CC BY-SA 3.0
+  US). To view a copy of this license, visit http://creativecommons.org.license/by-sa/3.0/us.
+-->
+
+<refentry
+    id="waffle_dl"
+    xmlns:xi="http://www.w3.org/2001/XInclude">
+
+  <!-- See http://www.docbook.org/tdg/en/html/refentry.html. -->
+
+  <refmeta>
+    <refentrytitle>waffle_dl</refentrytitle>
+    <manvolnum>3</manvolnum>
+  </refmeta>
+
+  <refnamediv>
+    <refname>waffle_dl</refname>
+    <refname>waffle_dl_can_open</refname>
+    <refname>waffle_dl_sym</refname>
+    <refpurpose>platform-independent interface to dynamic libraries</refpurpose>
+  </refnamediv>
+
+  <refentryinfo>
+    <title>Waffle Manual</title>
+    <productname>waffle</productname>
+    <xi:include href="common/author-chad.versace.xml"/>
+    <xi:include href="common/copyright.xml"/>
+    <xi:include href="common/legalnotice.xml"/>
+  </refentryinfo>
+
+  <refsynopsisdiv>
+
+    <funcsynopsis language="C">
+
+      <funcsynopsisinfo>#include &lt;waffle.h&gt;</funcsynopsisinfo>
+
+      <funcprototype>
+        <funcdef>bool <function>waffle_dl_can_open</function></funcdef>
+        <paramdef>int32_t <parameter>dl</parameter></paramdef>
+      </funcprototype>
+
+      <funcprototype>
+        <funcdef>void* <function>waffle_dl_sym</function></funcdef>
+        <paramdef>int32_t <parameter>dl</parameter></paramdef>
+        <paramdef>const char* <parameter>symbol</parameter></paramdef>
+      </funcprototype>
+
+    </funcsynopsis>
+  </refsynopsisdiv>
+
+  <refsect1>
+    <title>Description</title>
+
+    <para>
+      The waffle_dl functions provide a platform-independent interface for dynamic OpenGL libraries. For each function,
+      the parameter <parameter>dl</parameter> must be one of:
+      <simplelist type="vertical">
+        <member><constant>WAFFLE_DL_OPENGL</constant></member>
+        <member><constant>WAFFLE_DL_OPENGL_ES1</constant></member>
+        <member><constant>WAFFLE_DL_OPENGL_ES2</constant></member>
+      </simplelist>
+    </para>
+
+    <para>
+      For example, on Linux, the <constant>WAFFLE_DL_*</constant> enums map to <filename>libGL.so.1</filename>,
+      <filename>libGLESv1_CM.so</filename>, and <filename>libGLESv2.so</filename>.
+    </para>
+
+    <variablelist>
+
+      <varlistentry>
+        <term>
+          <function>waffle_dl_can_open()</function>
+        </term>
+        <listitem>
+          <para>
+            Test if a dynamic library can be opened.
+          </para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+          <function>waffle_dl_sym()</function>
+        </term>
+        <listitem>
+          <para>
+            Get a <parameter>symbol</parameter> from a dynamic library.
+          </para>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+  </refsect1>
+
+  <refsect1>
+    <title>Return Value</title>
+    <xi:include href="common/return-value.xml"/>
+  </refsect1>
+
+  <refsect1>
+    <title>Errors</title>
+
+    <para>
+      If waffle fails to find the requested library on the system, then
+      <constant>WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM</constant> is emitted.
+    </para>
+
+    <xi:include href="common/error-codes.xml"/>
+
+  </refsect1>
+
+  <refsect1>
+    <title>See Also</title>
+    <para>
+      <citerefentry><refentrytitle>waffle</refentrytitle><manvolnum>7</manvolnum></citerefentry>
+    </para>
+  </refsect1>
+
+</refentry>
+
+<!--
+vim:tw=120 et ts=2 sw=2:
+-->

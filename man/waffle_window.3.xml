@@ -1,0 +1,195 @@
+<?xml version='1.0'?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+  "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+
+<!--
+  Copyright Intel 2012
+
+  This manual page is licensed under the Creative Commons Attribution-ShareAlike 3.0 United States License (CC BY-SA 3.0
+  US). To view a copy of this license, visit http://creativecommons.org.license/by-sa/3.0/us.
+-->
+
+<refentry
+    id="waffle_window"
+    xmlns:xi="http://www.w3.org/2001/XInclude">
+
+  <!-- See http://www.docbook.org/tdg/en/html/refentry.html. -->
+
+  <refmeta>
+    <refentrytitle>waffle_window</refentrytitle>
+    <manvolnum>3</manvolnum>
+  </refmeta>
+
+  <refnamediv>
+    <refname>waffle_window</refname>
+    <refname>waffle_window_create</refname>
+    <refname>waffle_window_destroy</refname>
+    <refname>waffle_window_show</refname>
+    <refname>waffle_window_swap_buffers</refname>
+    <refname>waffle_window_get_native</refname>
+    <refpurpose>class <classname>waffle_window</classname></refpurpose>
+  </refnamediv>
+
+  <refentryinfo>
+    <title>Waffle Manual</title>
+    <productname>waffle</productname>
+    <xi:include href="common/author-chad.versace.xml"/>
+    <xi:include href="common/copyright.xml"/>
+    <xi:include href="common/legalnotice.xml"/>
+  </refentryinfo>
+
+  <refsynopsisdiv>
+
+    <funcsynopsis language="C">
+
+      <funcsynopsisinfo>
+#include &lt;waffle.h&gt;
+
+struct waffle_window;
+      </funcsynopsisinfo>
+
+      <funcprototype>
+        <funcdef>struct waffle_window* <function>waffle_window_create</function></funcdef>
+        <paramdef>struct waffle_window *<parameter>config</parameter></paramdef>
+        <paramdef>int32_t <parameter>width</parameter></paramdef>
+        <paramdef>int32_t <parameter>height</parameter></paramdef>
+      </funcprototype>
+
+      <funcprototype>
+        <funcdef>bool <function>waffle_window_destroy</function></funcdef>
+        <paramdef>struct waffle_window *<parameter>self</parameter></paramdef>
+      </funcprototype>
+
+      <funcprototype>
+        <funcdef>bool <function>waffle_window_show</function></funcdef>
+        <paramdef>struct waffle_window *<parameter>self</parameter></paramdef>
+      </funcprototype>
+
+      <funcprototype>
+        <funcdef>bool <function>waffle_window_swap_buffers</function></funcdef>
+        <paramdef>struct waffle_window *<parameter>self</parameter></paramdef>
+      </funcprototype>
+
+      <funcprototype>
+        <funcdef>union waffle_native_window* <function>waffle_window_get_native</function></funcdef>
+        <paramdef>struct waffle_window *<parameter>self</parameter></paramdef>
+      </funcprototype>
+
+    </funcsynopsis>
+  </refsynopsisdiv>
+
+  <refsect1>
+    <title>Description</title>
+
+    <variablelist>
+
+      <varlistentry>
+        <term>
+          <type>struct waffle_window</type>
+        </term>
+        <listitem>
+          <para>
+            An opaque type.
+          </para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+          <function>waffle_window_create()</function>
+        </term>
+        <listitem>
+          <para>
+            Create a window with the properties specified by <parameter>config</parameter>.
+          </para>
+          <para>
+            If the platform allows, the window is not displayed onto the screen after creation. To display the window,
+            call <function>waffle_window_show()</function>.
+          </para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+          <function>waffle_window_destroy()</function>
+        </term>
+        <listitem>
+          <para>
+            Destroy the window and release its memory.
+          </para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+          <function>waffle_window_show()</function>
+        </term>
+        <listitem>
+          <para>
+            Show the window on the display.  If the window is already shown, or if the native platform does not support
+            showing windows (such as GBM), then do nothing and returns true.
+          </para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+          <function>waffle_window_swap_buffers()</function>
+        </term>
+        <listitem>
+          <para>
+            If the window is double-buffered, then implicitly call <function>glFlush()</function> and post the contents
+            of the back buffer to the front buffer. If the window is front-buffered, then do nothing. For
+            platform-specific details of swap semantics, see the specification for the relevant native platform:
+            the <ulink url="http://www.opengl.org/registry/doc/glx1.4.pdf">GLX 1.4 Specification</ulink>,
+            the <ulink url="http://www.khronos.org/registry/egl/specs/eglspec.1.4.20110406.pdf">EGL 1.4 Specification</ulink>,
+            or the <ulink url="https://developer.apple.com/library/mac/#documentation/graphicsimaging/reference/CGL_OpenGL/Reference/reference.html">CGL Reference</ulink>.
+          </para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+          <function>waffle_window_get_native()</function>
+        </term>
+        <listitem>
+          <para>
+            Get the window's underlying native objects. Use
+            <citerefentry><refentrytitle>free</refentrytitle><manvolnum>3</manvolnum></citerefentry> to deallocate the
+            returned pointer.
+            See <citerefentry><refentrytitle>waffle_native</refentrytitle><manvolnum>3</manvolnum></citerefentry>
+            for the definition of <type>union waffle_native_window</type>.
+          </para>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+  </refsect1>
+
+  <refsect1>
+    <title>Return Value</title>
+    <xi:include href="common/return-value.xml"/>
+  </refsect1>
+
+  <refsect1>
+    <title>Errors</title>
+
+    <xi:include href="common/error-codes.xml"/>
+
+    <para>
+      No errors are specific to the <type>waffle_window</type> functions.
+    </para>
+  </refsect1>
+
+  <refsect1>
+    <title>See Also</title>
+    <para>
+      <citerefentry><refentrytitle>waffle</refentrytitle><manvolnum>7</manvolnum></citerefentry>
+    </para>
+  </refsect1>
+
+</refentry>
+
+<!--
+vim:tw=120 et ts=2 sw=2:
+-->
