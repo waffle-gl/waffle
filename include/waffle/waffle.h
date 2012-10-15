@@ -23,14 +23,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @defgroup waffle_api waffle_api
-///
-/// @brief Waffle's public API
-/// @{
-
-/// @file
-/// @brief Convenience header to include all waffle headers.
-
 #pragma once
 
 #include "waffle_version.h"
@@ -46,5 +38,3 @@
 #include "waffle_init.h"
 #include "waffle_portability.h"
 #include "waffle_window.h"
-
-/// @}

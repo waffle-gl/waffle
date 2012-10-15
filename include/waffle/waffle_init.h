@@ -23,12 +23,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @defgroup waffle_init waffle_init
-/// @ingroup waffle_api
-///
-/// @brief Initializing and terminating global library state.
-/// @{
-
 #pragma once
 
 #include <stdbool.h>
@@ -40,58 +34,9 @@
 extern "C" {
 #endif
 
-/// @brief Initialize the per-process global state of the waffle library.
-///
-/// This function must be called before calling any other waffle functions
-/// If waffle is already initialized, then calling waffle_init() produces the
-/// error @c WAFFLE_ERROR_ALREADY_INITIALIZED.
-///
-///
-/// ### Attributes ###
-///
-/// Argument @a attrib_list specifies a list of attributes, described in the
-/// table below, with which to initialize the waffle library. The list consists
-/// of a zero-terminated sequence of name/value pairs. If an attribute is
-/// absent from the list, then the attribute assumes its default value. If @a
-/// attrib_list is null or empty, then all attributes assume their default
-/// values.
-///
-/// |Name                                    | Required | Type | Default | Choices                      |
-/// |:---------------------------------------|:--------:|-----:|--------:|:-----------------------------|
-/// | WAFFLE_PLATFORM                        |   yes    | enum |    none | WAFFLE_PLATFORM_ANDROID      |
-/// | .                                      |     .    |    . |       . | WAFFLE_PLATFORM_CGL          |
-/// | .                                      |     .    |    . |       . | WAFFLE_PLATFORM_GLX          |
-/// | .                                      |     .    |    . |       . | WAFFLE_PLATFORM_WAYLAND      |
-/// | .                                      |     .    |    . |       . | WAFFLE_PLATFORM_X11_EGL      |
-///
-///
-/// ### Example Attribute Lists ###
-///
-/// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.c}
-/// const int32_t attrib_list[] = {
-///   WAFFLE_PLATFORM,      WAFFLE_PLATFORM_ANDROID,
-///   0,
-/// }
-/// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-///
-///
-/// ### Errors ###
-///
-/// - WAFFLE_ERROR_ALREADY_INITIALIZED @n
-///     The library's global state has already been initialized with a call
-///     to waffle_init().
-///
-/// - WAFFLE_ERROR_BAD_ATTRIBUTE @n
-///     An item in @a attrib_list is unrecognized, missing, or has an
-///     invalid value.
-///
-/// @see waffle_enum
-///
 WAFFLE_API bool
 waffle_init(const int32_t *attrib_list);
 
 #ifdef __cplusplus
 } // end extern "C"
 #endif
-
-/// @}

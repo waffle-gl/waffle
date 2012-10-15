@@ -23,10 +23,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @defgroup waffle_window waffle_window
-/// @ingroup waffle_api
-/// @{
-
 #pragma once
 
 #include <stdbool.h>
@@ -53,8 +49,6 @@ union waffle_native_window {
     struct waffle_wayland_window *wayland;
 };
 
-/// If the platform allows, the window is not displayed onto the screen
-/// after creation. To display the window, call waffle_window_show().
 WAFFLE_API struct waffle_window*
 waffle_window_create(
         struct waffle_config *config,
@@ -64,24 +58,15 @@ waffle_window_create(
 WAFFLE_API bool
 waffle_window_destroy(struct waffle_window *self);
 
-/// @brief Show the window on the screen.
-///
-/// If the window is already shown, this does nothing.
 WAFFLE_API bool
 waffle_window_show(struct waffle_window *self);
 
-/// @brief Analogous to eglSwapBuffers.
 WAFFLE_API bool
 waffle_window_swap_buffers(struct waffle_window *self);
 
-/// @brief Get underlying native objects.
-///
-/// Use free() to deallocate the returned pointer.
 WAFFLE_API union waffle_native_window*
 waffle_window_get_native(struct waffle_window *self);
 
 #ifdef __cplusplus
 } // end extern "C"
 #endif
-
-/// @}

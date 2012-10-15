@@ -23,12 +23,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @defgroup waffle_context waffle_context
-/// @ingroup waffle_api
-/// @{
-
-/// @file
-
 #pragma once
 
 #include <stdbool.h>
@@ -62,14 +56,9 @@ waffle_context_create(
 WAFFLE_API bool
 waffle_context_destroy(struct waffle_context *self);
 
-/// @brief Get underlying native objects.
-///
-/// Use free() to deallocate the returned pointer.
 WAFFLE_API union waffle_native_context*
 waffle_context_get_native(struct waffle_context *self);
 
 #ifdef __cplusplus
 } // end extern "C"
 #endif
-
-/// @}

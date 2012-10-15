@@ -23,21 +23,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @defgroup waffle_dl waffle_dl
-/// @ingroup waffle_api
-///
-/// @brief Dynamic libraries.
-///
-/// Use these functions to query dynamic libraries. For each function, @a dl
-/// must be one of:
-/// - WAFFLE_DL_OPENGL
-/// - WAFFLE_DL_OPENGL_ES1
-/// - WAFFLE_DL_OPENGL_ES2
-///
-/// @{
-
-/// @file
-
 #pragma once
 
 #include <stdbool.h>
@@ -49,16 +34,12 @@
 extern "C" {
 #endif
 
-/// @brief Test if a dynamic library can be opened.
 WAFFLE_API bool
 waffle_dl_can_open(int32_t dl);
 
-/// @brief Get symbol from dynamic library.
 WAFFLE_API void*
 waffle_dl_sym(int32_t dl, const char *name);
 
 #ifdef __cplusplus
 } // end extern "C"
 #endif
-
-/// @}

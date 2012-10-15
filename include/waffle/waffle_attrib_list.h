@@ -23,16 +23,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @defgroup waffle_attrib_list waffle_attrib_list
-/// @ingroup waffle_api
-///
-/// @brief Utilities for attribute lists
-///
-/// All functions in this module set the error code to WAFFLE_NO_ERROR.
-/// @{
-
-/// @file
-
 #pragma once
 
 #include <stdbool.h>
@@ -47,18 +37,12 @@ extern "C" {
 WAFFLE_API int32_t
 waffle_attrib_list_length(const int32_t attrib_list[]);
 
-/// If the @a key is not found, then @a value is not modified.
-///
-/// @return true if key was found.
 WAFFLE_API bool
 waffle_attrib_list_get(
         const int32_t attrib_list[],
         int32_t key,
         int32_t *value);
 
-/// If the @a key is not found, the @a value is set to default.
-///
-/// @return true if @a key was found.
 WAFFLE_API bool
 waffle_attrib_list_get_with_default(
         const int32_t attrib_list[],
@@ -66,7 +50,6 @@ waffle_attrib_list_get_with_default(
         int32_t *value,
         int32_t default_value);
 
-/// @return false if @a key is not found.
 WAFFLE_API bool
 waffle_attrib_list_update(
         int32_t *attrib_list,
@@ -76,5 +59,3 @@ waffle_attrib_list_update(
 #ifdef __cplusplus
 } // end extern "C"
 #endif
-
-/// @}

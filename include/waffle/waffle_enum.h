@@ -23,12 +23,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @defgroup waffle_enum waffle_enum
-/// @ingroup waffle_api
-/// @{
-
-/// @file
-
 #pragma once
 
 #include <stddef.h>
@@ -40,18 +34,9 @@
 extern "C" {
 #endif
 
-/// @brief Convert a waffle_enum to a string.
-///
-/// For example, convert @c WAFFLE_OPENGL to @c "WAFFLE_OPENGL" .
-///
-/// @return null if enum is invalid.
 WAFFLE_API const char*
 waffle_enum_to_string(int32_t e);
 
-/// @brief All non-error enums used by waffle.
-///
-/// All enums are placed in one list so that each has a distinct value. This
-/// enables better error detection at API entry points.
 enum waffle_enum {
     // ------------------------------------------------------------------
     // Generic
@@ -115,5 +100,3 @@ enum waffle_enum {
 #ifdef __cplusplus
 } // end extern "C"
 #endif
-
-/// @}

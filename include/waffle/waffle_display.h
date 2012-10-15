@@ -23,12 +23,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @defgroup waffle_display waffle_display
-/// @ingroup waffle_api
-/// @{
-
-/// @file
-
 #pragma once
 
 #include <stdbool.h>
@@ -57,29 +51,17 @@ union waffle_native_display {
 WAFFLE_API struct waffle_display*
 waffle_display_connect(const char *name);
 
-/// @brief Destructor.
-///
-/// Destroying a display invalidates all pointers to waffle objects that
-/// were created, directly or transitively, from that display.
 WAFFLE_API bool
 waffle_display_disconnect(struct waffle_display *self);
 
-/// Check if the display supports creation of a @ref waffle_context with
-/// the given @a context_api. Choices for @a context_api are
-/// `WAFFLE_CONTEXT_OPENGL*`.
 WAFFLE_API bool
 waffle_display_supports_context_api(
         struct waffle_display *self,
         int32_t context_api);
 
-/// @brief Get underlying native objects.
-///
-/// Use free() to deallocate the returned pointer.
 WAFFLE_API union waffle_native_display*
 waffle_display_get_native(struct waffle_display *self);
 
 #ifdef __cplusplus
 } // end extern "C"
 #endif
-
-/// @}
