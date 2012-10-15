@@ -89,6 +89,10 @@ Platform options;
 
 Miscellaneous options:
 
+    - waffle_build_manpages
+        [default=0; choices=0,1]
+        Build and install the manpages.
+
     - waffle_build_tests
         [default=1; choices=0,1]
         Build the unit tests and functional tests ran by `make check` and

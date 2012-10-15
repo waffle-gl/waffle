@@ -87,10 +87,20 @@ set(PROJECT_NAME "waffle")
 option(waffle_build_tests "Build tests" ON)
 set(waffle_build_examples "Build examples" ON)
 
+# Most users don't have the necessary tools installed to build manpages from
+# Docbook sources, so require users to explicitly enable building them.
+option(waffle_build_manpages "Build manpages" OFF)
+
 option(waffle_has_glx "Build support for GLX" OFF)
 option(waffle_has_wayland "Build support for Wayland" OFF)
 option(waffle_has_x11_egl "Build support for X11/EGL" OFF)
 option(waffle_has_gbm "Build support for GBM" OFF)
+
+set(waffle_manpage_xsl "/usr/share/sgml/docbook/xsl-stylesheets/manpages/docbook.xsl"
+    CACHE STRING "XML stylesheet used to transform Docbook XML into roff manpages")
+
+set(waffle_xsltproc "xsltproc"
+    CACHE STRING "Tool used to process XSLT stylesheets")
 
 # ----------------------------------------------
 # Emit errors for removed options
@@ -364,6 +374,10 @@ message("    cc: ${CMAKE_C_COMPILER}")
 message("    CFLAGS_base: ${CMAKE_C_FLAGS}")
 message("    CFLAGS_debug: ${CMAKE_C_FLAGS_DEBUG}")
 message("    CFLAGS_release: ${CMAKE_C_FLAGS_RELEASE}")
+if(waffle_build_manpages)
+message("    xsltproc: ${waffle_xsltproc}")
+message("    manpage xsl: ${waffle_manpage_xsl}")
+endif()
 message("")
 message("Install paths:")
 message("    CMAKE_INSTALL_PREFIX:          ${CMAKE_INSTALL_PREFIX}")
