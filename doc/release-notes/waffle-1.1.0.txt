@@ -1,0 +1,34 @@
+Waffle 1.1.0 - 15 Oct 2012
+==========================
+
+Waffle 1.1.0 is now available. Downloads and documentation are available at
+    http://people.freedesktop.org/~chadversary/waffle/releases.html#1.1.0
+
+Waffle is a cross-platform library that allows one to defer selection of GL
+API and of window system until runtime. For example, on Linux, Waffle enables
+an application to select X11/EGL with an OpenGL 3.3 core profile, Wayland with
+OpenGL ES2, and other window system / API combinations.
+
+The API and ABI of waffle 1.1 is backwards compatible with waffle 1.0.
+
+
+New Features since 1.0
+----------------------
+
+- Support for a new Linux platform, EGL with GBM. When using GBM, OpenGL applications
+  do not require a running display manager.
+
+- Experimental support for Android.
+
+- manpages. The entirety of waffle's public API is now documented in manpages.
+  To build and install them, run CMake with `-Dwaffle_build_manpages=1`. (See
+  the README for build requirements).
+
+
+Acknowledgements
+----------------
+
+Contributors to this release:
+    Chad Versace <chad.versace@linux.intel.com>
+    Jeff Bland <jksb@member.fsf.org>
+    Jordan Justen <jordan.l.justen@intel.com>
