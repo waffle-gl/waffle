@@ -49,17 +49,31 @@ then CMake will complain if the necessary libraries are not installed.
 Installing
 ==========
 
-On Linux, you likely want to the command below. It will install into
-/usr/local.
+First, enter the top of the waffle source tree.
+
+    git clone git://people.freedesktop.org/~chadversary/waffle
+    cd waffle
+
+or
+
+    tar xvf waffle-0.0.0.tar.xz
+    cd waffle-0.0.0
+
+On Linux, you likely want to use the commands below. The commands configure
+waffle with support for only GLX and installs into /usr/local.
 
     cmake \
         -DCMAKE_LIBRARY_PATH=$(echo $LIBRARY_PATH | sed 's/:/;/g') \
         -Dwaffle_has_glx=1 \
-        -Dwaffle_has_x11_egl=1 \
-        $WAFFLE_SOURCE_DIR
+        .
+
     make
     make check
     make install
+
+If in addition to GLX you want support for X11/EGL, then add
+-Dwaffle_has_x11_egl=1 to the cmake arguments. Likewise for Wayland and
+-Dwaffle_has_wayland=1.
 
 If you need to install into a custom location, autoconf-esque variables such
 as CMAKE_INSTALL_LIBDIR are supported. For example,
@@ -69,8 +83,7 @@ as CMAKE_INSTALL_LIBDIR are supported. For example,
         -DCMAKE_INSTALL_LIBDIR=lib \
         -DCMAKE_LIBRARY_PATH=$(echo $LIBRARY_PATH | sed 's/:/;/g') \
         -Dwaffle_has_glx=1 \
-        -Dwaffle_has_x11_egl=1 \
-        $WAFFLE_SOURCE_DIR
+        .
 
 For full details on configuring, building, and installing Waffle, see
 /doc/building.txt.
