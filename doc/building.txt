@@ -1,16 +1,7 @@
 Quickstart
-===========
+==========
 
-On Linux, this likely what you want:
-
-    cmake \
-        -DCMAKE_LIBRARY_PATH=$(echo $LIBRARY_PATH | sed 's/:/;/g') \
-        -Dwaffle_has_glx=1 \
-        -Dwaffle_has_x11_egl=1 \
-        $WAFFLE_SOURCE_DIR
-    make
-    make check
-    make install
+For basic build instructions that should work for most users, see the README.
 
 
 Configuration
