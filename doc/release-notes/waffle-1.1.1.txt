@@ -1,0 +1,34 @@
+Waffle 1.1.1 - 16 Oct 2012
+==========================
+
+Waffle 1.1.1 is a bugfix release. It fixes bugs discovered since 1.1.0.
+
+Downloads and documentation are available at:
+
+    http://people.freedesktop.org/~chadversary/waffle/releases.html#1.1.1
+
+For the cautious, the SHA256 sum is:
+    [TODO:sha256]
+
+There is also  a signed waffle-1.1.1 tag in my git repo:
+
+    git://people.freedesktop.org/~chadversary/waffle
+
+
+Bugfixes
+--------
+
+- Fix the build for cmake < 2.8.5 by bundling the GNUInstallDirs module into
+  waffle.
+- Clarify the simple build instructions in README.txt.
+
+Changes
+-------
+
+The full set changes can be viewed with `git log waffle-1.1.0..waffle-1.1.1`.
+
+Chad Versace (4):
+  doc/building: Remove duplicate instructions found in README
+  readme: Clarify build instructions
+  cmake: Bundle the GNUInstallDirs module from cmake-2.8.9
+  waffle: Bump version to 1.1.1
