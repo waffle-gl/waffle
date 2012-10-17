@@ -78,7 +78,7 @@ union waffle_native_window {
     <para>
       Each of the <function>waffle_${obj}_get_native()</function> functions returns a correspondingly named
       <type>union waffle_native_${obj}*</type>.
-      For example, <function>waffle_window_get_native()</function> returns a <type>untion waffle_native_window*</type>
+      For example, <function>waffle_window_get_native()</function> returns <type>union waffle_native_window*</type>
     </para>
 
     <para>

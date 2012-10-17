@@ -94,7 +94,7 @@ struct waffle_config;
           <para>
             <parameter>attrib_list</parameter> consists of a zero-terminated sequence of name/value pairs.  If an
             attribute is absent from <parameter>attrib_list</parameter>, then it assumes its default value.  If
-            <parameter>attrib_list</parameter> is null, then it is intrepreted the same as the empty list, which an
+            <parameter>attrib_list</parameter> is null, then it is intrepreted the same as the empty list, which is the
             list that contains only the terminal zero.
             See <xref linkend="sect.attributes"/> below for details which attributes that
             <parameter>attrib_list</parameter> may contain.
@@ -140,7 +140,7 @@ struct waffle_config;
       quirks can be eliminated through a platform abstraction layer. The quirks are documented below in detail.
     </para>
     <para>
-      For example, one quirk that Waffle is able to accomodate is that some platforms require specification of context
+      For example, one quirk that Waffle is able to accommodate is that some platforms require specification of context
       attributes at different times.  GLX requires that the context attributes be specified at time of context creation
       (<function>glXCreateContextAttribsARB</function>), but MacOS requires the attributes to be specified when choosing
       a config (<function>CGLChoosePixelFormat</function>).  Therefore, Waffle is constrained by MacOS to require the
