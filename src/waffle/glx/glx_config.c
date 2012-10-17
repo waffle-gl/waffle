@@ -133,6 +133,11 @@ glx_config_choose(struct wcore_platform *wc_plat,
         goto error;
 
     int attrib_list[] = {
+        // From page 12 (18 of pdf) of the GLX 1.4 spec:
+        //
+        //    For GLXFBConfigs that correspond to a TrueColor or DirectColor
+        //    visual, GLX BUFFER SIZE is the sum of GLX RED SIZE, GLX GREEN
+        //    SIZE, GLX BLUE SIZE, and GLX ALPHA SIZE.
         GLX_BUFFER_SIZE,        attrs->rgba_size,
         GLX_RED_SIZE,           attrs->red_size,
         GLX_GREEN_SIZE,         attrs->green_size,

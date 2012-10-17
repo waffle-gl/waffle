@@ -149,6 +149,12 @@ egl_choose_config(
     const int renderable_index = 19;
 
     EGLint attrib_list[] = {
+        // From page 17 of the EGL 1.4 spec:
+        //
+        //     EGL_BUFFER_SIZE gives the total of the color component bits of
+        //     the color buffer2 For an RGB color buffer, the total is the sum
+        //     of EGL_RED_SIZE, EGL_GREEN_SIZE, EGL_BLUE_SIZE, and
+        //     EGL_ALPHA_SIZE.
         EGL_BUFFER_SIZE,            attrs->rgba_size,
         EGL_RED_SIZE,               attrs->red_size,
         EGL_GREEN_SIZE,             attrs->green_size,
