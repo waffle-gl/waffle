@@ -144,8 +144,7 @@ struct waffle_config;
       attributes at different times.  GLX requires that the context attributes be specified at time of context creation
       (<function>glXCreateContextAttribsARB</function>), but MacOS requires the attributes to be specified when choosing
       a config (<function>CGLChoosePixelFormat</function>).  Therefore, Waffle is constrained by MacOS to require the
-      attributes at time of
-      <citerefentry><refentrytitle>waffle_config_choose</refentrytitle><manvolnum>3</manvolnum></citerefentry>
+      attributes at time of <function>waffle_config_choose()</function>.
     </para>
     <para>
       Waffle's method of working around these quirks still needs improvement.  It currently imposes some unnecessary
