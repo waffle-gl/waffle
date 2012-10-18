@@ -102,12 +102,12 @@ endif()
 
 if(waffle_has_x11_egl)
     list(APPEND waffle_sources
-        x11_egl/xegl_config.c
-        x11_egl/xegl_context.c
-        x11_egl/xegl_display.c
-        x11_egl/xegl_platform.c
-        x11_egl/xegl_priv_egl.c
-        x11_egl/xegl_window.c
+        xegl/xegl_config.c
+        xegl/xegl_context.c
+        xegl/xegl_display.c
+        xegl/xegl_platform.c
+        xegl/xegl_priv_egl.c
+        xegl/xegl_window.c
     )
 endif()
 
