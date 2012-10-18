@@ -23,26 +23,28 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/man3)
-file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/man7)
+set(man_out_dir ${CMAKE_CURRENT_BINARY_DIR})
+
+file(MAKE_DIRECTORY ${man_out_dir}/man3)
+file(MAKE_DIRECTORY ${man_out_dir}/man7)
 
 set(man_outputs
-    ${CMAKE_CURRENT_BINARY_DIR}/man3/waffle_attrib_list.3
-    ${CMAKE_CURRENT_BINARY_DIR}/man3/waffle_config.3
-    ${CMAKE_CURRENT_BINARY_DIR}/man3/waffle_context.3
-    ${CMAKE_CURRENT_BINARY_DIR}/man3/waffle_display.3
-    ${CMAKE_CURRENT_BINARY_DIR}/man3/waffle_dl.3
-    ${CMAKE_CURRENT_BINARY_DIR}/man3/waffle_enum.3
-    ${CMAKE_CURRENT_BINARY_DIR}/man3/waffle_error.3
-    ${CMAKE_CURRENT_BINARY_DIR}/man3/waffle_gbm.3
-    ${CMAKE_CURRENT_BINARY_DIR}/man3/waffle_gl_misc.3
-    ${CMAKE_CURRENT_BINARY_DIR}/man3/waffle_glx.3
-    ${CMAKE_CURRENT_BINARY_DIR}/man3/waffle_init.3
-    ${CMAKE_CURRENT_BINARY_DIR}/man3/waffle_native.3
-    ${CMAKE_CURRENT_BINARY_DIR}/man3/waffle_wayland.3
-    ${CMAKE_CURRENT_BINARY_DIR}/man3/waffle_window.3
-    ${CMAKE_CURRENT_BINARY_DIR}/man3/waffle_x11_egl.3
-    ${CMAKE_CURRENT_BINARY_DIR}/man7/waffle.7
+    ${man_out_dir}/man3/waffle_attrib_list.3
+    ${man_out_dir}/man3/waffle_config.3
+    ${man_out_dir}/man3/waffle_context.3
+    ${man_out_dir}/man3/waffle_display.3
+    ${man_out_dir}/man3/waffle_dl.3
+    ${man_out_dir}/man3/waffle_enum.3
+    ${man_out_dir}/man3/waffle_error.3
+    ${man_out_dir}/man3/waffle_gbm.3
+    ${man_out_dir}/man3/waffle_gl_misc.3
+    ${man_out_dir}/man3/waffle_glx.3
+    ${man_out_dir}/man3/waffle_init.3
+    ${man_out_dir}/man3/waffle_native.3
+    ${man_out_dir}/man3/waffle_wayland.3
+    ${man_out_dir}/man3/waffle_window.3
+    ${man_out_dir}/man3/waffle_x11_egl.3
+    ${man_out_dir}/man7/waffle.7
     )
 
 set(man_common_sources
@@ -59,7 +61,7 @@ function(waffle_add_manpage vol title)
         OUTPUT man${vol}/${title}.${vol}
         DEPENDS ${title}.${vol}.xml ${man_common_sources}
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        COMMAND ${waffle_xsltproc} --xinclude -o ${CMAKE_CURRENT_BINARY_DIR}/man${vol}/ manpage.xsl ${title}.${vol}.xml
+        COMMAND ${waffle_xsltproc} --xinclude -o ${man_out_dir}/man${vol}/ manpage.xsl ${title}.${vol}.xml
         )
 endfunction()
 
@@ -85,7 +87,7 @@ add_custom_target(man
     DEPENDS ${man_outputs}
     )
 
-install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/man3
+install(DIRECTORY ${man_out_dir}/man3
         DESTINATION ${CMAKE_INSTALL_FULL_MANDIR})
-install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/man7
+install(DIRECTORY ${man_out_dir}/man7
         DESTINATION ${CMAKE_INSTALL_FULL_MANDIR})
