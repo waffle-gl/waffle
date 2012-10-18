@@ -212,12 +212,8 @@ struct waffle_config;
       </varlistentry>
 
       <varlistentry>
-        <term>
-          <simplelist type="inline">
-            <member><constant>WAFFLE_CONTEXT_MAJOR_VERSION</constant></member>
-            <member><constant>WAFFLE_CONTEXT_MINOR_VERSION</constant></member>
-          </simplelist>
-        </term>
+        <term><constant>WAFFLE_CONTEXT_MAJOR_VERSION</constant></term>
+        <term><constant>WAFFLE_CONTEXT_MINOR_VERSION</constant></term>
         <listitem>
           <para>
             The default and supported values of the context version attributes depend on the native platform and the
@@ -312,16 +308,12 @@ struct waffle_config;
       </varlistentry>
 
       <varlistentry>
-        <term>
-          <simplelist type="inline">
-            <member><constant>WAFFLE_RED_SIZE</constant></member>
-            <member><constant>WAFFLE_GREEN_SIZE</constant></member>
-            <member><constant>WAFFLE_BLUE_SIZE</constant></member>
-            <member><constant>WAFFLE_ALPHA_SIZE</constant></member>
-            <member><constant>WAFFLE_DEPTH_SIZE</constant></member>
-            <member><constant>WAFFLE_STENCIL_SIZE</constant></member>
-          </simplelist>
-        </term>
+        <term><constant>WAFFLE_RED_SIZE</constant></term>
+        <term><constant>WAFFLE_GREEN_SIZE</constant></term>
+        <term><constant>WAFFLE_BLUE_SIZE</constant></term>
+        <term><constant>WAFFLE_ALPHA_SIZE</constant></term>
+        <term><constant>WAFFLE_DEPTH_SIZE</constant></term>
+        <term><constant>WAFFLE_STENCIL_SIZE</constant></term>
         <listitem>
           <para>
             The default value for each size attribute is <constant>WAFFLE_DONT_CARE</constant>. If the requested size
@@ -333,12 +325,8 @@ struct waffle_config;
       </varlistentry>
 
       <varlistentry>
-        <term>
-          <simplelist type="inline">
-            <member><constant>WAFFLE_SAMPLE_BUFFERS</constant></member>
-            <member><constant>WAFFLE_SAMPLES</constant></member>
-          </simplelist>
-        </term>
+        <term><constant>WAFFLE_SAMPLE_BUFFERS</constant></term>
+        <term><constant>WAFFLE_SAMPLES</constant></term>
         <listitem>
           <para>
             The valid values for <constant>WAFFLE_SAMPLE_BUFFERS</constant> are true and false. The default value is
