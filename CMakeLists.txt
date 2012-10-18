@@ -91,7 +91,6 @@ option(waffle_build_tests "Build tests" ON)
 option(waffle_build_manpages "Build manpages" OFF)
 
 option(waffle_build_examples "Build examples" ON)
-option(waffle_build_manpages "Build manpages" ON)
 
 option(waffle_has_glx "Build support for GLX" OFF)
 option(waffle_has_wayland "Build support for Wayland" OFF)
