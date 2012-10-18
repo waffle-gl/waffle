@@ -1,6 +1,32 @@
 # ----------------------------------------------------------------------------
+# Applies to all targets in this CMakeLists.
+# ----------------------------------------------------------------------------
+
+include_directories(
+    ${egl_INCLUDE_DIRS}
+    ${gbm_INCLUDE_DIRS}
+    ${gl_INCLUDE_DIRS}
+    ${udev_INCLUDE_DIRS}
+    ${wayland-client_INCLUDE_DIRS}
+    ${wayland-egl_INCLUDE_DIRS}
+    ${x11-xcb_INCLUDE_DIRS}
+    )
+
+# ----------------------------------------------------------------------------
 # Target: waffle (shared library)
 # ----------------------------------------------------------------------------
+
+set(waffle_libdeps
+    ${egl_LDFLAGS}
+    ${gbm_LDFLAGS}
+    ${gl_LDFLAGS}
+    ${udev_LDFLAGS}
+    ${wayland-client_LDFLAGS}
+    ${wayland-egl_LDFLAGS}
+    ${x11_LDFLAGS}
+    ${x11-xcb_LDFLAGS}
+    ${xcb_LDFLAGS}
+    )
 
 set(waffle_sources
     api/api_priv.c
@@ -44,9 +70,6 @@ if(waffle_has_egl)
     list(APPEND waffle_sources
         egl/egl_no_native.c
         )
-    list(APPEND waffle_libdeps
-        ${waffle_EGL_library}
-        )
 endif()
 
 if(waffle_has_glx)
@@ -56,9 +79,6 @@ if(waffle_has_glx)
         glx/glx_display.c
         glx/glx_platform.c
         glx/glx_window.c
-        )
-    list(APPEND waffle_libdeps
-        ${waffle_GL_library}
         )
 endif()
 
@@ -82,21 +102,12 @@ if(waffle_has_wayland)
         wayland/wayland_priv_egl.c
         wayland/wayland_window.c
     )
-    list(APPEND waffle_libdeps
-        ${waffle_wayland-client_library}
-        ${waffle_wayland-egl_library}
-        )
 endif()
 
 if(waffle_has_x11)
     list(APPEND waffle_sources
         x11/x11_display.c
         x11/x11_window.c
-        )
-    list(APPEND waffle_libdeps
-        ${waffle_X11-xcb_library}
-        ${waffle_X11_library}
-        ${waffle_xcb_library}
         )
 endif()
 
@@ -120,10 +131,6 @@ if(waffle_has_gbm)
         gbm/wgbm_priv_egl.c
         gbm/wgbm_window.c
     )
-    list(APPEND waffle_libdeps
-        ${waffle_gbm_library}
-        ${waffle_udev_library}
-        )
 endif()
 
 # CMake will pass to the C compiler only C sources. CMake does not recognize the
@@ -137,8 +144,26 @@ set_source_files_properties(
     COMPILE_FLAGS "-fvisibility=hidden"
     )
 
+include_directories(
+    ${GLX_INLCLUDE_DIRS}
+    ${X11_INCLUDE_DIRS}
+    ${X11-XCB_INCLUDE_DIRS}
+    ${XCB_INCLUDE_DIRS}
+    )
+
 add_library(${waffle_libname} SHARED ${waffle_sources})
-target_link_libraries(${waffle_libname} ${waffle_libdeps})
+
+target_link_libraries(${waffle_libname}
+    ${egl_LDFLAGS}
+    ${gbm_LDFLAGS}
+    ${gl_LDFLAGS}
+    ${udev_LDFLAGS}
+    ${wayland-client_LDFLAGS}
+    ${wayland-egl_LDFLAGS}
+    ${x11_LDFLAGS}
+    ${x11-xcb_LDFLAGS}
+    ${xcb_LDFLAGS}
+    )
 
 set_target_properties(${waffle_libname}
     PROPERTIES
@@ -165,7 +190,7 @@ add_library(waffle_static
     ${waffle_sources}
     )
 
-target_link_libraries(waffle_static ${waffle_libdeps})
+target_link_libraries(waffle_static)
 
 set_target_properties(waffle_static
     PROPERTIES
