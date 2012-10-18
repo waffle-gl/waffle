@@ -7,7 +7,7 @@ waffle_top := $(LOCAL_PATH)
 # !!! The version must be updated in tandem with the CMakeLists !!!
 #
 waffle_major_version := 1
-waffle_minor_version := 1
+waffle_minor_version := 2
 waffle_patch_version := 0
 
 waffle_android_major_version := $(word 1, $(subst ., , $(PLATFORM_VERSION)))
