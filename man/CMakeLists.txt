@@ -51,6 +51,7 @@ set(man_common_sources
     common/error-codes.xml
     common/legalnotice.xml
     common/return-value.xml
+    manpage.xsl
     )
 
 function(waffle_add_manpage vol title)
@@ -58,7 +59,7 @@ function(waffle_add_manpage vol title)
         OUTPUT man${vol}/${title}.${vol}
         DEPENDS ${title}.${vol}.xml ${man_common_sources}
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        COMMAND ${waffle_xsltproc} --xinclude -o ${CMAKE_CURRENT_BINARY_DIR}/man${vol}/ ${waffle_manpage_xsl} ${title}.${vol}.xml
+        COMMAND ${waffle_xsltproc} --xinclude -o ${CMAKE_CURRENT_BINARY_DIR}/man${vol}/ manpage.xsl ${title}.${vol}.xml
         )
 endfunction()
 

@@ -98,9 +98,6 @@ option(waffle_has_wayland "Build support for Wayland" OFF)
 option(waffle_has_x11_egl "Build support for X11/EGL" OFF)
 option(waffle_has_gbm "Build support for GBM" OFF)
 
-set(waffle_manpage_xsl "/usr/share/sgml/docbook/xsl-stylesheets/manpages/docbook.xsl"
-    CACHE STRING "XML stylesheet used to transform Docbook XML into roff manpages")
-
 set(waffle_xsltproc "xsltproc"
     CACHE STRING "Tool used to process XSLT stylesheets")
 
