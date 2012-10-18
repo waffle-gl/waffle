@@ -71,9 +71,7 @@ struct waffle_config;
     <variablelist>
 
       <varlistentry>
-        <term>
-          <type>struct waffle_config</type>
-        </term>
+        <term><type>struct waffle_config</type></term>
         <listitem>
           <para>
             An opaque type.
@@ -82,9 +80,7 @@ struct waffle_config;
       </varlistentry>
 
       <varlistentry>
-        <term>
-          <function>waffle_config_choose()</function>
-        </term>
+        <term><function>waffle_config_choose()</function></term>
         <listitem>
           <para>
             Choose a config on <parameter>display</parameter> that satifisfies the set of attributes specified by
@@ -103,9 +99,7 @@ struct waffle_config;
       </varlistentry>
 
       <varlistentry>
-        <term>
-          <function>waffle_config_destroy()</function>
-        </term>
+        <term><function>waffle_config_destroy()</function></term>
         <listitem>
           <para>
             Destroy the config and release its memory.
@@ -114,9 +108,7 @@ struct waffle_config;
       </varlistentry>
 
       <varlistentry>
-        <term>
-          <function>waffle_config_get_native()</function>
-        </term>
+        <term><function>waffle_config_get_native()</function></term>
         <listitem>
           <para>
             Get the config's underlying native objects. Use
@@ -171,9 +163,7 @@ struct waffle_config;
     <variablelist>
 
       <varlistentry>
-        <term>
-          <constant>WAFFLE_CONTEXT_API</constant>
-        </term>
+        <term><constant>WAFFLE_CONTEXT_API</constant></term>
         <listitem>
           <para>
             This is a required attribute; it has no default value. It must be one of:
@@ -286,9 +276,7 @@ struct waffle_config;
       </varlistentry>
 
       <varlistentry>
-        <term>
-          <constant>WAFFLE_CONTEXT_PROFILE</constant>
-        </term>
+        <term><constant>WAFFLE_CONTEXT_PROFILE</constant></term>
         <listitem>
           <para>
             The default and supported values for <constant>WAFFLE_CONTEXT_PROFILE</constant> depend on the native
@@ -338,9 +326,7 @@ struct waffle_config;
       </varlistentry>
 
       <varlistentry>
-        <term>
-          <constant>WAFFLE_DOUBLE_BUFFERED</constant>
-        </term>
+        <term><constant>WAFFLE_DOUBLE_BUFFERED</constant></term>
         <listitem>
           <para>
             The valid values are true and false. The default is true. This attribute specifies if a surface created with
@@ -350,9 +336,7 @@ struct waffle_config;
       </varlistentry>
 
       <varlistentry>
-        <term>
-          <constant>WAFFLE_ACCUM_BUFFER</constant>
-        </term>
+        <term><constant>WAFFLE_ACCUM_BUFFER</constant></term>
         <listitem>
           <para>
             The valid values are true and false. The default is false. This attribute specifies if a surface created with
@@ -381,16 +365,12 @@ struct waffle_config;
     <variablelist>
 
       <varlistentry>
-        <term>
-          <function>waffle_config_choose()</function>
-        </term>
+        <term><function>waffle_config_choose()</function></term>
         <listitem>
           <variablelist>
 
             <varlistentry>
-              <term>
-                <errorcode>WAFFLE_ERROR_BAD_ATTRIBUTE</errorcode>
-              </term>
+              <term><errorcode>WAFFLE_ERROR_BAD_ATTRIBUTE</errorcode></term>
               <listitem>
                 <para>
                   An item in <parameter>attrib_list</parameter> is unrecognized or has an invalid value, or a required
@@ -400,9 +380,7 @@ struct waffle_config;
             </varlistentry>
 
             <varlistentry>
-              <term>
-                <errorcode>WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM</errorcode>
-              </term>
+              <term><errorcode>WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM</errorcode></term>
               <listitem>
                 <para>
                   The attribute list is valid, but platform does not support the requested config. For example,

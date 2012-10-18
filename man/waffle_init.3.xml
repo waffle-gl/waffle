@@ -72,9 +72,7 @@
     <variablelist>
 
       <varlistentry>
-        <term>
-          <constant>WAFFLE_PLATFORM</constant>
-        </term>
+        <term><constant>WAFFLE_PLATFORM</constant></term>
         <listitem>
           <para>
             This attribute is required. Possible values are:
@@ -82,9 +80,7 @@
             <variablelist>
 
               <varlistentry>
-                <term>
-                  <constant>WAFFLE_PLATFORM_ANDROID</constant>
-                </term>
+                <term><constant>WAFFLE_PLATFORM_ANDROID</constant></term>
                 <listitem>
                   <para>
                     [Android] Use EGL on Android.
@@ -93,9 +89,7 @@
               </varlistentry>
 
               <varlistentry>
-                <term>
-                  <constant>WAFFLE_PLATFORM_GBM</constant>
-                </term>
+                <term><constant>WAFFLE_PLATFORM_GBM</constant></term>
                 <listitem>
                   <para>
                     [Linux] Use EGL with GBM, the "Generic Buffer Manager" provided by libgbm. This platform is
@@ -105,9 +99,7 @@
               </varlistentry>
 
               <varlistentry>
-                <term>
-                  <constant>WAFFLE_PLATFORM_CGL</constant>
-                </term>
+                <term><constant>WAFFLE_PLATFORM_CGL</constant></term>
                 <listitem>
                   <para>
                     [MacOS] Use CGL to create the
@@ -121,9 +113,7 @@
               </varlistentry>
 
               <varlistentry>
-                <term>
-                  <constant>WAFFLE_PLATFORM_GLX</constant>
-                </term>
+                <term><constant>WAFFLE_PLATFORM_GLX</constant></term>
                 <listitem>
                   <para>
                     [Linux only, MacOS not yet supported]
@@ -131,9 +121,7 @@
                 </listitem>
               </varlistentry>
               <varlistentry>
-                <term>
-                  <constant>WAFFLE_PLATFORM_WAYLAND</constant>
-                </term>
+                <term><constant>WAFFLE_PLATFORM_WAYLAND</constant></term>
                 <listitem>
                   <para>
                     [Linux] Use EGL with the Wayland display server.
@@ -141,9 +129,7 @@
                 </listitem>
               </varlistentry>
               <varlistentry>
-                <term>
-                  <constant>WAFFLE_PLATFORM_X11_EGL</constant>
-                </term>
+                <term><constant>WAFFLE_PLATFORM_X11_EGL</constant></term>
                 <listitem>
                   <para>
                     [Linux] Use EGL with the X11 display server.
@@ -176,9 +162,7 @@
     <variablelist>
 
       <varlistentry>
-        <term>
-          <errorcode>WAFFLE_ERROR_ALREADY_INITIALIZED</errorcode>
-        </term>
+        <term><errorcode>WAFFLE_ERROR_ALREADY_INITIALIZED</errorcode></term>
         <listitem>
           <para>
             Waffle has already been initialized with a successfull call to <function>waffle_init()</function>.
@@ -187,9 +171,7 @@
       </varlistentry>
 
       <varlistentry>
-        <term>
-          <errorcode>WAFFLE_ERROR_BAD_ATTRIBUTE</errorcode>
-        </term>
+        <term><errorcode>WAFFLE_ERROR_BAD_ATTRIBUTE</errorcode></term>
         <listitem>
           <para>
             An item in <parameter>attrib_list</parameter> is unrecognized or has an invalid value, or a required
@@ -199,9 +181,7 @@
       </varlistentry>
 
       <varlistentry>
-        <term>
-          <errorcode>WAFFLE_ERROR_BUILT_WITHOUT_SUPPORT</errorcode>
-        </term>
+        <term><errorcode>WAFFLE_ERROR_BUILT_WITHOUT_SUPPORT</errorcode></term>
         <listitem>
           <para>
             Waffle was built without support for the requested attribute.

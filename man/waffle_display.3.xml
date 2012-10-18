@@ -77,9 +77,7 @@ struct waffle_display;
     <variablelist>
 
       <varlistentry>
-        <term>
-          <type>struct waffle_display</type>
-        </term>
+        <term><type>struct waffle_display</type></term>
         <listitem>
           <para>
             An opaque type.
@@ -88,9 +86,7 @@ struct waffle_display;
       </varlistentry>
 
       <varlistentry>
-        <term>
-          <function>waffle_display_connect()</function>
-        </term>
+        <term><function>waffle_display_connect()</function></term>
         <listitem>
           <para>
             Connect to a display. The interpretation of <parameter>name</parameter> differs according to the platform
@@ -118,9 +114,7 @@ struct waffle_display;
       </varlistentry>
 
       <varlistentry>
-        <term>
-          <function>waffle_display_disconnect()</function>
-        </term>
+        <term><function>waffle_display_disconnect()</function></term>
         <listitem>
           <para>
             Disconnect from the <type>waffle_display</type> and release it's memory. All pointers to waffle objects that
@@ -130,9 +124,7 @@ struct waffle_display;
       </varlistentry>
 
       <varlistentry>
-        <term>
-          <function>waffle_display_supports_context_api()</function>
-        </term>
+        <term><function>waffle_display_supports_context_api()</function></term>
         <listitem>
           <para>
             Check if the display is capable of creating
@@ -145,9 +137,7 @@ struct waffle_display;
       </varlistentry>
 
       <varlistentry>
-        <term>
-          <function>waffle_display_get_native()</function>
-        </term>
+        <term><function>waffle_display_get_native()</function></term>
         <listitem>
           <para>
             Get the display's underlying native objects. Use

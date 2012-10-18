@@ -91,9 +91,7 @@
     <variablelist>
 
       <varlistentry>
-        <term>
-          <function>waffle_attrib_list_length()</function>
-        </term>
+        <term><function>waffle_attrib_list_length()</function></term>
         <listitem>
           <para>
             Return the number of key/value pairs in the list.
@@ -102,9 +100,7 @@
       </varlistentry>
 
       <varlistentry>
-        <term>
-          <function>waffle_attrib_list_get()</function>
-        </term>
+        <term><function>waffle_attrib_list_get()</function></term>
         <listitem>
           <para>
             Get the <parameter>value</parameter> associated with <parameter>key</parameter>.  If the list does not
@@ -115,9 +111,7 @@
       </varlistentry>
 
       <varlistentry>
-        <term>
-          <function>waffle_attrib_list_get_with_default()</function>
-        </term>
+        <term><function>waffle_attrib_list_get_with_default()</function></term>
         <listitem>
           <para>
             Equivalent to <function>waffle_attrib_list_get()</function> except that if the list does not contain the
@@ -127,9 +121,7 @@
       </varlistentry>
 
       <varlistentry>
-        <term>
-          <function>waffle_attrib_list_update()</function>
-        </term>
+        <term><function>waffle_attrib_list_update()</function></term>
         <listitem>
           <para>
             Update the <parameter>value</parameter> associated with <parameter>key</parameter>.

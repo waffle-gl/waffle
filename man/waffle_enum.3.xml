@@ -58,9 +58,7 @@ enum waffle_enum {...};
     <variablelist>
 
       <varlistentry>
-        <term>
-          <function>waffle_enum_to_string()</function>
-        </term>
+        <term><function>waffle_enum_to_string()</function></term>
         <listitem>
           <para>
             Convert an <type>waffle_enum</type> token to a string.
@@ -76,9 +74,7 @@ enum waffle_enum {...};
       </varlistentry>
 
       <varlistentry>
-        <term>
-          <type>enum waffle_enum</type>
-        </term>
+        <term><type>enum waffle_enum</type></term>
         <listitem>
           <para>
             For reference, below is the complete list of waffle's non-error enums.

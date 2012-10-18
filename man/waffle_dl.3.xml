@@ -76,9 +76,7 @@
     <variablelist>
 
       <varlistentry>
-        <term>
-          <function>waffle_dl_can_open()</function>
-        </term>
+        <term><function>waffle_dl_can_open()</function></term>
         <listitem>
           <para>
             Test if a dynamic library can be opened.
@@ -87,9 +85,7 @@
       </varlistentry>
 
       <varlistentry>
-        <term>
-          <function>waffle_dl_sym()</function>
-        </term>
+        <term><function>waffle_dl_sym()</function></term>
         <listitem>
           <para>
             Get a <parameter>symbol</parameter> from a dynamic library.

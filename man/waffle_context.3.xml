@@ -71,9 +71,7 @@ struct waffle_context;
     <variablelist>
 
       <varlistentry>
-        <term>
-          <type>struct waffle_context</type>
-        </term>
+        <term><type>struct waffle_context</type></term>
         <listitem>
           <para>
             An opaque type.
@@ -82,9 +80,7 @@ struct waffle_context;
       </varlistentry>
 
       <varlistentry>
-        <term>
-          <function>waffle_context_create()</function>
-        </term>
+        <term><function>waffle_context_create()</function></term>
         <listitem>
           <para>
             Create a context for OpenGL rendering with the properties specified by <parameter>config</parameter>.
@@ -102,9 +98,7 @@ struct waffle_context;
       </varlistentry>
 
       <varlistentry>
-        <term>
-          <function>waffle_context_destroy()</function>
-        </term>
+        <term><function>waffle_context_destroy()</function></term>
         <listitem>
           <para>
             Destroy the context and release its memory.
@@ -113,9 +107,7 @@ struct waffle_context;
       </varlistentry>
 
       <varlistentry>
-        <term>
-          <function>waffle_context_get_native()</function>
-        </term>
+        <term><function>waffle_context_get_native()</function></term>
         <listitem>
           <para>
             Get the context's underlying native objects. Use

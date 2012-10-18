@@ -84,20 +84,14 @@ struct waffle_window;
     <variablelist>
 
       <varlistentry>
-        <term>
-          <type>struct waffle_window</type>
-        </term>
-        <listitem>
-          <para>
+        <term><type>struct waffle_window</type></term><listitem><para>
             An opaque type.
           </para>
         </listitem>
       </varlistentry>
 
       <varlistentry>
-        <term>
-          <function>waffle_window_create()</function>
-        </term>
+        <term><function>waffle_window_create()</function></term>
         <listitem>
           <para>
             Create a window with the properties specified by <parameter>config</parameter>.
@@ -110,9 +104,7 @@ struct waffle_window;
       </varlistentry>
 
       <varlistentry>
-        <term>
-          <function>waffle_window_destroy()</function>
-        </term>
+        <term><function>waffle_window_destroy()</function></term>
         <listitem>
           <para>
             Destroy the window and release its memory.
@@ -121,9 +113,7 @@ struct waffle_window;
       </varlistentry>
 
       <varlistentry>
-        <term>
-          <function>waffle_window_show()</function>
-        </term>
+        <term><function>waffle_window_show()</function></term>
         <listitem>
           <para>
             Show the window on the display.  If the window is already shown, or if the native platform does not support
@@ -133,9 +123,7 @@ struct waffle_window;
       </varlistentry>
 
       <varlistentry>
-        <term>
-          <function>waffle_window_swap_buffers()</function>
-        </term>
+        <term><function>waffle_window_swap_buffers()</function></term>
         <listitem>
           <para>
             If the window is double-buffered, then implicitly call <function>glFlush()</function> and post the contents
@@ -149,9 +137,7 @@ struct waffle_window;
       </varlistentry>
 
       <varlistentry>
-        <term>
-          <function>waffle_window_get_native()</function>
-        </term>
+        <term><function>waffle_window_get_native()</function></term>
         <listitem>
           <para>
             Get the window's underlying native objects. Use

@@ -70,9 +70,7 @@
     <variablelist>
 
       <varlistentry>
-        <term>
-          <function>waffle_is_extension_in_string()</function>
-        </term>
+        <term><function>waffle_is_extension_in_string()</function></term>
         <listitem>
           <para>
             Check if an extension is contained in a GL-style extension string.
@@ -90,9 +88,7 @@
       </varlistentry>
 
       <varlistentry>
-        <term>
-          <function>waffle_make_current()</function>
-        </term>
+        <term><function>waffle_make_current()</function></term>
         <listitem>
           <para>
             Bind the given <parameter>window</parameter> and <parameter>context</parameter> for rendering on the current
@@ -107,9 +103,7 @@
       </varlistentry>
 
       <varlistentry>
-        <term>
-          <function>waffle_get_proc_address()</function>
-        </term>
+        <term><function>waffle_get_proc_address()</function></term>
         <listitem>
           <para>
             On GLX, this redirects to <function>glXGetProcAddress</function>. On EGL, this redirects to
