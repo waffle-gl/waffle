@@ -61,21 +61,28 @@ wayland_display_destroy(struct wcore_display *wc_self)
 }
 
 static void
-wayland_display_listener(struct wl_display *display,
+wayland_display_listener(void *data,
+                         struct wl_registry *registry,
                          uint32_t name,
                          const char *interface,
-                         uint32_t version,
-                         void *data)
+                         uint32_t version)
 {
     struct wayland_display *self = data;
 
     if (!strncmp(interface, "wl_compositor", 14)) {
-        self->wl_compositor = wl_display_bind(display, name, &wl_compositor_interface);
+        self->wl_compositor = wl_registry_bind(self->wl_registry, name,
+                                               &wl_compositor_interface, 1);
     }
     else if (!strncmp(interface, "wl_shell", 9)) {
-        self->wl_shell = wl_display_bind(display, name, &wl_shell_interface);
+        self->wl_shell = wl_registry_bind(self->wl_registry, name,
+                                          &wl_shell_interface, 1);
     }
 }
+
+static const struct wl_registry_listener registry_listener = {
+                 .global = wayland_display_listener,
+                 .global_remove = NULL,
+};
 
 struct wcore_display*
 wayland_display_connect(struct wcore_platform *wc_plat,
@@ -83,6 +90,7 @@ wayland_display_connect(struct wcore_platform *wc_plat,
 {
     struct wayland_display *self;
     bool ok = true;
+    int error = 0;
 
     self = wcore_calloc(sizeof(*self));
     if (self == NULL)
@@ -98,9 +106,25 @@ wayland_display_connect(struct wcore_platform *wc_plat,
         goto error;
     }
 
-    wl_display_add_global_listener(self->wl_display,
-                                   wayland_display_listener,
-                                   self);
+    self->wl_registry = wl_display_get_registry(self->wl_display);
+    if (!self->wl_registry) {
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN, "wl_display_get_registry failed");
+        goto error;
+    }
+
+    error = wl_registry_add_listener(self->wl_registry,
+                                     &registry_listener,
+                                     self);
+    if (error < 0) {
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN, "wl_registry_add_listener failed");
+        goto error;
+    }
+
+    error = wl_display_dispatch(self->wl_display);
+    if (error < 0) {
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN, "wl_display_dispatch failed");
+        goto error;
+    }
 
     self->egl = wayland_egl_initialize(self->wl_display);
     if (!self->egl)

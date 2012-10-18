@@ -43,6 +43,7 @@ struct wayland_display {
     struct wcore_display wcore;
 
     struct wl_display *wl_display;
+    struct wl_registry *wl_registry;
     struct wl_compositor *wl_compositor;
     struct wl_shell *wl_shell;
 
