@@ -425,56 +425,6 @@ testsuite_x11_egl(void)
 }
 #endif // WAFFLE_HAS_X11_EGL
 
-#ifdef WAFFLE_HAS_GBM
-TEST(gl_basic, gbm_init)
-{
-    gl_basic_init(WAFFLE_PLATFORM_GBM);
-}
-
-TEST(gl_basic, gbm_gl_rgb)
-{
-    gl_basic_draw(WAFFLE_CONTEXT_OPENGL, 0);
-}
-
-TEST(gl_basic, gbm_gles1_rgb)
-{
-    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES1, 0);
-}
-
-TEST(gl_basic, gbm_gles2_rgb)
-{
-    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES2, 0);
-}
-
-TEST(gl_basic, gbm_gl_rgba)
-{
-    gl_basic_draw(WAFFLE_CONTEXT_OPENGL, 1);
-}
-
-TEST(gl_basic, gbm_gles1_rgba)
-{
-    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES1, 1);
-}
-
-TEST(gl_basic, gbm_gles2_rgba)
-{
-    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES2, 1);
-}
-
-static void
-testsuite_gbm(void)
-{
-    TEST_RUN(gl_basic, gbm_init);
-    TEST_RUN(gl_basic, gbm_gl_rgb);
-    TEST_RUN(gl_basic, gbm_gles1_rgb);
-    TEST_RUN(gl_basic, gbm_gles2_rgb);
-    TEST_RUN(gl_basic, gbm_gl_rgba);
-    TEST_RUN(gl_basic, gbm_gles1_rgba);
-    TEST_RUN(gl_basic, gbm_gles2_rgba);
-}
-#endif // WAFFLE_HAS_GBM
-
-
 static void
 usage_error(void)
 {
@@ -545,9 +495,6 @@ main(int argc, char *argv[])
 #endif
 #ifdef WAFFLE_HAS_X11_EGL
     run_testsuite(testsuite_x11_egl);
-#endif
-#ifdef WAFFLE_HAS_GBM
-    run_testsuite(testsuite_gbm);
 #endif
 
    return 0;
