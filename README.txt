@@ -49,6 +49,9 @@ then CMake will complain if the necessary libraries are not installed.
 Installing
 ==========
 
+If any of Waffle's dependencies are installed in custom locations, you must
+set the PKG_CONFIG_PATH environment variable.
+
 First, enter the top of the waffle source tree.
 
     git clone git://people.freedesktop.org/~chadversary/waffle
@@ -62,10 +65,7 @@ or
 On Linux, you likely want to use the commands below. The commands configure
 waffle with support for only GLX and installs into /usr/local.
 
-    cmake \
-        -DCMAKE_LIBRARY_PATH=$(echo $LIBRARY_PATH | sed 's/:/;/g') \
-        -Dwaffle_has_glx=1 \
-        .
+    cmake -Dwaffle_has_glx=1 .
 
     make
     make check
@@ -81,7 +81,6 @@ as CMAKE_INSTALL_LIBDIR are supported. For example,
     cmake \
         -DCMAKE_INSTALL_PREFIX=$HOME \
         -DCMAKE_INSTALL_LIBDIR=lib \
-        -DCMAKE_LIBRARY_PATH=$(echo $LIBRARY_PATH | sed 's/:/;/g') \
         -Dwaffle_has_glx=1 \
         .
 

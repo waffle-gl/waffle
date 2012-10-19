@@ -7,6 +7,9 @@ For basic build instructions that should work for most users, see the README.
 Configuration
 =============
 
+If any of Waffle's dependencies are installed in custom locations, you must
+set the PKG_CONFIG_PATH environment variable.
+
 To configure Waffle, invoke CMake as `cmake [options] $WAFFLE_SOURCE_DIR`.
 Options are given in form `-Dname=value`. CMake stores its configuration in a
 top-level file named CMakeCache.txt. To edit cached variables, either edit the
@@ -16,10 +19,6 @@ CMake builtin options:
 
     CMake has many builtin options. Here is a small subset of important
     options that affect Waffle.
-
-    Unlike Autoconf, CMake doesn't detect environment variables like
-    LIBRARY_PATH and CFLAGS. You need to set some of the options below to get
-    that behavior.
 
     - CMAKE_INSTALL_PREFIX
         [default=/usr/local]
@@ -54,11 +53,6 @@ CMake builtin options:
     - CMAKE_C_FLAGS_RELEASE
         [default="-g1 -O2 -DNEDEBUG"]
         Flags to append to CMAKE_C_FLAGS when CMAKE_BUILD_TYPE=release.
-
-    - CMAKE_LIBRARY_PATH
-        [default=none]
-        A semicolon-separated list of directories in which to search for
-        libraries.
 
 Platform options;
 
