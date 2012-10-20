@@ -4,8 +4,8 @@
 
 # Maintainer: Chad Versace <chad.versace@linux.intel.com>
 
-pkgname='waffle-@MAJOR@'
-pkgver='@MINOR@.@PATCH@'
+pkgname='waffle'
+pkgver='@MAJOR@.@MINOR@.@PATCH@'
 pkgrel=1
 pkgdesc='a library for choosing window system and OpenGL API at runtime'
 arch=('i686' 'x86_64')
@@ -22,11 +22,11 @@ makedepends=(
   'cmake'
   'xcb-proto'
   )
-source=("http://people.freedesktop.org/~chadversary/waffle/files/release/$pkgname.$pkgver/$pkgname.$pkgver.tar.xz")
+source=("http://people.freedesktop.org/~chadversary/waffle/files/release/$pkgname-$pkgver/$pkgname-$pkgver.tar.xz")
 sha256sums=('@TODO@')
 
 build() {
-  cd "$srcdir/$pkgname.$pkgver"
+  cd "$srcdir/$pkgname-$pkgver"
 
   cmake \
     -DCMAKE_INSTALL_PREFIX=/usr \
@@ -39,7 +39,7 @@ build() {
 }
 
 package() {
-  cd "$srcdir/$pkgname.$pkgver"
+  cd "$srcdir/$pkgname-$pkgver"
   make DESTDIR="$pkgdir/" install
   install -m755 -d "$pkgdir/usr/share/licenses/$pkgname"
   install -m644 "$pkgdir/usr/share/doc/$pkgname/LICENSE.txt" \
