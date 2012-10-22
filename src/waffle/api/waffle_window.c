@@ -53,7 +53,7 @@ waffle_window_create(
     if (!api_check_entry(obj_list, 1))
         return NULL;
 
-    wc_self = api_platform->vtbl->create_window(api_platform,
+    wc_self = api_platform->vtbl->window.create(api_platform,
                                                 wc_config,
                                                 width,
                                                 height);
@@ -75,7 +75,7 @@ waffle_window_destroy(struct waffle_window *self)
     if (!api_check_entry(obj_list, 1))
         return false;
 
-    return wc_self->vtbl->destroy(wc_self);
+    return api_platform->vtbl->window.destroy(wc_self);
 }
 
 bool
@@ -90,7 +90,7 @@ waffle_window_show(struct waffle_window *self)
     if (!api_check_entry(obj_list, 1))
         return false;
 
-    return wc_self->vtbl->show(wc_self);
+    return api_platform->vtbl->window.show(wc_self);
 }
 
 bool
@@ -105,7 +105,7 @@ waffle_window_swap_buffers(struct waffle_window *self)
     if (!api_check_entry(obj_list, 1))
         return false;
 
-    return wc_self->vtbl->swap_buffers(wc_self);
+    return api_platform->vtbl->window.swap_buffers(wc_self);
 }
 
 union waffle_native_window*
@@ -120,7 +120,7 @@ waffle_window_get_native(struct waffle_window *self)
     if (!api_check_entry(obj_list, 1))
         return NULL;
 
-    return wc_self->vtbl->get_native(wc_self);
+    return api_platform->vtbl->window.get_native(wc_self);
 }
 
 /// @}

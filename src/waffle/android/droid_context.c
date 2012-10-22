@@ -34,8 +34,6 @@
 #include "droid_priv_egl.h"
 #include "droid_surfaceflingerlink.h"
 
-static const struct wcore_context_vtbl droid_context_wcore_vtbl;
-
 struct wcore_context*
 droid_context_create(struct wcore_platform *wc_plat,
                      struct wcore_config *wc_config,
@@ -64,7 +62,6 @@ droid_context_create(struct wcore_platform *wc_plat,
     if (!self->egl)
         goto error;
 
-    self->wcore.vtbl = &droid_context_wcore_vtbl;
     return &self->wcore;
 
 error:
@@ -96,8 +93,3 @@ droid_context_get_native(struct wcore_context *wc_self)
     wcore_error(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM);
     return NULL;
 }
-
-static const struct wcore_context_vtbl droid_context_wcore_vtbl = {
-    .destroy = droid_context_destroy,
-    .get_native = droid_context_get_native,
-};

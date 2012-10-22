@@ -35,8 +35,6 @@
 #include "cgl_config.h"
 #include "cgl_error.h"
 
-static const struct wcore_config_vtbl cgl_config_wcore_vtbl;
-
 bool
 cgl_config_destroy(struct wcore_config *wc_self)
 {
@@ -186,7 +184,6 @@ cgl_config_choose(struct wcore_platform *wc_plat,
         goto error;
     }
 
-    self->wcore.vtbl = &cgl_config_wcore_vtbl;
     return &self->wcore;
 
 error:
@@ -200,8 +197,3 @@ cgl_config_get_native(struct wcore_config *wc_self)
     wcore_error(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM);
     return NULL;
 }
-
-static const struct wcore_config_vtbl cgl_config_wcore_vtbl = {
-    .destroy = cgl_config_destroy,
-    .get_native = cgl_config_get_native,
-};

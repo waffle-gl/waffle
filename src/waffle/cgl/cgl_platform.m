@@ -35,7 +35,7 @@
 
 #include "cgl_window.h"
 
-static const struct wcore_platform_vtbl cgl_platform_wcore_vtbl;
+static const struct wcore_platform_vtbl cgl_platform_vtbl;
 
 static bool
 cgl_platform_destroy(struct wcore_platform *wc_self)
@@ -70,7 +70,7 @@ cgl_platform_create(void)
     if (!ok)
         goto error;
 
-    self->wcore.vtbl = &cgl_platform_wcore_vtbl;
+    self->wcore.vtbl = &cgl_platform_vtbl;
     return &self->wcore;
 
 error:
@@ -109,14 +109,38 @@ cgl_platform_get_proc_address(struct wcore_platform *wc_self,
     return NULL;
 }
 
-static const struct wcore_platform_vtbl cgl_platform_wcore_vtbl = {
+static const struct wcore_platform_vtbl cgl_platform_vtbl = {
     .destroy = cgl_platform_destroy,
-    .connect_to_display = cgl_display_connect,
-    .choose_config = cgl_config_choose,
-    .create_context = cgl_context_create,
-    .create_window = cgl_window_create,
+
     .make_current = cgl_platform_make_current,
     .get_proc_address = cgl_platform_get_proc_address,
     .dl_can_open = cgl_dl_can_open,
     .dl_sym = cgl_dl_sym,
+
+    .display = {
+        .connect = cgl_display_connect,
+        .destroy = cgl_display_destroy,
+        .supports_context_api = cgl_display_supports_context_api,
+        .get_native = cgl_display_get_native,
+    },
+
+    .config = {
+        .choose = cgl_config_choose,
+        .destroy = cgl_config_destroy,
+        .get_native = cgl_config_get_native,
+    },
+
+    .context = {
+        .create = cgl_context_create,
+        .destroy = cgl_context_destroy,
+        .get_native = cgl_context_get_native,
+    },
+
+    .window = {
+        .create = cgl_window_create,
+        .destroy = cgl_window_destroy,
+        .show = cgl_window_show,
+        .swap_buffers = cgl_window_swap_buffers,
+        .get_native = cgl_window_get_native,
+    },
 };

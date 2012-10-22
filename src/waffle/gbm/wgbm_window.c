@@ -38,8 +38,6 @@
 #include "wgbm_priv_egl.h"
 #include "wgbm_window.h"
 
-static const struct wcore_window_vtbl wgbm_window_wcore_vtbl;
-
 bool
 wgbm_window_destroy(struct wcore_window *wc_self)
 {
@@ -95,7 +93,6 @@ wgbm_window_create(struct wcore_platform *wc_plat,
     if (!self->egl)
         goto error;
 
-    self->wcore.vtbl = &wgbm_window_wcore_vtbl;
     return &self->wcore;
 
 error:
@@ -136,10 +133,3 @@ wgbm_window_get_native(struct wcore_window *wc_self)
 
     return n_window;
 }
-
-static const struct wcore_window_vtbl wgbm_window_wcore_vtbl = {
-    .destroy = wgbm_window_destroy,
-    .get_native = wgbm_window_get_native,
-    .show = wgbm_window_show,
-    .swap_buffers = wgbm_window_swap_buffers,
-};

@@ -31,8 +31,6 @@
 #include "cgl_config.h"
 #include "cgl_window.h"
 
-static const struct wcore_window_vtbl cgl_window_wcore_vtbl;
-
 bool
 cgl_window_destroy(struct wcore_window *wc_self)
 {
@@ -119,7 +117,6 @@ cgl_window_create(struct wcore_platform *wc_plat,
     if (!self->ns_window)
         goto error;
 
-    self->wcore.vtbl = &cgl_window_wcore_vtbl;
     return &self->wcore;
 
 error:
@@ -148,10 +145,3 @@ cgl_window_get_native(struct wcore_window *wc_self)
     wcore_error(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM);
     return NULL;
 }
-
-static const struct wcore_window_vtbl cgl_window_wcore_vtbl = {
-    .destroy = cgl_window_destroy,
-    .get_native = cgl_window_get_native,
-    .show  = cgl_window_show,
-    .swap_buffers = cgl_window_swap_buffers,
-};

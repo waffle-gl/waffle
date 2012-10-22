@@ -39,17 +39,7 @@
 struct wcore_config;
 union waffle_native_config;
 
-struct wcore_config_vtbl {
-    bool
-    (*destroy)(struct wcore_config *self);
-
-    union waffle_native_config*
-    (*get_native)(struct wcore_config *self);
-};
-
 struct wcore_config {
-    const struct wcore_config_vtbl *vtbl;
-
     struct waffle_config {} wfl;
     struct api_object api;
 

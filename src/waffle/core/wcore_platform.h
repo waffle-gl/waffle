@@ -40,30 +40,6 @@ struct wcore_platform_vtbl {
     bool
     (*destroy)(struct wcore_platform *self);
 
-    struct wcore_display*
-    (*connect_to_display)(
-            struct wcore_platform *self,
-            const char *name);
-
-    struct wcore_config*
-    (*choose_config)(
-            struct wcore_platform *self,
-            struct wcore_display *dpy,
-            const struct wcore_config_attrs *attrs);
-
-    struct wcore_context*
-    (*create_context)(
-            struct wcore_platform *self,
-            struct wcore_config *config,
-            struct wcore_context *share_ctx);
-
-    struct wcore_window*
-    (*create_window)(
-            struct wcore_platform *self,
-            struct wcore_config *config,
-            int width,
-            int height);
-
     bool
     (*make_current)(
             struct wcore_platform *self,
@@ -86,6 +62,68 @@ struct wcore_platform_vtbl {
             struct wcore_platform *self,
             int32_t waffle_dl,
             const char *symbol);
+
+    struct wcore_display_vtbl {
+        struct wcore_display*
+        (*connect)(struct wcore_platform *platform,
+                   const char *name);
+
+        bool
+        (*destroy)(struct wcore_display *self);
+
+        bool
+        (*supports_context_api)(
+                struct wcore_display *display,
+                int32_t context_api);
+
+        union waffle_native_display*
+        (*get_native)(struct wcore_display *display);
+    } display;
+
+    struct wcore_config_vtbl {
+        struct wcore_config*
+        (*choose)(struct wcore_platform *platform,
+                  struct wcore_display *display,
+                  const struct wcore_config_attrs *attrs);
+
+        bool
+        (*destroy)(struct wcore_config *config);
+
+        union waffle_native_config*
+        (*get_native)(struct wcore_config *config);
+    } config;
+
+    struct wcore_context_vtbl {
+        struct wcore_context*
+        (*create)(struct wcore_platform *platform,
+                  struct wcore_config *config,
+                  struct wcore_context *share_ctx);
+
+        bool
+        (*destroy)(struct wcore_context *ctx);
+
+        union waffle_native_context*
+        (*get_native)(struct wcore_context *ctx);
+    } context;
+
+    struct wcore_window_vtbl {
+        struct wcore_window*
+        (*create)(struct wcore_platform *platform,
+                  struct wcore_config *config,
+                  int width,
+                  int height);
+        bool
+        (*destroy)(struct wcore_window *window);
+
+        bool
+        (*show)(struct wcore_window *window);
+
+        bool
+        (*swap_buffers)(struct wcore_window *window);
+
+        union waffle_native_window*
+        (*get_native)(struct wcore_window *window);
+    } window;
 };
 
 struct wcore_platform {

@@ -37,7 +37,7 @@
 #include "droid_priv_egl.h"
 #include "droid_window.h"
 
-static const struct wcore_platform_vtbl droid_platform_wcore_vtbl;
+static const struct wcore_platform_vtbl droid_platform_vtbl;
 
 static bool
 droid_platform_destroy(struct wcore_platform *wc_self)
@@ -74,7 +74,7 @@ droid_platform_create(void)
     if (!self->linux)
         goto error;
 
-    self->wcore.vtbl = &droid_platform_wcore_vtbl;
+    self->wcore.vtbl = &droid_platform_vtbl;
     return &self->wcore;
 
 error:
@@ -120,14 +120,38 @@ droid_dl_sym(
                                  waffle_dl, name);
 }
 
-static const struct wcore_platform_vtbl droid_platform_wcore_vtbl = {
+static const struct wcore_platform_vtbl droid_platform_vtbl = {
     .destroy = droid_platform_destroy,
-    .connect_to_display = droid_display_connect,
-    .choose_config = droid_config_choose,
-    .create_context = droid_context_create,
-    .create_window = droid_window_create,
+
     .make_current = droid_make_current,
     .get_proc_address = droid_get_proc_address,
     .dl_can_open = droid_dl_can_open,
     .dl_sym = droid_dl_sym,
+
+    .display = {
+        .connect = droid_display_connect,
+        .destroy = droid_display_disconnect,
+        .supports_context_api = droid_display_supports_context_api,
+        .get_native = droid_display_get_native,
+    },
+
+    .config = {
+        .choose = droid_config_choose,
+        .destroy = droid_config_destroy,
+        .get_native = droid_config_get_native,
+    },
+
+    .context = {
+        .create = droid_context_create,
+        .destroy = droid_context_destroy,
+        .get_native = droid_context_get_native,
+    },
+
+    .window = {
+        .create = droid_window_create,
+        .destroy = droid_window_destroy,
+        .show = droid_window_show,
+        .swap_buffers = droid_window_swap_buffers,
+        .get_native = droid_window_get_native,
+    },
 };

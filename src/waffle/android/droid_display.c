@@ -35,8 +35,6 @@
 #include "droid_priv_egl.h"
 #include "droid_surfaceflingerlink.h"
 
-static const struct wcore_display_vtbl droid_display_wcore_vtbl;
-
 struct wcore_display*
 droid_display_connect(struct wcore_platform *wc_plat,
                         const char *name)
@@ -62,7 +60,6 @@ droid_display_connect(struct wcore_platform *wc_plat,
     if (!self->egl)
         goto error;
 
-    self->wcore.vtbl = &droid_display_wcore_vtbl;
     return &self->wcore;
 
 error:
@@ -103,9 +100,3 @@ droid_display_supports_context_api(
 {
     return egl_supports_context_api(wc_self->platform, context_api);
 }
-
-static const struct wcore_display_vtbl droid_display_wcore_vtbl = {
-    .destroy = droid_display_disconnect,
-    .get_native = droid_display_get_native,
-    .supports_context_api = droid_display_supports_context_api,
-};

@@ -38,7 +38,7 @@
 #include "wgbm_priv_egl.h"
 #include "wgbm_window.h"
 
-static const struct wcore_platform_vtbl wgbm_platform_wcore_vtbl;
+static const struct wcore_platform_vtbl wgbm_platform_vtbl;
 
 static bool
 wgbm_platform_destroy(struct wcore_platform *wc_self)
@@ -79,7 +79,7 @@ wgbm_platform_create(void)
 
     setenv("EGL_PLATFORM", "drm", true);
 
-    self->wcore.vtbl = &wgbm_platform_wcore_vtbl;
+    self->wcore.vtbl = &wgbm_platform_vtbl;
     return &self->wcore;
 
 error:
@@ -123,14 +123,38 @@ wgbm_platform_dl_sym(struct wcore_platform *wc_self,
                                  name);
 }
 
-static const struct wcore_platform_vtbl wgbm_platform_wcore_vtbl = {
+static const struct wcore_platform_vtbl wgbm_platform_vtbl = {
     .destroy = wgbm_platform_destroy,
-    .connect_to_display = wgbm_display_connect,
-    .choose_config = wgbm_config_choose,
-    .create_context = wgbm_context_create,
-    .create_window = wgbm_window_create,
+
     .make_current = wgbm_platform_make_current,
     .get_proc_address = wgbm_platform_get_proc_address,
     .dl_can_open = wgbm_platform_dl_can_open,
     .dl_sym = wgbm_platform_dl_sym,
+
+    .display = {
+        .connect = wgbm_display_connect,
+        .destroy = wgbm_display_destroy,
+        .supports_context_api = wgbm_display_supports_context_api,
+        .get_native = wgbm_display_get_native,
+    },
+
+    .config = {
+        .choose = wgbm_config_choose,
+        .destroy = wgbm_config_destroy,
+        .get_native = wgbm_config_get_native,
+    },
+
+    .context = {
+        .create = wgbm_context_create,
+        .destroy = wgbm_context_destroy,
+        .get_native = wgbm_context_get_native,
+    },
+
+    .window = {
+        .create = wgbm_window_create,
+        .destroy = wgbm_window_destroy,
+        .show = wgbm_window_show,
+        .swap_buffers = wgbm_window_swap_buffers,
+        .get_native = wgbm_window_get_native,
+    },
 };

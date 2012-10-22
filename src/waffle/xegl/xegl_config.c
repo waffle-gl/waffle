@@ -34,8 +34,6 @@
 #include "xegl_platform.h"
 #include "xegl_priv_egl.h"
 
-static const struct wcore_config_vtbl xegl_config_wcore_vtbl;
-
 bool
 xegl_config_destroy(struct wcore_config *wc_self)
 {
@@ -85,7 +83,6 @@ xegl_config_choose(struct wcore_platform *wc_plat,
     }
 
     self->waffle_context_api = attrs->context_api;
-    self->wcore.vtbl = &xegl_config_wcore_vtbl;
     return &self->wcore;
 
 error:
@@ -109,8 +106,3 @@ xegl_config_get_native(struct wcore_config *wc_self)
 
     return n_config;
 }
-
-static const struct wcore_config_vtbl xegl_config_wcore_vtbl = {
-    .destroy = xegl_config_destroy,
-    .get_native = xegl_config_get_native,
-};

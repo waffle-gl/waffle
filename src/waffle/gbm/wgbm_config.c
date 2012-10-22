@@ -38,8 +38,6 @@
 #include "wgbm_platform.h"
 #include "wgbm_priv_egl.h"
 
-static const struct wcore_config_vtbl wgbm_config_wcore_vtbl;
-
 bool
 wgbm_config_destroy(struct wcore_config *wc_self)
 {
@@ -103,7 +101,6 @@ wgbm_config_choose(struct wcore_platform *wc_plat,
         goto error;
 
     self->waffle_context_api = attrs->context_api;
-    self->wcore.vtbl = &wgbm_config_wcore_vtbl;
     return &self->wcore;
 
 error:
@@ -127,8 +124,3 @@ wgbm_config_get_native(struct wcore_config *wc_self)
 
     return n_config;
 }
-
-static const struct wcore_config_vtbl wgbm_config_wcore_vtbl = {
-    .destroy = wgbm_config_destroy,
-    .get_native = wgbm_config_get_native,
-};

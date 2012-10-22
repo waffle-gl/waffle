@@ -39,8 +39,6 @@
 #include "wayland_priv_egl.h"
 #include "wayland_window.h"
 
-static const struct wcore_window_vtbl wayland_window_wcore_vtbl;
-
 bool
 wayland_window_destroy(struct wcore_window *wc_self)
 {
@@ -126,7 +124,6 @@ wayland_window_create(struct wcore_platform *wc_plat,
     if (!self->egl)
         goto error;
 
-    self->wcore.vtbl = &wayland_window_wcore_vtbl;
     return &self->wcore;
 
 error:
@@ -174,10 +171,3 @@ wayland_window_get_native(struct wcore_window *wc_self)
 
     return n_window;
 }
-
-static const struct wcore_window_vtbl wayland_window_wcore_vtbl = {
-    .destroy = wayland_window_destroy,
-    .get_native = wayland_window_get_native,
-    .show = wayland_window_show,
-    .swap_buffers = wayland_window_swap_buffers,
-};

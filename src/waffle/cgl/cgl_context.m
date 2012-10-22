@@ -33,8 +33,6 @@
 #include "cgl_context.h"
 #include "cgl_error.h"
 
-static const struct wcore_context_vtbl cgl_context_wcore_vtbl;
-
 bool
 cgl_context_destroy(struct wcore_context *wc_self)
 {
@@ -93,7 +91,6 @@ cgl_context_create(struct wcore_platform *wc_plat,
     // The NSOpenGLContext now owns the CGLContext.
     CGLReleaseContext(cgl_self);
 
-    self->wcore.vtbl = &cgl_context_wcore_vtbl;
     return &self->wcore;
 
 fail:
@@ -107,8 +104,3 @@ cgl_context_get_native(struct wcore_context *wc_self)
     wcore_error(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM);
     return NULL;
 }
-
-static const struct wcore_context_vtbl cgl_context_wcore_vtbl = {
-    .destroy = cgl_context_destroy,
-    .get_native = cgl_context_get_native,
-};

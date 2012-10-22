@@ -43,8 +43,6 @@
 #include "wgbm_platform.h"
 #include "wgbm_priv_egl.h"
 
-static const struct wcore_display_vtbl wgbm_display_wcore_vtbl;
-
 bool
 wgbm_display_destroy(struct wcore_display *wc_self)
 {
@@ -136,7 +134,6 @@ wgbm_display_connect(struct wcore_platform *wc_plat,
     if (!self->egl)
         goto error;
 
-    self->wcore.vtbl = &wgbm_display_wcore_vtbl;
     return &self->wcore;
 
 error:
@@ -174,9 +171,3 @@ wgbm_display_get_native(struct wcore_display *wc_self)
 
     return n_dpy;
 }
-
-static const struct wcore_display_vtbl wgbm_display_wcore_vtbl = {
-    .destroy = wgbm_display_destroy,
-    .get_native = wgbm_display_get_native,
-    .supports_context_api = wgbm_display_supports_context_api,
-};

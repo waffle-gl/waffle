@@ -35,8 +35,6 @@
 #include "wgbm_display.h"
 #include "wgbm_priv_egl.h"
 
-static const struct wcore_context_vtbl wgbm_context_wcore_vtbl;
-
 bool
 wgbm_context_destroy(struct wcore_context *wc_self)
 {
@@ -83,7 +81,6 @@ wgbm_context_create(struct wcore_platform *wc_plat,
     if (!self->egl)
         goto error;
 
-    self->wcore.vtbl = &wgbm_context_wcore_vtbl;
     return &self->wcore;
 
 error:
@@ -107,8 +104,3 @@ wgbm_context_get_native(struct wcore_context *wc_self)
 
     return n_ctx;
 }
-
-static const struct wcore_context_vtbl wgbm_context_wcore_vtbl = {
-    .destroy = wgbm_context_destroy,
-    .get_native = wgbm_context_get_native,
-};

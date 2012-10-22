@@ -37,7 +37,7 @@
 #include "xegl_priv_egl.h"
 #include "xegl_window.h"
 
-static const struct wcore_platform_vtbl xegl_platform_wcore_vtbl;
+static const struct wcore_platform_vtbl xegl_platform_vtbl;
 
 static bool
 xegl_platform_destroy(struct wcore_platform *wc_self)
@@ -78,7 +78,7 @@ xegl_platform_create(void)
 
     setenv("EGL_PLATFORM", "x11", true);
 
-    self->wcore.vtbl = &xegl_platform_wcore_vtbl;
+    self->wcore.vtbl = &xegl_platform_vtbl;
     return &self->wcore;
 
 error:
@@ -122,14 +122,38 @@ xegl_platform_dl_sym(struct wcore_platform *wc_self,
                                                name);
 }
 
-static const struct wcore_platform_vtbl xegl_platform_wcore_vtbl = {
+static const struct wcore_platform_vtbl xegl_platform_vtbl = {
     .destroy = xegl_platform_destroy,
-    .connect_to_display = xegl_display_connect,
-    .choose_config = xegl_config_choose,
-    .create_context = xegl_context_create,
-    .create_window = xegl_window_create,
+
     .make_current = xegl_platform_make_current,
     .get_proc_address = xegl_platform_get_proc_address,
     .dl_can_open = xegl_platform_dl_can_open,
     .dl_sym = xegl_platform_dl_sym,
+
+    .display = {
+        .connect = xegl_display_connect,
+        .destroy = xegl_display_destroy,
+        .supports_context_api = xegl_display_supports_context_api,
+        .get_native = xegl_display_get_native,
+    },
+
+    .config = {
+        .choose = xegl_config_choose,
+        .destroy = xegl_config_destroy,
+        .get_native = xegl_config_get_native,
+    },
+
+    .context = {
+        .create = xegl_context_create,
+        .destroy = xegl_context_destroy,
+        .get_native = xegl_context_get_native,
+    },
+
+    .window = {
+        .create = xegl_window_create,
+        .destroy = xegl_window_destroy,
+        .show = xegl_window_show,
+        .swap_buffers = xegl_window_swap_buffers,
+        .get_native = xegl_window_get_native,
+    },
 };

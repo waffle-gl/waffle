@@ -37,8 +37,6 @@
 #include "glx_display.h"
 #include "glx_platform.h"
 
-static const struct wcore_context_vtbl glx_context_wcore_vtbl;
-
 enum {
     WAFFLE_GLX_CONTEXT_ATTRS_LENGTH = 7,
 };
@@ -174,7 +172,6 @@ glx_context_create(struct wcore_platform *wc_plat,
     if (!self->glx)
         goto error;
 
-    self->wcore.vtbl = &glx_context_wcore_vtbl;
     return &self->wcore;
 
 error:
@@ -198,8 +195,3 @@ glx_context_get_native(struct wcore_context *wc_self)
 
     return n_ctx;
 }
-
-static const struct wcore_context_vtbl glx_context_wcore_vtbl = {
-    .destroy = glx_context_destroy,
-    .get_native = glx_context_get_native,
-};

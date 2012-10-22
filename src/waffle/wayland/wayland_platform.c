@@ -38,7 +38,7 @@
 #include "wayland_priv_egl.h"
 #include "wayland_window.h"
 
-static const struct wcore_platform_vtbl wayland_platform_wcore_vtbl;
+static const struct wcore_platform_vtbl wayland_platform_vtbl;
 
 static bool
 wayland_platform_destroy(struct wcore_platform *wc_self)
@@ -79,7 +79,7 @@ wayland_platform_create(void)
 
     setenv("EGL_PLATFORM", "wayland", true);
 
-    self->wcore.vtbl = &wayland_platform_wcore_vtbl;
+    self->wcore.vtbl = &wayland_platform_vtbl;
     return &self->wcore;
 
 error:
@@ -123,14 +123,38 @@ wayland_platform_dl_sym(struct wcore_platform *wc_self,
                                                   name);
 }
 
-static const struct wcore_platform_vtbl wayland_platform_wcore_vtbl = {
+static const struct wcore_platform_vtbl wayland_platform_vtbl = {
     .destroy = wayland_platform_destroy,
-    .connect_to_display = wayland_display_connect,
-    .choose_config = wayland_config_choose,
-    .create_context = wayland_context_create,
-    .create_window = wayland_window_create,
+
     .make_current = wayland_platform_make_current,
     .get_proc_address = wayland_platform_get_proc_address,
     .dl_can_open = wayland_platform_dl_can_open,
     .dl_sym = wayland_platform_dl_sym,
+
+    .display = {
+        .connect = wayland_display_connect,
+        .destroy = wayland_display_destroy,
+        .supports_context_api = wayland_display_supports_context_api,
+        .get_native = wayland_display_get_native,
+    },
+
+    .config = {
+        .choose = wayland_config_choose,
+        .destroy = wayland_config_destroy,
+        .get_native = wayland_config_get_native,
+    },
+
+    .context = {
+        .create = wayland_context_create,
+        .destroy = wayland_context_destroy,
+        .get_native = wayland_context_get_native,
+    },
+
+    .window = {
+        .create = wayland_window_create,
+        .destroy = wayland_window_destroy,
+        .show = wayland_window_show,
+        .swap_buffers = wayland_window_swap_buffers,
+        .get_native = wayland_window_get_native,
+    },
 };

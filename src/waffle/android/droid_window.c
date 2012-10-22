@@ -35,8 +35,6 @@
 #include "droid_display.h"
 #include "droid_surfaceflingerlink.h"
 
-static const struct wcore_window_vtbl droid_window_wcore_vtbl;
-
 struct wcore_window*
 droid_window_create(struct wcore_platform *wc_plat,
                     struct wcore_config *wc_config,
@@ -67,7 +65,6 @@ droid_window_create(struct wcore_platform *wc_plat,
     if (!self->egl)
         goto error;
 
-    self->wcore.vtbl = &droid_window_wcore_vtbl;
     return &self->wcore;
 
 error:
@@ -127,10 +124,3 @@ droid_window_swap_buffers(struct wcore_window *wc_self)
 
     return egl_swap_buffers(dpy->egl, self->egl);
 }
-
-static const struct wcore_window_vtbl droid_window_wcore_vtbl = {
-    .destroy = droid_window_destroy,
-    .get_native = droid_window_get_native,
-    .show = droid_window_show,
-    .swap_buffers = droid_window_swap_buffers,
-};

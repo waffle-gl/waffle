@@ -36,23 +36,7 @@
 struct wcore_window;
 union waffle_native_window;
 
-struct wcore_window_vtbl {
-    bool
-    (*destroy)(struct wcore_window *self);
-
-    bool
-    (*show)(struct wcore_window *self);
-
-    bool
-    (*swap_buffers)(struct wcore_window *self);
-
-    union waffle_native_window*
-    (*get_native)(struct wcore_window *self);
-};
-
 struct wcore_window {
-    const struct wcore_window_vtbl *vtbl;
-
     struct waffle_window {} wfl;
     struct api_object api;
 

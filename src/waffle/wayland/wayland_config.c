@@ -36,8 +36,6 @@
 #include "wayland_platform.h"
 #include "wayland_priv_egl.h"
 
-static const struct wcore_config_vtbl wayland_config_wcore_vtbl;
-
 bool
 wayland_config_destroy(struct wcore_config *wc_self)
 {
@@ -78,7 +76,6 @@ wayland_config_choose(struct wcore_platform *wc_plat,
         goto error;
 
     self->waffle_context_api = attrs->context_api;
-    self->wcore.vtbl = &wayland_config_wcore_vtbl;
     return &self->wcore;
 
 error:
@@ -102,8 +99,3 @@ wayland_config_get_native(struct wcore_config *wc_self)
 
     return n_config;
 }
-
-static const struct wcore_config_vtbl wayland_config_wcore_vtbl = {
-    .destroy = wayland_config_destroy,
-    .get_native = wayland_config_get_native,
-};

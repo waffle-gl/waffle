@@ -38,8 +38,6 @@
 #include "wayland_platform.h"
 #include "wayland_priv_egl.h"
 
-static const struct wcore_display_vtbl wayland_display_wcore_vtbl;
-
 bool
 wayland_display_destroy(struct wcore_display *wc_self)
 {
@@ -130,7 +128,6 @@ wayland_display_connect(struct wcore_platform *wc_plat,
     if (!self->egl)
         goto error;
 
-    self->wcore.vtbl = &wayland_display_wcore_vtbl;
     return &self->wcore;
 
 error:
@@ -170,9 +167,3 @@ wayland_display_get_native(struct wcore_display *wc_self)
 
     return n_dpy;
 }
-
-static const struct wcore_display_vtbl wayland_display_wcore_vtbl = {
-    .destroy = wayland_display_destroy,
-    .get_native = wayland_display_get_native,
-    .supports_context_api = wayland_display_supports_context_api,
-};

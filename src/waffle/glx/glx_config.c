@@ -36,8 +36,6 @@
 #include "glx_display.h"
 #include "glx_platform.h"
 
-static const struct wcore_config_vtbl glx_config_wcore_vtbl;
-
 bool
 glx_config_destroy(struct wcore_config *wc_self)
 {
@@ -205,8 +203,6 @@ glx_config_choose(struct wcore_platform *wc_plat,
     self->waffle_context_minor_version        = attrs->context_minor_version;
     self->waffle_context_profile              = attrs->context_profile;
 
-    self->wcore.vtbl = &glx_config_wcore_vtbl;
-
     goto cleanup;
 
 error:
@@ -238,8 +234,3 @@ glx_config_get_native(struct wcore_config *wc_self)
 
     return n_config;
 }
-
-static const struct wcore_config_vtbl glx_config_wcore_vtbl = {
-    .destroy = glx_config_destroy,
-    .get_native = glx_config_get_native,
-};

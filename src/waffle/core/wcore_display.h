@@ -39,22 +39,7 @@ struct wcore_display;
 struct wcore_platform;
 union waffle_native_display;
 
-struct wcore_display_vtbl {
-    bool
-    (*destroy)(struct wcore_display *self);
-
-    bool
-    (*supports_context_api)(
-            struct wcore_display *self,
-            int32_t context_api);
-
-    union waffle_native_display*
-    (*get_native)(struct wcore_display *self);
-};
-
 struct wcore_display {
-    const struct wcore_display_vtbl *vtbl;
-
     struct waffle_display {} wfl;
     struct api_object api;
 

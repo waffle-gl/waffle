@@ -32,8 +32,6 @@
 #include "xegl_platform.h"
 #include "xegl_priv_egl.h"
 
-static const struct wcore_display_vtbl xegl_display_wcore_vtbl;
-
 bool
 xegl_display_destroy(struct wcore_display *wc_self)
 {
@@ -76,7 +74,6 @@ xegl_display_connect(
     if (!self->egl)
         goto error;
 
-    self->wcore.vtbl = &xegl_display_wcore_vtbl;
     return &self->wcore;
 
 error:
@@ -112,9 +109,3 @@ xegl_display_get_native(struct wcore_display *wc_self)
     xegl_display_fill_native(self, n_dpy->x11_egl);
     return n_dpy;
 }
-
-static const struct wcore_display_vtbl xegl_display_wcore_vtbl = {
-    .destroy = xegl_display_destroy,
-    .get_native = xegl_display_get_native,
-    .supports_context_api = xegl_display_supports_context_api,
-};

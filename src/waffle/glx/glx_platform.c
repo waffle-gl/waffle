@@ -34,7 +34,7 @@
 #include "glx_platform.h"
 #include "glx_window.h"
 
-static const struct wcore_platform_vtbl glx_platform_wcore_vtbl;
+static const struct wcore_platform_vtbl glx_platform_vtbl;
 
 static bool
 glx_platform_destroy(struct wcore_platform *wc_self)
@@ -73,7 +73,7 @@ glx_platform_create(void)
 
     self->glXCreateContextAttribsARB = (PFNGLXCREATECONTEXTATTRIBSARBPROC) glXGetProcAddress((const uint8_t*) "glXCreateContextAttribsARB");
 
-    self->wcore.vtbl = &glx_platform_wcore_vtbl;
+    self->wcore.vtbl = &glx_platform_vtbl;
     return &self->wcore;
 
 error:
@@ -117,14 +117,38 @@ glx_platform_dl_sym(struct wcore_platform *wc_self,
                                               name);
 }
 
-static const struct wcore_platform_vtbl glx_platform_wcore_vtbl = {
+static const struct wcore_platform_vtbl glx_platform_vtbl = {
     .destroy = glx_platform_destroy,
-    .connect_to_display = glx_display_connect,
-    .choose_config = glx_config_choose,
-    .create_context = glx_context_create,
-    .create_window = glx_window_create,
+
     .make_current = glx_platform_make_current,
     .get_proc_address = glx_platform_get_proc_address,
     .dl_can_open = glx_platform_dl_can_open,
     .dl_sym = glx_platform_dl_sym,
+
+    .display = {
+        .connect = glx_display_connect,
+        .destroy = glx_display_destroy,
+        .supports_context_api = glx_display_supports_context_api,
+        .get_native = glx_display_get_native,
+    },
+
+    .config = {
+        .choose = glx_config_choose,
+        .destroy = glx_config_destroy,
+        .get_native = glx_config_get_native,
+    },
+
+    .context = {
+        .create = glx_context_create,
+        .destroy = glx_context_destroy,
+        .get_native = glx_context_get_native,
+    },
+
+    .window = {
+        .create = glx_window_create,
+        .destroy = glx_window_destroy,
+        .show = glx_window_show,
+        .swap_buffers = glx_window_swap_buffers,
+        .get_native = glx_window_get_native,
+    },
 };

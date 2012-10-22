@@ -34,8 +34,6 @@
 #include "glx_display.h"
 #include "glx_platform.h"
 
-static const struct wcore_display_vtbl glx_display_wcore_vtbl;
-
 bool
 glx_display_destroy(struct wcore_display *wc_self)
 {
@@ -93,7 +91,6 @@ glx_display_connect(struct wcore_platform *wc_plat,
     if (!ok)
         goto error;
 
-    self->wcore.vtbl = &glx_display_wcore_vtbl;
     return &self->wcore;
 
 error:
@@ -138,9 +135,3 @@ glx_display_get_native(struct wcore_display *wc_self)
 
     return n_dpy;
 }
-
-static const struct wcore_display_vtbl glx_display_wcore_vtbl = {
-    .destroy = glx_display_destroy,
-    .get_native = glx_display_get_native,
-    .supports_context_api = glx_display_supports_context_api,
-};

@@ -60,9 +60,7 @@ waffle_config_choose(
     if (!ok)
         return NULL;
 
-    wc_self = api_platform->vtbl->choose_config(api_platform,
-                                                wc_dpy,
-                                                &attrs);
+    wc_self = api_platform->vtbl->config.choose(api_platform, wc_dpy, &attrs);
     if (!wc_self)
         return NULL;
 
@@ -81,7 +79,7 @@ waffle_config_destroy(struct waffle_config *self)
     if (!api_check_entry(obj_list, 1))
         return false;
 
-    return wc_self->vtbl->destroy(wc_self);
+    return api_platform->vtbl->config.destroy(wc_self);
 }
 
 union waffle_native_config*
@@ -96,7 +94,7 @@ waffle_config_get_native(struct waffle_config *self)
     if (!api_check_entry(obj_list, 1))
         return NULL;
 
-    return wc_self->vtbl->get_native(wc_self);
+    return api_platform->vtbl->config.get_native(wc_self);
 }
 
 /// @}

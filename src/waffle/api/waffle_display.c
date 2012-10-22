@@ -48,7 +48,7 @@ waffle_display_connect(const char *name)
     if (!api_check_entry(NULL, 0))
         return NULL;
 
-    wc_self = api_platform->vtbl->connect_to_display(api_platform, name);
+    wc_self = api_platform->vtbl->display.connect(api_platform, name);
     if (!wc_self)
         return NULL;
 
@@ -67,7 +67,7 @@ waffle_display_disconnect(struct waffle_display *self)
     if (!api_check_entry(obj_list, 1))
         return false;
 
-    return wc_self->vtbl->destroy(wc_self);
+    return api_platform->vtbl->display.destroy(wc_self);
 }
 
 bool
@@ -95,7 +95,8 @@ waffle_display_supports_context_api(
             return false;
     }
 
-    return wc_self->vtbl->supports_context_api(wc_self, context_api);
+    return api_platform->vtbl->display.supports_context_api(wc_self,
+                                                            context_api);
 }
 
 union waffle_native_display*
@@ -110,7 +111,7 @@ waffle_display_get_native(struct waffle_display *self)
     if (!api_check_entry(obj_list, 1))
         return NULL;
 
-    return wc_self->vtbl->get_native(wc_self);
+    return api_platform->vtbl->display.get_native(wc_self);
 }
 
 /// @}

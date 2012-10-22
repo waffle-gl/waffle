@@ -32,8 +32,6 @@
 #include "glx_display.h"
 #include "glx_window.h"
 
-static const struct wcore_window_vtbl glx_window_wcore_vtbl;
-
 bool
 glx_window_destroy(struct wcore_window *wc_self)
 {
@@ -76,7 +74,6 @@ glx_window_create(struct wcore_platform *wc_plat,
     if (!ok)
         goto error;
 
-    self->wcore.vtbl = &glx_window_wcore_vtbl;
     return &self->wcore;
 
 error:
@@ -117,10 +114,3 @@ glx_window_get_native(struct wcore_window *wc_self)
 
     return n_window;
 }
-
-static const struct wcore_window_vtbl glx_window_wcore_vtbl = {
-    .destroy = glx_window_destroy,
-    .get_native = glx_window_get_native,
-    .show  = glx_window_show,
-    .swap_buffers = glx_window_swap_buffers,
-};

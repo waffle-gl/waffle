@@ -33,8 +33,6 @@
 #include "xegl_display.h"
 #include "xegl_priv_egl.h"
 
-static const struct wcore_context_vtbl xegl_context_wcore_vtbl;
-
 bool
 xegl_context_destroy(struct wcore_context *wc_self)
 {
@@ -81,7 +79,6 @@ xegl_context_create(struct wcore_platform *wc_plat,
     if (!self->egl)
         goto error;
 
-    self->wcore.vtbl = &xegl_context_wcore_vtbl;
     return &self->wcore;
 
 error:
@@ -105,8 +102,3 @@ xegl_context_get_native(struct wcore_context *wc_self)
 
     return n_ctx;
 }
-
-static const struct wcore_context_vtbl xegl_context_wcore_vtbl = {
-    .destroy = xegl_context_destroy,
-    .get_native = xegl_context_get_native,
-};

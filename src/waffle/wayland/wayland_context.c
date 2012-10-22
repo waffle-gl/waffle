@@ -35,8 +35,6 @@
 #include "wayland_display.h"
 #include "wayland_priv_egl.h"
 
-static const struct wcore_context_vtbl wayland_context_wcore_vtbl;
-
 bool
 wayland_context_destroy(struct wcore_context *wc_self)
 {
@@ -83,7 +81,6 @@ wayland_context_create(struct wcore_platform *wc_plat,
     if (!self->egl)
         goto error;
 
-    self->wcore.vtbl = &wayland_context_wcore_vtbl;
     return &self->wcore;
 
 error:
@@ -107,8 +104,3 @@ wayland_context_get_native(struct wcore_context *wc_self)
 
     return n_ctx;
 }
-
-static const struct wcore_context_vtbl wayland_context_wcore_vtbl = {
-    .destroy = wayland_context_destroy,
-    .get_native = wayland_context_get_native,
-};

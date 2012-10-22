@@ -33,8 +33,6 @@
 #include "xegl_priv_egl.h"
 #include "xegl_window.h"
 
-static const struct wcore_window_vtbl xegl_window_wcore_vtbl;
-
 bool
 xegl_window_destroy(struct wcore_window *wc_self)
 {
@@ -90,7 +88,6 @@ xegl_window_create(struct wcore_platform *wc_plat,
     if (!self->egl)
         goto error;
 
-    self->wcore.vtbl = &xegl_window_wcore_vtbl;
     return &self->wcore;
 
 error:
@@ -130,10 +127,3 @@ xegl_window_get_native(struct wcore_window *wc_self)
 
     return n_window;
 }
-
-static const struct wcore_window_vtbl xegl_window_wcore_vtbl = {
-    .destroy = xegl_window_destroy,
-    .get_native = xegl_window_get_native,
-    .show = xegl_window_show,
-    .swap_buffers = xegl_window_swap_buffers,
-};

@@ -37,8 +37,6 @@
 #include "droid_display.h"
 #include "droid_surfaceflingerlink.h"
 
-static const struct wcore_config_vtbl droid_config_wcore_vtbl;
-
 struct wcore_config*
 droid_config_choose(struct wcore_platform *wc_plat,
                     struct wcore_display *wc_dpy,
@@ -74,7 +72,6 @@ droid_config_choose(struct wcore_platform *wc_plat,
     }
 
     self->waffle_context_api = attrs->context_api;
-    self->wcore.vtbl = &droid_config_wcore_vtbl;
     return &self->wcore;
 
 error:
@@ -102,8 +99,3 @@ droid_config_get_native(struct wcore_config *wc_self)
     wcore_error(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM);
     return NULL;
 }
-
-static const struct wcore_config_vtbl droid_config_wcore_vtbl = {
-    .destroy = droid_config_destroy,
-    .get_native = droid_config_get_native,
-};
