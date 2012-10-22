@@ -34,7 +34,7 @@
 
 static const struct wcore_window_vtbl glx_window_wcore_vtbl;
 
-static bool
+bool
 glx_window_destroy(struct wcore_window *wc_self)
 {
     struct glx_window *self = glx_window(wc_self);
@@ -84,13 +84,13 @@ error:
     return NULL;
 }
 
-static bool
+bool
 glx_window_show(struct wcore_window *wc_self)
 {
     return x11_window_show(&glx_window(wc_self)->x11);
 }
 
-static bool
+bool
 glx_window_swap_buffers(struct wcore_window *wc_self)
 {
     struct glx_window *self = glx_window(wc_self);
@@ -101,7 +101,7 @@ glx_window_swap_buffers(struct wcore_window *wc_self)
     return true;
 }
 
-static union waffle_native_window*
+union waffle_native_window*
 glx_window_get_native(struct wcore_window *wc_self)
 {
     struct glx_window *self = glx_window(wc_self);

@@ -51,3 +51,13 @@ DEFINE_CONTAINER_CAST_FUNC(droid_display,
 struct wcore_display*
 droid_display_connect(struct wcore_platform *wc_plat,
                       const char *name);
+
+bool
+droid_display_disconnect(struct wcore_display *wc_self);
+
+union waffle_native_display*
+droid_display_get_native(struct wcore_display *wc_self);
+
+bool
+droid_display_supports_context_api(struct wcore_display *wc_self,
+                                   int32_t context_api);

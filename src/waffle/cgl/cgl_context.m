@@ -35,7 +35,7 @@
 
 static const struct wcore_context_vtbl cgl_context_wcore_vtbl;
 
-static bool
+bool
 cgl_context_destroy(struct wcore_context *wc_self)
 {
     struct cgl_context *self = cgl_context(wc_self);
@@ -101,7 +101,7 @@ fail:
     return NULL;
 }
 
-static union waffle_native_context*
+union waffle_native_context*
 cgl_context_get_native(struct wcore_context *wc_self)
 {
     wcore_error(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM);

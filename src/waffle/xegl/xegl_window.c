@@ -35,7 +35,7 @@
 
 static const struct wcore_window_vtbl xegl_window_wcore_vtbl;
 
-static bool
+bool
 xegl_window_destroy(struct wcore_window *wc_self)
 {
     struct xegl_window *self = xegl_window(wc_self);
@@ -98,13 +98,13 @@ error:
     return NULL;
 }
 
-static bool
+bool
 xegl_window_show(struct wcore_window *wc_self)
 {
     return x11_window_show(&xegl_window(wc_self)->x11);
 }
 
-static bool
+bool
 xegl_window_swap_buffers(struct wcore_window *wc_self)
 {
     struct xegl_window *self = xegl_window(wc_self);
@@ -113,7 +113,7 @@ xegl_window_swap_buffers(struct wcore_window *wc_self)
     return egl_swap_buffers(dpy->egl, self->egl);
 }
 
-static union waffle_native_window*
+union waffle_native_window*
 xegl_window_get_native(struct wcore_window *wc_self)
 {
     struct xegl_window *self = xegl_window(wc_self);

@@ -38,7 +38,7 @@
 
 static const struct wcore_config_vtbl glx_config_wcore_vtbl;
 
-static bool
+bool
 glx_config_destroy(struct wcore_config *wc_self)
 {
     bool ok = true;
@@ -222,7 +222,7 @@ cleanup:
     return &self->wcore;
 }
 
-static union waffle_native_config*
+union waffle_native_config*
 glx_config_get_native(struct wcore_config *wc_self)
 {
     struct glx_config *self = glx_config(wc_self);

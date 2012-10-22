@@ -37,7 +37,7 @@
 
 static const struct wcore_context_vtbl wgbm_context_wcore_vtbl;
 
-static bool
+bool
 wgbm_context_destroy(struct wcore_context *wc_self)
 {
     struct wgbm_context *self = wgbm_context(wc_self);
@@ -91,7 +91,7 @@ error:
     return NULL;
 }
 
-static union waffle_native_context*
+union waffle_native_context*
 wgbm_context_get_native(struct wcore_context *wc_self)
 {
     struct wgbm_context *self = wgbm_context(wc_self);

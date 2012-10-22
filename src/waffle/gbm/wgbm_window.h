@@ -51,3 +51,15 @@ wgbm_window_create(struct wcore_platform *wc_plat,
                    struct wcore_config *wc_config,
                    int width,
                    int height);
+
+bool
+wgbm_window_destroy(struct wcore_window *wc_self);
+
+bool
+wgbm_window_show(struct wcore_window *wc_self);
+
+bool
+wgbm_window_swap_buffers(struct wcore_window *wc_self);
+
+union waffle_native_window*
+wgbm_window_get_native(struct wcore_window *wc_self);

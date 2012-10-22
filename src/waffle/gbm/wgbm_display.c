@@ -45,7 +45,7 @@
 
 static const struct wcore_display_vtbl wgbm_display_wcore_vtbl;
 
-static bool
+bool
 wgbm_display_destroy(struct wcore_display *wc_self)
 {
     struct wgbm_display *self = wgbm_display(wc_self);
@@ -145,7 +145,7 @@ error:
 }
 
 
-static bool
+bool
 wgbm_display_supports_context_api(struct wcore_display *wc_self,
                                   int32_t waffle_context_api)
 {
@@ -160,7 +160,7 @@ wgbm_display_fill_native(struct wgbm_display *self,
     n_dpy->egl_display = self->egl;
 }
 
-static union waffle_native_display*
+union waffle_native_display*
 wgbm_display_get_native(struct wcore_display *wc_self)
 {
     struct wgbm_display *self = wgbm_display(wc_self);

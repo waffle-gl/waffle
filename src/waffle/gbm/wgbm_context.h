@@ -49,3 +49,9 @@ struct wcore_context*
 wgbm_context_create(struct wcore_platform *wc_plat,
                     struct wcore_config *wc_config,
                     struct wcore_context *wc_share_ctx);
+
+bool
+wgbm_context_destroy(struct wcore_context *wc_self);
+
+union waffle_native_context*
+wgbm_context_get_native(struct wcore_context *wc_self);

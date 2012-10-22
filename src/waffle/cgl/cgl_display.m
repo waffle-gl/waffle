@@ -33,7 +33,7 @@
 
 static const struct wcore_display_vtbl cgl_display_wcore_vtbl;
 
-static bool
+bool
 cgl_display_destroy(struct wcore_display *wc_self)
 {
     struct cgl_display *self = cgl_display(wc_self);
@@ -73,7 +73,7 @@ error:
     return NULL;
 }
 
-static bool
+bool
 cgl_display_supports_context_api(struct wcore_display *wc_self,
                                  int32_t context_api)
 {
@@ -91,7 +91,7 @@ cgl_display_supports_context_api(struct wcore_display *wc_self,
     }
 }
 
-static union waffle_native_display*
+union waffle_native_display*
 cgl_display_get_native(struct wcore_display *wc_self)
 {
     wcore_error(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM);

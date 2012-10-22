@@ -37,9 +37,6 @@
 #include "droid_display.h"
 #include "droid_surfaceflingerlink.h"
 
-static bool
-droid_config_destroy(struct wcore_config *wc_self);
-
 static const struct wcore_config_vtbl droid_config_wcore_vtbl;
 
 struct wcore_config*
@@ -85,7 +82,7 @@ error:
     return NULL;
 }
 
-static bool
+bool
 droid_config_destroy(struct wcore_config *wc_self)
 {
     struct droid_config *self = droid_config(wc_self);
@@ -99,7 +96,7 @@ droid_config_destroy(struct wcore_config *wc_self)
     return ok;
 }
 
-static union waffle_native_config*
+union waffle_native_config*
 droid_config_get_native(struct wcore_config *wc_self)
 {
     wcore_error(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM);

@@ -34,9 +34,6 @@
 #include "droid_priv_egl.h"
 #include "droid_surfaceflingerlink.h"
 
-static bool
-droid_context_destroy(struct wcore_context *wc_self);
-
 static const struct wcore_context_vtbl droid_context_wcore_vtbl;
 
 struct wcore_context*
@@ -75,7 +72,7 @@ error:
     return NULL;
 }
 
-static bool
+bool
 droid_context_destroy(struct wcore_context *wc_self)
 {
     struct droid_context *self = droid_context(wc_self);
@@ -93,7 +90,7 @@ droid_context_destroy(struct wcore_context *wc_self)
     return ok;
 }
 
-static union waffle_native_context*
+union waffle_native_context*
 droid_context_get_native(struct wcore_context *wc_self)
 {
     wcore_error(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM);

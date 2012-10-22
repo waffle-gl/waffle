@@ -40,7 +40,7 @@
 
 static const struct wcore_window_vtbl wgbm_window_wcore_vtbl;
 
-static bool
+bool
 wgbm_window_destroy(struct wcore_window *wc_self)
 {
     struct wgbm_window *self = wgbm_window(wc_self);
@@ -104,13 +104,13 @@ error:
 }
 
 
-static bool
+bool
 wgbm_window_show(struct wcore_window *wc_self)
 {
     return true;
 }
 
-static bool
+bool
 wgbm_window_swap_buffers(struct wcore_window *wc_self)
 {
     struct wgbm_window *self = wgbm_window(wc_self);
@@ -119,7 +119,7 @@ wgbm_window_swap_buffers(struct wcore_window *wc_self)
     return egl_swap_buffers(dpy->egl, self->egl);
 }
 
-static union waffle_native_window*
+union waffle_native_window*
 wgbm_window_get_native(struct wcore_window *wc_self)
 {
     struct wgbm_window *self = wgbm_window(wc_self);

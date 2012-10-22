@@ -35,9 +35,6 @@
 #include "droid_priv_egl.h"
 #include "droid_surfaceflingerlink.h"
 
-static bool
-droid_display_disconnect(struct wcore_display *wc_self);
-
 static const struct wcore_display_vtbl droid_display_wcore_vtbl;
 
 struct wcore_display*
@@ -73,7 +70,7 @@ error:
     return NULL;
 }
 
-static bool
+bool
 droid_display_disconnect(struct wcore_display *wc_self)
 {
     struct droid_display *self = droid_display(wc_self);
@@ -92,14 +89,14 @@ droid_display_disconnect(struct wcore_display *wc_self)
     return ok;
 }
 
-static union waffle_native_display*
+union waffle_native_display*
 droid_display_get_native(struct wcore_display *wc_self)
 {
     wcore_error(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM);
     return NULL;
 }
 
-static bool
+bool
 droid_display_supports_context_api(
         struct wcore_display *wc_self,
         int32_t context_api)

@@ -51,3 +51,15 @@ xegl_window_create(struct wcore_platform *wc_plat,
                    struct wcore_config *wc_config,
                    int width,
                    int height);
+
+bool
+xegl_window_destroy(struct wcore_window *wc_self);
+
+bool
+xegl_window_show(struct wcore_window *wc_self);
+
+bool
+xegl_window_swap_buffers(struct wcore_window *wc_self);
+
+union waffle_native_window*
+xegl_window_get_native(struct wcore_window *wc_self);

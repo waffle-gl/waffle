@@ -34,7 +34,7 @@
 
 static const struct wcore_display_vtbl xegl_display_wcore_vtbl;
 
-static bool
+bool
 xegl_display_destroy(struct wcore_display *wc_self)
 {
     struct xegl_display *self = xegl_display(wc_self);
@@ -84,7 +84,7 @@ error:
     return NULL;
 }
 
-static bool
+bool
 xegl_display_supports_context_api(struct wcore_display *wc_self,
                                   int32_t waffle_context_api)
 {
@@ -99,7 +99,7 @@ xegl_display_fill_native(struct xegl_display *self,
     n_dpy->egl_display = self->egl;
 }
 
-static union waffle_native_display*
+union waffle_native_display*
 xegl_display_get_native(struct wcore_display *wc_self)
 {
     struct xegl_display *self = xegl_display(wc_self);

@@ -57,3 +57,13 @@ DEFINE_CONTAINER_CAST_FUNC(glx_display,
 struct wcore_display*
 glx_display_connect(struct wcore_platform *wc_plat,
                     const char *name);
+
+bool
+glx_display_destroy(struct wcore_display *wc_self);
+
+bool
+glx_display_supports_context_api(struct wcore_display *wc_self,
+                                 int32_t context_api);
+
+union waffle_native_display*
+glx_display_get_native(struct wcore_display *wc_self);

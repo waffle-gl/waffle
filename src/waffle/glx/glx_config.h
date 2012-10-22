@@ -59,3 +59,9 @@ struct wcore_config*
 glx_config_choose(struct wcore_platform *wc_plat,
                   struct wcore_display *wc_dpy,
                   const struct wcore_config_attrs *attrs);
+
+bool
+glx_config_destroy(struct wcore_config *wc_self);
+
+union waffle_native_config*
+glx_config_get_native(struct wcore_config *wc_self);

@@ -37,7 +37,7 @@
 
 static const struct wcore_config_vtbl cgl_config_wcore_vtbl;
 
-static bool
+bool
 cgl_config_destroy(struct wcore_config *wc_self)
 {
     bool ok = true;
@@ -194,7 +194,7 @@ error:
     return NULL;
 }
 
-static union waffle_native_config*
+union waffle_native_config*
 cgl_config_get_native(struct wcore_config *wc_self)
 {
     wcore_error(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM);

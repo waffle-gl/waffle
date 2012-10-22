@@ -38,7 +38,7 @@
 
 static const struct wcore_config_vtbl wayland_config_wcore_vtbl;
 
-static bool
+bool
 wayland_config_destroy(struct wcore_config *wc_self)
 {
     struct wayland_config *self = wayland_config(wc_self);
@@ -86,7 +86,7 @@ error:
     return NULL;
 }
 
-static union waffle_native_config*
+union waffle_native_config*
 wayland_config_get_native(struct wcore_config *wc_self)
 {
     struct wayland_config *self = wayland_config(wc_self);

@@ -36,7 +36,7 @@
 
 static const struct wcore_display_vtbl glx_display_wcore_vtbl;
 
-static bool
+bool
 glx_display_destroy(struct wcore_display *wc_self)
 {
     struct glx_display *self = glx_display(wc_self);
@@ -101,7 +101,7 @@ error:
     return NULL;
 }
 
-static bool
+bool
 glx_display_supports_context_api(struct wcore_display *wc_self,
                                  int32_t context_api)
 {
@@ -124,7 +124,7 @@ glx_display_supports_context_api(struct wcore_display *wc_self,
     }
 }
 
-static union waffle_native_display*
+union waffle_native_display*
 glx_display_get_native(struct wcore_display *wc_self)
 {
     struct glx_display *self = glx_display(wc_self);

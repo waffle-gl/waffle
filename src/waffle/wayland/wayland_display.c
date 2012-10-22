@@ -40,7 +40,7 @@
 
 static const struct wcore_display_vtbl wayland_display_wcore_vtbl;
 
-static bool
+bool
 wayland_display_destroy(struct wcore_display *wc_self)
 {
     struct wayland_display *self = wayland_display(wc_self);
@@ -139,7 +139,7 @@ error:
 }
 
 
-static bool
+bool
 wayland_display_supports_context_api(struct wcore_display *wc_self,
                                      int32_t waffle_context_api)
 {
@@ -156,7 +156,7 @@ wayland_display_fill_native(struct wayland_display *self,
     n_dpy->egl_display = self->egl;
 }
 
-static union waffle_native_display*
+union waffle_native_display*
 wayland_display_get_native(struct wcore_display *wc_self)
 {
     struct wayland_display *self = wayland_display(wc_self);

@@ -59,6 +59,16 @@ struct wcore_display*
 wayland_display_connect(struct wcore_platform *wc_plat,
                         const char *name);
 
+bool
+wayland_display_destroy(struct wcore_display *wc_self);
+
+bool
+wayland_display_supports_context_api(struct wcore_display *wc_self,
+                                     int32_t waffle_context_api);
+
 void
 wayland_display_fill_native(struct wayland_display *self,
                             struct waffle_wayland_display *n_dpy);
+
+union waffle_native_display*
+wayland_display_get_native(struct wcore_display *wc_self);

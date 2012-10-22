@@ -49,3 +49,9 @@ struct wcore_context*
 glx_context_create(struct wcore_platform *wc_plat,
                    struct wcore_config *wc_config,
                    struct wcore_context *wc_share_ctx);
+
+bool
+glx_context_destroy(struct wcore_context *wc_self);
+
+union waffle_native_context*
+glx_context_get_native(struct wcore_context *wc_self);

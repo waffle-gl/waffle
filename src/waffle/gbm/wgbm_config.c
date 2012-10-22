@@ -40,7 +40,7 @@
 
 static const struct wcore_config_vtbl wgbm_config_wcore_vtbl;
 
-static bool
+bool
 wgbm_config_destroy(struct wcore_config *wc_self)
 {
     struct wgbm_config *self = wgbm_config(wc_self);
@@ -111,7 +111,7 @@ error:
     return NULL;
 }
 
-static union waffle_native_config*
+union waffle_native_config*
 wgbm_config_get_native(struct wcore_config *wc_self)
 {
     struct wgbm_config *self = wgbm_config(wc_self);

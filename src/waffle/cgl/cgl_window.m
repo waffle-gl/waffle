@@ -33,7 +33,7 @@
 
 static const struct wcore_window_vtbl cgl_window_wcore_vtbl;
 
-static bool
+bool
 cgl_window_destroy(struct wcore_window *wc_self)
 {
     struct cgl_window *self = cgl_window(wc_self);
@@ -127,13 +127,13 @@ error:
     return NULL;
 }
 
-static bool
+bool
 cgl_window_show(struct wcore_window *wc_self)
 {
     return true;
 }
 
-static bool
+bool
 cgl_window_swap_buffers(struct wcore_window *wc_self)
 {
     struct cgl_window *self = cgl_window(wc_self);
@@ -142,7 +142,7 @@ cgl_window_swap_buffers(struct wcore_window *wc_self)
 
 }
 
-static union waffle_native_window*
+union waffle_native_window*
 cgl_window_get_native(struct wcore_window *wc_self)
 {
     wcore_error(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM);

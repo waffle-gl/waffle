@@ -36,7 +36,7 @@
 
 static const struct wcore_config_vtbl xegl_config_wcore_vtbl;
 
-static bool
+bool
 xegl_config_destroy(struct wcore_config *wc_self)
 {
     struct xegl_config *self = xegl_config(wc_self);
@@ -93,7 +93,7 @@ error:
     return NULL;
 }
 
-static union waffle_native_config*
+union waffle_native_config*
 xegl_config_get_native(struct wcore_config *wc_self)
 {
     struct xegl_config *self = xegl_config(wc_self);

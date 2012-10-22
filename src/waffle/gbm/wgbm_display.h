@@ -54,6 +54,16 @@ struct wcore_display*
 wgbm_display_connect(struct wcore_platform *wc_plat,
                      const char *name);
 
+bool
+wgbm_display_destroy(struct wcore_display *wc_self);
+
+bool
+wgbm_display_supports_context_api(struct wcore_display *wc_self,
+                                  int32_t waffle_context_api);
+
+union waffle_native_display*
+wgbm_display_get_native(struct wcore_display *wc_self);
+
 void
 wgbm_display_fill_native(struct wgbm_display *self,
                          struct waffle_gbm_display *n_dpy);

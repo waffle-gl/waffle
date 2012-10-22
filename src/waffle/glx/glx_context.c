@@ -44,7 +44,7 @@ enum {
 };
 
 
-static bool
+bool
 glx_context_destroy(struct wcore_context *wc_self)
 {
     struct glx_context *self;
@@ -182,7 +182,7 @@ error:
     return NULL;
 }
 
-static union waffle_native_context*
+union waffle_native_context*
 glx_context_get_native(struct wcore_context *wc_self)
 {
     struct glx_context *self = glx_context(wc_self);

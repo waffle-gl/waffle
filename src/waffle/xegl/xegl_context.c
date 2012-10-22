@@ -35,7 +35,7 @@
 
 static const struct wcore_context_vtbl xegl_context_wcore_vtbl;
 
-static bool
+bool
 xegl_context_destroy(struct wcore_context *wc_self)
 {
     struct xegl_context *self = xegl_context(wc_self);
@@ -89,7 +89,7 @@ error:
     return NULL;
 }
 
-static union waffle_native_context*
+union waffle_native_context*
 xegl_context_get_native(struct wcore_context *wc_self)
 {
     struct xegl_context *self = xegl_context(wc_self);

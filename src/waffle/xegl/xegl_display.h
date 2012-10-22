@@ -53,6 +53,16 @@ struct wcore_display*
 xegl_display_connect(struct wcore_platform *wc_plat,
                      const char *name);
 
+bool
+xegl_display_destroy(struct wcore_display *wc_self);
+
+bool
+xegl_display_supports_context_api(struct wcore_display *wc_self,
+                                  int32_t waffle_context_api);
+
 void
 xegl_display_fill_native(struct xegl_display *self,
                          struct waffle_x11_egl_display *n_dpy);
+
+union waffle_native_display*
+xegl_display_get_native(struct wcore_display *wc_self);

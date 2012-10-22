@@ -35,9 +35,6 @@
 #include "droid_display.h"
 #include "droid_surfaceflingerlink.h"
 
-static bool
-droid_window_destroy(struct wcore_window *wc_self);
-
 static const struct wcore_window_vtbl droid_window_wcore_vtbl;
 
 struct wcore_window*
@@ -78,7 +75,7 @@ error:
     return NULL;
 }
 
-static bool
+bool
 droid_window_destroy(struct wcore_window *wc_self)
 {
     struct droid_window *self = droid_window(wc_self);
@@ -100,7 +97,7 @@ droid_window_destroy(struct wcore_window *wc_self)
     return ok;
 }
 
-static bool
+bool
 droid_window_show(struct wcore_window *wc_self)
 {
     struct droid_window *self = droid_window(wc_self);
@@ -114,7 +111,7 @@ droid_window_show(struct wcore_window *wc_self)
     return droid_show_surface(dpy->pSFContainer, self->pANWContainer);
 }
 
-static union waffle_native_window*
+union waffle_native_window*
 droid_window_get_native(struct wcore_window *wc_self)
 {
     wcore_error(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM);
@@ -122,7 +119,7 @@ droid_window_get_native(struct wcore_window *wc_self)
 }
 
 
-static bool
+bool
 droid_window_swap_buffers(struct wcore_window *wc_self)
 {
     struct droid_window *self = droid_window(wc_self);

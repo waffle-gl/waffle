@@ -50,3 +50,15 @@ droid_window_create(struct wcore_platform *wc_plat,
                     struct wcore_config *wc_config,
                     int width,
                     int height);
+
+bool
+droid_window_destroy(struct wcore_window *wc_self);
+
+bool
+droid_window_show(struct wcore_window *wc_self);
+
+bool
+droid_window_swap_buffers(struct wcore_window *wc_self);
+
+union waffle_native_window*
+droid_window_get_native(struct wcore_window *wc_self);
