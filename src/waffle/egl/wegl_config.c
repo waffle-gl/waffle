@@ -155,7 +155,8 @@ choose_real_config(struct wegl_display *dpy,
 }
 
 struct wcore_config*
-wegl_config_choose(struct wcore_display *wc_dpy,
+wegl_config_choose(struct wcore_platform *wc_plat,
+                   struct wcore_display *wc_dpy,
                    const struct wcore_config_attrs *attrs)
 {
     struct wegl_display *dpy = wegl_display(wc_dpy);

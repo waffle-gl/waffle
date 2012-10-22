@@ -118,11 +118,8 @@ endif()
 
 if(waffle_has_x11_egl)
     list(APPEND waffle_sources
-        xegl/xegl_config.c
-        xegl/xegl_context.c
         xegl/xegl_display.c
         xegl/xegl_platform.c
-        xegl/xegl_priv_egl.c
         xegl/xegl_window.c
     )
 endif()

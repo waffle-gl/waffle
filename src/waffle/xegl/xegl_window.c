@@ -26,30 +26,26 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "waffle/core/wcore_error.h"
+#include <xcb/xcb.h>
 
-#include "xegl_config.h"
+#include "waffle/core/wcore_error.h"
+#include "waffle/egl/wegl_config.h"
+#include "waffle/egl/wegl_util.h"
+
 #include "xegl_display.h"
-#include "xegl_priv_egl.h"
 #include "xegl_window.h"
 
 bool
 xegl_window_destroy(struct wcore_window *wc_self)
 {
     struct xegl_window *self = xegl_window(wc_self);
-    struct xegl_display *dpy;
     bool ok = true;
 
     if (!self)
         return ok;
 
-    dpy = xegl_display(wc_self->display);
-
-    if (self->egl)
-        ok &= egl_destroy_surface(dpy->egl, self->egl);
-
+    ok &= wegl_window_teardown(&self->wegl);
     ok &= x11_window_teardown(&self->x11);
-    ok &= wcore_window_teardown(&self->wcore);
     free(self);
     return ok;
 }
@@ -61,37 +57,42 @@ xegl_window_create(struct wcore_platform *wc_plat,
                    int height)
 {
     struct xegl_window *self;
-    struct xegl_config *config = xegl_config(wc_config);
     struct xegl_display *dpy = xegl_display(wc_config->display);
+    struct wegl_config *config = wegl_config(wc_config);
+    xcb_visualid_t visual;
     bool ok = true;
 
     self = wcore_calloc(sizeof(*self));
     if (self == NULL)
         return NULL;
 
-    ok = wcore_window_init(&self->wcore, wc_config);
-    if (!ok)
+    ok = eglGetConfigAttrib(dpy->wegl.egl,
+                            config->egl,
+                            EGL_NATIVE_VISUAL_ID,
+                            (EGLint*) &visual);
+    if (!ok) {
+        wegl_emit_error("eglGetConfigAttrib(EGL_NATIVE_VISUAL_ID)");
         goto error;
+    }
 
     ok = x11_window_init(&self->x11,
                          &dpy->x11,
-                         config->xcb_visual_id,
+                         visual,
                          width,
                          height);
     if (!ok)
         goto error;
 
-    self->egl = xegl_egl_create_window_surface(dpy->egl,
-                                               config->egl,
-                                               self->x11.xcb,
-                                               config->egl_render_buffer);
-    if (!self->egl)
+    ok = wegl_window_init(&self->wegl,
+                          &config->wcore,
+                          (intptr_t) self->x11.xcb);
+    if (!ok)
         goto error;
 
-    return &self->wcore;
+    return &self->wegl.wcore;
 
 error:
-    xegl_window_destroy(&self->wcore);
+    xegl_window_destroy(&self->wegl.wcore);
     return NULL;
 }
 
@@ -99,15 +100,6 @@ bool
 xegl_window_show(struct wcore_window *wc_self)
 {
     return x11_window_show(&xegl_window(wc_self)->x11);
-}
-
-bool
-xegl_window_swap_buffers(struct wcore_window *wc_self)
-{
-    struct xegl_window *self = xegl_window(wc_self);
-    struct xegl_display *dpy = xegl_display(wc_self->display);
-
-    return egl_swap_buffers(dpy->egl, self->egl);
 }
 
 union waffle_native_window*
@@ -123,7 +115,7 @@ xegl_window_get_native(struct wcore_window *wc_self)
 
     xegl_display_fill_native(dpy, &n_window->x11_egl->display);
     n_window->x11_egl->xlib_window = self->x11.xcb;
-    n_window->x11_egl->egl_surface = self->egl;
+    n_window->x11_egl->egl_surface = self->wegl.egl;;
 
     return n_window;
 }

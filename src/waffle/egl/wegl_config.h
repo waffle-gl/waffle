@@ -56,7 +56,8 @@ DEFINE_CONTAINER_CAST_FUNC(wegl_config,
                            wcore)
 
 struct wcore_config*
-wegl_config_choose(struct wcore_display *wc_dpy,
+wegl_config_choose(struct wcore_platform *wc_plat,
+                   struct wcore_display *wc_dpy,
                    const struct wcore_config_attrs *attrs);
 
 bool

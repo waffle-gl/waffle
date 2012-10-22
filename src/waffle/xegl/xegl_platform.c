@@ -29,12 +29,12 @@
 
 #include "waffle/core/wcore_error.h"
 #include "waffle/linux/linux_platform.h"
+#include "waffle/egl/wegl_config.h"
+#include "waffle/egl/wegl_context.h"
+#include "waffle/egl/wegl_util.h"
 
-#include "xegl_config.h"
-#include "xegl_context.h"
 #include "xegl_display.h"
 #include "xegl_platform.h"
-#include "xegl_priv_egl.h"
 #include "xegl_window.h"
 
 static const struct wcore_platform_vtbl xegl_platform_vtbl;
@@ -87,24 +87,6 @@ error:
 }
 
 static bool
-xegl_platform_make_current(struct wcore_platform *wc_self,
-                           struct wcore_display *wc_dpy,
-                           struct wcore_window *wc_window,
-                           struct wcore_context *wc_ctx)
-{
-    return egl_make_current(xegl_display(wc_dpy)->egl,
-                            wc_window ? xegl_window(wc_window)->egl : NULL,
-                            wc_ctx ? xegl_context(wc_ctx)->egl : NULL);
-}
-
-static void*
-xegl_platform_get_proc_address(struct wcore_platform *wc_self,
-                               const char *name)
-{
-    return eglGetProcAddress(name);
-}
-
-static bool
 xegl_platform_dl_can_open(struct wcore_platform *wc_self,
                           int32_t waffle_dl)
 {
@@ -122,30 +104,64 @@ xegl_platform_dl_sym(struct wcore_platform *wc_self,
                                                name);
 }
 
+static union waffle_native_config*
+xegl_config_get_native(struct wcore_config *wc_config)
+{
+    struct xegl_display *dpy = xegl_display(wc_config->display);
+    struct wegl_config *config = wegl_config(wc_config);
+    union waffle_native_config *n_config;
+
+    WCORE_CREATE_NATIVE_UNION(n_config, x11_egl);
+    if (!n_config)
+        return NULL;
+
+    xegl_display_fill_native(dpy, &n_config->x11_egl->display);
+    n_config->x11_egl->egl_config = config->egl;
+
+    return n_config;
+}
+
+static union waffle_native_context*
+xegl_context_get_native(struct wcore_context *wc_ctx)
+{
+    struct xegl_display *dpy = xegl_display(wc_ctx->display);
+    struct wegl_context *ctx = wegl_context(wc_ctx);
+    union waffle_native_context *n_ctx;
+
+    WCORE_CREATE_NATIVE_UNION(n_ctx, x11_egl);
+    if (!n_ctx)
+        return NULL;
+
+    xegl_display_fill_native(dpy, &n_ctx->x11_egl->display);
+    n_ctx->x11_egl->egl_context = ctx->egl;
+
+    return n_ctx;
+}
+
 static const struct wcore_platform_vtbl xegl_platform_vtbl = {
     .destroy = xegl_platform_destroy,
 
-    .make_current = xegl_platform_make_current,
-    .get_proc_address = xegl_platform_get_proc_address,
+    .make_current = wegl_make_current,
+    .get_proc_address = wegl_get_proc_address,
     .dl_can_open = xegl_platform_dl_can_open,
     .dl_sym = xegl_platform_dl_sym,
 
     .display = {
         .connect = xegl_display_connect,
         .destroy = xegl_display_destroy,
-        .supports_context_api = xegl_display_supports_context_api,
+        .supports_context_api = wegl_display_supports_context_api,
         .get_native = xegl_display_get_native,
     },
 
     .config = {
-        .choose = xegl_config_choose,
-        .destroy = xegl_config_destroy,
+        .choose = wegl_config_choose,
+        .destroy = wegl_config_destroy,
         .get_native = xegl_config_get_native,
     },
 
     .context = {
-        .create = xegl_context_create,
-        .destroy = xegl_context_destroy,
+        .create = wegl_context_create,
+        .destroy = wegl_context_destroy,
         .get_native = xegl_context_get_native,
     },
 
@@ -153,7 +169,7 @@ static const struct wcore_platform_vtbl xegl_platform_vtbl = {
         .create = xegl_window_create,
         .destroy = xegl_window_destroy,
         .show = xegl_window_show,
-        .swap_buffers = xegl_window_swap_buffers,
+        .swap_buffers = wegl_window_swap_buffers,
         .get_native = xegl_window_get_native,
     },
 };

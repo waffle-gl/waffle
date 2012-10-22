@@ -30,7 +30,6 @@
 
 #include "xegl_display.h"
 #include "xegl_platform.h"
-#include "xegl_priv_egl.h"
 
 bool
 xegl_display_destroy(struct wcore_display *wc_self)
@@ -41,11 +40,8 @@ xegl_display_destroy(struct wcore_display *wc_self)
     if (!self)
         return ok;
 
-    if (self->egl)
-        ok &= egl_terminate(self->egl);
-
+    ok &= wegl_display_teardown(&self->wegl);
     ok &= x11_display_teardown(&self->x11);
-    ok &= wcore_display_teardown(&self->wcore);
     free(self);
     return ok;
 }
@@ -62,30 +58,19 @@ xegl_display_connect(
     if (self == NULL)
         return NULL;
 
-    ok = wcore_display_init(&self->wcore, wc_plat);
-    if (!ok)
-        goto error;
-
     ok = x11_display_init(&self->x11, name);
     if (!ok)
         goto error;
 
-    self->egl = xegl_egl_initialize(self->x11.xlib);
-    if (!self->egl)
+    ok = wegl_display_init(&self->wegl, wc_plat, (intptr_t) self->x11.xlib);
+    if (!ok)
         goto error;
 
-    return &self->wcore;
+    return &self->wegl.wcore;
 
 error:
-    xegl_display_destroy(&self->wcore);
+    xegl_display_destroy(&self->wegl.wcore);
     return NULL;
-}
-
-bool
-xegl_display_supports_context_api(struct wcore_display *wc_self,
-                                  int32_t waffle_context_api)
-{
-    return egl_supports_context_api(wc_self->platform, waffle_context_api);
 }
 
 void
@@ -93,7 +78,7 @@ xegl_display_fill_native(struct xegl_display *self,
                          struct waffle_x11_egl_display *n_dpy)
 {
     n_dpy->xlib_display = self->x11.xlib;
-    n_dpy->egl_display = self->egl;
+    n_dpy->egl_display = self->wegl.egl;
 }
 
 union waffle_native_display*

@@ -41,6 +41,10 @@ void
 wegl_emit_error(const char *egl_func_call);
 
 bool
-wegl_make_current(struct wcore_display *wc_dpy,
+wegl_make_current(struct wcore_platform *wc_plat,
+                  struct wcore_display *wc_dpy,
                   struct wcore_window *wc_window,
                   struct wcore_context *wc_ctx);
+
+void*
+wegl_get_proc_address(struct wcore_platform *wc_self, const char *name);

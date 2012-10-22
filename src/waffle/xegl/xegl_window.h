@@ -27,25 +27,30 @@
 
 #include <stdbool.h>
 
-#include <EGL/egl.h>
-#include <xcb/xcb.h>
-
 #include "waffle/core/wcore_window.h"
 #include "waffle/core/wcore_util.h"
+#include "waffle/egl/wegl_window.h"
 #include "waffle/x11/x11_window.h"
 
 struct wcore_platform;
 
 struct xegl_window {
-    struct wcore_window wcore;
     struct x11_window x11;
-    EGLSurface egl;
+    struct wegl_window wegl;
 };
 
-DEFINE_CONTAINER_CAST_FUNC(xegl_window,
-                           struct xegl_window,
-                           struct wcore_window,
-                           wcore)
+static inline struct xegl_window*
+xegl_window(struct wcore_window *wc_self)
+{
+    if (wc_self) {
+        struct wegl_window *wegl_self = container_of(wc_self, struct wegl_window, wcore);
+        return container_of(wegl_self, struct xegl_window, wegl);
+    }
+    else {
+        return NULL;
+    }
+}
+
 struct wcore_window*
 xegl_window_create(struct wcore_platform *wc_plat,
                    struct wcore_config *wc_config,
@@ -57,9 +62,6 @@ xegl_window_destroy(struct wcore_window *wc_self);
 
 bool
 xegl_window_show(struct wcore_window *wc_self);
-
-bool
-xegl_window_swap_buffers(struct wcore_window *wc_self);
 
 union waffle_native_window*
 xegl_window_get_native(struct wcore_window *wc_self);

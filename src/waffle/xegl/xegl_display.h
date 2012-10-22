@@ -28,26 +28,29 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include <EGL/egl.h>
-#include <X11/Xlib-xcb.h>
-
-#include "waffle/core/wcore_display.h"
-#include "waffle/core/wcore_util.h"
 #include "waffle_x11_egl.h"
+
+#include "waffle/egl/wegl_display.h"
 #include "waffle/x11/x11_display.h"
 
 struct wcore_platform;
 
 struct xegl_display {
-    struct wcore_display wcore;
     struct x11_display x11;
-    EGLDisplay egl;
+    struct wegl_display wegl;
 };
 
-DEFINE_CONTAINER_CAST_FUNC(xegl_display,
-                           struct xegl_display,
-                           struct wcore_display,
-                           wcore)
+static inline struct xegl_display*
+xegl_display(struct wcore_display *wc_self)
+{
+    if (wc_self) {
+        struct wegl_display *wegl_self = container_of(wc_self, struct wegl_display, wcore);
+        return container_of(wegl_self, struct xegl_display, wegl);
+    }
+    else {
+        return NULL;
+    }
+}
 
 struct wcore_display*
 xegl_display_connect(struct wcore_platform *wc_plat,
@@ -55,10 +58,6 @@ xegl_display_connect(struct wcore_platform *wc_plat,
 
 bool
 xegl_display_destroy(struct wcore_display *wc_self);
-
-bool
-xegl_display_supports_context_api(struct wcore_display *wc_self,
-                                  int32_t waffle_context_api);
 
 void
 xegl_display_fill_native(struct xegl_display *self,
