@@ -87,17 +87,17 @@ error:
 }
 
 static bool
-xegl_platform_dl_can_open(struct wcore_platform *wc_self,
-                          int32_t waffle_dl)
+xegl_dl_can_open(struct wcore_platform *wc_self,
+                 int32_t waffle_dl)
 {
     return linux_platform_dl_can_open(xegl_platform(wc_self)->linux,
                                       waffle_dl);
 }
 
 static void*
-xegl_platform_dl_sym(struct wcore_platform *wc_self,
-                     int32_t waffle_dl,
-                     const char *name)
+xegl_dl_sym(struct wcore_platform *wc_self,
+            int32_t waffle_dl,
+            const char *name)
 {
     return linux_platform_dl_sym(xegl_platform(wc_self)->linux,
                                                waffle_dl,
@@ -143,8 +143,8 @@ static const struct wcore_platform_vtbl xegl_platform_vtbl = {
 
     .make_current = wegl_make_current,
     .get_proc_address = wegl_get_proc_address,
-    .dl_can_open = xegl_platform_dl_can_open,
-    .dl_sym = xegl_platform_dl_sym,
+    .dl_can_open = xegl_dl_can_open,
+    .dl_sym = xegl_dl_sym,
 
     .display = {
         .connect = xegl_display_connect,
