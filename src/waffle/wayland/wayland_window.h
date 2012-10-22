@@ -31,23 +31,30 @@
 
 #include "waffle/core/wcore_window.h"
 #include "waffle/core/wcore_util.h"
+#include "waffle/egl/wegl_window.h"
 
 struct wcore_platform;
 
 struct wayland_window {
-    struct wcore_window wcore;
-
     struct wl_surface *wl_surface;
     struct wl_shell_surface *wl_shell_surface;
     struct wl_egl_window *wl_window;
 
-    EGLSurface egl;
+    struct wegl_window wegl;
 };
 
-DEFINE_CONTAINER_CAST_FUNC(wayland_window,
-                           struct wayland_window,
-                           struct wcore_window,
-                           wcore)
+static inline struct wayland_window*
+wayland_window(struct wcore_window *wc_self)
+{
+    if (wc_self) {
+        struct wegl_window *wegl_self = container_of(wc_self, struct wegl_window, wcore);
+        return container_of(wegl_self, struct wayland_window, wegl);
+    }
+    else {
+        return NULL;
+    }
+}
+
 struct wcore_window*
 wayland_window_create(struct wcore_platform *wc_plat,
                       struct wcore_config *wc_config,
@@ -59,9 +66,6 @@ wayland_window_destroy(struct wcore_window *wc_self);
 
 bool
 wayland_window_show(struct wcore_window *wc_self);
-
-bool
-wayland_window_swap_buffers(struct wcore_window *wc_self);
 
 union waffle_native_window*
 wayland_window_get_native(struct wcore_window *wc_self);

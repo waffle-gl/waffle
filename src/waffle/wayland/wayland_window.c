@@ -31,28 +31,24 @@
 #include <wayland-egl.h>
 #undef container_of
 
-#include "waffle/core/wcore_error.h"
 #include "waffle_wayland.h"
 
-#include "wayland_config.h"
+#include "waffle/core/wcore_error.h"
+#include "waffle/egl/wegl_config.h"
+
 #include "wayland_display.h"
-#include "wayland_priv_egl.h"
 #include "wayland_window.h"
 
 bool
 wayland_window_destroy(struct wcore_window *wc_self)
 {
     struct wayland_window *self = wayland_window(wc_self);
-    struct wayland_display *dpy;
     bool ok = true;
 
     if (!self)
         return ok;
 
-    dpy = wayland_display(wc_self->display);
-
-    if (self->egl)
-        ok &= egl_destroy_surface(dpy->egl, self->egl);
+    ok &= wegl_window_teardown(&self->wegl);
 
     if (self->wl_window)
         wl_egl_window_destroy(self->wl_window);
@@ -63,7 +59,6 @@ wayland_window_destroy(struct wcore_window *wc_self)
     if (self->wl_surface)
         wl_surface_destroy(self->wl_surface);
 
-    ok &= wcore_window_teardown(wc_self);
     free(self);
     return ok;
 }
@@ -75,17 +70,12 @@ wayland_window_create(struct wcore_platform *wc_plat,
                       int height)
 {
     struct wayland_window *self;
-    struct wayland_config *config = wayland_config(wc_config);
     struct wayland_display *dpy = wayland_display(wc_config->display);
     bool ok = true;
 
     self = wcore_calloc(sizeof(*self));
     if (self == NULL)
         return NULL;
-
-    ok = wcore_window_init(&self->wcore, wc_config);
-    if (!ok)
-        goto error;
 
     if (!dpy->wl_compositor) {
         wcore_errorf(WAFFLE_ERROR_UNKNOWN, "wayland compositor not found");
@@ -117,17 +107,14 @@ wayland_window_create(struct wcore_platform *wc_plat,
         goto error;
     }
 
-    self->egl = wayland_egl_create_window_surface(dpy->egl,
-                                                  config->egl,
-                                                  self->wl_window,
-                                                  config->egl_render_buffer);
-    if (!self->egl)
+    ok = wegl_window_init(&self->wegl, wc_config, (intptr_t) self->wl_window);
+    if (!ok)
         goto error;
 
-    return &self->wcore;
+    return &self->wegl.wcore;
 
 error:
-    wayland_window_destroy(&self->wcore);
+    wayland_window_destroy(&self->wegl.wcore);
     return NULL;
 }
 
@@ -141,15 +128,6 @@ wayland_window_show(struct wcore_window *wc_self)
 
     // FIXME: How to detect errors in Wayland?
     return true;
-}
-
-bool
-wayland_window_swap_buffers(struct wcore_window *wc_self)
-{
-    struct wayland_window *self = wayland_window(wc_self);
-    struct wayland_display *dpy = wayland_display(wc_self->display);
-
-    return egl_swap_buffers(dpy->egl, self->egl);
 }
 
 union waffle_native_window*
@@ -167,7 +145,7 @@ wayland_window_get_native(struct wcore_window *wc_self)
     n_window->wayland->wl_surface = self->wl_surface;
     n_window->wayland->wl_shell_surface = self->wl_shell_surface;
     n_window->wayland->wl_window = self->wl_window;
-    n_window->wayland->egl_surface = self->egl;
+    n_window->wayland->egl_surface = self->wegl.egl;
 
     return n_window;
 }

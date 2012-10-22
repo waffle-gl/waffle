@@ -33,10 +33,10 @@
 
 #include "waffle/core/wcore_error.h"
 #include "waffle/core/wcore_display.h"
+#include "waffle/egl/wegl_display.h"
 
 #include "wayland_display.h"
 #include "wayland_platform.h"
-#include "wayland_priv_egl.h"
 
 bool
 wayland_display_destroy(struct wcore_display *wc_self)
@@ -47,13 +47,11 @@ wayland_display_destroy(struct wcore_display *wc_self)
     if (!self)
         return ok;
 
-    if (self->egl)
-        ok &= egl_terminate(self->egl);
+    ok &= wegl_display_teardown(&self->wegl);
 
     if (self->wl_display)
         wl_display_disconnect(self->wl_display);
 
-    ok &= wcore_display_teardown(&self->wcore);
     free(self);
     return ok;
 }
@@ -94,10 +92,6 @@ wayland_display_connect(struct wcore_platform *wc_plat,
     if (self == NULL)
         return NULL;
 
-    ok = wcore_display_init(&self->wcore, wc_plat);
-    if (!ok)
-        goto error;
-
     self->wl_display = wl_display_connect(name);
     if (!self->wl_display) {
         wcore_errorf(WAFFLE_ERROR_UNKNOWN, "wl_display_connect failed");
@@ -124,23 +118,15 @@ wayland_display_connect(struct wcore_platform *wc_plat,
         goto error;
     }
 
-    self->egl = wayland_egl_initialize(self->wl_display);
-    if (!self->egl)
+    ok = wegl_display_init(&self->wegl, wc_plat, (intptr_t) self->wl_display);
+    if (!ok)
         goto error;
 
-    return &self->wcore;
+    return &self->wegl.wcore;
 
 error:
-    wayland_display_destroy(&self->wcore);
+    wayland_display_destroy(&self->wegl.wcore);
     return NULL;
-}
-
-
-bool
-wayland_display_supports_context_api(struct wcore_display *wc_self,
-                                     int32_t waffle_context_api)
-{
-    return egl_supports_context_api(wc_self->platform, waffle_context_api);
 }
 
 void
@@ -150,7 +136,7 @@ wayland_display_fill_native(struct wayland_display *self,
     n_dpy->wl_display = self->wl_display;
     n_dpy->wl_compositor = self->wl_compositor;
     n_dpy->wl_shell = self->wl_shell;
-    n_dpy->egl_display = self->egl;
+    n_dpy->egl_display = self->wegl.egl;
 }
 
 union waffle_native_display*

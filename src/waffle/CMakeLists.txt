@@ -100,11 +100,8 @@ endif()
 
 if(waffle_has_wayland)
     list(APPEND waffle_sources
-        wayland/wayland_config.c
-        wayland/wayland_context.c
         wayland/wayland_display.c
         wayland/wayland_platform.c
-        wayland/wayland_priv_egl.c
         wayland/wayland_window.c
     )
 endif()
