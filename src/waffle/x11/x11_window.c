@@ -167,6 +167,9 @@ x11_window_teardown(struct x11_window *self)
 
     assert(self);
 
+    if (!self->xcb)
+        return true;
+
     cookie = xcb_destroy_window_checked(self->display->xcb, self->xcb);
     error = xcb_request_check(self->display->xcb, cookie);
 
