@@ -4,11 +4,7 @@
     version="1.0">
 
   <xsl:import href="http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl"/>
-
-  <!-- When multiple terms appears in a varlistentry, place them in a vertical
-       column. -->
-  <xsl:param name="variablelist.term.break.after">1</xsl:param>
-  <xsl:param name="variablelist.term.separator"></xsl:param>
+  <xsl:include href="common.xsl"/>
 
 </xsl:stylesheet>
 
