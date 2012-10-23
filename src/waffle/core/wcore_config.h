@@ -28,12 +28,14 @@
 #include <assert.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "waffle_config.h"
 
 #include "waffle/api/api_object.h"
 
 #include "wcore_display.h"
+#include "wcore_config_attrs.h"
 #include "wcore_util.h"
 
 struct wcore_config;
@@ -42,6 +44,7 @@ union waffle_native_config;
 struct wcore_config {
     struct waffle_config {} wfl;
     struct api_object api;
+    struct wcore_config_attrs attrs;
 
     struct wcore_display *display;
 };
@@ -53,13 +56,15 @@ DEFINE_CONTAINER_CAST_FUNC(wcore_config,
 
 static inline bool
 wcore_config_init(struct wcore_config *self,
-                  struct wcore_display *display)
+                  struct wcore_display *display,
+                  const struct wcore_config_attrs *attrs)
 {
     assert(self);
     assert(display);
 
     self->api.display_id = display->api.display_id;
     self->display = display;
+    memcpy(&self->attrs, attrs, sizeof(*attrs));
 
     return true;
 }

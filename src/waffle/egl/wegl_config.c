@@ -167,7 +167,7 @@ wegl_config_choose(struct wcore_platform *wc_plat,
     if (!config)
         return NULL;
 
-    ok = wcore_config_init(&config->wcore, wc_dpy);
+    ok = wcore_config_init(&config->wcore, wc_dpy, attrs);
     if (!ok)
         goto fail;
 

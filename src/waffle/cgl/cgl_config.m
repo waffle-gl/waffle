@@ -165,7 +165,7 @@ cgl_config_choose(struct wcore_platform *wc_plat,
         return NULL;
     }
 
-    ok = wcore_config_init(&self->wcore, wc_dpy);
+    ok = wcore_config_init(&self->wcore, wc_dpy, attrs);
     if (!ok)
         goto error;
 
