@@ -37,16 +37,22 @@ wegl_window_init(struct wegl_window *window,
 {
     struct wegl_config *config = wegl_config(wc_config);
     struct wegl_display *dpy = wegl_display(wc_config->display);
+    EGLint egl_render_buffer;
     bool ok;
-
-    EGLint attrib_list[] = {
-        EGL_RENDER_BUFFER, config->egl_render_buffer,
-        EGL_NONE,
-    };
 
     ok = wcore_window_init(&window->wcore, wc_config);
     if (!ok)
         goto fail;
+
+    if (config->wcore.attrs.double_buffered)
+        egl_render_buffer = EGL_BACK_BUFFER;
+    else
+        egl_render_buffer = EGL_SINGLE_BUFFER;
+
+    EGLint attrib_list[] = {
+        EGL_RENDER_BUFFER, egl_render_buffer,
+        EGL_NONE,
+    };
 
     window->egl = eglCreateWindowSurface(dpy->egl,
                                          config->egl,

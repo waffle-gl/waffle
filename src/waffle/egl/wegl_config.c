@@ -178,13 +178,6 @@ wegl_config_choose(struct wcore_platform *wc_plat,
     if (!config->egl)
         goto fail;
 
-    if (attrs->double_buffered)
-        config->egl_render_buffer = EGL_BACK_BUFFER;
-    else
-        config->egl_render_buffer = EGL_SINGLE_BUFFER;
-
-    config->waffle_context_api = attrs->context_api;
-
     return &config->wcore;
 
 fail:

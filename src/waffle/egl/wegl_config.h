@@ -40,14 +40,6 @@ struct wcore_config_attrs;
 struct wegl_config {
     struct wcore_config wcore;
     EGLConfig egl;
-
-    /// The value of EGL_RENDER_BUFFER that will be set in the attrib_list
-    /// of eglCreateWindowSurface().
-    EGLint egl_render_buffer;
-
-    /// The API given to waffle__config_choose(). This is later used to select
-    /// the value of the EGL_RENDERABLE attribute.
-    int32_t waffle_context_api;
 };
 
 DEFINE_CONTAINER_CAST_FUNC(wegl_config,

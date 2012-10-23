@@ -57,12 +57,13 @@ bind_api(int32_t waffle_context_api)
 }
 
 static EGLContext
-create_real_context(EGLDisplay dpy,
-                    EGLConfig config,
-                    EGLContext share_ctx,
-                    int32_t waffle_context_api)
+create_real_context(struct wegl_config *config,
+                    EGLContext share_ctx)
+
 {
+    struct wegl_display *dpy = wegl_display(config->wcore.display);
     bool ok = true;
+    int32_t waffle_context_api = config->wcore.attrs.context_api;
     EGLint attrib_list[3];
 
     switch (waffle_context_api) {
@@ -89,7 +90,7 @@ create_real_context(EGLDisplay dpy,
     if (!ok)
         return false;
 
-    EGLContext ctx = eglCreateContext(dpy, config,
+    EGLContext ctx = eglCreateContext(dpy->egl, config->egl,
                                       share_ctx, attrib_list);
     if (!ctx)
         wegl_emit_error("eglCreateContext");
@@ -103,7 +104,6 @@ wegl_context_create(struct wcore_platform *wc_plat,
                     struct wcore_context *wc_share_ctx)
 {
     struct wegl_context *ctx;
-    struct wegl_display *display = wegl_display(wc_config->display);
     struct wegl_config *config = wegl_config(wc_config);
     struct wegl_context *share_ctx = wegl_context(wc_share_ctx);
     bool ok;
@@ -116,12 +116,10 @@ wegl_context_create(struct wcore_platform *wc_plat,
     if (!ok)
         goto fail;
 
-    ctx->egl = create_real_context(display->egl,
-                                           config->egl,
-                                           share_ctx
-                                               ? share_ctx->egl
-                                               : NULL,
-                                           config->waffle_context_api);
+    ctx->egl = create_real_context(config,
+                                   share_ctx
+                                       ? share_ctx->egl
+                                       : NULL);
     if (!ctx->egl)
         goto fail;
 
