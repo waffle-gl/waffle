@@ -48,11 +48,7 @@ set(man_outputs
     )
 
 set(man_common_sources
-    common/author-chad.versace.xml
-    common/copyright.xml
-    common/error-codes.xml
-    common/legalnotice.xml
-    common/return-value.xml
+    ${common_sources}
     manpage.xsl
     )
 

@@ -23,6 +23,14 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+set(common_sources
+    common/author-chad.versace.xml
+    common/copyright.xml
+    common/error-codes.xml
+    common/legalnotice.xml
+    common/return-value.xml
+    )
+
 if(waffle_build_manpages)
     include(manpages.cmake)
 endif()
