@@ -43,11 +43,6 @@ struct glx_config {
     GLXFBConfig glx_fbconfig;
     int32_t glx_fbconfig_id;
     xcb_visualid_t xcb_visual_id;
-
-    int waffle_context_api;
-    int waffle_context_major_version;
-    int waffle_context_minor_version;
-    int waffle_context_profile;
 };
 
 DEFINE_CONTAINER_CAST_FUNC(glx_config,

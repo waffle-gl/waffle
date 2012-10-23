@@ -197,12 +197,6 @@ glx_config_choose(struct wcore_platform *wc_plat,
     }
     self->xcb_visual_id = vi->visualid;
 
-    // Set context attributes.
-    self->waffle_context_api                  = attrs->context_api;
-    self->waffle_context_major_version        = attrs->context_major_version;
-    self->waffle_context_minor_version        = attrs->context_minor_version;
-    self->waffle_context_profile              = attrs->context_profile;
-
     goto cleanup;
 
 error:

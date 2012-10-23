@@ -72,20 +72,21 @@ glx_context_fill_attrib_list(struct glx_config *config,
                              int attrib_list[])
 {
     struct glx_display *dpy = glx_display(config->wcore.display);
+    struct wcore_config_attrs *attrs = &config->wcore.attrs;
     int i = 0;
 
     attrib_list[i++] = GLX_CONTEXT_MAJOR_VERSION_ARB;
-    attrib_list[i++] = config->waffle_context_major_version;
+    attrib_list[i++] = attrs->context_major_version;
 
     attrib_list[i++] = GLX_CONTEXT_MINOR_VERSION_ARB;
-    attrib_list[i++] = config->waffle_context_minor_version;
+    attrib_list[i++] = attrs->context_minor_version;
 
     if (dpy->extensions.ARB_create_context_profile) {
         attrib_list[i++] = GLX_CONTEXT_PROFILE_MASK_ARB;
 
-        switch (config->waffle_context_api) {
+        switch (attrs->context_api) {
             case WAFFLE_CONTEXT_OPENGL:
-                switch (config->waffle_context_profile) {
+                switch (attrs->context_profile) {
                     case WAFFLE_CONTEXT_CORE_PROFILE:
                         attrib_list[i++] = GLX_CONTEXT_CORE_PROFILE_BIT_ARB;
                         break;
