@@ -29,9 +29,8 @@
 #include <string.h>
 
 #include "waffle/core/wcore_error.h"
+#include "waffle/egl/wegl_config.h"
 
-#include "droid_priv_egl.h"
-#include "droid_config.h"
 #include "droid_display.h"
 #include "droid_surfaceflingerlink.h"
 
@@ -42,7 +41,7 @@ droid_window_create(struct wcore_platform *wc_plat,
                     int height)
 {
     struct droid_window *self;
-    struct droid_config *config = droid_config(wc_config);
+    struct wegl_config *config = wegl_config(wc_config);
     struct droid_display *dpy = droid_display(wc_config->display);
     bool ok = true;
 
@@ -50,25 +49,20 @@ droid_window_create(struct wcore_platform *wc_plat,
     if (self == NULL)
         return NULL;
 
-    ok = wcore_window_init(&self->wcore, wc_config);
+    self->pANWContainer = droid_create_surface(width, height,
+                                               dpy->pSFContainer);
+    if (!self->pANWContainer)
+        goto error;
+
+    ok = wegl_window_init(&self->wegl, wc_config,
+                          (intptr_t) self->pANWContainer);
     if (!ok)
         goto error;
 
-    self->egl = droid_create_surface(
-        width,
-        height,
-        config->egl,
-        dpy->egl,
-        dpy->pSFContainer,
-        &self->pANWContainer);
-
-    if (!self->egl)
-        goto error;
-
-    return &self->wcore;
+    return &self->wegl.wcore;
 
 error:
-    droid_window_destroy(&self->wcore);
+    droid_window_destroy(&self->wegl.wcore);
     return NULL;
 }
 
@@ -82,14 +76,10 @@ droid_window_destroy(struct wcore_window *wc_self)
     if (!self)
         return ok;
 
-    dpy = droid_display(wc_self->display);
+    dpy = droid_display(self->wegl.wcore.display);
 
-    if (self->egl)
-        ok &= egl_destroy_surface(dpy->egl, self->egl);
-
+    ok &= wegl_window_teardown(&self->wegl);
     droid_destroy_surface(dpy->pSFContainer, self->pANWContainer);
-
-    ok &= wcore_window_teardown(&self->wcore);
     free(self);
     return ok;
 }
@@ -113,14 +103,4 @@ droid_window_get_native(struct wcore_window *wc_self)
 {
     wcore_error(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM);
     return NULL;
-}
-
-
-bool
-droid_window_swap_buffers(struct wcore_window *wc_self)
-{
-    struct droid_window *self = droid_window(wc_self);
-    struct droid_display *dpy = droid_display(wc_self->display);
-
-    return egl_swap_buffers(dpy->egl, self->egl);
 }

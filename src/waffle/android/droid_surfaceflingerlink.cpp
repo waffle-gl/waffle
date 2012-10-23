@@ -33,7 +33,6 @@
 #	error "android >= 4.0 is required"
 #endif
 
-#include <EGL/egl.h>
 #include "droid_surfaceflingerlink.h"
 
 extern "C" {
@@ -88,18 +87,14 @@ error:
     return NULL;
 }
 
-EGLSurface
+droid_ANativeWindow_container*
 droid_setup_surface(
     int width,
     int height,
-    EGLConfig cfg,
-    EGLDisplay dpy,
-    droid_surfaceflinger_container* pSFContainer,
-    droid_ANativeWindow_container** ppANWContainer)
+    droid_surfaceflinger_container* pSFContainer)
 {
     bool bRVal;
     EGLint iRVal;
-    EGLSurface egl_surface(EGL_NO_SURFACE);
 
     droid_ANativeWindow_container* pANWContainer;
 
@@ -154,37 +149,14 @@ droid_setup_surface(
         goto error;
     }
 
-    egl_surface = eglCreateWindowSurface(
-                dpy,
-                cfg,
-                pANWContainer->window.get(),
-                NULL);
-
-    iRVal = eglGetError();
-    if (iRVal != EGL_SUCCESS) {
-        wcore_errorf(WAFFLE_ERROR_UNKNOWN,
-                     "error in eglCreateWindowSurface");
-        free(static_cast <void*>(pANWContainer));
-        goto error;
-    }
-
-    if (EGL_NO_SURFACE == egl_surface){
-        wcore_errorf(WAFFLE_ERROR_UNKNOWN,
-                     "eglCreateWindowSurface return EGL_NO_SURFACE");
-        free(static_cast <void*>(pANWContainer));
-        goto error;
-    }
-
-    *ppANWContainer = pANWContainer;
-    return egl_surface;
+    return pANWContainer;
 
 error_closeTransaction:
-    *ppANWContainer = NULL;
     pSFContainer->composer_client->closeGlobalTransaction();
 
 error:
     droid_tear_down_surfaceflinger_link(pSFContainer);
-    return EGL_NO_SURFACE;
+    return NULL;
 }
 
 bool
@@ -250,20 +222,17 @@ droid_deinit_gl(droid_surfaceflinger_container* pSFContainer)
     return true;
 }
 
-extern "C" EGLSurface
+extern "C" droid_ANativeWindow_container*
 droid_create_surface(
     int width,
     int height,
-    EGLConfig cfg,
-    EGLDisplay dpy,
-    droid_surfaceflinger_container* pSFContainer,
-    droid_ANativeWindow_container** ppANWContainer)
+    droid_surfaceflinger_container* pSFContainer)
 {
-    return waffle::droid_setup_surface(width, height, cfg, dpy,
-            reinterpret_cast<waffle::droid_surfaceflinger_container*>
-            (pSFContainer),
-            reinterpret_cast<waffle::droid_ANativeWindow_container**>
-            (ppANWContainer));
+    waffle::droid_ANativeWindow_container* container =
+        waffle::droid_setup_surface(
+            width, height,
+            reinterpret_cast<waffle::droid_surfaceflinger_container*> (pSFContainer));
+    return reinterpret_cast<droid_ANativeWindow_container*>(container);
 }
 
 extern "C" bool

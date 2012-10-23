@@ -40,14 +40,11 @@ droid_show_surface(
     struct droid_surfaceflinger_container* pSFContainer,
     struct droid_ANativeWindow_container* pANWContainer);
 
-EGLSurface
+struct droid_ANativeWindow_container*
 droid_create_surface(
     int width,
     int height,
-    EGLConfig cfg,
-    EGLDisplay dpy,
-    struct droid_surfaceflinger_container* pSFContainer,
-    struct droid_ANativeWindow_container** ppANWContainer);
+    struct droid_surfaceflinger_container* pSFContainer);
 
 bool
 droid_deinit_gl(struct droid_surfaceflinger_container* pSFContainer);

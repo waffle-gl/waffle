@@ -28,25 +28,27 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include <EGL/egl.h>
-#include "waffle/core/wcore_display.h"
-#include "waffle/core/wcore_util.h"
+#include "waffle/egl/wegl_display.h"
 
-struct wcore_platform;
 struct droid_surfaceflinger_container;
 
 struct droid_display {
-    struct wcore_display wcore;
-    EGLDisplay egl;
-
     /// Used by droid_surfaceflinger.cpp.
     struct droid_surfaceflinger_container *pSFContainer;
+    struct wegl_display wegl;
 };
 
-DEFINE_CONTAINER_CAST_FUNC(droid_display,
-                           struct droid_display,
-                           struct wcore_display,
-                           wcore)
+static inline struct droid_display*
+droid_display(struct wcore_display *wc_self)
+{
+    if (wc_self) {
+        struct wegl_display *wegl_self = container_of(wc_self, struct wegl_display, wcore);
+        return container_of(wegl_self, struct droid_display, wegl);
+    }
+    else {
+        return NULL;
+    }
+}
 
 struct wcore_display*
 droid_display_connect(struct wcore_platform *wc_plat,
@@ -57,7 +59,3 @@ droid_display_disconnect(struct wcore_display *wc_self);
 
 union waffle_native_display*
 droid_display_get_native(struct wcore_display *wc_self);
-
-bool
-droid_display_supports_context_api(struct wcore_display *wc_self,
-                                   int32_t context_api);

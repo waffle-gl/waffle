@@ -30,9 +30,7 @@
 
 #include "waffle/linux/linux_platform.h"
 #include "waffle/core/wcore_error.h"
-#include "waffle/core/wcore_display.h"
 
-#include "droid_priv_egl.h"
 #include "droid_surfaceflingerlink.h"
 
 struct wcore_display*
@@ -46,24 +44,20 @@ droid_display_connect(struct wcore_platform *wc_plat,
     if (self == NULL)
         return NULL;
 
-    ok = wcore_display_init(&self->wcore, wc_plat);
-    if (!ok)
-        goto error;
-
     self->pSFContainer = droid_init_gl();
 
     if (self->pSFContainer == NULL)
         goto error;
 
-    self->egl = droid_egl_initialize(EGL_DEFAULT_DISPLAY);
-
-    if (!self->egl)
+    ok = wegl_display_init(&self->wegl, wc_plat,
+                           (intptr_t) EGL_DEFAULT_DISPLAY);
+    if (!ok)
         goto error;
 
-    return &self->wcore;
+    return &self->wegl.wcore;
 
 error:
-    droid_display_disconnect(&self->wcore);
+    droid_display_disconnect(&self->wegl.wcore);
     return NULL;
 }
 
@@ -76,12 +70,10 @@ droid_display_disconnect(struct wcore_display *wc_self)
     if (!self)
         return true;
 
-    if (self->egl)
-        ok &= egl_terminate(self->egl);
-
     if (self->pSFContainer)
         droid_deinit_gl(self->pSFContainer);
 
+    ok &= wegl_display_teardown(&self->wegl);
     free(self);
     return ok;
 }
@@ -91,12 +83,4 @@ droid_display_get_native(struct wcore_display *wc_self)
 {
     wcore_error(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM);
     return NULL;
-}
-
-bool
-droid_display_supports_context_api(
-        struct wcore_display *wc_self,
-        int32_t context_api)
-{
-    return egl_supports_context_api(wc_self->platform, context_api);
 }

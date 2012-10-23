@@ -26,25 +26,28 @@
 #pragma once
 
 #include <stdbool.h>
-#include <EGL/egl.h>
 
-#include "waffle/core/wcore_window.h"
-#include "waffle/core/wcore_util.h"
+#include "waffle/egl/wegl_window.h"
 
 struct wcore_platform;
 
 struct droid_window {
-    struct wcore_window wcore;
-    EGLSurface egl;
-
     /// Used by droid_surfaceflinger.cpp.
     struct droid_ANativeWindow_container *pANWContainer;
+    struct wegl_window wegl;
 };
 
-DEFINE_CONTAINER_CAST_FUNC(droid_window,
-                           struct droid_window,
-                           struct wcore_window,
-                           wcore)
+static inline struct droid_window*
+droid_window(struct wcore_window *wc_self)
+{
+    if (wc_self) {
+        struct wegl_window *wegl_self = container_of(wc_self, struct wegl_window, wcore);
+        return container_of(wegl_self, struct droid_window, wegl);
+    }
+    else {
+        return NULL;
+    }
+}
 struct wcore_window*
 droid_window_create(struct wcore_platform *wc_plat,
                     struct wcore_config *wc_config,
@@ -56,9 +59,6 @@ droid_window_destroy(struct wcore_window *wc_self);
 
 bool
 droid_window_show(struct wcore_window *wc_self);
-
-bool
-droid_window_swap_buffers(struct wcore_window *wc_self);
 
 union waffle_native_window*
 droid_window_get_native(struct wcore_window *wc_self);

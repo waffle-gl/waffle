@@ -57,14 +57,15 @@ LOCAL_SRC_FILES := \
     src/waffle/api/waffle_dl.c \
     src/waffle/linux/linux_dl.c \
     src/waffle/linux/linux_platform.c \
-    src/waffle/android/droid_priv_egl.c \
+    src/waffle/egl/wegl_config.c \
+    src/waffle/egl/wegl_context.c \
+    src/waffle/egl/wegl_display.c \
+    src/waffle/egl/wegl_util.c \
+    src/waffle/egl/wegl_window.c \
     src/waffle/android/droid_platform.c \
     src/waffle/android/droid_display.c \
-    src/waffle/android/droid_config.c \
-    src/waffle/android/droid_context.c \
     src/waffle/android/droid_window.c \
     src/waffle/android/droid_surfaceflingerlink.cpp \
-    src/waffle/egl/egl_no_native.c \
 
 LOCAL_SHARED_LIBRARIES := \
     libEGL \
