@@ -28,9 +28,10 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include "waffle/core/wcore_display.h"
-#include "waffle/core/wcore_util.h"
-#include "waffle/egl/wegl_display.h"
+#include "wcore_display.h"
+#include "wcore_util.h"
+
+#include "wegl_display.h"
 
 #include "waffle_wayland.h"
 

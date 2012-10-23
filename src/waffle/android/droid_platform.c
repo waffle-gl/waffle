@@ -23,18 +23,19 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "droid_platform.h"
-
 #include <dlfcn.h>
 #include <stdlib.h>
 
-#include "waffle/core/wcore_error.h"
-#include "waffle/egl/wegl_config.h"
-#include "waffle/egl/wegl_context.h"
-#include "waffle/egl/wegl_util.h"
-#include "waffle/linux/linux_platform.h"
+#include "wcore_error.h"
+
+#include "linux_platform.h"
+
+#include "wegl_config.h"
+#include "wegl_context.h"
+#include "wegl_util.h"
 
 #include "droid_display.h"
+#include "droid_platform.h"
 #include "droid_window.h"
 
 static const struct wcore_platform_vtbl droid_platform_vtbl;

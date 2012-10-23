@@ -23,14 +23,14 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "droid_display.h"
-#include "droid_platform.h"
-
 #include <stdlib.h>
 
-#include "waffle/linux/linux_platform.h"
-#include "waffle/core/wcore_error.h"
+#include "wcore_error.h"
 
+#include "linux_platform.h"
+
+#include "droid_display.h"
+#include "droid_platform.h"
 #include "droid_surfaceflingerlink.h"
 
 struct wcore_display*

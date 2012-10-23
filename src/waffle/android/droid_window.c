@@ -23,16 +23,16 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "droid_window.h"
-
 #include <stdlib.h>
 #include <string.h>
 
-#include "waffle/core/wcore_error.h"
-#include "waffle/egl/wegl_config.h"
+#include "wcore_error.h"
+
+#include "wegl_config.h"
 
 #include "droid_display.h"
 #include "droid_surfaceflingerlink.h"
+#include "droid_window.h"
 
 struct wcore_window*
 droid_window_create(struct wcore_platform *wc_plat,

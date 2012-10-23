@@ -28,14 +28,14 @@
 
 /// @file
 
-#include "wcore_config_attrs.h"
-
 #include <stdlib.h>
 #include <string.h>
 
 #include "waffle_attrib_list.h"
 #include "waffle_enum.h"
-#include "waffle/core/wcore_error.h"
+
+#include "wcore_config_attrs.h"
+#include "wcore_error.h"
 
 /// @brief Attribute defaults that apply to all API's.
 static const struct wcore_config_attrs wcore_config_attrs_default_all = {

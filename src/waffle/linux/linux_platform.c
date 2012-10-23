@@ -28,15 +28,15 @@
 
 /// @file
 
-#include "linux_platform.h"
-
 #include <stdlib.h>
 
 #include "waffle_enum.h"
-#include "waffle/core/wcore_error.h"
-#include "waffle/core/wcore_util.h"
+
+#include "wcore_error.h"
+#include "wcore_util.h"
 
 #include "linux_dl.h"
+#include "linux_platform.h"
 
 struct linux_platform {
     struct linux_dl *libgl;

@@ -28,15 +28,14 @@
 
 /// @file
 
-#include "api_priv.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "waffle/core/wcore_error.h"
-#include "waffle/core/wcore_platform.h"
-
 #include "api_object.h"
+#include "api_priv.h"
+
+#include "wcore_error.h"
+#include "wcore_platform.h"
 
 struct wcore_platform *api_platform = 0;
 

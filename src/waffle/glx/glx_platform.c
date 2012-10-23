@@ -25,8 +25,9 @@
 
 #include <stdlib.h>
 
-#include "waffle/core/wcore_error.h"
-#include "waffle/linux/linux_platform.h"
+#include "wcore_error.h"
+
+#include "linux_platform.h"
 
 #include "glx_config.h"
 #include "glx_context.h"

@@ -25,14 +25,13 @@
 
 #include <stdlib.h>
 
-#include "waffle/core/wcore_error.h"
+#include "wcore_error.h"
 
 #include "cgl_config.h"
 #include "cgl_context.h"
 #include "cgl_display.h"
 #include "cgl_dl.h"
 #include "cgl_platform.h"
-
 #include "cgl_window.h"
 
 static const struct wcore_platform_vtbl cgl_platform_vtbl;

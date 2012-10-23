@@ -36,7 +36,11 @@ LOCAL_CFLAGS := \
 LOCAL_C_INCLUDES := \
     $(LOCAL_PATH)/include/waffle \
     $(LOCAL_PATH)/src/ \
+    $(LOCAL_PATH)/src/waffle/api/ \
     $(LOCAL_PATH)/src/waffle/core/ \
+    $(LOCAL_PATH)/src/waffle/egl/ \
+    $(LOCAL_PATH)/src/waffle/linux/ \
+    $(LOCAL_PATH)/src/waffle/droid/ \
 
 LOCAL_SRC_FILES := \
     src/waffle/core/wcore_tinfo.c \

@@ -30,7 +30,7 @@
 
 #include "waffle_enum.h"
 
-#include "waffle/core/wcore_error.h"
+#include "wcore_error.h"
 
 #include "glx_config.h"
 #include "glx_context.h"

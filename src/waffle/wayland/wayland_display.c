@@ -31,9 +31,10 @@
 #include <wayland-client.h>
 #undef container_of
 
-#include "waffle/core/wcore_error.h"
-#include "waffle/core/wcore_display.h"
-#include "waffle/egl/wegl_display.h"
+#include "wcore_error.h"
+#include "wcore_display.h"
+
+#include "wegl_display.h"
 
 #include "wayland_display.h"
 #include "wayland_platform.h"

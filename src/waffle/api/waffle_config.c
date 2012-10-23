@@ -28,16 +28,16 @@
 
 /// @file
 
-#include "waffle_config.h"
-
 #include <stdlib.h>
 
-#include "waffle/core/wcore_config_attrs.h"
-#include "waffle/core/wcore_config.h"
-#include "waffle/core/wcore_display.h"
-#include "waffle/core/wcore_platform.h"
+#include "waffle_config.h"
 
 #include "api_priv.h"
+
+#include "wcore_config_attrs.h"
+#include "wcore_config.h"
+#include "wcore_display.h"
+#include "wcore_platform.h"
 
 struct waffle_config*
 waffle_config_choose(

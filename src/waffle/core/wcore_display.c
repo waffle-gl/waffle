@@ -23,11 +23,11 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "wcore_display.h"
-
 #include <assert.h>
 #include <pthread.h>
 #include <stdio.h>
+
+#include "wcore_display.h"
 
 bool
 wcore_display_init(struct wcore_display *self,

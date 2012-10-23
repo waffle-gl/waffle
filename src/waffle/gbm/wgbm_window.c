@@ -30,9 +30,11 @@
 
 #include <gbm.h>
 
-#include "waffle/core/wcore_error.h"
-#include "waffle/egl/wegl_config.h"
 #include "waffle_gbm.h"
+
+#include "wcore_error.h"
+
+#include "wegl_config.h"
 
 #include "wgbm_config.h"
 #include "wgbm_display.h"

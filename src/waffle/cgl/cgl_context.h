@@ -30,8 +30,8 @@
 #include <Cocoa/Cocoa.h>
 #include <OpenGL/OpenGL.h>
 
-#include "waffle/core/wcore_context.h"
-#include "waffle/core/wcore_util.h"
+#include "wcore_context.h"
+#include "wcore_util.h"
 
 struct wcore_config;
 struct wcore_platform;

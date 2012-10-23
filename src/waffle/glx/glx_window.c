@@ -26,7 +26,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "waffle/core/wcore_error.h"
+#include "wcore_error.h"
 
 #include "glx_config.h"
 #include "glx_display.h"

@@ -27,10 +27,12 @@
 
 #include <stdbool.h>
 
-#include "waffle/core/wcore_window.h"
-#include "waffle/core/wcore_util.h"
-#include "waffle/egl/wegl_window.h"
-#include "waffle/x11/x11_window.h"
+#include "wcore_window.h"
+#include "wcore_util.h"
+
+#include "x11_window.h"
+
+#include "wegl_window.h"
 
 struct wcore_platform;
 

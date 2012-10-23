@@ -28,14 +28,14 @@
 
 /// @file
 
-#include "waffle_context.h"
-
 #include <stdlib.h>
 
-#include "waffle/core/wcore_context.h"
-#include "waffle/core/wcore_platform.h"
+#include "waffle_context.h"
 
 #include "api_priv.h"
+
+#include "wcore_context.h"
+#include "wcore_platform.h"
 
 struct waffle_context*
 waffle_context_create(

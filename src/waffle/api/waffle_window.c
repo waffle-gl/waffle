@@ -28,15 +28,15 @@
 
 /// @file
 
-#include "waffle_window.h"
-
 #include <stdlib.h>
 
-#include "waffle/core/wcore_config.h"
-#include "waffle/core/wcore_platform.h"
-#include "waffle/core/wcore_window.h"
+#include "waffle_window.h"
 
 #include "api_priv.h"
+
+#include "wcore_config.h"
+#include "wcore_platform.h"
+#include "wcore_window.h"
 
 struct waffle_window*
 waffle_window_create(

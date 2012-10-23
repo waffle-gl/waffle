@@ -30,8 +30,8 @@
 
 #include <OpenGL/OpenGL.h>
 
-#include "waffle/core/wcore_config.h"
-#include "waffle/core/wcore_util.h"
+#include "wcore_config.h"
+#include "wcore_util.h"
 
 struct wcore_config_attrs;
 struct wcore_platform;

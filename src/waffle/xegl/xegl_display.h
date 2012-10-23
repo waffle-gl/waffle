@@ -30,8 +30,9 @@
 
 #include "waffle_x11_egl.h"
 
-#include "waffle/egl/wegl_display.h"
-#include "waffle/x11/x11_display.h"
+#include "x11_display.h"
+
+#include "wegl_display.h"
 
 struct wcore_platform;
 

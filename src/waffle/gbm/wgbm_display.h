@@ -28,8 +28,9 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include "waffle/egl/wegl_display.h"
 #include "waffle_gbm.h"
+
+#include "wegl_display.h"
 
 struct wcore_platform;
 struct gbm_device;

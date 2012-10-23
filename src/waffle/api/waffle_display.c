@@ -28,17 +28,17 @@
 
 /// @file
 
-#include "waffle_display.h"
-
 #include <stdlib.h>
 
+#include "waffle_display.h"
 #include "waffle_enum.h"
-#include "waffle/core/wcore_error.h"
-#include "waffle/core/wcore_display.h"
-#include "waffle/core/wcore_platform.h"
-#include "waffle/core/wcore_util.h"
 
 #include "api_priv.h"
+
+#include "wcore_error.h"
+#include "wcore_display.h"
+#include "wcore_platform.h"
+#include "wcore_util.h"
 
 struct waffle_display*
 waffle_display_connect(const char *name)

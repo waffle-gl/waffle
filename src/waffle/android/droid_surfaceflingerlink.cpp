@@ -36,8 +36,8 @@
 #include "droid_surfaceflingerlink.h"
 
 extern "C" {
-#include "waffle/core/wcore_util.h"
-#include "waffle/core/wcore_error.h"
+#include "wcore_util.h"
+#include "wcore_error.h"
 };
 
 using namespace android;

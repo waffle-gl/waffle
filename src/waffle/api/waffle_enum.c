@@ -30,7 +30,7 @@
 
 #include "waffle_enum.h"
 
-#include "waffle/core/wcore_error.h"
+#include "wcore_error.h"
 
 const char*
 waffle_enum_to_string(int32_t e)

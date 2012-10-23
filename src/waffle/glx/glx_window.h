@@ -29,9 +29,10 @@
 
 #include <xcb/xcb.h>
 
-#include "waffle/core/wcore_window.h"
-#include "waffle/core/wcore_util.h"
-#include "waffle/x11/x11_window.h"
+#include "wcore_window.h"
+#include "wcore_util.h"
+
+#include "x11_window.h"
 
 struct wcore_platform;
 

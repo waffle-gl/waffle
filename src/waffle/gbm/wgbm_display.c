@@ -36,7 +36,7 @@
 #include <sys/stat.h>
 #include <linux/input.h>
 
-#include "waffle/core/wcore_error.h"
+#include "wcore_error.h"
 
 #include "wgbm_display.h"
 #include "wgbm_platform.h"

@@ -31,7 +31,7 @@
 
 #include "waffle_context.h"
 
-#include "waffle/api/api_object.h"
+#include "api_object.h"
 
 #include "wcore_config.h"
 #include "wcore_util.h"

@@ -33,8 +33,9 @@
 
 #include "waffle_wayland.h"
 
-#include "waffle/core/wcore_error.h"
-#include "waffle/egl/wegl_config.h"
+#include "wcore_error.h"
+
+#include "wegl_config.h"
 
 #include "wayland_display.h"
 #include "wayland_window.h"

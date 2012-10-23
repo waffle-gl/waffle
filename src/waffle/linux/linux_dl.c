@@ -28,16 +28,17 @@
 
 /// @file
 
-#include "linux_dl.h"
-
 #include <stdbool.h>
 #include <stdlib.h>
 
 #include <dlfcn.h>
 
 #include "waffle_enum.h"
-#include "waffle/core/wcore_error.h"
-#include "waffle/core/wcore_util.h"
+
+#include "wcore_error.h"
+#include "wcore_util.h"
+
+#include "linux_dl.h"
 
 struct linux_dl {
     /// @brief For example, "libGLESv2.so".

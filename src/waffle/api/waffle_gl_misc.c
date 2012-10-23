@@ -28,19 +28,19 @@
 
 /// @file
 
-#include "waffle_gl_misc.h"
-
 #include <stddef.h>
 #include <string.h>
 
 #include "waffle_enum.h"
-#include "waffle/core/wcore_context.h"
-#include "waffle/core/wcore_display.h"
-#include "waffle/core/wcore_error.h"
-#include "waffle/core/wcore_platform.h"
-#include "waffle/core/wcore_window.h"
+#include "waffle_gl_misc.h"
 
 #include "api_priv.h"
+
+#include "wcore_context.h"
+#include "wcore_display.h"
+#include "wcore_error.h"
+#include "wcore_platform.h"
+#include "wcore_window.h"
 
 bool
 waffle_is_extension_in_string(

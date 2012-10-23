@@ -28,14 +28,13 @@
 
 /// @file
 
-#include "wcore_error.h"
-
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+#include "wcore_error.h"
 #include "wcore_tinfo.h"
 
 enum {

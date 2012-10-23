@@ -25,7 +25,7 @@
 
 #include "waffle_enum.h"
 
-#include "waffle/core/wcore_error.h"
+#include "wcore_error.h"
 
 #include "wegl_config.h"
 #include "wegl_context.h"

@@ -31,7 +31,7 @@
 
 #include "waffle_display.h"
 
-#include "waffle/api/api_object.h"
+#include "api_object.h"
 
 #include "wcore_util.h"
 

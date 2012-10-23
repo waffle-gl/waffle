@@ -28,8 +28,6 @@
 
 /// @file
 
-#include "wcore_tinfo.h"
-
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -37,6 +35,7 @@
 #include <pthread.h>
 
 #include "wcore_error.h"
+#include "wcore_tinfo.h"
 
 /// @brief Key for @ref wcore_tinfo_tl_singleton.
 static pthread_key_t wcore_tinfo_key;

@@ -28,7 +28,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include "waffle/egl/wegl_display.h"
+#include "wegl_display.h"
 
 struct droid_surfaceflinger_container;
 

@@ -26,6 +26,7 @@
 #include <string.h>
 
 #include "waffle_attrib_list.h"
+
 #include "waffle_test/waffle_test.h"
 
 TESTGROUP_SIMPLE(waffle_attrib_list_get)

@@ -32,8 +32,8 @@
 
 #include "waffle_wayland.h"
 
-#include "waffle/core/wcore_platform.h"
-#include "waffle/core/wcore_util.h"
+#include "wcore_platform.h"
+#include "wcore_util.h"
 
 struct linux_platform;
 

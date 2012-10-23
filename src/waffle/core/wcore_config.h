@@ -32,7 +32,7 @@
 
 #include "waffle_config.h"
 
-#include "waffle/api/api_object.h"
+#include "api_object.h"
 
 #include "wcore_display.h"
 #include "wcore_config_attrs.h"

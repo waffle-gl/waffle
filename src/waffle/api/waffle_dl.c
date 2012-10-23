@@ -29,12 +29,12 @@
 /// @file
 
 #include "waffle_dl.h"
-
 #include "waffle_enum.h"
-#include "waffle/core/wcore_error.h"
-#include "waffle/core/wcore_platform.h"
 
 #include "api_priv.h"
+
+#include "wcore_error.h"
+#include "wcore_platform.h"
 
 static bool
 waffle_dl_check_enum(int32_t dl)

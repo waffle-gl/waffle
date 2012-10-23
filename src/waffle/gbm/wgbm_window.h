@@ -27,7 +27,7 @@
 
 #include <stdbool.h>
 
-#include "waffle/egl/wegl_window.h"
+#include "wegl_window.h"
 
 struct wcore_platform;
 

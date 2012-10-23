@@ -25,9 +25,9 @@
 
 #include "waffle_enum.h"
 
-#include "waffle/core/wcore_config_attrs.h"
-#include "waffle/core/wcore_error.h"
-#include "waffle/core/wcore_platform.h"
+#include "wcore_config_attrs.h"
+#include "wcore_error.h"
+#include "wcore_platform.h"
 
 #include "wegl_config.h"
 #include "wegl_display.h"

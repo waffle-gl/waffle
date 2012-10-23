@@ -40,7 +40,6 @@
 
 #include "waffle_error.h"
 
-
 /// @brief Thread-local info for the wcore_error module.
 struct wcore_error_tinfo;
 

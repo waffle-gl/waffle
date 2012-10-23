@@ -28,9 +28,10 @@
 
 #include <xcb/xcb.h>
 
-#include "waffle/core/wcore_error.h"
-#include "waffle/egl/wegl_config.h"
-#include "waffle/egl/wegl_util.h"
+#include "wcore_error.h"
+
+#include "wegl_config.h"
+#include "wegl_util.h"
 
 #include "xegl_display.h"
 #include "xegl_window.h"

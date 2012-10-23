@@ -28,13 +28,13 @@
 
 /// @file
 
+#include "waffle_enum.h"
 #include "waffle_init.h"
 
-#include "waffle_enum.h"
-#include "waffle/core/wcore_error.h"
-#include "waffle/core/wcore_platform.h"
-
 #include "api_priv.h"
+
+#include "wcore_error.h"
+#include "wcore_platform.h"
 
 struct wcore_platform* cgl_platform_create(void);
 struct wcore_platform* droid_platform_create(void);

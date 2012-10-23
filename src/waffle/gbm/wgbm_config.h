@@ -30,7 +30,7 @@
 
 #include <gbm.h>
 
-#include "waffle/egl/wegl_config.h"
+#include "wegl_config.h"
 
 union waffle_native_config;
 

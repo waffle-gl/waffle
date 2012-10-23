@@ -3,6 +3,17 @@
 # ----------------------------------------------------------------------------
 
 include_directories(
+    android
+    api
+    cgl
+    core
+    egl
+    glx
+    linux
+    wayland
+    x11
+    xegl
+
     ${egl_INCLUDE_DIRS}
     ${gbm_INCLUDE_DIRS}
     ${gl_INCLUDE_DIRS}
