@@ -8,6 +8,7 @@
 build.ninja
 rules.ninja
 
+doc/html/
 examples/simple-x11-egl
 gl_basic
 install_manifest.txt

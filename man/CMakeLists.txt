@@ -34,3 +34,7 @@ set(common_sources
 if(waffle_build_manpages)
     include(manpages.cmake)
 endif()
+
+if(waffle_build_htmldocs)
+    include(html.cmake)
+endif()

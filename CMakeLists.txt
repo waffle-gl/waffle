@@ -88,9 +88,10 @@ find_package(PkgConfig)
 
 option(waffle_build_tests "Build tests" ON)
 
-# Most users don't have the necessary tools installed to build manpages from
+# Most users don't have the necessary tools installed to build from
 # Docbook sources, so require users to explicitly enable building them.
 option(waffle_build_manpages "Build manpages" OFF)
+option(waffle_build_htmldoc "Build html documentation" OFF)
 
 option(waffle_build_examples "Build examples" ON)
 
@@ -272,10 +273,7 @@ add_subdirectory(doc)
 add_subdirectory(pkg)
 add_subdirectory(src)
 add_subdirectory(include)
-
-if(waffle_build_manpages)
-    add_subdirectory(man)
-endif()
+add_subdirectory(man)
 
 if(waffle_build_tests)
     add_subdirectory(tests)
@@ -380,7 +378,7 @@ message("    cc: ${CMAKE_C_COMPILER}")
 message("    CFLAGS_base: ${CMAKE_C_FLAGS}")
 message("    CFLAGS_debug: ${CMAKE_C_FLAGS_DEBUG}")
 message("    CFLAGS_release: ${CMAKE_C_FLAGS_RELEASE}")
-if(waffle_build_manpages)
+if(waffle_build_manpages OR waffle_build_htmldocs)
 message("    xsltproc: ${waffle_xsltproc}")
 endif()
 message("")
