@@ -231,6 +231,9 @@ TEST(wcore_error, thread_local)
 }
 
 void
+testsuite_wcore_error(void);
+
+void
 testsuite_wcore_error(void)
 {
     TEST_RUN(wcore_error, code_unknown_error);

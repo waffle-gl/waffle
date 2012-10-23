@@ -229,7 +229,10 @@ TEST(waffle_attrib_list_update, missing_key)
 }
 
 void
-testsuite_waffle_attrib_list()
+testsuite_waffle_attrib_list(void);
+
+void
+testsuite_waffle_attrib_list(void)
 {
     TEST_RUN(waffle_attrib_list_get, null);
     TEST_RUN(waffle_attrib_list_get, empty);

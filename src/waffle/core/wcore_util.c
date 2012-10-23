@@ -26,6 +26,7 @@
 #include <stdlib.h>
 
 #include "wcore_error.h"
+#include "wcore_util.h"
 
 void*
 wcore_malloc(size_t size)

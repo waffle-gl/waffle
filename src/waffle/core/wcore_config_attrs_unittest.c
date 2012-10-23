@@ -315,6 +315,9 @@ TEST(wcore_config_attrs, negative_samples)
 }
 
 void
+testsuite_wcore_config_attrs(void);
+
+void
 testsuite_wcore_config_attrs(void)
 {
     TEST_RUN(wcore_config_attrs, null_attrib_list);
