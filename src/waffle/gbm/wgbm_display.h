@@ -28,27 +28,28 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include <EGL/egl.h>
-
-#include "waffle/core/wcore_display.h"
-#include "waffle/core/wcore_util.h"
+#include "waffle/egl/wegl_display.h"
 #include "waffle_gbm.h"
 
 struct wcore_platform;
 struct gbm_device;
 
 struct wgbm_display {
-    struct wcore_display wcore;
-
     struct gbm_device *gbm_device;
-
-    EGLDisplay egl;
+    struct wegl_display wegl;
 };
 
-DEFINE_CONTAINER_CAST_FUNC(wgbm_display,
-                           struct wgbm_display,
-                           struct wcore_display,
-                           wcore)
+static inline struct wgbm_display*
+wgbm_display(struct wcore_display *wc_self)
+{
+    if (wc_self) {
+        struct wegl_display *wegl_self = container_of(wc_self, struct wegl_display, wcore);
+        return container_of(wegl_self, struct wgbm_display, wegl);
+    }
+    else {
+        return NULL;
+    }
+}
 
 struct wcore_display*
 wgbm_display_connect(struct wcore_platform *wc_plat,
@@ -56,10 +57,6 @@ wgbm_display_connect(struct wcore_platform *wc_plat,
 
 bool
 wgbm_display_destroy(struct wcore_display *wc_self);
-
-bool
-wgbm_display_supports_context_api(struct wcore_display *wc_self,
-                                  int32_t waffle_context_api);
 
 union waffle_native_display*
 wgbm_display_get_native(struct wcore_display *wc_self);

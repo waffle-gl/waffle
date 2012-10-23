@@ -124,10 +124,8 @@ endif()
 if(waffle_has_gbm)
     list(APPEND waffle_sources
         gbm/wgbm_config.c
-        gbm/wgbm_context.c
         gbm/wgbm_display.c
         gbm/wgbm_platform.c
-        gbm/wgbm_priv_egl.c
         gbm/wgbm_window.c
     )
 endif()

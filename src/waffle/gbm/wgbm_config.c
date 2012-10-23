@@ -23,37 +23,27 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#define __GBM__ 1
-
-#include <stdlib.h>
-#include <string.h>
-
-#include <gbm.h>
-
-#include "waffle/core/wcore_config_attrs.h"
 #include "waffle/core/wcore_error.h"
 
 #include "wgbm_config.h"
 #include "wgbm_display.h"
-#include "wgbm_platform.h"
-#include "wgbm_priv_egl.h"
 
-bool
-wgbm_config_destroy(struct wcore_config *wc_self)
+struct wcore_config*
+wgbm_config_choose(struct wcore_platform *wc_plat,
+                   struct wcore_display *wc_dpy,
+                   const struct wcore_config_attrs *attrs)
 {
-    struct wgbm_config *self = wgbm_config(wc_self);
-    bool ok = true;
+    if (wgbm_config_get_gbm_format(attrs) == 0) {
+        wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
+                     "requested config is unsupported on GBM");
+        return NULL;
+    }
 
-    if (!self)
-        return ok;
-
-    ok &= wcore_config_teardown(wc_self);
-    free(self);
-    return ok;
+    return wegl_config_choose(wc_plat, wc_dpy, attrs);
 }
 
-static uint32_t
-get_gbm_format(const struct wcore_config_attrs *attrs)
+uint32_t
+wgbm_config_get_gbm_format(const struct wcore_config_attrs *attrs)
 {
     if (attrs->red_size > 8 || attrs->blue_size > 8 ||
         attrs->green_size > 8 || attrs->alpha_size > 8) {
@@ -68,59 +58,19 @@ get_gbm_format(const struct wcore_config_attrs *attrs)
     return 0;
 }
 
-struct wcore_config*
-wgbm_config_choose(struct wcore_platform *wc_plat,
-                   struct wcore_display *wc_dpy,
-                   const struct wcore_config_attrs *attrs)
-{
-    struct wgbm_config *self;
-    struct wgbm_display *dpy = wgbm_display(wc_dpy);
-    bool ok = true;
-
-    self = wcore_calloc(sizeof(*self));
-    if (self == NULL)
-        return NULL;
-
-    ok = wcore_config_init(&self->wcore, wc_dpy, attrs);
-    if (!ok)
-        goto error;
-
-    self->gbm_format = get_gbm_format(attrs);
-    if (self->gbm_format == 0) {
-        wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
-                     "requested config is unsupported on GBM");
-        goto error;
-    }
-
-    ok = egl_get_render_buffer_attrib(attrs, &self->egl_render_buffer);
-    if (!ok)
-        goto error;
-
-    self->egl = egl_choose_config(wc_plat, dpy->egl, attrs);
-    if (!self->egl)
-        goto error;
-
-    self->waffle_context_api = attrs->context_api;
-    return &self->wcore;
-
-error:
-    wgbm_config_destroy(&self->wcore);
-    return NULL;
-}
-
 union waffle_native_config*
-wgbm_config_get_native(struct wcore_config *wc_self)
+wgbm_config_get_native(struct wcore_config *wc_config)
 {
-    struct wgbm_config *self = wgbm_config(wc_self);
-    struct wgbm_display *dpy = wgbm_display(wc_self->display);
+    struct wgbm_display *dpy = wgbm_display(wc_config->display);
+    struct wegl_config *config = wegl_config(wc_config);
     union waffle_native_config *n_config;
 
     WCORE_CREATE_NATIVE_UNION(n_config, gbm);
-    if (n_config == NULL)
+    if (!n_config)
         return NULL;
 
     wgbm_display_fill_native(dpy, &n_config->gbm->display);
-    n_config->gbm->egl_config = self->egl;
+    n_config->gbm->egl_config = config->egl;
 
     return n_config;
 }

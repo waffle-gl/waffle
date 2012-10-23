@@ -37,11 +37,9 @@
 #include <linux/input.h>
 
 #include "waffle/core/wcore_error.h"
-#include "waffle/core/wcore_display.h"
 
 #include "wgbm_display.h"
 #include "wgbm_platform.h"
-#include "wgbm_priv_egl.h"
 
 bool
 wgbm_display_destroy(struct wcore_display *wc_self)
@@ -53,8 +51,8 @@ wgbm_display_destroy(struct wcore_display *wc_self)
     if (!self)
         return ok;
 
-    if (self->egl)
-        ok &= egl_terminate(self->egl);
+
+    ok &= wegl_display_teardown(&self->wegl);
 
     if (self->gbm_device) {
         fd = gbm_device_get_fd(self->gbm_device);
@@ -62,7 +60,6 @@ wgbm_display_destroy(struct wcore_display *wc_self)
         close(fd);
     }
 
-    ok &= wcore_display_teardown(&self->wcore);
     free(self);
     return ok;
 }
@@ -109,10 +106,6 @@ wgbm_display_connect(struct wcore_platform *wc_plat,
     if (self == NULL)
         return NULL;
 
-    ok = wcore_display_init(&self->wcore, wc_plat);
-    if (!ok)
-        goto error;
-
     if (name != NULL) {
         fd = open(name, O_RDWR | O_CLOEXEC);
     } else {
@@ -130,23 +123,15 @@ wgbm_display_connect(struct wcore_platform *wc_plat,
         goto error;
     }
 
-    self->egl = wgbm_egl_initialize(self->gbm_device);
-    if (!self->egl)
+    ok = wegl_display_init(&self->wegl, wc_plat, (intptr_t) self->gbm_device);
+    if (!ok)
         goto error;
 
-    return &self->wcore;
+    return &self->wegl.wcore;
 
 error:
-    wgbm_display_destroy(&self->wcore);
+    wgbm_display_destroy(&self->wegl.wcore);
     return NULL;
-}
-
-
-bool
-wgbm_display_supports_context_api(struct wcore_display *wc_self,
-                                  int32_t waffle_context_api)
-{
-    return egl_supports_context_api(wc_self->platform, waffle_context_api);
 }
 
 void
@@ -154,7 +139,7 @@ wgbm_display_fill_native(struct wgbm_display *self,
                          struct waffle_gbm_display *n_dpy)
 {
     n_dpy->gbm_device = self->gbm_device;
-    n_dpy->egl_display = self->egl;
+    n_dpy->egl_display = self->wegl.egl;
 }
 
 union waffle_native_display*

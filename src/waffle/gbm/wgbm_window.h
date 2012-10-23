@@ -27,25 +27,27 @@
 
 #include <stdbool.h>
 
-#include <EGL/egl.h>
-
-#include "waffle/core/wcore_window.h"
-#include "waffle/core/wcore_util.h"
+#include "waffle/egl/wegl_window.h"
 
 struct wcore_platform;
 
 struct wgbm_window {
-    struct wcore_window wcore;
-
     struct gbm_surface *gbm_surface;
-
-    EGLSurface egl;
+    struct wegl_window wegl;
 };
 
-DEFINE_CONTAINER_CAST_FUNC(wgbm_window,
-                           struct wgbm_window,
-                           struct wcore_window,
-                           wcore)
+static inline struct wgbm_window*
+wgbm_window(struct wcore_window *wc_self)
+{
+    if (wc_self) {
+        struct wegl_window *wegl_self = container_of(wc_self, struct wegl_window, wcore);
+        return container_of(wegl_self, struct wgbm_window, wegl);
+    }
+    else {
+        return NULL;
+    }
+}
+
 struct wcore_window*
 wgbm_window_create(struct wcore_platform *wc_plat,
                    struct wcore_config *wc_config,
@@ -57,9 +59,6 @@ wgbm_window_destroy(struct wcore_window *wc_self);
 
 bool
 wgbm_window_show(struct wcore_window *wc_self);
-
-bool
-wgbm_window_swap_buffers(struct wcore_window *wc_self);
 
 union waffle_native_window*
 wgbm_window_get_native(struct wcore_window *wc_self);

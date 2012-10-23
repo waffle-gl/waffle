@@ -28,39 +28,19 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include <EGL/egl.h>
+#include <gbm.h>
 
-#include "waffle/core/wcore_config.h"
-#include "waffle/core/wcore_util.h"
+#include "waffle/egl/wegl_config.h"
 
-struct wcore_config_attrs;
-struct wcore_platform;
-
-struct wgbm_config {
-    struct wcore_config wcore;
-
-    EGLConfig egl;
-    int32_t waffle_context_api;
-
-    /// The value of @c EGL_RENDER_BUFFER that will be set in the attrib_list
-    /// of eglCreateWindowSurface().
-    EGLint egl_render_buffer;
-
-    uint32_t gbm_format;
-};
-
-DEFINE_CONTAINER_CAST_FUNC(wgbm_config,
-                           struct wgbm_config,
-                           struct wcore_config,
-                           wcore)
+union waffle_native_config;
 
 struct wcore_config*
 wgbm_config_choose(struct wcore_platform *wc_plat,
                    struct wcore_display *wc_dpy,
                    const struct wcore_config_attrs *attrs);
 
-bool
-wgbm_config_destroy(struct wcore_config *wc_self);
+uint32_t
+wgbm_config_get_gbm_format(const struct wcore_config_attrs *attrs);
 
 union waffle_native_config*
-wgbm_config_get_native(struct wcore_config *wc_self);
+wgbm_config_get_native(struct wcore_config *wc_config);

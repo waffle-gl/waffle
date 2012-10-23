@@ -29,13 +29,14 @@
 #include <stdlib.h>
 
 #include "waffle/core/wcore_error.h"
+#include "waffle/egl/wegl_config.h"
+#include "waffle/egl/wegl_context.h"
+#include "waffle/egl/wegl_util.h"
 #include "waffle/linux/linux_platform.h"
 
 #include "wgbm_config.h"
-#include "wgbm_context.h"
 #include "wgbm_display.h"
 #include "wgbm_platform.h"
-#include "wgbm_priv_egl.h"
 #include "wgbm_window.h"
 
 static const struct wcore_platform_vtbl wgbm_platform_vtbl;
@@ -88,24 +89,6 @@ error:
 }
 
 static bool
-wgbm_platform_make_current(struct wcore_platform *wc_self,
-                           struct wcore_display *wc_dpy,
-                           struct wcore_window *wc_window,
-                           struct wcore_context *wc_ctx)
-{
-    return egl_make_current(wgbm_display(wc_dpy)->egl,
-                            wc_window ? wgbm_window(wc_window)->egl : NULL,
-                            wc_ctx ? wgbm_context(wc_ctx)->egl : NULL);
-}
-
-static void*
-wgbm_platform_get_proc_address(struct wcore_platform *wc_self,
-                               const char *name)
-{
-    return eglGetProcAddress(name);
-}
-
-static bool
 wgbm_platform_dl_can_open(struct wcore_platform *wc_self,
                           int32_t waffle_dl)
 {
@@ -123,30 +106,47 @@ wgbm_platform_dl_sym(struct wcore_platform *wc_self,
                                  name);
 }
 
+static union waffle_native_context*
+wgbm_context_get_native(struct wcore_context *wc_ctx)
+{
+    struct wgbm_display *dpy = wgbm_display(wc_ctx->display);
+    struct wegl_context *ctx = wegl_context(wc_ctx);
+    union waffle_native_context *n_ctx;
+
+    WCORE_CREATE_NATIVE_UNION(n_ctx, gbm);
+    if (!n_ctx)
+        return NULL;
+
+    wgbm_display_fill_native(dpy, &n_ctx->gbm->display);
+    n_ctx->gbm->egl_context = ctx->egl;
+
+    return n_ctx;
+}
+
 static const struct wcore_platform_vtbl wgbm_platform_vtbl = {
     .destroy = wgbm_platform_destroy,
 
-    .make_current = wgbm_platform_make_current,
-    .get_proc_address = wgbm_platform_get_proc_address,
+    .make_current = wegl_make_current,
+    .get_proc_address = wegl_get_proc_address,
     .dl_can_open = wgbm_platform_dl_can_open,
     .dl_sym = wgbm_platform_dl_sym,
 
     .display = {
         .connect = wgbm_display_connect,
         .destroy = wgbm_display_destroy,
-        .supports_context_api = wgbm_display_supports_context_api,
+        .supports_context_api = wegl_display_supports_context_api,
         .get_native = wgbm_display_get_native,
     },
 
     .config = {
         .choose = wgbm_config_choose,
-        .destroy = wgbm_config_destroy,
+        .destroy = wegl_config_destroy,
         .get_native = wgbm_config_get_native,
     },
 
     .context = {
-        .create = wgbm_context_create,
-        .destroy = wgbm_context_destroy,
+        .create = wegl_context_create,
+        .destroy = wegl_context_destroy,
         .get_native = wgbm_context_get_native,
     },
 
@@ -154,7 +154,7 @@ static const struct wcore_platform_vtbl wgbm_platform_vtbl = {
         .create = wgbm_window_create,
         .destroy = wgbm_window_destroy,
         .show = wgbm_window_show,
-        .swap_buffers = wgbm_window_swap_buffers,
+        .swap_buffers = wegl_window_swap_buffers,
         .get_native = wgbm_window_get_native,
     },
 };

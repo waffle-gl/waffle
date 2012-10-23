@@ -31,29 +31,24 @@
 #include <gbm.h>
 
 #include "waffle/core/wcore_error.h"
+#include "waffle/egl/wegl_config.h"
 #include "waffle_gbm.h"
 
 #include "wgbm_config.h"
 #include "wgbm_display.h"
-#include "wgbm_priv_egl.h"
 #include "wgbm_window.h"
 
 bool
 wgbm_window_destroy(struct wcore_window *wc_self)
 {
     struct wgbm_window *self = wgbm_window(wc_self);
-    struct wgbm_display *dpy;
     bool ok = true;
 
     if (!self)
         return ok;
 
-    dpy = wgbm_display(wc_self->display);
-
-    if (self->egl)
-        ok &= egl_destroy_surface(dpy->egl, self->egl);
-
-    ok &= wcore_window_teardown(wc_self);
+    ok &= wegl_window_teardown(&self->wegl);
+    gbm_surface_destroy(self->gbm_surface);
     free(self);
     return ok;
 }
@@ -65,20 +60,18 @@ wgbm_window_create(struct wcore_platform *wc_plat,
                    int height)
 {
     struct wgbm_window *self;
-    struct wgbm_config *config = wgbm_config(wc_config);
     struct wgbm_display *dpy = wgbm_display(wc_config->display);
+    uint32_t gbm_format;
     bool ok = true;
 
     self = wcore_calloc(sizeof(*self));
     if (self == NULL)
         return NULL;
 
-    ok = wcore_window_init(&self->wcore, wc_config);
-    if (!ok)
-        goto error;
-
+    gbm_format = wgbm_config_get_gbm_format(&wc_config->attrs);
+    assert(gbm_format != 0);
     self->gbm_surface = gbm_surface_create(dpy->gbm_device, width, height,
-                                           config->gbm_format,
+                                           gbm_format,
                                            GBM_BO_USE_RENDERING);
     if (!self->gbm_surface) {
         wcore_errorf(WAFFLE_ERROR_UNKNOWN,
@@ -86,17 +79,15 @@ wgbm_window_create(struct wcore_platform *wc_plat,
         goto error;
     }
 
-    self->egl = wgbm_egl_create_window_surface(dpy->egl,
-                                               config->egl,
-                                               self->gbm_surface,
-                                               config->egl_render_buffer);
-    if (!self->egl)
+    ok = wegl_window_init(&self->wegl, wc_config,
+                          (intptr_t) self->gbm_surface);
+    if (!ok)
         goto error;
 
-    return &self->wcore;
+    return &self->wegl.wcore;
 
 error:
-    wgbm_window_destroy(&self->wcore);
+    wgbm_window_destroy(&self->wegl.wcore);
     return NULL;
 }
 
@@ -105,15 +96,6 @@ bool
 wgbm_window_show(struct wcore_window *wc_self)
 {
     return true;
-}
-
-bool
-wgbm_window_swap_buffers(struct wcore_window *wc_self)
-{
-    struct wgbm_window *self = wgbm_window(wc_self);
-    struct wgbm_display *dpy = wgbm_display(wc_self->display);
-
-    return egl_swap_buffers(dpy->egl, self->egl);
 }
 
 union waffle_native_window*
@@ -128,7 +110,7 @@ wgbm_window_get_native(struct wcore_window *wc_self)
         return NULL;
 
     wgbm_display_fill_native(dpy, &n_window->gbm->display);
-    n_window->gbm->egl_surface = self->egl;
+    n_window->gbm->egl_surface = self->wegl.egl;
     n_window->gbm->gbm_surface = self->gbm_surface;
 
     return n_window;
