@@ -68,7 +68,6 @@ endif()
 
 if(waffle_has_egl)
     list(APPEND waffle_sources
-        egl/egl_no_native.c
         egl/wegl_config.c
         egl/wegl_context.c
         egl/wegl_display.c
