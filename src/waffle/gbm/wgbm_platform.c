@@ -89,17 +89,17 @@ error:
 }
 
 static bool
-wgbm_platform_dl_can_open(struct wcore_platform *wc_self,
-                          int32_t waffle_dl)
+wgbm_dl_can_open(struct wcore_platform *wc_self,
+                 int32_t waffle_dl)
 {
     return linux_platform_dl_can_open(wgbm_platform(wc_self)->linux,
                                       waffle_dl);
 }
 
 static void*
-wgbm_platform_dl_sym(struct wcore_platform *wc_self,
-                     int32_t waffle_dl,
-                     const char *name)
+wgbm_dl_sym(struct wcore_platform *wc_self,
+            int32_t waffle_dl,
+            const char *name)
 {
     return linux_platform_dl_sym(wgbm_platform(wc_self)->linux,
                                  waffle_dl,
@@ -128,8 +128,8 @@ static const struct wcore_platform_vtbl wgbm_platform_vtbl = {
 
     .make_current = wegl_make_current,
     .get_proc_address = wegl_get_proc_address,
-    .dl_can_open = wgbm_platform_dl_can_open,
-    .dl_sym = wgbm_platform_dl_sym,
+    .dl_can_open = wgbm_dl_can_open,
+    .dl_sym = wgbm_dl_sym,
 
     .display = {
         .connect = wgbm_display_connect,
