@@ -90,7 +90,7 @@ error:
 }
 
 static bool
-wayland_platform_dl_can_open(struct wcore_platform *wc_self,
+wayland_dl_can_open(struct wcore_platform *wc_self,
                              int32_t waffle_dl)
 {
     return linux_platform_dl_can_open(wayland_platform(wc_self)->linux,
@@ -98,7 +98,7 @@ wayland_platform_dl_can_open(struct wcore_platform *wc_self,
 }
 
 static void*
-wayland_platform_dl_sym(struct wcore_platform *wc_self,
+wayland_dl_sym(struct wcore_platform *wc_self,
                         int32_t waffle_dl,
                         const char *name)
 {
@@ -146,8 +146,8 @@ static const struct wcore_platform_vtbl wayland_platform_vtbl = {
 
     .make_current = wegl_make_current,
     .get_proc_address = wegl_get_proc_address,
-    .dl_can_open = wayland_platform_dl_can_open,
-    .dl_sym = wayland_platform_dl_sym,
+    .dl_can_open = wayland_dl_can_open,
+    .dl_sym = wayland_dl_sym,
 
     .display = {
         .connect = wayland_display_connect,
