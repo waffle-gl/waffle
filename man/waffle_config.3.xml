@@ -211,7 +211,9 @@ struct waffle_config;
           </para>
           <para>
             If the requested API is <constant>WAFFLE_CONTEXT_OPENGL_ES1</constant>, then the default and only supported
-            version is 1.0.  Waffle or the native system may promote the version to 1.1.
+            version is 1.0.  Waffle or the native system may promote the version to 1.1 when
+            <citerefentry><refentrytitle>waffle_context_create</refentrytitle><manvolnum>3</manvolnum></citerefentry> is
+            called.
           </para>
           <para>
             If the requested API is <constant>WAFFLE_CONTEXT_OPENGL_ES2</constant>, then the default and only supported
@@ -220,7 +222,9 @@ struct waffle_config;
           <para>
             On all platforms, if the requested API is <constant>WAFFLE_CONTEXT_OPENGL</constant>, then the default
             version is 1.0. If the requested version is less than 3.2, then <constant>WAFFLE_CONTEXT_PROFILE</constant>
-            is ignored.  Waffle or the native platform may choose a version other than requested one as described below.
+            is ignored. When
+            <citerefentry><refentrytitle>waffle_context_create</refentrytitle><manvolnum>3</manvolnum></citerefentry> is
+            called, waffle or the native platform may choose a version other than the one requested as described below.
             <itemizedlist>
               <listitem>
                 <para>
@@ -258,14 +262,30 @@ struct waffle_config;
             intelligently handle version requests on MacOS).
           </para>
           <para>
-            On GLX, if the requested API is <constant>WAFFLE_CONTEXT_OPENGL</constant>, then version 1.0 is always
-            accepted.
+            On GLX, if the requested API is <constant>WAFFLE_CONTEXT_OPENGL</constant> and the requested version is 1.0,
+            then <function>waffle_config_choose()</function> always accepts the requested version and
+            To create the <type>GLXContext</type>,
+            <citerefentry><refentrytitle>waffle_context_create</refentrytitle><manvolnum>3</manvolnum></citerefentry>
+            will call <function>glXCreateContextNew()</function>.
           </para>
           <para>
             On GLX, if the requested API is <constant>WAFFLE_CONTEXT_OPENGL</constant> and the requested version is
-            greater than 1.0 and GLX_ARB_create_context is supported, then requested version is passed directly to
-            <function>glXCreateContextAttribsARB</function>.  If GLX_ARB_create_context is not supported, then
-            <constant>WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM</constant> is emitted.
+            greater than 1.0 and less than 3.2,
+            then <function>waffle_config_choose()</function> accepts the requested version if and only if the
+            GLX_ARB_create_context extension is supported. If the extension is not supported, then
+            <errorcode>WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM</errorcode> is emitted.
+            To create the <type>GLXContext</type>,
+            <citerefentry><refentrytitle>waffle_context_create</refentrytitle><manvolnum>3</manvolnum></citerefentry>
+            will call <function>glXCreateContextAttribsARB()</function>, which may reject the requested version.
+          </para>
+          <para>
+            On GLX, if the requested API is <constant>WAFFLE_CONTEXT_OPENGL</constant> and the requested version is
+            greater than or equal to 3.2, then <function>waffle_config_choose()</function> accepts the requested version
+            if and only if the GLX_ARB_create_context_profile extension is supported. If the extension is not supported,
+            then <errorcode>WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM</errorcode> is emitted.
+            To create the <type>GLXContext</type>,
+            <citerefentry><refentrytitle>waffle_context_create</refentrytitle><manvolnum>3</manvolnum></citerefentry>
+            will call <function>glXCreateContextAttribsARB()</function>, which may reject the requested version.
           </para>
           <para>
             On all EGL platforms, if the requested API is <constant>WAFFLE_CONTEXT_OPENGL</constant>, then the version
