@@ -288,9 +288,37 @@ struct waffle_config;
             will call <function>glXCreateContextAttribsARB()</function>, which may reject the requested version.
           </para>
           <para>
-            On all EGL platforms, if the requested API is <constant>WAFFLE_CONTEXT_OPENGL</constant>, then the version
-            must be 1.0. (This restriction will be removed when waffle gains support for the EGL_KHR_create_context
-            extension).
+            On EGL, if the requested API is <constant>WAFFLE_CONTEXT_OPENGL</constant> and the requested version is 1.0,
+            then <function>waffle_config_choose()</function> accepts the requested version if the OpenGL library is
+            installed. If the library is not installed, then <errorcode>WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM</errorcode>
+            is emitted.
+
+            To create the <type>EGLConfig</type>, it calls
+            <citerefentry><refentrytitle>eglChooseConfig</refentrytitle><manvolnum>3</manvolnum></citerefentry>, which
+            may reject the requested API and version.
+
+            To create the <type>EGLContext</type>,
+            <citerefentry><refentrytitle>waffle_context_create</refentrytitle><manvolnum>3</manvolnum></citerefentry>
+            will pass an empty <parameter>attrib_list</parameter> to
+            <citerefentry><refentrytitle>eglCreateContext</refentrytitle><manvolnum>3</manvolnum></citerefentry>.
+          </para>
+          <para>
+            On EGL, if the requested API is <constant>WAFFLE_CONTEXT_OPENGL</constant> and the requested version is
+            greater than 1.0, then <function>waffle_config_choose()</function> accepts the requested version if the
+            OpenGL library is installed and the EGL_KHR_create_context extension is supported; otherwise,
+            <errorcode>WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM</errorcode> is emitted.
+
+            To create the <type>EGLConfig</type>, it calls
+            <citerefentry><refentrytitle>eglChooseConfig</refentrytitle><manvolnum>3</manvolnum></citerefentry>, which
+            may reject the requested API and version.
+
+            To create the <type>EGLContext</type>,
+            <citerefentry><refentrytitle>waffle_context_create</refentrytitle><manvolnum>3</manvolnum></citerefentry>
+            will pass to
+            <citerefentry><refentrytitle>eglCreateContext</refentrytitle><manvolnum>3</manvolnum></citerefentry>
+            an <parameter>attrib_list</parameter> that specifies the requested version.
+            <citerefentry><refentrytitle>eglCreateContext</refentrytitle><manvolnum>3</manvolnum></citerefentry> may
+            reject the requested version.
           </para>
         </listitem>
       </varlistentry>
