@@ -190,7 +190,7 @@ struct waffle_config;
             additional APIs.
           </para>
           <para>
-            On X11/EGL and Wayland, no API is guaranteed to be supported. One must use
+            On EGL platforms, no API is guaranteed to be supported. One must use
             <citerefentry><refentrytitle>waffle_display_supports_context_api</refentrytitle><manvolnum>3</manvolnum></citerefentry>
             to check for supported APIs.
           </para>
