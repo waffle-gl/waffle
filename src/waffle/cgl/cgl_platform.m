@@ -120,19 +120,19 @@ static const struct wcore_platform_vtbl cgl_platform_vtbl = {
         .connect = cgl_display_connect,
         .destroy = cgl_display_destroy,
         .supports_context_api = cgl_display_supports_context_api,
-        .get_native = cgl_display_get_native,
+        .get_native = NULL,
     },
 
     .config = {
         .choose = cgl_config_choose,
         .destroy = cgl_config_destroy,
-        .get_native = cgl_config_get_native,
+        .get_native = NULL,
     },
 
     .context = {
         .create = cgl_context_create,
         .destroy = cgl_context_destroy,
-        .get_native = cgl_context_get_native,
+        .get_native = NULL,
     },
 
     .window = {
@@ -140,6 +140,6 @@ static const struct wcore_platform_vtbl cgl_platform_vtbl = {
         .destroy = cgl_window_destroy,
         .show = cgl_window_show,
         .swap_buffers = cgl_window_swap_buffers,
-        .get_native = cgl_window_get_native,
+        .get_native = NULL,
     },
 };

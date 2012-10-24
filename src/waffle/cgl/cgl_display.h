@@ -52,6 +52,3 @@ cgl_display_destroy(struct wcore_display *wc_self);
 bool
 cgl_display_supports_context_api(struct wcore_display *wc_self,
                                  int32_t context_api);
-
-union waffle_native_display*
-cgl_display_get_native(struct wcore_display *wc_self);

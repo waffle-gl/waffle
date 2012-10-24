@@ -53,6 +53,3 @@ cgl_config_choose(struct wcore_platform *wc_plat,
 
 bool
 cgl_config_destroy(struct wcore_config *wc_self);
-
-union waffle_native_config*
-cgl_config_get_native(struct wcore_config *wc_self);

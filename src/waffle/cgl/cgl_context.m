@@ -98,10 +98,3 @@ fail:
     cgl_context_destroy(&self->wcore);
     return NULL;
 }
-
-union waffle_native_context*
-cgl_context_get_native(struct wcore_context *wc_self)
-{
-    wcore_error(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM);
-    return NULL;
-}

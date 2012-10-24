@@ -88,10 +88,3 @@ cgl_display_supports_context_api(struct wcore_display *wc_self,
             return false;
     }
 }
-
-union waffle_native_display*
-cgl_display_get_native(struct wcore_display *wc_self)
-{
-    wcore_error(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM);
-    return NULL;
-}

@@ -53,6 +53,3 @@ cgl_context_create(struct wcore_platform *wc_plat,
 
 bool
 cgl_context_destroy(struct wcore_context *wc_self);
-
-union waffle_native_context*
-cgl_context_get_native(struct wcore_context *wc_self);
