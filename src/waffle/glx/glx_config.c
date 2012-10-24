@@ -68,9 +68,9 @@ glx_config_check_context_attrs(struct glx_display *dpy,
                              "value 1.0");
                 return false;
             }
-            else if (version >= 32 && !dpy->extensions.EXT_create_context_es2_profile) {
+            else if (version >= 32 && !dpy->extensions.ARB_create_context_profile) {
                 wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
-                             "GLX_EXT_create_context_es2_profile is required "
+                             "GLX_ARB_create_context_profile is required "
                              "to create a context with version >= 3.2");
                 return false;
             }
