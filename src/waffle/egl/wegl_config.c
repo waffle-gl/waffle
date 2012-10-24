@@ -45,32 +45,46 @@ check_context_attrs(struct wegl_display *dpy,
 
     switch (attrs->context_api) {
         case WAFFLE_CONTEXT_OPENGL:
-            if (version != 10) {
+            if (version != 10 && !dpy->KHR_create_context) {
                 wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
-                             "on EGL, the requested version of OpenGL must be "
-                             "the default value 1.0");
+                             "KHR_EXT_create_context is required in order to "
+                             "request a GL version not equal to the default "
+                             "value 1.0");
                 return false;
             }
+            else if (version >= 32 && attrs->context_profile == WAFFLE_NONE) {
+                wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
+                             "WAFFLE_CONTEXT_PROFILE must be provided when "
+                             "the requested context version is >= 3.2");
+                return false;
+            }
+
             if (!plat->vtbl->dl_can_open(plat, WAFFLE_DL_OPENGL)) {
                 wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
                              "failed to open the OpenGL library");
                 return false;
             }
+
             return true;
+
         case WAFFLE_CONTEXT_OPENGL_ES1:
             if (!plat->vtbl->dl_can_open(plat, WAFFLE_DL_OPENGL_ES1)) {
                 wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
                              "failed to open the OpenGL ES1 library");
                 return false;
             }
+
             return true;
+
         case WAFFLE_CONTEXT_OPENGL_ES2:
             if (!plat->vtbl->dl_can_open(plat, WAFFLE_DL_OPENGL_ES2)) {
                 wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
                              "failed to open the OpenGL ES2 library");
                 return false;
             }
+
             return true;
+
         default:
             wcore_error_internal("context_api has bad value %#x",
                                  attrs->context_api);

@@ -23,6 +23,9 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#include <EGL/egl.h>
+#include <EGL/eglext.h>
+
 #include "waffle_enum.h"
 
 #include "wcore_error.h"
@@ -62,13 +65,24 @@ create_real_context(struct wegl_config *config,
 
 {
     struct wegl_display *dpy = wegl_display(config->wcore.display);
+    struct wcore_config_attrs *attrs = &config->wcore.attrs;
     bool ok = true;
-    int32_t waffle_context_api = config->wcore.attrs.context_api;
-    EGLint attrib_list[3];
+    int32_t waffle_context_api = attrs->context_api;
+    EGLint attrib_list[5];
 
     switch (waffle_context_api) {
         case WAFFLE_CONTEXT_OPENGL:
-            attrib_list[0] = EGL_NONE;
+            if (dpy->KHR_create_context) {
+                attrib_list[0] = EGL_CONTEXT_MAJOR_VERSION_KHR;
+                attrib_list[1] = attrs->context_major_version;
+                attrib_list[2] = EGL_CONTEXT_MINOR_VERSION_KHR;
+                attrib_list[3] = attrs->context_minor_version;
+                attrib_list[4] = EGL_NONE;
+            } else {
+                assert(attrs->context_major_version == 1);
+                assert(attrs->context_minor_version == 0);
+                attrib_list[0] = EGL_NONE;
+            }
             break;
         case WAFFLE_CONTEXT_OPENGL_ES1:
             attrib_list[0] = EGL_CONTEXT_CLIENT_VERSION;
