@@ -59,6 +59,3 @@ droid_window_destroy(struct wcore_window *wc_self);
 
 bool
 droid_window_show(struct wcore_window *wc_self);
-
-union waffle_native_window*
-droid_window_get_native(struct wcore_window *wc_self);

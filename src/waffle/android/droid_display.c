@@ -77,10 +77,3 @@ droid_display_disconnect(struct wcore_display *wc_self)
     free(self);
     return ok;
 }
-
-union waffle_native_display*
-droid_display_get_native(struct wcore_display *wc_self)
-{
-    wcore_error(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM);
-    return NULL;
-}

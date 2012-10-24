@@ -56,6 +56,3 @@ droid_display_connect(struct wcore_platform *wc_plat,
 
 bool
 droid_display_disconnect(struct wcore_display *wc_self);
-
-union waffle_native_display*
-droid_display_get_native(struct wcore_display *wc_self);

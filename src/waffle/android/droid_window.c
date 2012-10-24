@@ -97,10 +97,3 @@ droid_window_show(struct wcore_window *wc_self)
 
     return droid_show_surface(dpy->pSFContainer, self->pANWContainer);
 }
-
-union waffle_native_window*
-droid_window_get_native(struct wcore_window *wc_self)
-{
-    wcore_error(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM);
-    return NULL;
-}
