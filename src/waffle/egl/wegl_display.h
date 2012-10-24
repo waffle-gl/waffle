@@ -37,6 +37,7 @@ struct wcore_display;
 struct wegl_display {
     struct wcore_display wcore;
     EGLDisplay egl;
+    bool KHR_create_context;
 };
 
 DEFINE_CONTAINER_CAST_FUNC(wegl_display,

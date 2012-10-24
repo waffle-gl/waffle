@@ -26,12 +26,33 @@
 #include <assert.h>
 
 #include "waffle_enum.h"
+#include "waffle_gl_misc.h"
 
 #include "wcore_error.h"
 #include "wcore_platform.h"
 
 #include "wegl_display.h"
 #include "wegl_util.h"
+
+static bool
+get_extensions(struct wegl_display *dpy)
+{
+    const char *extensions = eglQueryString(dpy->egl, EGL_EXTENSIONS);
+
+    if (!extensions) {
+	wegl_emit_error("eglQueryString(EGL_EXTENSIONS");
+	return false;
+    }
+
+    // waffle_is_extension_in_string() resets the error state. That's ok,
+    // however, because if we've reached this point then no error should be
+    // pending emission.
+    assert(wcore_error_get_code() == 0);
+
+    dpy->KHR_create_context = waffle_is_extension_in_string(extensions, "EGL_KHR_create_context");
+
+    return true;
+}
 
 /// On Linux, according to eglplatform.h, EGLNativeDisplayType and intptr_t
 /// have the same size regardless of platform.
@@ -54,6 +75,10 @@ wegl_display_init(struct wegl_display *dpy,
     ok = eglInitialize(dpy->egl, &major, &minor);
     if (!ok)
         goto fail;
+
+    ok = get_extensions(dpy);
+    if (!ok)
+	goto fail;
 
     return true;
 
