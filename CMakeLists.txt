@@ -261,7 +261,11 @@ endif()
 # Add subdirectories
 # ------------------------------------------------------------------------------
 
-include_directories(include/waffle src)
+include_directories(
+    include/waffle
+    src
+    third_party/khronos
+    )
 
 add_subdirectory(doc)
 add_subdirectory(src)
