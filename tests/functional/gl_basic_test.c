@@ -265,6 +265,20 @@ TEST(gl_basic, cgl_init)
     gl_basic_init(WAFFLE_PLATFORM_CGL);
 }
 
+TEST(gl_basic, cgl_gles1_unsupported)
+{
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES1,
+                  0 /*alpha*/,
+                  true /*expect_config_unsupported*/);
+}
+
+TEST(gl_basic, cgl_gles2_unsupported)
+{
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES2,
+                  0 /*alpha*/,
+                  true /*expect_config_unsupported*/);
+}
+
 TEST(gl_basic, cgl_gl_rgb)
 {
     gl_basic_draw(WAFFLE_CONTEXT_OPENGL,
@@ -283,6 +297,10 @@ static void
 testsuite_cgl(void)
 {
     TEST_RUN(gl_basic, cgl_init);
+
+    TEST_RUN(gl_basic, cgl_gles1_unsupported);
+    TEST_RUN(gl_basic, cgl_gles2_unsupported);
+
     TEST_RUN(gl_basic, cgl_gl_rgb);
     TEST_RUN(gl_basic, cgl_gl_rgba);
 }
