@@ -171,6 +171,7 @@ struct waffle_config;
               <member><constant>WAFFLE_CONTEXT_OPENGL</constant></member>
               <member><constant>WAFFLE_CONTEXT_OPENGL_ES1</constant></member>
               <member><constant>WAFFLE_CONTEXT_OPENGL_ES2</constant></member>
+              <member><constant>WAFFLE_CONTEXT_OPENGL_ES3</constant></member>
             </simplelist>
           </para>
           <para>
@@ -181,16 +182,16 @@ struct waffle_config;
           </para>
           <para>
             On Android, <constant>WAFFLE_CONTEXT_OPENGL_ES1</constant> is always supported.  Beginning with Ice Cream
-            Sandwich (that is, Android 4.0), <constant>WAFFLE_CONTEXT_OPENGL_ES2</constant> is also supported.  Systems
-            with earlier versions of Android may optionally support <constant>WAFFLE_CONTEXT_OPENGL_ES2</constant>. No
-            other API is supported.
+            Sandwich (that is, Android 4.0), <constant>WAFFLE_CONTEXT_OPENGL_ES2</constant> is also supported.  Use
+            <citerefentry><refentrytitle>waffle_display_supports_context_api</refentrytitle><manvolnum>3</manvolnum></citerefentry>
+            to check if additional APIs are supported.
           </para>
           <para>
             On GLX, <constant>WAFFLE_CONTEXT_OPENGL</constant> is always supported. The system may optionally support
             additional APIs.
           </para>
           <para>
-            On EGL platforms, no API is guaranteed to be supported. One must use
+            On EGL platforms other than Android, no API is guaranteed to be supported. One must use
             <citerefentry><refentrytitle>waffle_display_supports_context_api</refentrytitle><manvolnum>3</manvolnum></citerefentry>
             to check for supported APIs.
           </para>
@@ -218,6 +219,10 @@ struct waffle_config;
           <para>
             If the requested API is <constant>WAFFLE_CONTEXT_OPENGL_ES2</constant>, then the default and only supported
             version is 2.0.
+          </para>
+          <para>
+            If the requested API is <constant>WAFFLE_CONTEXT_OPENGL_ES3</constant>, then the default and only supported
+            version is 3.0.
           </para>
           <para>
             On all platforms, if the requested API is <constant>WAFFLE_CONTEXT_OPENGL</constant>, then the default
@@ -331,8 +336,7 @@ struct waffle_config;
             platform and the requested value of <constant>WAFFLE_CONTEXT_API</constant>.
           </para>
           <para>
-            If the requested API is <constant>WAFFLE_CONTEXT_OPENGL_ES1</constant> or
-            <constant>WAFFLE_CONTEXT_OPENGL_ES2</constant>, then the default and only supported value is
+            If the requested API is an OpenGL ES API, then the default and only supported value is
             <constant>WAFFLE_NONE</constant>.
           </para>
           <para>
