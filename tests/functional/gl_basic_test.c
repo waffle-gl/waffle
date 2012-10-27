@@ -160,7 +160,9 @@ gl_basic_init(int32_t waffle_platform)
 }
 
 static void
-gl_basic_draw(int32_t waffle_context_api, int32_t alpha)
+gl_basic_draw(int32_t waffle_context_api,
+              int32_t alpha,
+              bool expect_config_unsupported)
 {
     int32_t libgl;
 
@@ -197,7 +199,11 @@ gl_basic_draw(int32_t waffle_context_api, int32_t alpha)
     ASSERT_TRUE(dpy = waffle_display_connect(NULL));
 
     config = waffle_config_choose(dpy, config_attrib_list);
-    if (!config) {
+    if (expect_config_unsupported) {
+        ASSERT_TRUE(config == NULL);
+        ASSERT_TRUE(waffle_error_get_code() == WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM);
+        TEST_PASS();
+    } else if (config == NULL) {
         if (waffle_error_get_code() == WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM)
             TEST_SKIP();
         else
@@ -261,12 +267,16 @@ TEST(gl_basic, cgl_init)
 
 TEST(gl_basic, cgl_gl_rgb)
 {
-    gl_basic_draw(WAFFLE_CONTEXT_OPENGL, 0);
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL,
+                  0 /*alpha*/,
+                  false /*expect_config_unsupported*/);
 }
 
 TEST(gl_basic, cgl_gl_rgba)
 {
-    gl_basic_draw(WAFFLE_CONTEXT_OPENGL, 1);
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL,
+                  1 /*alpha*/,
+                  false /*expect_config_unsupported*/);
 }
 
 static void
@@ -286,32 +296,44 @@ TEST(gl_basic, glx_init)
 
 TEST(gl_basic, glx_gl_rgb)
 {
-    gl_basic_draw(WAFFLE_CONTEXT_OPENGL, 0);
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL,
+                 0 /*alpha*/,
+                 false /*expect_config_unsupported*/);
 }
 
 TEST(gl_basic, glx_gles1_rgb)
 {
-    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES1, 0);
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES1,
+                 0 /*alpha*/,
+                 false /*expect_config_unsupported*/);
 }
 
 TEST(gl_basic, glx_gles2_rgb)
 {
-    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES2, 0);
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES2,
+                 0 /*alpha*/,
+                 false /*expect_config_unsupported*/);
 }
 
 TEST(gl_basic, glx_gl_rgba)
 {
-    gl_basic_draw(WAFFLE_CONTEXT_OPENGL, 1);
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL,
+                 1 /*alpha*/,
+                 false /*expect_config_unsupported*/);
 }
 
 TEST(gl_basic, glx_gles1_rgba)
 {
-    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES1, 1);
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES1,
+                 1 /*alpha*/,
+                 false /*expect_config_unsupported*/);
 }
 
 TEST(gl_basic, glx_gles2_rgba)
 {
-    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES2, 1);
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES2,
+                 1 /*alpha*/,
+                 false /*expect_config_unsupported*/);
 }
 
 static void
@@ -335,32 +357,44 @@ TEST(gl_basic, wayland_init)
 
 TEST(gl_basic, wayland_gl_rgb)
 {
-    gl_basic_draw(WAFFLE_CONTEXT_OPENGL, 0);
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL,
+                 0 /*alpha*/,
+                 false /*expect_config_unsupported*/);
 }
 
 TEST(gl_basic, wayland_gles1_rgb)
 {
-    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES1, 0);
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES1,
+                 0 /*alpha*/,
+                 false /*expect_config_unsupported*/);
 }
 
 TEST(gl_basic, wayland_gles2_rgb)
 {
-    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES2, 0);
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES2,
+                 0 /*alpha*/,
+                 false /*expect_config_unsupported*/);
 }
 
 TEST(gl_basic, wayland_gl_rgba)
 {
-    gl_basic_draw(WAFFLE_CONTEXT_OPENGL, 1);
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL,
+                 1 /*alpha*/,
+                 false /*expect_config_unsupported*/);
 }
 
 TEST(gl_basic, wayland_gles1_rgba)
 {
-    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES1, 1);
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES1,
+                 1 /*alpha*/,
+                 false /*expect_config_unsupported*/);
 }
 
 TEST(gl_basic, wayland_gles2_rgba)
 {
-    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES2, 1);
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES2,
+                 1 /*alpha*/,
+                 false /*expect_config_unsupported*/);
 }
 
 static void
@@ -384,32 +418,44 @@ TEST(gl_basic, x11_egl_init)
 
 TEST(gl_basic, x11_egl_gl_rgb)
 {
-    gl_basic_draw(WAFFLE_CONTEXT_OPENGL, 0);
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL,
+                 0 /*alpha*/,
+                 false /*expect_config_unsupported*/);
 }
 
 TEST(gl_basic, x11_egl_gles1_rgb)
 {
-    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES1, 0);
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES1,
+                 0 /*alpha*/,
+                 false /*expect_config_unsupported*/);
 }
 
 TEST(gl_basic, x11_egl_gles2_rgb)
 {
-    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES2, 0);
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES2,
+                 0 /*alpha*/,
+                 false /*expect_config_unsupported*/);
 }
 
 TEST(gl_basic, x11_egl_gl_rgba)
 {
-    gl_basic_draw(WAFFLE_CONTEXT_OPENGL, 1);
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL,
+                 1 /*alpha*/,
+                 false /*expect_config_unsupported*/);
 }
 
 TEST(gl_basic, x11_egl_gles1_rgba)
 {
-    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES1, 1);
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES1,
+                 1 /*alpha*/,
+                 false /*expect_config_unsupported*/);
 }
 
 TEST(gl_basic, x11_egl_gles2_rgba)
 {
-    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES2, 1);
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES2,
+                 1 /*alpha*/,
+                 false /*expect_config_unsupported*/);
 }
 
 static void
