@@ -43,7 +43,7 @@ package() {
   cd "$srcdir/$pkgname-$pkgver"
   make DESTDIR="$pkgdir/" install
   install -m755 -d "$pkgdir/usr/share/licenses/$pkgname"
-  install -m644 "$pkgdir/usr/share/doc/$pkgname/LICENSE.txt" \
+  install -m644 "$pkgdir/usr/share/doc/$pkgname-@MAJOR@/LICENSE.txt" \
                 "$pkgdir/usr/share/licenses/$pkgname/LICENSE.txt"
 }
 
