@@ -30,6 +30,7 @@ build() {
 
   cmake \
     -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_INSTALL_LIBDIR=/usr/lib \
     -DCMAKE_BUILD_TYPE=Release \
     -Dwaffle_has_glx=1 \
     -Dwaffle_has_x11_egl=1 \
