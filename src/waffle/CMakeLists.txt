@@ -152,18 +152,7 @@ include_directories(
     )
 
 add_library(${waffle_libname} SHARED ${waffle_sources})
-
-target_link_libraries(${waffle_libname}
-    ${egl_LDFLAGS}
-    ${gbm_LDFLAGS}
-    ${gl_LDFLAGS}
-    ${udev_LDFLAGS}
-    ${wayland-client_LDFLAGS}
-    ${wayland-egl_LDFLAGS}
-    ${x11_LDFLAGS}
-    ${x11-xcb_LDFLAGS}
-    ${xcb_LDFLAGS}
-    )
+target_link_libraries(${waffle_libname} ${waffle_libdeps})
 
 set_target_properties(${waffle_libname}
     PROPERTIES
