@@ -111,7 +111,13 @@ waffle_display_get_native(struct waffle_display *self)
     if (!api_check_entry(obj_list, 1))
         return NULL;
 
-    return api_platform->vtbl->display.get_native(wc_self);
+    if (api_platform->vtbl->display.get_native) {
+        return api_platform->vtbl->display.get_native(wc_self);
+    }
+    else {
+        wcore_error(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM);
+        return NULL;
+    }
 }
 
 /// @}

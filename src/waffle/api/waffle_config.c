@@ -37,6 +37,7 @@
 #include "wcore_config_attrs.h"
 #include "wcore_config.h"
 #include "wcore_display.h"
+#include "wcore_error.h"
 #include "wcore_platform.h"
 
 struct waffle_config*
@@ -94,7 +95,13 @@ waffle_config_get_native(struct waffle_config *self)
     if (!api_check_entry(obj_list, 1))
         return NULL;
 
-    return api_platform->vtbl->config.get_native(wc_self);
+    if (api_platform->vtbl->config.get_native) {
+        return api_platform->vtbl->config.get_native(wc_self);
+    }
+    else {
+        wcore_error(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM);
+        return NULL;
+    }
 }
 
 /// @}

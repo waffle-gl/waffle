@@ -76,6 +76,7 @@ struct wcore_platform_vtbl {
                 struct wcore_display *display,
                 int32_t context_api);
 
+        /// May be null.
         union waffle_native_display*
         (*get_native)(struct wcore_display *display);
     } display;
@@ -89,6 +90,7 @@ struct wcore_platform_vtbl {
         bool
         (*destroy)(struct wcore_config *config);
 
+        /// May be null.
         union waffle_native_config*
         (*get_native)(struct wcore_config *config);
     } config;
@@ -102,6 +104,7 @@ struct wcore_platform_vtbl {
         bool
         (*destroy)(struct wcore_context *ctx);
 
+        /// May be null.
         union waffle_native_context*
         (*get_native)(struct wcore_context *ctx);
     } context;
@@ -121,6 +124,7 @@ struct wcore_platform_vtbl {
         bool
         (*swap_buffers)(struct wcore_window *window);
 
+        /// May be null.
         union waffle_native_window*
         (*get_native)(struct wcore_window *window);
     } window;

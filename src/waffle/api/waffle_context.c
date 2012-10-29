@@ -35,6 +35,7 @@
 #include "api_priv.h"
 
 #include "wcore_context.h"
+#include "wcore_error.h"
 #include "wcore_platform.h"
 
 struct waffle_context*
@@ -92,7 +93,13 @@ waffle_context_get_native(struct waffle_context *self)
     if (!api_check_entry(obj_list, 1))
         return NULL;
 
-    return api_platform->vtbl->context.get_native(wc_self);
+    if (api_platform->vtbl->context.get_native) {
+        return api_platform->vtbl->context.get_native(wc_self);
+    }
+    else {
+        wcore_error(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM);
+        return NULL;
+    }
 }
 
 /// @}
