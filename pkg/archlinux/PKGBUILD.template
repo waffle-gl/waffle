@@ -1,11 +1,7 @@
-# =============================================================
-# TODO: This is a template. Replace all variables of form @VAR@.
-# =============================================================
-
 # Maintainer: Chad Versace <chad.versace@linux.intel.com>
 
 pkgname='waffle'
-pkgver='@MAJOR@.@MINOR@.@PATCH@'
+pkgver='@waffle_major_version@.@waffle_minor_version@.@waffle_patch_version@'
 pkgrel=1
 pkgdesc='a library for choosing window system and OpenGL API at runtime'
 arch=('i686' 'x86_64')
@@ -43,7 +39,7 @@ package() {
   cd "$srcdir/$pkgname-$pkgver"
   make DESTDIR="$pkgdir/" install
   install -m755 -d "$pkgdir/usr/share/licenses/$pkgname"
-  install -m644 "$pkgdir/usr/share/doc/$pkgname-@MAJOR@/LICENSE.txt" \
+  install -m644 "$pkgdir/usr/share/doc/waffle-@waffle_major_version@/LICENSE.txt" \
                 "$pkgdir/usr/share/licenses/$pkgname/LICENSE.txt"
 }
 
