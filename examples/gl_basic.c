@@ -372,6 +372,15 @@ main(int argc, char **argv)
     if (!ok)
         error_waffle();
 
+    dpy = waffle_display_connect(opts.display_name);
+    if (!dpy)
+        error_waffle();
+
+    if (!waffle_display_supports_context_api(dpy, opts.context_api)) {
+        gl_basic_error("Display does not support %s",
+                       waffle_enum_to_string(opts.context_api));
+    }
+
     glClear = waffle_dl_sym(opts.dl, "glClear");
     if (!glClear)
         error_get_gl_symbol("glClear");
@@ -383,15 +392,6 @@ main(int argc, char **argv)
     glReadPixels = waffle_dl_sym(opts.dl, "glReadPixels");
     if (!glReadPixels)
         error_get_gl_symbol("glReadPixels");
-
-    dpy = waffle_display_connect(opts.display_name);
-    if (!dpy)
-        error_waffle();
-
-    if (!waffle_display_supports_context_api(dpy, opts.context_api)) {
-        gl_basic_error("Display does not support %s",
-                       waffle_enum_to_string(opts.context_api));
-    }
 
     i = 0;
     config_attrib_list[i++] = WAFFLE_CONTEXT_API;
