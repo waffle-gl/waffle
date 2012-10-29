@@ -79,7 +79,7 @@ error:
 }
 
 static bool
-cgl_platform_make_current(struct wcore_platform *wc_self,
+cgl_make_current(struct wcore_platform *wc_self,
                           struct wcore_display *wc_dpy,
                           struct wcore_window *wc_window,
                           struct wcore_context *wc_ctx)
@@ -102,7 +102,7 @@ cgl_platform_make_current(struct wcore_platform *wc_self,
 }
 
 static void*
-cgl_platform_get_proc_address(struct wcore_platform *wc_self,
+cgl_get_proc_address(struct wcore_platform *wc_self,
                               const char *name)
 {
     // There is no CGLGetProcAddress.
@@ -112,8 +112,8 @@ cgl_platform_get_proc_address(struct wcore_platform *wc_self,
 static const struct wcore_platform_vtbl cgl_platform_vtbl = {
     .destroy = cgl_platform_destroy,
 
-    .make_current = cgl_platform_make_current,
-    .get_proc_address = cgl_platform_get_proc_address,
+    .make_current = cgl_make_current,
+    .get_proc_address = cgl_get_proc_address,
     .dl_can_open = cgl_dl_can_open,
     .dl_sym = cgl_dl_sym,
 
