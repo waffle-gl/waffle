@@ -1,0 +1,52 @@
+Waffle 1.1.2 - 29 Oct 2012
+==========================
+
+Waffle 1.1.2 is now available. It is a maintenance release that fixes bugs
+discovered since 1.1.1.
+
+Tarball and sha256sum are:
+    http://people.freedesktop.org/~chadversary/waffle/files/release/waffle-1.1.2/waffle-1.1.2.tar.xz
+    [TODO:sha256]  waffle-1.1.2.tar.xz
+
+There is also a waffle-1.1.2 tag in git:
+    git://people.freedesktop.org/~chadversary/waffle.git
+
+Additional downloads and documentation are available at:
+    http://people.freedesktop.org/~chadversary/waffle/releases.html#1.1.2
+
+
+Bugfixes
+--------
+
+- Fix segfault when tearing down an X11 window [chadv].
+- Fix the Archlinux PKGBUILD [kenneth].
+- Small fixes to the man pages [chadv].
+
+
+Changes
+-------
+
+To see the full set of changes, run `git log waffle-1.1.1..waffle-1.1.2`.
+
+Chad Versace (5):
+  pkg/archlinux: Rename pkg waffle-1 -> waffle
+  x11: Don't teardown uninitialized state in x11_window
+  man: Fix omission of GBM
+  man: List valid values for WAFFLE_CONTEXT_PROFILE
+  pkg/archlinux: Generate real PKGBUILD from template
+
+Kenneth Graunke (2):
+  pkg/archlinux: Explicitly set /usr/lib as the library directory.
+  pkg/archlinux: Fix installing of LICENSE.txt file.
+
+ CMakeLists.txt                  |  1 +
+ man/waffle_config.3.xml         |  8 ++++++--
+ pkg/CMakeLists.txt              |  1 +
+ pkg/archlinux/.gitignore        |  1 +
+ pkg/archlinux/CMakeLists.txt    |  3 +++
+ pkg/archlinux/PKGBUILD.template | 17 +++++++----------
+ src/waffle/x11/x11_window.c     |  3 +++
+ 7 files changed, 22 insertions(+), 12 deletions(-)
+ create mode 100644 pkg/CMakeLists.txt
+ create mode 100644 pkg/archlinux/.gitignore
+ create mode 100644 pkg/archlinux/CMakeLists.txt
