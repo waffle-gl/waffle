@@ -41,6 +41,7 @@ LOCAL_C_INCLUDES := \
     $(LOCAL_PATH)/src/waffle/egl/ \
     $(LOCAL_PATH)/src/waffle/linux/ \
     $(LOCAL_PATH)/src/waffle/droid/ \
+    $(LOCAL_PATH)/third_party/khronos/ \
 
 LOCAL_SRC_FILES := \
     src/waffle/core/wcore_tinfo.c \
