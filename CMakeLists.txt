@@ -267,6 +267,7 @@ include_directories(
     third_party/khronos
     )
 
+add_subdirectory(cmake)
 add_subdirectory(doc)
 add_subdirectory(pkg)
 add_subdirectory(src)
