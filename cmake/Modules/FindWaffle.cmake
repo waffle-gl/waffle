@@ -34,12 +34,18 @@
 #    WAFFLE_VERSION_STRING  Waffle Version: Major.Minor.Patch
 #
 
-find_path(WAFFLE_INCLUDE_DIR
-    NAMES waffle.h
+if(NOT DEFINED WAFFLE_FIND_VERSION_MAJOR)
+    set(WAFFLE_FIND_VERSION_MAJOR 1)
+endif()
+
+find_path(WAFFLE_PREFIX_INCLUDE_DIR
+    NAMES "waffle-${WAFFLE_FIND_VERSION_MAJOR}/waffle.h"
 )
 
+set(WAFFLE_INCLUDE_DIR "${WAFFLE_PREFIX_INCLUDE_DIR}/waffle-${WAFFLE_FIND_VERSION_MAJOR}")
+
 find_library(WAFFLE_LIBRARY
-    NAMES waffle
+    NAMES "waffle-${WAFFLE_FIND_VERSION_MAJOR}"
 )
 
 if(WAFFLE_INCLUDE_DIR AND EXISTS "${WAFFLE_INCLUDE_DIR}/waffle_version.h")
@@ -56,3 +62,7 @@ include(${CMAKE_CURRENT_LIST_DIR}/FindPackageHandleStandardArgs.cmake)
 find_package_handle_standard_args(Waffle REQUIRED_VARS WAFFLE_LIBRARY WAFFLE_INCLUDE_DIR VERSION_VAR WAFFLE_VERSION_STRING)
 
 mark_as_advanced(WAFFLE_LIBRARY WAFFLE_INCLUDE_DIR)
+
+# Don't expose these variables.
+unset(WAFFLE_FIND_VERSION_MAJOR CACHE)
+unset(WAFFLE_PREFIX_INCLUDE_DIR CACHE)
