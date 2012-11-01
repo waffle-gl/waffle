@@ -24,7 +24,7 @@ $(waffle_top)/include/waffle_version.h: \
 	     > $(waffle_top)/include/waffle/waffle_version.h
 
 LOCAL_MODULE_TAGS := eng
-LOCAL_MODULE := libwaffle
+LOCAL_MODULE := libwaffle-$(waffle_major_version)
 
 LOCAL_CFLAGS := \
     -DANDROID_STUB \
