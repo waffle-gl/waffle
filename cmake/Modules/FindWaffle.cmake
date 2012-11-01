@@ -1,3 +1,11 @@
+# - Locate the Waffle library and headers.
+# This module defines the following variables:
+#     WAFFLE_INCLUDE_DIR     Full path to directory of the main Waffle header, waffle.h.
+#     WAFFLE_LIBRARY         Full path to the Waffle library.
+#     WAFFLE_FOUND           True if Waffle was found.
+#     WAFFLE_VERSION_STRING  Waffle's version in form "Major.Minor.Patch".
+
+#=============================================================================
 # Copyright 2012 Intel Corporation
 #
 # All rights reserved.
@@ -22,17 +30,10 @@
 # CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#
-#
-# Locate the Waffle library.
-#
-#
-# Defines the variables:
-#    WAFFLE_INCLUDE_DIR     Where to look for Waffle headers.
-#    WAFFLE_LIBRARY         Where to look for Waffle library.
-#    WAFFLE_FOUND           If FALSE, don't try to use Waffle.
-#    WAFFLE_VERSION_STRING  Waffle Version: Major.Minor.Patch
-#
+#=============================================================================
+
+# See /usr/share/cmake/Modules/readme.txt for CMake official guidelines for
+# FindXXX.cmake files.
 
 if(NOT DEFINED WAFFLE_FIND_VERSION_MAJOR)
     set(WAFFLE_FIND_VERSION_MAJOR 1)
