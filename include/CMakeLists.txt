@@ -2,9 +2,6 @@ configure_file(waffle/waffle_version.h.in
                ${CMAKE_CURRENT_SOURCE_DIR}/waffle/waffle_version.h
                @ONLY)
 
-           #install(FILES waffle/waffle_version.h
-           #        DESTINATION ${waffle_install_includedir}/${waffle_libname})
-
 install(FILES waffle/waffle.h
               waffle/waffle_attrib_list.h
               waffle/waffle_config.h
