@@ -216,8 +216,19 @@ struct waffle_config;
             called.
           </para>
           <para>
-            If the requested API is <constant>WAFFLE_CONTEXT_OPENGL_ES2</constant>, then the default and only supported
-            version is 2.0.
+            If the requested API is <constant>WAFFLE_CONTEXT_OPENGL_ES2</constant>, then the default value of the
+            version attributes is 2.0.
+
+            The requested version must be no less than the default version; otherwise,
+            <constant>WAFFLE_ERROR_BAD_ATTRIBUTE</constant> is emitted.
+
+            If the requested version is greater than the default, then
+            <constant>WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM</constant> is emitted if the EGL_KHR_create_context extension
+            is not supported.
+
+            Waffle or the native platform may promote the version to any later compatible version when
+            <citerefentry><refentrytitle>waffle_context_create</refentrytitle><manvolnum>3</manvolnum></citerefentry> is
+            called.
           </para>
           <para>
             On all platforms, if the requested API is <constant>WAFFLE_CONTEXT_OPENGL</constant>, then the default

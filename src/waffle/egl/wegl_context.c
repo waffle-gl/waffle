@@ -68,6 +68,8 @@ create_real_context(struct wegl_config *config,
     struct wcore_config_attrs *attrs = &config->wcore.attrs;
     bool ok = true;
     int32_t waffle_context_api = attrs->context_api;
+    int version = attrs->context_major_version * 10
+                + attrs->context_minor_version;
     EGLint attrib_list[5];
 
     switch (waffle_context_api) {
@@ -79,8 +81,7 @@ create_real_context(struct wegl_config *config,
                 attrib_list[3] = attrs->context_minor_version;
                 attrib_list[4] = EGL_NONE;
             } else {
-                assert(attrs->context_major_version == 1);
-                assert(attrs->context_minor_version == 0);
+                assert(version == 10);
                 attrib_list[0] = EGL_NONE;
             }
             break;
@@ -90,9 +91,19 @@ create_real_context(struct wegl_config *config,
             attrib_list[2] = EGL_NONE;
             break;
         case WAFFLE_CONTEXT_OPENGL_ES2:
-            attrib_list[0] = EGL_CONTEXT_CLIENT_VERSION;
-            attrib_list[1] = 2;
-            attrib_list[2] = EGL_NONE;
+            assert(version >= 20);
+            if (version == 20) {
+                attrib_list[0] = EGL_CONTEXT_CLIENT_VERSION;
+                attrib_list[1] = 2;
+                attrib_list[2] = EGL_NONE;
+            }
+            else {
+                attrib_list[0] = EGL_CONTEXT_MAJOR_VERSION_KHR;
+                attrib_list[1] = attrs->context_major_version;
+                attrib_list[2] = EGL_CONTEXT_MINOR_VERSION_KHR;
+                attrib_list[3] = attrs->context_minor_version;
+                attrib_list[4] = EGL_NONE;
+            }
             break;
         default:
             wcore_error_internal("waffle_context_api has bad value %#x",

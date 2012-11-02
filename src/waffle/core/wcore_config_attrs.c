@@ -145,9 +145,10 @@ wcore_config_attrs_check_context(struct wcore_config_attrs *attrs)
             return true;
         }
         case WAFFLE_CONTEXT_OPENGL_ES2: {
-            if (version != 20) {
+            if (version < 20) {
                 wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
-                             "the context version must 2.0 for OpenGL ES2");
+                             "for OpenGL ES2, the requested context version "
+                             "must be no less than 2.0");
                 return false;
             }
 
