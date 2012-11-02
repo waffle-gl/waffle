@@ -1,7 +1,7 @@
 # - Locate the Waffle library and headers.
 # This module defines the following variables:
-#     WAFFLE_INCLUDE_DIR     Full path to directory of the main Waffle header, waffle.h.
-#     WAFFLE_LIBRARY         Full path to the Waffle library.
+#     WAFFLE_INCLUDE_DIRS    Full path to directory of the main Waffle header, waffle.h.
+#     WAFFLE_LIBRARIES       Full path to the Waffle library.
 #     WAFFLE_FOUND           True if Waffle was found.
 #     WAFFLE_VERSION_STRING  Waffle's version in form "Major.Minor.Patch".
 
@@ -45,7 +45,10 @@ find_path(WAFFLE_PREFIX_INCLUDE_DIR
 
 set(WAFFLE_INCLUDE_DIR "${WAFFLE_PREFIX_INCLUDE_DIR}/waffle-${WAFFLE_FIND_VERSION_MAJOR}")
 
-find_library(WAFFLE_LIBRARY
+set(WAFFLE_INCLUDE_DIRS "${WAFFLE_INCLUDE_DIR}"
+    CACHE FILEPATH "Full path to Waffle library")
+
+find_library(WAFFLE_LIBRARIES
     NAMES "waffle-${WAFFLE_FIND_VERSION_MAJOR}"
 )
 
@@ -61,12 +64,21 @@ endif()
 # set 'WAFFLE_FOUND' to TRUE if all listed variables are TRUE
 include(${CMAKE_CURRENT_LIST_DIR}/FindPackageHandleStandardArgs.cmake)
 find_package_handle_standard_args(Waffle
-    REQUIRED_VARS WAFFLE_LIBRARY WAFFLE_INCLUDE_DIR
+    REQUIRED_VARS WAFFLE_LIBRARIES WAFFLE_INCLUDE_DIRS
     VERSION_VAR WAFFLE_VERSION_STRING
     )
 
-mark_as_advanced(WAFFLE_LIBRARY WAFFLE_INCLUDE_DIR)
+mark_as_advanced(WAFFLE_LIBRARIES WAFFLE_INCLUDE_DIRS)
 
 # Don't expose these variables.
+#
+# Some were set in the cache and some were not. To be safe, remove the
+# variables from the cache *and* local scope.
+#
 unset(WAFFLE_FIND_VERSION_MAJOR CACHE)
+unset(WAFFLE_INCLUDE_DIR CACHE)
 unset(WAFFLE_PREFIX_INCLUDE_DIR CACHE)
+
+unset(WAFFLE_FIND_VERSION_MAJOR)
+unset(WAFFLE_INCLUDE_DIR)
+unset(WAFFLE_PREFIX_INCLUDE_DIR)
