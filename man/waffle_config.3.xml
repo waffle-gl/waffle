@@ -171,7 +171,6 @@ struct waffle_config;
               <member><constant>WAFFLE_CONTEXT_OPENGL</constant></member>
               <member><constant>WAFFLE_CONTEXT_OPENGL_ES1</constant></member>
               <member><constant>WAFFLE_CONTEXT_OPENGL_ES2</constant></member>
-              <member><constant>WAFFLE_CONTEXT_OPENGL_ES3</constant></member>
             </simplelist>
           </para>
           <para>
@@ -219,10 +218,6 @@ struct waffle_config;
           <para>
             If the requested API is <constant>WAFFLE_CONTEXT_OPENGL_ES2</constant>, then the default and only supported
             version is 2.0.
-          </para>
-          <para>
-            If the requested API is <constant>WAFFLE_CONTEXT_OPENGL_ES3</constant>, then the default and only supported
-            version is 3.0.
           </para>
           <para>
             On all platforms, if the requested API is <constant>WAFFLE_CONTEXT_OPENGL</constant>, then the default
