@@ -51,14 +51,17 @@
 
 static const char *usage_message =
     "usage:\n"
-    "    gl_basic <platform> <context_api>\n"
+    "    gl_basic <platform> <context_api> [version] [profile]\n"
     "\n"
     "arguments:\n"
     "    platform: One of android, cgl, gbm, glx, wayland, x11_egl.\n"
     "    context_api: One of gl, gles1, gles2.\n"
+    "    version: In form \"major.minor\".\n"
+    "    profile: One of core, compat, or none.\n"
     "\n"
-    "example:\n"
+    "examples:\n"
     "    gl_basic glx gl\n"
+    "    gl_basic x11_egl gl core 3.2"
     "\n"
     "description:\n"
     "    Create a window. Fill it with red, green, then blue.\n";
@@ -148,6 +151,11 @@ struct options {
     /// @brief One of `WAFFLE_CONTEXT_OPENGL_*`.
     int context_api;
 
+    /// @brief One of `WAFFLE_CONTEXT_PROFILE_*` or `WAFFLE_NONE`.
+    int context_profile;
+
+    int context_version;
+
     /// @brief One of `WAFFLE_DL_*`.
     int dl;
 
@@ -211,9 +219,13 @@ parse_args(int argc, char *argv[], struct options *opts)
     // -ApplePersistenceIgnoreState and -NSDocumentRevisionsDebugMode.
     if (argc < 3)
 #else
-    if (argc != 3)
+    if (argc < 3)
 #endif
         error_usage();
+
+    // Set some context attrs to invalid values.
+    opts->context_profile = -1;
+    opts->context_version = -1;
 
     // Set platform.
     arg = argv[1];
@@ -230,6 +242,39 @@ parse_args(int argc, char *argv[], struct options *opts)
         fprintf(stderr, "error: '%s' is not a valid API for a GL context\n", arg);
         error_usage();
     }
+
+    // Set context_version.
+    if (argc >= 4) {
+	int major;
+	int minor;
+	int match_count;
+
+	arg = argv[3];
+        match_count = sscanf(arg, "%d.%d", &major, &minor);
+        if (match_count != 2) {
+            fprintf(stderr, "error: '%s' is not a valid GL version\n", arg);
+            error_usage();
+        }
+        opts->context_version = 10 * major + minor;
+    }
+
+    // Set context_profile.
+    if (argc >= 5) {
+        arg = argv[4];
+        if (strcmp(arg, "none") == 0)
+            opts->context_profile = WAFFLE_NONE;
+        else if (strcmp(arg, "core") == 0)
+            opts->context_profile = WAFFLE_CONTEXT_CORE_PROFILE;
+        else if (strcmp(arg, "compat") == 0)
+            opts->context_profile = WAFFLE_CONTEXT_COMPATIBILITY_PROFILE;
+        else {
+            fprintf(stderr, "error: '%s' is not a valid GL profile\n", arg);
+            error_usage();
+        }
+    }
+
+    if (argc >= 6)
+        error_usage();
 
     // Set dl.
     switch (opts->context_api) {
@@ -348,7 +393,7 @@ main(int argc, char **argv)
     struct options opts;
 
     int32_t init_attrib_list[3];
-    int32_t config_attrib_list[11];
+    int32_t config_attrib_list[64];
 
     struct waffle_display *dpy;
     struct waffle_config *config;
@@ -396,6 +441,19 @@ main(int argc, char **argv)
     i = 0;
     config_attrib_list[i++] = WAFFLE_CONTEXT_API;
     config_attrib_list[i++] = opts.context_api;
+
+    if (opts.context_profile != -1) {
+        config_attrib_list[i++] = WAFFLE_CONTEXT_PROFILE;
+        config_attrib_list[i++] = opts.context_profile;
+    }
+
+    if (opts.context_version != -1) {
+        config_attrib_list[i++] = WAFFLE_CONTEXT_MAJOR_VERSION;
+        config_attrib_list[i++] = opts.context_version / 10;
+        config_attrib_list[i++] = WAFFLE_CONTEXT_MINOR_VERSION;
+        config_attrib_list[i++] = opts.context_version % 10;
+    }
+
     config_attrib_list[i++] = WAFFLE_RED_SIZE;
     config_attrib_list[i++] = 8;
     config_attrib_list[i++] = WAFFLE_GREEN_SIZE;
