@@ -45,7 +45,6 @@ bind_api(int32_t waffle_context_api)
             break;
         case WAFFLE_CONTEXT_OPENGL_ES1:
         case WAFFLE_CONTEXT_OPENGL_ES2:
-        case WAFFLE_CONTEXT_OPENGL_ES3:
             ok &= eglBindAPI(EGL_OPENGL_ES_API);
             break;
         default:
@@ -93,11 +92,6 @@ create_real_context(struct wegl_config *config,
         case WAFFLE_CONTEXT_OPENGL_ES2:
             attrib_list[0] = EGL_CONTEXT_CLIENT_VERSION;
             attrib_list[1] = 2;
-            attrib_list[2] = EGL_NONE;
-            break;
-        case WAFFLE_CONTEXT_OPENGL_ES3:
-            attrib_list[0] = EGL_CONTEXT_CLIENT_VERSION;
-            attrib_list[1] = 3;
             attrib_list[2] = EGL_NONE;
             break;
         default:

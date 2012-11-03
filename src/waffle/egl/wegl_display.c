@@ -117,7 +117,6 @@ wegl_display_supports_context_api(struct wcore_display *wc_dpy,
             waffle_dl = WAFFLE_DL_OPENGL_ES1;
             break;
         case WAFFLE_CONTEXT_OPENGL_ES2:
-        case WAFFLE_CONTEXT_OPENGL_ES3:
             waffle_dl = WAFFLE_DL_OPENGL_ES2;
             break;
         default:

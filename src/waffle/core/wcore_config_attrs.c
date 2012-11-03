@@ -79,11 +79,6 @@ wcore_config_attrs_set_defaults(
             attrs->context_minor_version = 0;
             attrs->context_profile = WAFFLE_NONE;
             return true;
-        case WAFFLE_CONTEXT_OPENGL_ES3:
-            attrs->context_major_version = 3;
-            attrs->context_minor_version = 0;
-            attrs->context_profile = WAFFLE_NONE;
-            return true;
         default:
             wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
                          "WAFFLE_CONTEXT_API has bad value %#x",
@@ -153,18 +148,6 @@ wcore_config_attrs_check_context(struct wcore_config_attrs *attrs)
             if (version != 20) {
                 wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
                              "the context version must 2.0 for OpenGL ES2");
-                return false;
-            }
-
-            if (attrs->context_profile != WAFFLE_NONE)
-                goto bad_profile;
-
-            return true;
-        }
-        case WAFFLE_CONTEXT_OPENGL_ES3: {
-            if (version != 30) {
-                wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
-                             "the context version must 3.0 for OpenGL ES3");
                 return false;
             }
 

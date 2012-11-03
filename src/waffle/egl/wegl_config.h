@@ -29,7 +29,6 @@
 #include <stdint.h>
 
 #include <EGL/egl.h>
-#include <EGL/eglext.h>
 
 #include "wcore_config.h"
 #include "wcore_util.h"

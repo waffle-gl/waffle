@@ -85,21 +85,6 @@ check_context_attrs(struct wegl_display *dpy,
 
             return true;
 
-        case WAFFLE_CONTEXT_OPENGL_ES3:
-            if (!dpy->KHR_create_context) {
-                wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
-                             "EGL_KHR_create_context is required to create "
-                             "an OpenGL ES3 context");
-            }
-
-            if (!plat->vtbl->dl_can_open(plat, WAFFLE_DL_OPENGL_ES2)) {
-                wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
-                             "failed to open the OpenGL ES2 library");
-                return false;
-            }
-
-            return true;
-
         default:
             wcore_error_internal("context_api has bad value %#x",
                                  attrs->context_api);
@@ -160,9 +145,6 @@ choose_real_config(struct wegl_display *dpy,
             break;
         case WAFFLE_CONTEXT_OPENGL_ES2:
             attrib_list[renderable_index] = EGL_OPENGL_ES2_BIT;
-            break;
-        case WAFFLE_CONTEXT_OPENGL_ES3:
-            attrib_list[renderable_index] = EGL_OPENGL_ES3_BIT_KHR;
             break;
         default:
             wcore_error_internal("waffle_context_api has bad value %#x",

@@ -99,10 +99,6 @@ glx_config_check_context_attrs(struct glx_display *dpy,
                 return false;
             }
             return true;
-        case WAFFLE_CONTEXT_OPENGL_ES3:
-            wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
-                         "GLX does not support OpenGL ES3");
-            return false;
         default:
             wcore_error_internal("context_api has bad value %#x",
                                  attrs->context_api);
