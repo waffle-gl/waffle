@@ -55,7 +55,7 @@ droid_window_create(struct wcore_platform *wc_plat,
         goto error;
 
     ok = wegl_window_init(&self->wegl, wc_config,
-                          (intptr_t) self->pANWContainer);
+                          (intptr_t) *((intptr_t*)(self->pANWContainer)));
     if (!ok)
         goto error;
 

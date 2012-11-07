@@ -49,6 +49,8 @@ struct droid_surfaceflinger_container {
 };
 
 struct droid_ANativeWindow_container {
+    // it is important ANativeWindow* is the first element in this structure
+    ANativeWindow* native_window;
     sp<SurfaceControl> surface_control;
     sp<ANativeWindow> window;
 };
@@ -148,6 +150,8 @@ droid_setup_surface(
         free(static_cast <void*>(pANWContainer));
         goto error;
     }
+
+    pANWContainer->native_window = pANWContainer->window.get();
 
     return pANWContainer;
 
