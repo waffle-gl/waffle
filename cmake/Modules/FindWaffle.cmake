@@ -58,7 +58,7 @@ endif()
 
 # handle the 'QUIETLY' and 'REQUIRED' arguments and
 # set 'WAFFLE_FOUND' to TRUE if all listed variables are TRUE
-include(${CMAKE_CURRENT_LIST_DIR}/FindPackageHandleStandardArgs.cmake)
+include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(Waffle
     REQUIRED_VARS WAFFLE_LIBRARIES WAFFLE_INCLUDE_DIRS
     VERSION_VAR WAFFLE_VERSION_STRING
