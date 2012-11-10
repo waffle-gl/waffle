@@ -192,7 +192,7 @@ if(waffle_has_glx)
 endif()
 
 if(waffle_has_wayland)
-    pkg_check_modules(wayland-client REQUIRED wayland-client=0.99.0)
+    pkg_check_modules(wayland-client REQUIRED wayland-client>=1)
     pkg_check_modules(wayland-egl REQUIRED wayland-egl>=9.1)
 endif()
 
