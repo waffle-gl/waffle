@@ -83,14 +83,6 @@ check_context_attrs(struct wegl_display *dpy,
                 return false;
             }
 
-            if (version > 20 && !dpy->KHR_create_context) {
-                wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
-                             "for the OpenGL ES2, the EGL_KHR_create_context "
-                             "is required to request a context version greater "
-                             "than 2.0");
-                return false;
-            }
-
             return true;
 
         default:
@@ -152,11 +144,6 @@ choose_real_config(struct wegl_display *dpy,
             attrib_list[renderable_index] = EGL_OPENGL_ES_BIT;
             break;
         case WAFFLE_CONTEXT_OPENGL_ES2:
-            // Some EGL implementations may require the EGL_OPENGL_ES3_BIT_KHR
-            // in order to create an ES3 context. If a bug report arrives to
-            // that effect, then the simplest approach to accommodate that
-            // implementation would be to use a vendor-specific workaround
-            // based on the EGL_VENDOR string.
             attrib_list[renderable_index] = EGL_OPENGL_ES2_BIT;
             break;
         default:
