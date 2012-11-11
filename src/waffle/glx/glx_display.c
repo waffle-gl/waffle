@@ -64,7 +64,21 @@ glx_display_set_extensions(struct glx_display *self)
 
     self->extensions.ARB_create_context                     = waffle_is_extension_in_string(s, "GLX_ARB_create_context");
     self->extensions.ARB_create_context_profile             = waffle_is_extension_in_string(s, "GLX_ARB_create_context_profile");
-    self->extensions.EXT_create_context_es2_profile         = waffle_is_extension_in_string(s, "GLX_EXT_create_context_es2_profile");
+    self->extensions.EXT_create_context_es_profile          = waffle_is_extension_in_string(s, "GLX_EXT_create_context_es_profile");
+
+    // The GLX_EXT_create_context_es2_profile spec, version 4 2012/03/28,
+    // states that GLX_EXT_create_context_es_profile is an alias of
+    // GLX_EXT_create_context_es2_profile and requires that both names must be
+    // exported together for backwards compatibility with clients that expect
+    // the es2_profile name.
+    if (self->extensions.EXT_create_context_es_profile) {
+        self->extensions.EXT_create_context_es2_profile = true;
+    }
+    else {
+        // Assume that GLX does not implement version 3 of the extension, in
+        // which case the ES contexts GLX is capable of creating is ES2.
+        self->extensions.EXT_create_context_es2_profile = waffle_is_extension_in_string(s, "GLX_EXT_create_context_es2_profile");
+    }
 
     return true;
 }

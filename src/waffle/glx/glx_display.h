@@ -47,6 +47,7 @@ struct glx_display {
     struct glx_extentions {
         bool ARB_create_context;
         bool ARB_create_context_profile;
+        bool EXT_create_context_es_profile;
         bool EXT_create_context_es2_profile;
     } extensions;
 };
