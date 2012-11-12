@@ -312,16 +312,16 @@ TEST(gl_basic, glx_init)
     gl_basic_init(WAFFLE_PLATFORM_GLX);
 }
 
-TEST(gl_basic, glx_gles1_unsupported)
-{
-    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES1,
-                 0 /*alpha*/,
-                 true /*expect_config_unsupported*/);
-}
-
 TEST(gl_basic, glx_gl_rgb)
 {
     gl_basic_draw(WAFFLE_CONTEXT_OPENGL,
+                 0 /*alpha*/,
+                 false /*expect_config_unsupported*/);
+}
+
+TEST(gl_basic, glx_gles1_rgb)
+{
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES1,
                  0 /*alpha*/,
                  false /*expect_config_unsupported*/);
 }
@@ -340,6 +340,13 @@ TEST(gl_basic, glx_gl_rgba)
                  false /*expect_config_unsupported*/);
 }
 
+TEST(gl_basic, glx_gles1_rgba)
+{
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES1,
+                 1 /*alpha*/,
+                 false /*expect_config_unsupported*/);
+}
+
 TEST(gl_basic, glx_gles2_rgba)
 {
     gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES2,
@@ -352,11 +359,11 @@ testsuite_glx(void)
 {
     TEST_RUN(gl_basic, glx_init);
 
-    TEST_RUN(gl_basic, glx_gles1_unsupported);
-
     TEST_RUN(gl_basic, glx_gl_rgb);
+    TEST_RUN(gl_basic, glx_gles1_rgb);
     TEST_RUN(gl_basic, glx_gles2_rgb);
     TEST_RUN(gl_basic, glx_gl_rgba);
+    TEST_RUN(gl_basic, glx_gles1_rgba);
     TEST_RUN(gl_basic, glx_gles2_rgba);
 }
 #endif // WAFFLE_HAS_GLX
