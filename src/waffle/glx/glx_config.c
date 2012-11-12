@@ -79,11 +79,25 @@ glx_config_check_context_attrs(struct glx_display *dpy,
                 return false;
             }
             return true;
+
         case WAFFLE_CONTEXT_OPENGL_ES1:
             assert(attrs->context_full_version == 10);
-            wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
-                         "GLX does not support OpenGL ES1");
-            return false;
+
+            if (!dpy->extensions.EXT_create_context_es_profile) {
+                wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
+                             "GLX_EXT_create_context_es_profile is required "
+                             "to create an OpenGL ES1 context");
+                return false;
+            }
+            else if (!linux_platform_dl_can_open(plat->linux,
+                                            WAFFLE_DL_OPENGL_ES1)) {
+                wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
+                             "failed to open the OpenGL ES1 library");
+                return false;
+            }
+
+            return true;
+
         case WAFFLE_CONTEXT_OPENGL_ES2:
             assert(attrs->context_full_version == 20);
 

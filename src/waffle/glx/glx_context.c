@@ -25,6 +25,10 @@
 
 #define GLX_GLXEXT_PROTOTYPES
 
+// The official glxext.h published by Khronos does not yet defined this bit.
+// It is an alias of GLX_CONTEXT_ES2_PROFILE_BIT_EXT.
+#define GLX_CONTEXT_ES_PROFILE_BIT_EXT 0x00000004
+
 #include <assert.h>
 #include <stdlib.h>
 
@@ -93,8 +97,9 @@ glx_context_fill_attrib_list(struct glx_config *config,
                         break;
                 }
                 break;
+            case WAFFLE_CONTEXT_OPENGL_ES1:
             case WAFFLE_CONTEXT_OPENGL_ES2:
-                attrib_list[i++] = GLX_CONTEXT_ES2_PROFILE_BIT_EXT;
+                attrib_list[i++] = GLX_CONTEXT_ES_PROFILE_BIT_EXT;
                 break;
         }
     }
