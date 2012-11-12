@@ -84,7 +84,12 @@ struct waffle_config;
         <listitem>
           <para>
             Choose a config on <parameter>display</parameter> that satifisfies the set of attributes specified by
-            <parameter>attrib_list</parameter>. 
+            <parameter>attrib_list</parameter>.
+
+            The config can later be used to create surfaces and contexts with
+
+            <citerefentry><refentrytitle>waffle_window_create</refentrytitle><manvolnum>3</manvolnum></citerefentry> and
+            <citerefentry><refentrytitle>waffle_context_create</refentrytitle><manvolnum>3</manvolnum></citerefentry>.
           </para>
 
           <para>
@@ -93,8 +98,11 @@ struct waffle_config;
             <parameter>attrib_list</parameter> is null, then it is intrepreted the same as the empty list, which is the
             list that contains only the terminal zero.
 
-            See <xref linkend="sect.attributes"/> below for details about the attributes that
-            <parameter>attrib_list</parameter> may contain.
+            See <xref linkend="sect.attributes"/> below for details on the set of attributes that may appear in
+            <parameter>attrib_list</parameter>.
+          </para>
+
+          <para>
           </para>
         </listitem>
       </varlistentry>
@@ -132,6 +140,7 @@ struct waffle_config;
       platform. Waffle attempts to accomdate those quirks in a platform-neutral way as much as possible, but not all
       quirks can be eliminated through a platform abstraction layer. The quirks are documented below in detail.
     </para>
+
     <para>
       For example, one quirk that Waffle is able to accommodate is that some platforms require specification of context
       attributes at different times.  GLX requires that the context attributes be specified at time of context creation
@@ -139,20 +148,33 @@ struct waffle_config;
       a config (<function>CGLChoosePixelFormat</function>).  Therefore, Waffle is constrained by MacOS to require the
       attributes at time of <function>waffle_config_choose()</function>.
     </para>
+
     <para>
-      Waffle's method of working around these quirks still needs improvement.  It currently imposes some unnecessary
-      restrictions in its workarounds, restrictions that are documented in
-      <xref linkend="sect.attributes"/> below. And, of course, there are likely some
-      undiscovered bugs and undocumented behavior.
-    </para>
-    <para>
-      For additional documentation on the behavior of the context attributes on each platform, refer to the following:
-      for GLX, refer to the <ulink url="http://www.opengl.org/registry/doc/glx1.4.pdf">GLX 1.4 Specification</ulink>
-      and the extension specifications for
-      <ulink url="http://www.opengl.org/registry/specs/ARB/glx_create_context.txt">GLX_ARB_create_context_profile</ulink> and
-      <ulink url="http://www.opengl.org/registry/specs/EXT/glx_create_context_es2_profile.txt">GLX_EXT_create_context_es2_profile</ulink>;
-      for EGL, refer to the <ulink url="http://www.khronos.org/registry/egl/specs/eglspec.1.4.20110406.pdf">EGL 1.4 Specification</ulink>;
-      for CGL, refer to the documentation of <function>kCGLPFAOpenGLProfile</function> in the <ulink url="https://developer.apple.com/library/mac/#documentation/graphicsimaging/reference/CGL_OpenGL/Reference/reference.html">CGL Reference</ulink>.
+      For additional documentation on the behavior of context attributes on each platform, refer to the following:
+
+      <simplelist>
+
+        <member><para>
+            For GLX, refer to the
+            <ulink url="http://www.opengl.org/registry/doc/glx1.4.pdf">GLX 1.4 Specification</ulink>
+            and the specifications for extensions
+            <ulink url="http://www.opengl.org/registry/specs/ARB/glx_create_context.txt">GLX_ARB_create_context_profile</ulink> and
+            <ulink url="http://www.opengl.org/registry/specs/EXT/glx_create_context_es2_profile.txt">GLX_EXT_create_context_es2_profile</ulink>.
+        </para></member>
+
+        <member><para>
+            For EGL, refer to the
+            <ulink url="http://www.khronos.org/registry/egl/specs/eglspec.1.4.20110406.pdf">EGL 1.4 Specification</ulink>
+            and the specifications for extension
+            <ulink url="http://www.khronos.org/registry/egl/extensions/KHR/EGL_KHR_create_context.txt">EGL_KHR_create_context</ulink>.
+        </para></member>
+
+        <member><para>
+            For CGL, refer to the documentation of <function>kCGLPFAOpenGLProfile</function> in the
+            <ulink url="https://developer.apple.com/library/mac/#documentation/graphicsimaging/reference/CGL_OpenGL/Reference/reference.html">CGL Reference</ulink>.
+        </para></member>
+
+      </simplelist>
     </para>
   </refsect1>
 
@@ -207,119 +229,34 @@ struct waffle_config;
         <term><constant>WAFFLE_CONTEXT_MINOR_VERSION</constant></term>
         <listitem>
           <para>
-            The default and supported values of the context version attributes depend on the native platform and the
+            This pair of attributes is optional.
+
+            They specify the context version that
+            <citerefentry><refentrytitle>waffle_context_create</refentrytitle><manvolnum>3</manvolnum></citerefentry>
+            will request.
+          </para>
+
+          <para>
+            The pair's default value and set of accepted values depend on the value of
+            <constant>WAFFLE_CONTEXT_API</constant> and the native platform.
+
+            Below is described in detail the rules by which waffle filters the set of accepted values according to the
             value of <constant>WAFFLE_CONTEXT_API</constant>.
           </para>
-          <para>
-            If the requested API is <constant>WAFFLE_CONTEXT_OPENGL_ES1</constant>, then the default and only supported
-            version is 1.0.  Waffle or the native system may promote the version to 1.1 when
-            <citerefentry><refentrytitle>waffle_context_create</refentrytitle><manvolnum>3</manvolnum></citerefentry> is
-            called.
-          </para>
-          <para>
-            If the requested API is <constant>WAFFLE_CONTEXT_OPENGL_ES2</constant>, then the default and only supported
-            version is 2.0.
-          </para>
-          <para>
-            On all platforms, if the requested API is <constant>WAFFLE_CONTEXT_OPENGL</constant>, then the default
-            version is 1.0. If the requested version is less than 3.2, then <constant>WAFFLE_CONTEXT_PROFILE</constant>
-            is ignored. When
-            <citerefentry><refentrytitle>waffle_context_create</refentrytitle><manvolnum>3</manvolnum></citerefentry> is
-            called, waffle or the native platform may choose a version other than the one requested as described below.
-            <itemizedlist>
-              <listitem>
-                <para>
-                  If the requested version is less than or equal to 3.0, then waffle or the native platform may choose
-                  any of:
-                  <simplelist type="vert">
-                    <member>3.0</member>
-                    <member>3.1, if the GL_ARB_compatibility extension is implemented</member>
-                    <member>the compatibility profile of 3.2 or greater</member>
-                  </simplelist>
-                </para>
-              </listitem>
 
-              <listitem>
-                <para>
-                  If version 3.1 is requested, then waffle or the native platform may choose any of:
-                  <simplelist type="vert">
-                    <member>3.1 with or without the GL_ARB_compatibility extension</member>
-                    <member>the core profile of 3.2 or greater</member>
-                  </simplelist>
-                </para>
-              </listitem>
+          <para>
+            If the requested API is <constant>WAFFLE_CONTEXT_OPENGL_ES1</constant>,
+            then the default and only accepted value is 1.0.
+          </para>
 
-              <listitem>
-                <para>
-                  If version 3.2 or greater is requested, then waffle or the native platform may choose the requested
-                  profile of any version equal to or greater than the requested version.
-                </para>
-              </listitem>
-            </itemizedlist>
-          </para>
           <para>
-            On MacOS, if the requested API is <constant>WAFFLE_CONTEXT_OPENGL</constant>, then the requested version
-            must be 1.0 or 3.2. (This restriction will be removed in the future when waffle begins to more
-            intelligently handle version requests on MacOS).
+            If the requested API is <constant>WAFFLE_CONTEXT_OPENGL_ES2</constant>,
+            then the default and only accepted value is 2.0.
           </para>
-          <para>
-            On GLX, if the requested API is <constant>WAFFLE_CONTEXT_OPENGL</constant> and the requested version is 1.0,
-            then <function>waffle_config_choose()</function> always accepts the requested version and
-            To create the <type>GLXContext</type>,
-            <citerefentry><refentrytitle>waffle_context_create</refentrytitle><manvolnum>3</manvolnum></citerefentry>
-            will call <function>glXCreateContextNew()</function>.
-          </para>
-          <para>
-            On GLX, if the requested API is <constant>WAFFLE_CONTEXT_OPENGL</constant> and the requested version is
-            greater than 1.0 and less than 3.2,
-            then <function>waffle_config_choose()</function> accepts the requested version if and only if the
-            GLX_ARB_create_context extension is supported. If the extension is not supported, then
-            <errorcode>WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM</errorcode> is emitted.
-            To create the <type>GLXContext</type>,
-            <citerefentry><refentrytitle>waffle_context_create</refentrytitle><manvolnum>3</manvolnum></citerefentry>
-            will call <function>glXCreateContextAttribsARB()</function>, which may reject the requested version.
-          </para>
-          <para>
-            On GLX, if the requested API is <constant>WAFFLE_CONTEXT_OPENGL</constant> and the requested version is
-            greater than or equal to 3.2, then <function>waffle_config_choose()</function> accepts the requested version
-            if and only if the GLX_ARB_create_context_profile extension is supported. If the extension is not supported,
-            then <errorcode>WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM</errorcode> is emitted.
-            To create the <type>GLXContext</type>,
-            <citerefentry><refentrytitle>waffle_context_create</refentrytitle><manvolnum>3</manvolnum></citerefentry>
-            will call <function>glXCreateContextAttribsARB()</function>, which may reject the requested version.
-          </para>
-          <para>
-            On EGL, if the requested API is <constant>WAFFLE_CONTEXT_OPENGL</constant> and the requested version is 1.0,
-            then <function>waffle_config_choose()</function> accepts the requested version if the OpenGL library is
-            installed. If the library is not installed, then <errorcode>WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM</errorcode>
-            is emitted.
 
-            To create the <type>EGLConfig</type>, it calls
-            <citerefentry><refentrytitle>eglChooseConfig</refentrytitle><manvolnum>3</manvolnum></citerefentry>, which
-            may reject the requested API and version.
-
-            To create the <type>EGLContext</type>,
-            <citerefentry><refentrytitle>waffle_context_create</refentrytitle><manvolnum>3</manvolnum></citerefentry>
-            will pass an empty <parameter>attrib_list</parameter> to
-            <citerefentry><refentrytitle>eglCreateContext</refentrytitle><manvolnum>3</manvolnum></citerefentry>.
-          </para>
           <para>
-            On EGL, if the requested API is <constant>WAFFLE_CONTEXT_OPENGL</constant> and the requested version is
-            greater than 1.0, then <function>waffle_config_choose()</function> accepts the requested version if the
-            OpenGL library is installed and the EGL_KHR_create_context extension is supported; otherwise,
-            <errorcode>WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM</errorcode> is emitted.
-
-            To create the <type>EGLConfig</type>, it calls
-            <citerefentry><refentrytitle>eglChooseConfig</refentrytitle><manvolnum>3</manvolnum></citerefentry>, which
-            may reject the requested API and version.
-
-            To create the <type>EGLContext</type>,
-            <citerefentry><refentrytitle>waffle_context_create</refentrytitle><manvolnum>3</manvolnum></citerefentry>
-            will pass to
-            <citerefentry><refentrytitle>eglCreateContext</refentrytitle><manvolnum>3</manvolnum></citerefentry>
-            an <parameter>attrib_list</parameter> that specifies the requested version.
-            <citerefentry><refentrytitle>eglCreateContext</refentrytitle><manvolnum>3</manvolnum></citerefentry> may
-            reject the requested version.
+            If the requested API is <constant>WAFFLE_CONTEXT_OPENGL</constant>,
+            then the default and minimum accepted value is 1.0.
           </para>
         </listitem>
       </varlistentry>
@@ -328,21 +265,42 @@ struct waffle_config;
         <term><constant>WAFFLE_CONTEXT_PROFILE</constant></term>
         <listitem>
           <para>
-            The default and supported values for <constant>WAFFLE_CONTEXT_PROFILE</constant> depend on the native
-            platform and the requested value of <constant>WAFFLE_CONTEXT_API</constant>.
+            This attributes is optional.
+
+            It specifies the context profile that
+            <citerefentry><refentrytitle>waffle_context_create</refentrytitle><manvolnum>3</manvolnum></citerefentry>
+            will request.
           </para>
+
           <para>
-            If the requested API is an OpenGL ES API, then the default and only supported value is
-            <constant>WAFFLE_NONE</constant>.
+            The attribute's default value and set of accepted values depend on the value of
+            <constant>WAFFLE_CONTEXT_API</constant> and the native platform.
+
+            Below is described in detail the rules by which waffle filters the set of accepted values according to the
+            value of <constant>WAFFLE_CONTEXT_API</constant>.
           </para>
+
           <para>
-            If the requested API is <constant>WAFFLE_CONTEXT_OPENGL</constant>, then the valid values are
-            <constant>WAFFLE_CONTEXT_PROFILE_CORE</constant>,
-            <constant>WAFFLE_CONTEXT_PROFILE_COMPATIBILITY</constant>, and
-            <constant>WAFFLE_NONE</constant>.
-            The default value is
-            <constant>WAFFLE_CONTEXT_CORE_PROFILE</constant>. If the requested version is less than 3.2, then
-            <constant>WAFFLE_CONTEXT_PROFILE</constant> is ignored.
+            If the requested API is
+            <constant>WAFFLE_CONTEXT_OPENGL_ES1</constant> or
+            <constant>WAFFLE_CONTEXT_OPENGL_ES2</constant>,
+
+            then the default and only accepted value is <constant>WAFFLE_NONE</constant>.
+          </para>
+
+          <para>
+            If the requested API is <constant>WAFFLE_CONTEXT_OPENGL</constant>,
+
+            then default value is <constant>WAFFLE_CONTEXT_CORE_PROFILE</constant>.
+
+            If the requested context version is less than 3.2,
+
+            then the value of <constant>WAFFLE_CONTEXT_PROFILE</constant> is ignored.
+
+            If the requested context version is at least 3.2, then the set of accepted values is
+
+            <constant>WAFFLE_CONTEXT_PROFILE_CORE</constant> and
+            <constant>WAFFLE_CONTEXT_PROFILE_COMPATIBILITY</constant>.
           </para>
         </listitem>
       </varlistentry>
@@ -435,7 +393,19 @@ struct waffle_config;
               <term><errorcode>WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM</errorcode></term>
               <listitem>
                 <para>
-                  The attribute list is valid, but platform does not support the requested config. For example,
+                  If the native platform does not expose the necessary functionality to create a context with the
+                  properties specified by config
+
+                  or if waffle can predetermine that the native platform will reject the config at context creation,
+
+                  but otherwise the requested attributes are valid,
+
+                  then <constant>WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM</constant> is emitted.
+                </para>
+
+                <para>
+                  For example,
+
                   <itemizedlist>
                     <listitem>
                       <para>
@@ -559,6 +529,8 @@ const int32_t attrib_list[] = {
     <title>See Also</title>
     <para>
       <citerefentry><refentrytitle>waffle</refentrytitle><manvolnum>7</manvolnum></citerefentry>
+      <citerefentry><refentrytitle>waffle_context_create</refentrytitle><manvolnum>3</manvolnum></citerefentry>
+      <citerefentry><refentrytitle>waffle_window_create</refentrytitle><manvolnum>3</manvolnum></citerefentry>
     </para>
   </refsect1>
 

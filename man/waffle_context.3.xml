@@ -84,7 +84,16 @@ struct waffle_context;
         <listitem>
           <para>
             Create a context for OpenGL rendering with the properties specified by <parameter>config</parameter>.
+
           </para>
+          <para>
+            The returned context's actual properties may differ from,
+            but are guaranteed to be compatible with,
+            the properties specified by <parameter>config</parameter>.
+
+            See <xref linkend="sect.version_promotion"/> below for details.
+          </para>
+
           <para>
             If <parameter>share_ctx</parameter> is not null, then the newly created context is added to the share group
             of <parameter>share_ctx</parameter>. Some data, such as display lists, are shared among all contexts
@@ -122,6 +131,94 @@ struct waffle_context;
     </variablelist>
   </refsect1>
 
+  <refsect1
+      id="sect.version_promotion">
+
+    <title>Version Promotion</title>
+
+    <para>
+      The context's requested version and profile is given by the config attributes
+
+      <constant>WAFFLE_CONTEXT_MAJOR_VERSION</constant>,
+      <constant>WAFFLE_CONTEXT_MINOR_VERSION</constant>,
+      <constant>WAFFLE_CONTEXT_PROFILE</constant>.
+
+      The context returned by <function>waffle_context_create</function>
+      may implement any version and profile
+      that is backwards compatible with that requested,
+      as described below.
+
+      <itemizedlist>
+
+        <listitem>
+          <para>
+            If the chosen API is
+            <constant>WAFFLE_OPENGL_ES1</constant> or
+            <constant>WAFFLE_OPENGL_ES2</constant>,
+
+            then the returned context may implement any of:
+
+            <simplelist type="vert">
+              <member>* The requested version.</member>
+              <member>* Any later version, so long as no features have been from that later version.</member>
+            </simplelist>
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+            If the chosen API is <constant>WAFFLE_CONTEXT_OPENGL</constant>
+
+            and version 3.0 or less is requested,
+
+            then the returned context may implement any of:
+
+            <simplelist type="vert">
+              <member>* Any version no less than that requested and no greater than 3.0.</member>
+              <member>* Version 3.1, if the GL_ARB_compatibility extension is also implemented.</member>
+              <member>* The compatibility profile of version 3.2 or greater.</member>
+            </simplelist>
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+            If the chosen API is <constant>WAFFLE_CONTEXT_OPENGL</constant>
+
+            and version 3.1 is requested,
+
+            then the returned context may implement any of:
+
+            <simplelist type="vert">
+              <member>* Version 3.1, with or without the GL_ARB_compatibility extension.</member>
+              <member>* The core profile of version 3.2 or greater.</member>
+            </simplelist>
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+            If the chosen API is <constant>WAFFLE_CONTEXT_OPENGL</constant>
+
+            and version 3.2 or greater is requested,
+
+            then the returned context may implement any of:
+
+            <simplelist type="vert">
+              <member>* The requested profile and version.</member>
+              <member><para>
+                  * The requested profile of any later version, so long as no features have been from that later
+                  version and profile.
+              </para></member>
+            </simplelist>
+          </para>
+        </listitem>
+
+      </itemizedlist>
+    </para>
+
+  </refsect1>
+
   <refsect1>
     <title>Return Value</title>
     <xi:include href="common/return-value.xml"/>
@@ -141,6 +238,7 @@ struct waffle_context;
     <title>See Also</title>
     <para>
       <citerefentry><refentrytitle>waffle</refentrytitle><manvolnum>7</manvolnum></citerefentry>
+      <citerefentry><refentrytitle>waffle_config_choose</refentrytitle><manvolnum>3</manvolnum></citerefentry>
     </para>
   </refsect1>
 
