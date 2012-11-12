@@ -2,6 +2,12 @@
 *.so
 *_test
 *unittest
+
+# Ninja
+.ninja_log
+build.ninja
+rules.ninja
+
 examples/simple-x11-egl
 gl_basic
 install_manifest.txt
