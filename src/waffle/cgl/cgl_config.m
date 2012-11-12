@@ -52,12 +52,9 @@ cgl_config_destroy(struct wcore_config *wc_self)
 static bool
 cgl_config_check_attrs(const struct wcore_config_attrs *attrs)
 {
-    int context_version = 10 * attrs->context_major_version
-                        + attrs->context_minor_version;
-
     switch (attrs->context_api) {
         case WAFFLE_CONTEXT_OPENGL:
-            switch (context_version) {
+            switch (attrs->context_full_version) {
                 case 10:
                     return true;
                 case 32:
@@ -100,8 +97,6 @@ cgl_config_fill_pixel_format_attrs(
         CGLPixelFormatAttribute pixel_attrs[])
 {
     int i = 0;
-    int context_version = 10 * attrs->context_major_version
-                        + attrs->context_minor_version;
 
     // CGL does not have an analogue for EGL_DONT_CARE. Instead, one indicates
     // "don't care" by omitting the attribute.
@@ -111,16 +106,16 @@ cgl_config_fill_pixel_format_attrs(
             pixel_attrs[i++] = (value); \
         }
 
-    if (context_version == 10) {
+    if (attrs->context_full_version == 10) {
         ADD_ATTR(kCGLPFAOpenGLProfile, (int) kCGLOGLPVersion_Legacy);
     }
-    else if (context_version == 32
+    else if (attrs->context_full_version == 32
              && attrs->context_profile == WAFFLE_CONTEXT_CORE_PROFILE) {
         ADD_ATTR(kCGLPFAOpenGLProfile, (int) kCGLOGLPVersion_3_2_Core);
     }
     else {
         wcore_error_internal("version=%d profile=%#x",
-                             context_version,
+                             attrs->context_full_version,
                              attrs->context_profile);
         return false;
     }
@@ -132,7 +127,7 @@ cgl_config_fill_pixel_format_attrs(
     ADD_ATTR(kCGLPFASampleBuffers,      attrs->sample_buffers);
     ADD_ATTR(kCGLPFASamples,            attrs->samples);
 
-    if (context_version == 10)
+    if (attrs->context_full_version == 10)
         ADD_ATTR(kCGLPFAAccumSize,      attrs->accum_buffer);
 
     if (attrs->double_buffered)

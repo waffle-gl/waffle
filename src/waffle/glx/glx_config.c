@@ -56,25 +56,23 @@ glx_config_check_context_attrs(struct glx_display *dpy,
                                const struct wcore_config_attrs *attrs)
 {
     struct glx_platform *plat = glx_platform(dpy->wcore.platform);
-    int version = 10 * attrs->context_major_version
-                + attrs->context_minor_version;
 
     switch (attrs->context_api) {
         case WAFFLE_CONTEXT_OPENGL:
-            if (version != 10 && !dpy->extensions.ARB_create_context) {
+            if (attrs->context_full_version != 10 && !dpy->extensions.ARB_create_context) {
                 wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
                              "GLX_ARB_create_context is required in order to "
                              "request a GL version not equal to the default "
                              "value 1.0");
                 return false;
             }
-            else if (version >= 32 && !dpy->extensions.ARB_create_context_profile) {
+            else if (attrs->context_full_version >= 32 && !dpy->extensions.ARB_create_context_profile) {
                 wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
                              "GLX_ARB_create_context_profile is required "
                              "to create a context with version >= 3.2");
                 return false;
             }
-            else if (version >= 32 && attrs->context_profile == WAFFLE_NONE) {
+            else if (attrs->context_full_version >= 32 && attrs->context_profile == WAFFLE_NONE) {
                 wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
                              "WAFFLE_CONTEXT_PROFILE must be provided when "
                              "the requested context version is >= 3.2");
@@ -82,10 +80,13 @@ glx_config_check_context_attrs(struct glx_display *dpy,
             }
             return true;
         case WAFFLE_CONTEXT_OPENGL_ES1:
+            assert(attrs->context_full_version == 10);
             wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
                          "GLX does not support OpenGL ES1");
             return false;
         case WAFFLE_CONTEXT_OPENGL_ES2:
+            assert(attrs->context_full_version == 20);
+
             if (!dpy->extensions.EXT_create_context_es2_profile) {
                 wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
                              "GLX_EXT_create_context_es2_profile is required "

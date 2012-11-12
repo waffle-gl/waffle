@@ -40,19 +40,16 @@ check_context_attrs(struct wegl_display *dpy,
 {
     struct wcore_platform *plat = dpy->wcore.platform;
 
-    int version = 10 * attrs->context_major_version
-                + attrs->context_minor_version;
-
     switch (attrs->context_api) {
         case WAFFLE_CONTEXT_OPENGL:
-            if (version != 10 && !dpy->KHR_create_context) {
+            if (attrs->context_full_version != 10 && !dpy->KHR_create_context) {
                 wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
                              "KHR_EXT_create_context is required in order to "
                              "request a GL version not equal to the default "
                              "value 1.0");
                 return false;
             }
-            else if (version >= 32 && attrs->context_profile == WAFFLE_NONE) {
+            else if (attrs->context_full_version >= 32 && attrs->context_profile == WAFFLE_NONE) {
                 wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
                              "WAFFLE_CONTEXT_PROFILE must be provided when "
                              "the requested context version is >= 3.2");

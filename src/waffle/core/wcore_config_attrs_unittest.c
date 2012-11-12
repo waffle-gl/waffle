@@ -42,6 +42,7 @@ static const struct wcore_config_attrs default_attrs = {
     .context_api            = WAFFLE_CONTEXT_OPENGL,
     .context_major_version  = 1,
     .context_minor_version  = 0,
+    .context_full_version   = 10,
     .context_profile        = WAFFLE_CONTEXT_CORE_PROFILE,
 
     .rgb_size               = 0,

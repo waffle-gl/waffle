@@ -92,23 +92,20 @@ wcore_config_attrs_set_defaults(
 static bool
 check_gl_context(struct wcore_config_attrs *attrs)
 {
-    int version = 10 * attrs->context_major_version
-                + attrs->context_minor_version;
-
-    if (version < 10) {
+    if (attrs->context_full_version < 10) {
         wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
                      "for OpenGL, the requested context version "
                      "must be >= 1.0");
         return false;
     }
-    else if (version >= 32
+    else if (attrs->context_full_version >= 32
              && attrs->context_profile == WAFFLE_NONE) {
         wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
                      "WAFFLE_CONTEXT_PROFILE must be provided when "
                      "the requested OpenGL version is >= 3.2");
         return false;
     }
-    else if (version >= 32
+    else if (attrs->context_full_version >= 32
              && attrs->context_profile == WAFFLE_CONTEXT_CORE_PROFILE
              && attrs->accum_buffer) {
         wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
@@ -123,12 +120,9 @@ check_gl_context(struct wcore_config_attrs *attrs)
 static bool
 check_es_context(struct wcore_config_attrs *attrs)
 {
-    int version = 10 * attrs->context_major_version
-                + attrs->context_minor_version;
-
     switch (attrs->context_api) {
         case WAFFLE_CONTEXT_OPENGL_ES1:
-            if (version != 10) {
+            if (attrs->context_full_version != 10) {
                 wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
                              "the context version must be 1.0 for OpenGL ES1");
                 return false;
@@ -136,7 +130,7 @@ check_es_context(struct wcore_config_attrs *attrs)
 
             return true;
         case WAFFLE_CONTEXT_OPENGL_ES2:
-            if (version != 20) {
+            if (attrs->context_full_version != 20) {
                 wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
                              "the context version must be 2.0 for OpenGL ES2");
                 return false;
@@ -284,6 +278,9 @@ wcore_config_attrs_parse(
     attrs->rgba_size = attrs->rgb_size;
     if (attrs->alpha_size != WAFFLE_DONT_CARE)
         attrs->rgba_size += attrs->alpha_size;
+
+    attrs->context_full_version = 10 * attrs->context_major_version
+                                + attrs->context_minor_version;
 
     if (!check_context(attrs))
         return false;
