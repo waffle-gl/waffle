@@ -37,11 +37,6 @@
 #include "glx_display.h"
 #include "glx_platform.h"
 
-enum {
-    WAFFLE_GLX_CONTEXT_ATTRS_LENGTH = 7,
-};
-
-
 bool
 glx_context_destroy(struct wcore_context *wc_self)
 {
@@ -120,7 +115,9 @@ glx_context_create_native(struct glx_config *config,
     if (dpy->extensions.ARB_create_context) {
         bool ok;
 
-        int attrib_list[WAFFLE_GLX_CONTEXT_ATTRS_LENGTH];
+        // Choose a large size to prevent accidental overflow.
+        int attrib_list[64];
+
         ok = glx_context_fill_attrib_list(config, attrib_list);
         if (!ok)
             return false;
