@@ -28,6 +28,7 @@
 
 /// @file
 
+#include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -87,87 +88,105 @@ wcore_config_attrs_set_defaults(
     }
 }
 
-/// @brief Check the context attributes.
-///
-/// The validation done here is independent of the native platform. The native
-/// platform may need to do additional checking. For example, GLX should
-/// reject the attribute list if the API is GLES1.
+/// @brief Check context attributes when api is OpenGL.
 static bool
-wcore_config_attrs_check_context(struct wcore_config_attrs *attrs)
+check_gl_context(struct wcore_config_attrs *attrs)
+{
+    int version = 10 * attrs->context_major_version
+                + attrs->context_minor_version;
+
+    if (version < 10) {
+        wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
+                     "for OpenGL, the requested context version "
+                     "must be >= 1.0");
+        return false;
+    }
+    else if (version >= 32
+             && attrs->context_profile == WAFFLE_NONE) {
+        wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
+                     "WAFFLE_CONTEXT_PROFILE must be provided when "
+                     "the requested OpenGL version is >= 3.2");
+        return false;
+    }
+    else if (version >= 32
+             && attrs->context_profile == WAFFLE_CONTEXT_CORE_PROFILE
+             && attrs->accum_buffer) {
+        wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
+                     "core profiles do not support accumulation "
+                     "buffers");
+        return false;
+    }
+
+    return true;
+}
+/// @brief Check context attributes when api is OpenGL ESx.
+static bool
+check_es_context(struct wcore_config_attrs *attrs)
 {
     int version = 10 * attrs->context_major_version
                 + attrs->context_minor_version;
 
     switch (attrs->context_api) {
-        case WAFFLE_CONTEXT_OPENGL: {
-            switch (attrs->context_profile) {
-                case WAFFLE_NONE:
-                case WAFFLE_CONTEXT_CORE_PROFILE:
-                case WAFFLE_CONTEXT_COMPATIBILITY_PROFILE:
-                    break;
-                default:
-                    goto bad_profile;
-            }
-
-            if (version < 10) {
-                wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
-                             "for OpenGL, the requested context version "
-                             "must be >= 1.0");
-                return false;
-            }
-            else if (version >= 32 && attrs->context_profile == WAFFLE_NONE) {
-                wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
-                             "WAFFLE_CONTEXT_PROFILE must be provided when "
-                             "the requested OpenGL version is >= 3.2");
-                return false;
-            }
-            else if (version >= 32
-                     && attrs->context_profile == WAFFLE_CONTEXT_CORE_PROFILE
-                     && attrs->accum_buffer) {
-                wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
-                             "core profiles do not support accumulation "
-                             "buffers");
-                return false;
-            }
-
-            return true;
-        }
-        case WAFFLE_CONTEXT_OPENGL_ES1: {
+        case WAFFLE_CONTEXT_OPENGL_ES1:
             if (version != 10) {
                 wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
                              "the context version must be 1.0 for OpenGL ES1");
                 return false;
             }
 
-            if (attrs->context_profile != WAFFLE_NONE)
-                goto bad_profile;
-
             return true;
-        }
-        case WAFFLE_CONTEXT_OPENGL_ES2: {
+        case WAFFLE_CONTEXT_OPENGL_ES2:
             if (version != 20) {
                 wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
-                             "the context version must 2.0 for OpenGL ES2");
+                             "the context version must be 2.0 for OpenGL ES2");
                 return false;
             }
 
-            if (attrs->context_profile != WAFFLE_NONE)
-                goto bad_profile;
-
             return true;
-        }
+        default:
+            assert(0);
+            return false;
+    }
+}
+
+/// @brief Check the context attributes.
+///
+/// The validation done here is independent of the native platform. The native
+/// platform may need to do additional checking. For example, GLX should
+/// reject the attribute list if the API is GLES1.
+static bool
+check_context(struct wcore_config_attrs *attrs)
+{
+    if (attrs->context_minor_version < 0) {
+        wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
+                     "context minor version must be >= 0");
+        return false;
+    }
+
+    switch (attrs->context_profile) {
+        case WAFFLE_NONE:
+        case WAFFLE_CONTEXT_CORE_PROFILE:
+        case WAFFLE_CONTEXT_COMPATIBILITY_PROFILE:
+            break;
+        default:
+            wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
+                         "WAFFLE_CONTEXT_PROFILE has bad value %#x",
+                         attrs->context_profile);
+            return false;
+    }
+
+    switch (attrs->context_api) {
+        case WAFFLE_CONTEXT_OPENGL:
+            return check_gl_context(attrs);
+        case WAFFLE_CONTEXT_OPENGL_ES1:
+        case WAFFLE_CONTEXT_OPENGL_ES2:
+            return check_es_context(attrs);
         default:
             wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
                          "WAFFLE_CONTEXT_API has bad value %#x",
                          attrs->context_api);
             return false;
     }
-
-bad_profile:
-    wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
-                 "WAFFLE_CONTEXT_PROFILE has bad value %#x",
-                 attrs->context_profile);
-    return false;
 }
 
 bool
@@ -266,7 +285,7 @@ wcore_config_attrs_parse(
     if (attrs->alpha_size != WAFFLE_DONT_CARE)
         attrs->rgba_size += attrs->alpha_size;
 
-    if (!wcore_config_attrs_check_context(attrs))
+    if (!check_context(attrs))
         return false;
 
     return true;
