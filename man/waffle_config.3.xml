@@ -92,7 +92,8 @@ struct waffle_config;
             attribute is absent from <parameter>attrib_list</parameter>, then it assumes its default value.  If
             <parameter>attrib_list</parameter> is null, then it is intrepreted the same as the empty list, which is the
             list that contains only the terminal zero.
-            See <xref linkend="sect.attributes"/> below for details which attributes that
+
+            See <xref linkend="sect.attributes"/> below for details about the attributes that
             <parameter>attrib_list</parameter> may contain.
           </para>
         </listitem>
