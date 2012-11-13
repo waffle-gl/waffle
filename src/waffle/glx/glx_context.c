@@ -80,7 +80,7 @@ glx_context_fill_attrib_list(struct glx_config *config,
     attrib_list[i++] = GLX_CONTEXT_MINOR_VERSION_ARB;
     attrib_list[i++] = attrs->context_minor_version;
 
-    if (dpy->extensions.ARB_create_context_profile) {
+    if (dpy->ARB_create_context_profile) {
         attrib_list[i++] = GLX_CONTEXT_PROFILE_MASK_ARB;
 
         switch (attrs->context_api) {
@@ -117,7 +117,7 @@ glx_context_create_native(struct glx_config *config,
     struct glx_display *dpy = glx_display(config->wcore.display);
     struct glx_platform *platform = glx_platform(dpy->wcore.platform);
 
-    if (dpy->extensions.ARB_create_context) {
+    if (dpy->ARB_create_context) {
         bool ok;
 
         // Choose a large size to prevent accidental overflow.

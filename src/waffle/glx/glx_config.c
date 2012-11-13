@@ -59,14 +59,14 @@ glx_config_check_context_attrs(struct glx_display *dpy,
 
     switch (attrs->context_api) {
         case WAFFLE_CONTEXT_OPENGL:
-            if (attrs->context_full_version != 10 && !dpy->extensions.ARB_create_context) {
+            if (attrs->context_full_version != 10 && !dpy->ARB_create_context) {
                 wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
                              "GLX_ARB_create_context is required in order to "
                              "request a GL version not equal to the default "
                              "value 1.0");
                 return false;
             }
-            else if (attrs->context_full_version >= 32 && !dpy->extensions.ARB_create_context_profile) {
+            else if (attrs->context_full_version >= 32 && !dpy->ARB_create_context_profile) {
                 wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
                              "GLX_ARB_create_context_profile is required "
                              "to create a context with version >= 3.2");
@@ -82,7 +82,7 @@ glx_config_check_context_attrs(struct glx_display *dpy,
         case WAFFLE_CONTEXT_OPENGL_ES1:
             assert(attrs->context_full_version == 10);
 
-            if (!dpy->extensions.EXT_create_context_es_profile) {
+            if (!dpy->EXT_create_context_es_profile) {
                 wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
                              "GLX_EXT_create_context_es_profile is required "
                              "to create an OpenGL ES1 context");
@@ -100,7 +100,7 @@ glx_config_check_context_attrs(struct glx_display *dpy,
         case WAFFLE_CONTEXT_OPENGL_ES2:
             assert(attrs->context_full_version == 20);
 
-            if (!dpy->extensions.EXT_create_context_es2_profile) {
+            if (!dpy->EXT_create_context_es2_profile) {
                 wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
                              "GLX_EXT_create_context_es2_profile is required "
                              "to create an OpenGL ES2 context");

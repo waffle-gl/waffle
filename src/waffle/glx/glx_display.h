@@ -44,12 +44,10 @@ struct glx_display {
     struct wcore_display wcore;
     struct x11_display x11;
 
-    struct glx_extentions {
-        bool ARB_create_context;
-        bool ARB_create_context_profile;
-        bool EXT_create_context_es_profile;
-        bool EXT_create_context_es2_profile;
-    } extensions;
+    bool ARB_create_context;
+    bool ARB_create_context_profile;
+    bool EXT_create_context_es_profile;
+    bool EXT_create_context_es2_profile;
 };
 
 DEFINE_CONTAINER_CAST_FUNC(glx_display,
