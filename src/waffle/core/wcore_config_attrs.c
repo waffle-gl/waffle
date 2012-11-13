@@ -98,11 +98,14 @@ check_gl_context(struct wcore_config_attrs *attrs)
                      "must be >= 1.0");
         return false;
     }
-    else if (attrs->context_full_version >= 32
-             && attrs->context_profile == WAFFLE_NONE) {
+    else if (attrs->context_full_version >= 32 &&
+             attrs->context_profile != WAFFLE_CONTEXT_CORE_PROFILE &&
+             attrs->context_profile != WAFFLE_CONTEXT_COMPATIBILITY_PROFILE) {
         wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
-                     "WAFFLE_CONTEXT_PROFILE must be provided when "
-                     "the requested OpenGL version is >= 3.2");
+                     "for OpenGL >= 3.2,"
+                     "WAFFLE_CONTEXT_PROFILE must be either "
+                     "WAFFLE_CONTEXT_CORE_PROFILE or "
+                     "WAFFLE_CONTEXT_COMPATIBILITY_PROFILE");
         return false;
     }
     else if (attrs->context_full_version >= 32
@@ -162,18 +165,6 @@ check_context(struct wcore_config_attrs *attrs)
         wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
                      "context minor version must be >= 0");
         return false;
-    }
-
-    switch (attrs->context_profile) {
-        case WAFFLE_NONE:
-        case WAFFLE_CONTEXT_CORE_PROFILE:
-        case WAFFLE_CONTEXT_COMPATIBILITY_PROFILE:
-            break;
-        default:
-            wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
-                         "WAFFLE_CONTEXT_PROFILE has bad value %#x",
-                         attrs->context_profile);
-            return false;
     }
 
     switch (attrs->context_api) {
