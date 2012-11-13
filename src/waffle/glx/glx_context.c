@@ -80,28 +80,31 @@ glx_context_fill_attrib_list(struct glx_config *config,
     attrib_list[i++] = GLX_CONTEXT_MINOR_VERSION_ARB;
     attrib_list[i++] = attrs->context_minor_version;
 
-    if (dpy->ARB_create_context_profile) {
-        attrib_list[i++] = GLX_CONTEXT_PROFILE_MASK_ARB;
+    switch (attrs->context_api) {
+        case WAFFLE_CONTEXT_OPENGL:
+            if (attrs->context_full_version >= 32) {
+                assert(dpy->ARB_create_context_profile);
 
-        switch (attrs->context_api) {
-            case WAFFLE_CONTEXT_OPENGL:
                 switch (attrs->context_profile) {
                     case WAFFLE_CONTEXT_CORE_PROFILE:
+                        attrib_list[i++] = GLX_CONTEXT_PROFILE_MASK_ARB;
                         attrib_list[i++] = GLX_CONTEXT_CORE_PROFILE_BIT_ARB;
                         break;
                     case WAFFLE_CONTEXT_COMPATIBILITY_PROFILE:
+                        attrib_list[i++] = GLX_CONTEXT_PROFILE_MASK_ARB;
                         attrib_list[i++] = GLX_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB;
                         break;
-                    case WAFFLE_NONE:
-                        attrib_list[i++] = 0;
+                    default:
+                        assert(false);
                         break;
                 }
-                break;
-            case WAFFLE_CONTEXT_OPENGL_ES1:
-            case WAFFLE_CONTEXT_OPENGL_ES2:
-                attrib_list[i++] = GLX_CONTEXT_ES_PROFILE_BIT_EXT;
-                break;
-        }
+            }
+            break;
+        case WAFFLE_CONTEXT_OPENGL_ES1:
+        case WAFFLE_CONTEXT_OPENGL_ES2:
+            attrib_list[i++] = GLX_CONTEXT_PROFILE_MASK_ARB;
+            attrib_list[i++] = GLX_CONTEXT_ES_PROFILE_BIT_EXT;
+            break;
     }
 
     attrib_list[i++] = 0;
