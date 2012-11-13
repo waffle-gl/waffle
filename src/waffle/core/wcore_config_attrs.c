@@ -120,6 +120,13 @@ check_gl_context(struct wcore_config_attrs *attrs)
 static bool
 check_es_context(struct wcore_config_attrs *attrs)
 {
+    if (attrs->context_profile != WAFFLE_NONE) {
+        wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
+                     "for OpenGL ES, WAFFLE_CONTEXT_PROFILE must be "
+                     "WAFFLE_NONE");
+        return false;
+    }
+
     switch (attrs->context_api) {
         case WAFFLE_CONTEXT_OPENGL_ES1:
             if (attrs->context_full_version != 10) {
