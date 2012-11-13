@@ -88,6 +88,7 @@ waffle_display_supports_context_api(
         case WAFFLE_CONTEXT_OPENGL:
         case WAFFLE_CONTEXT_OPENGL_ES1:
         case WAFFLE_CONTEXT_OPENGL_ES2:
+        case WAFFLE_CONTEXT_OPENGL_ES3:
             break;
         default:
             wcore_errorf(WAFFLE_ERROR_BAD_PARAMETER,
