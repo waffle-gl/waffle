@@ -280,8 +280,11 @@ struct waffle_config;
           </para>
 
           <para>
-            The attribute's default value and set of accepted values depend on the value of
-            <constant>WAFFLE_CONTEXT_API</constant> and the native platform.
+            The attribute's default value and set of accepted values depend on the values of
+            <constant>WAFFLE_CONTEXT_API</constant>,
+            <constant>WAFFLE_CONTEXT_MAJOR_VERSION</constant>,
+            <constant>WAFFLE_CONTEXT_MINOR_VERSION</constant>,
+            and the native platform.
 
             Below is described in detail the rules by which waffle filters the set of accepted values according to the
             value of <constant>WAFFLE_CONTEXT_API</constant>.
