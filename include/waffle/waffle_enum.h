@@ -65,6 +65,7 @@ enum waffle_enum {
         WAFFLE_CONTEXT_OPENGL                                   = 0x020b,
         WAFFLE_CONTEXT_OPENGL_ES1                               = 0x020c,
         WAFFLE_CONTEXT_OPENGL_ES2                               = 0x020d,
+        WAFFLE_CONTEXT_OPENGL_ES3                               = 0x0214,
 
     WAFFLE_CONTEXT_MAJOR_VERSION                                = 0x020e,
     WAFFLE_CONTEXT_MINOR_VERSION                                = 0x020f,
@@ -95,6 +96,7 @@ enum waffle_enum {
     WAFFLE_DL_OPENGL                                            = 0x0301,
     WAFFLE_DL_OPENGL_ES1                                        = 0x0302,
     WAFFLE_DL_OPENGL_ES2                                        = 0x0303,
+    WAFFLE_DL_OPENGL_ES3                                        = 0x0304,
 };
 
 #ifdef __cplusplus
