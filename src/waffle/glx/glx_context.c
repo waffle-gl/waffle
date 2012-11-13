@@ -102,6 +102,7 @@ glx_context_fill_attrib_list(struct glx_config *config,
             break;
         case WAFFLE_CONTEXT_OPENGL_ES1:
         case WAFFLE_CONTEXT_OPENGL_ES2:
+        case WAFFLE_CONTEXT_OPENGL_ES3:
             attrib_list[i++] = GLX_CONTEXT_PROFILE_MASK_ARB;
             attrib_list[i++] = GLX_CONTEXT_ES_PROFILE_BIT_EXT;
             break;

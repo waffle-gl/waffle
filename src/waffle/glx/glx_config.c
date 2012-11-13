@@ -114,6 +114,26 @@ glx_config_check_context_attrs(struct glx_display *dpy,
                 return false;
             }
             return true;
+
+        case WAFFLE_CONTEXT_OPENGL_ES3:
+            assert(attrs->context_major_version == 3);
+
+            if (!dpy->EXT_create_context_es_profile) {
+                wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
+                             "GLX_EXT_create_context_es_profile is required "
+                             "to create an OpenGL ES3 context");
+                return false;
+            }
+
+            if (!linux_platform_dl_can_open(plat->linux,
+                                            WAFFLE_DL_OPENGL_ES3)) {
+                wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
+                             "failed to open the OpenGL ES3 library");
+                return false;
+            }
+
+            return true;
+
         default:
             wcore_error_internal("context_api has bad value %#x",
                                  attrs->context_api);
