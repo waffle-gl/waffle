@@ -94,18 +94,245 @@ TEST(wcore_config_attrs, empty_attrib_list)
     EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
 }
 
+TEST(wcore_config_attrs, gl_defaults)
+{
+    const int32_t attrib_list[] = {
+        WAFFLE_CONTEXT_API, WAFFLE_CONTEXT_OPENGL,
+        0,
+    };
+
+    ASSERT_TRUE(wcore_config_attrs_parse(attrib_list, &actual_attrs));
+
+    ASSERT_TRUE(actual_attrs.context_major_version == 1);
+    ASSERT_TRUE(actual_attrs.context_minor_version == 0);
+    ASSERT_TRUE(actual_attrs.context_full_version == 10);
+    ASSERT_TRUE(actual_attrs.context_profile == WAFFLE_CONTEXT_CORE_PROFILE);
+    ASSERT_TRUE(actual_attrs.red_size == WAFFLE_DONT_CARE);
+    ASSERT_TRUE(actual_attrs.green_size == WAFFLE_DONT_CARE);
+    ASSERT_TRUE(actual_attrs.blue_size == WAFFLE_DONT_CARE);
+    ASSERT_TRUE(actual_attrs.alpha_size == WAFFLE_DONT_CARE);
+    ASSERT_TRUE(actual_attrs.depth_size == WAFFLE_DONT_CARE);
+    ASSERT_TRUE(actual_attrs.stencil_size == WAFFLE_DONT_CARE);
+    ASSERT_TRUE(actual_attrs.sample_buffers == false);
+    ASSERT_TRUE(actual_attrs.samples == 0);
+    ASSERT_TRUE(actual_attrs.double_buffered == true);
+    ASSERT_TRUE(actual_attrs.accum_buffer == false);
+}
+
+TEST(wcore_config_attrs, gles1_defaults)
+{
+    const int32_t attrib_list[] = {
+        WAFFLE_CONTEXT_API, WAFFLE_CONTEXT_OPENGL_ES1,
+        0,
+    };
+
+    ASSERT_TRUE(wcore_config_attrs_parse(attrib_list, &actual_attrs));
+
+    ASSERT_TRUE(actual_attrs.context_major_version == 1);
+    ASSERT_TRUE(actual_attrs.context_minor_version == 0);
+    ASSERT_TRUE(actual_attrs.context_full_version == 10);
+    ASSERT_TRUE(actual_attrs.context_profile == WAFFLE_NONE);
+
+    ASSERT_TRUE(actual_attrs.red_size == WAFFLE_DONT_CARE);
+    ASSERT_TRUE(actual_attrs.green_size == WAFFLE_DONT_CARE);
+    ASSERT_TRUE(actual_attrs.blue_size == WAFFLE_DONT_CARE);
+    ASSERT_TRUE(actual_attrs.alpha_size == WAFFLE_DONT_CARE);
+    ASSERT_TRUE(actual_attrs.depth_size == WAFFLE_DONT_CARE);
+    ASSERT_TRUE(actual_attrs.stencil_size == WAFFLE_DONT_CARE);
+    ASSERT_TRUE(actual_attrs.sample_buffers == false);
+    ASSERT_TRUE(actual_attrs.samples == 0);
+    ASSERT_TRUE(actual_attrs.double_buffered == true);
+    ASSERT_TRUE(actual_attrs.accum_buffer == false);
+}
+
+TEST(wcore_config_attrs, gles2_defaults)
+{
+    const int32_t attrib_list[] = {
+        WAFFLE_CONTEXT_API, WAFFLE_CONTEXT_OPENGL_ES2,
+        0,
+    };
+
+    ASSERT_TRUE(wcore_config_attrs_parse(attrib_list, &actual_attrs));
+
+    ASSERT_TRUE(actual_attrs.context_major_version == 2);
+    ASSERT_TRUE(actual_attrs.context_minor_version == 0);
+    ASSERT_TRUE(actual_attrs.context_full_version == 20);
+    ASSERT_TRUE(actual_attrs.context_profile == WAFFLE_NONE);
+
+    ASSERT_TRUE(actual_attrs.red_size == WAFFLE_DONT_CARE);
+    ASSERT_TRUE(actual_attrs.green_size == WAFFLE_DONT_CARE);
+    ASSERT_TRUE(actual_attrs.blue_size == WAFFLE_DONT_CARE);
+    ASSERT_TRUE(actual_attrs.alpha_size == WAFFLE_DONT_CARE);
+    ASSERT_TRUE(actual_attrs.depth_size == WAFFLE_DONT_CARE);
+    ASSERT_TRUE(actual_attrs.stencil_size == WAFFLE_DONT_CARE);
+    ASSERT_TRUE(actual_attrs.sample_buffers == false);
+    ASSERT_TRUE(actual_attrs.samples == 0);
+    ASSERT_TRUE(actual_attrs.double_buffered == true);
+    ASSERT_TRUE(actual_attrs.accum_buffer == false);
+}
+
 TEST(wcore_config_attrs, bad_attr)
 {
     const int32_t attrib_list[] = {
-        WAFFLE_CONTEXT_API,         WAFFLE_CONTEXT_OPENGL,
-        WAFFLE_CONTEXT_PROFILE,     WAFFLE_CONTEXT_OPENGL_ES2,
+        WAFFLE_CONTEXT_API,              WAFFLE_CONTEXT_OPENGL,
+        WAFFLE_CONTEXT_CORE_PROFILE,     WAFFLE_CONTEXT_OPENGL_ES2,
         0,
     };
 
     ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
     EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
-    EXPECT_TRUE(strstr(wcore_error_get_info()->message, "WAFFLE_CONTEXT_OPENGL_ES2")
-                || strstr(wcore_error_get_info()->message, "0x20d"));
+}
+
+TEST(wcore_config_attrs, gl31_profile_is_ignored)
+{
+    const int32_t attrib_list[] = {
+        WAFFLE_CONTEXT_API,             WAFFLE_CONTEXT_OPENGL,
+        WAFFLE_CONTEXT_MAJOR_VERSION,   3,
+        WAFFLE_CONTEXT_MINOR_VERSION,   1,
+        WAFFLE_CONTEXT_PROFILE,         0x314159,
+        0,
+    };
+
+    ASSERT_TRUE(wcore_config_attrs_parse(attrib_list, &actual_attrs));
+}
+
+TEST(wcore_config_attrs, gl32_profile_is_checked)
+{
+    const int32_t attrib_list[] = {
+        WAFFLE_CONTEXT_API,             WAFFLE_CONTEXT_OPENGL,
+        WAFFLE_CONTEXT_MAJOR_VERSION,   3,
+        WAFFLE_CONTEXT_MINOR_VERSION,   2,
+        WAFFLE_CONTEXT_PROFILE,         0x314159,
+        0,
+    };
+
+    ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
+    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
+    EXPECT_TRUE(strstr(wcore_error_get_info()->message, "WAFFLE_CONTEXT_PROFILE"));
+}
+
+TEST(wcore_config_attrs, gles1_profile_is_checked)
+{
+    const int32_t attrib_list[] = {
+        WAFFLE_CONTEXT_API,             WAFFLE_CONTEXT_OPENGL_ES1,
+        WAFFLE_CONTEXT_PROFILE,         WAFFLE_CONTEXT_CORE_PROFILE,
+        0,
+    };
+
+    ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
+    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
+    EXPECT_TRUE(strstr(wcore_error_get_info()->message, "WAFFLE_CONTEXT_PROFILE"));
+}
+
+TEST(wcore_config_attrs, gles2_profile_is_checked)
+{
+    const int32_t attrib_list[] = {
+        WAFFLE_CONTEXT_API,             WAFFLE_CONTEXT_OPENGL_ES2,
+        WAFFLE_CONTEXT_PROFILE,         WAFFLE_CONTEXT_CORE_PROFILE,
+        0,
+    };
+
+    ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
+    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
+    EXPECT_TRUE(strstr(wcore_error_get_info()->message, "WAFFLE_CONTEXT_PROFILE"));
+}
+
+TEST(wcore_config_attrs, negative_minor_version)
+{
+    const int32_t attrib_list[] = {
+        WAFFLE_CONTEXT_API,             WAFFLE_CONTEXT_OPENGL,
+        WAFFLE_CONTEXT_MINOR_VERSION,   -1,
+        0,
+    };
+
+    ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
+    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
+}
+
+TEST(wcore_config_attrs, gles10)
+{
+    const int32_t attrib_list[] = {
+        WAFFLE_CONTEXT_API,             WAFFLE_CONTEXT_OPENGL_ES1,
+        WAFFLE_CONTEXT_MAJOR_VERSION,   1,
+        WAFFLE_CONTEXT_MINOR_VERSION,   0,
+        0,
+    };
+
+    ASSERT_TRUE(wcore_config_attrs_parse(attrib_list, &actual_attrs));
+    ASSERT_TRUE(actual_attrs.context_major_version == 1);
+    ASSERT_TRUE(actual_attrs.context_minor_version == 0);
+    ASSERT_TRUE(actual_attrs.context_full_version == 10);
+}
+
+TEST(wcore_config_attrs, gles11)
+{
+    const int32_t attrib_list[] = {
+        WAFFLE_CONTEXT_API,             WAFFLE_CONTEXT_OPENGL_ES1,
+        WAFFLE_CONTEXT_MAJOR_VERSION,   1,
+        WAFFLE_CONTEXT_MINOR_VERSION,   1,
+        0,
+    };
+
+    ASSERT_TRUE(wcore_config_attrs_parse(attrib_list, &actual_attrs));
+    ASSERT_TRUE(actual_attrs.context_major_version == 1);
+    ASSERT_TRUE(actual_attrs.context_minor_version == 1);
+    ASSERT_TRUE(actual_attrs.context_full_version == 11);
+}
+
+TEST(wcore_config_attrs, gles12_is_bad)
+{
+    const int32_t attrib_list[] = {
+        WAFFLE_CONTEXT_API,             WAFFLE_CONTEXT_OPENGL_ES1,
+        WAFFLE_CONTEXT_MAJOR_VERSION,   1,
+        WAFFLE_CONTEXT_MINOR_VERSION,   2,
+        0,
+    };
+
+    ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
+    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
+}
+
+TEST(wcore_config_attrs, gles20)
+{
+    const int32_t attrib_list[] = {
+        WAFFLE_CONTEXT_API,             WAFFLE_CONTEXT_OPENGL_ES2,
+        WAFFLE_CONTEXT_MAJOR_VERSION,   2,
+        WAFFLE_CONTEXT_MINOR_VERSION,   0,
+        0,
+    };
+
+    ASSERT_TRUE(wcore_config_attrs_parse(attrib_list, &actual_attrs));
+    ASSERT_TRUE(actual_attrs.context_major_version == 2);
+    ASSERT_TRUE(actual_attrs.context_minor_version == 0);
+    ASSERT_TRUE(actual_attrs.context_full_version == 20);
+}
+
+TEST(wcore_config_attrs, gles21)
+{
+    const int32_t attrib_list[] = {
+        WAFFLE_CONTEXT_API,             WAFFLE_CONTEXT_OPENGL_ES2,
+        WAFFLE_CONTEXT_MAJOR_VERSION,   2,
+        WAFFLE_CONTEXT_MINOR_VERSION,   1,
+        0,
+    };
+
+    ASSERT_TRUE(wcore_config_attrs_parse(attrib_list, &actual_attrs));
+    ASSERT_TRUE(actual_attrs.context_major_version == 2);
+    ASSERT_TRUE(actual_attrs.context_minor_version == 1);
+    ASSERT_TRUE(actual_attrs.context_full_version == 21);
+}
+
+TEST(wcore_config_attrs, gles2_with_version_30)
+{
+    const int32_t attrib_list[] = {
+        WAFFLE_CONTEXT_API,             WAFFLE_CONTEXT_OPENGL_ES2,
+        WAFFLE_CONTEXT_MAJOR_VERSION,   3,
+        WAFFLE_CONTEXT_MINOR_VERSION,   0,
+        0,
+    };
+
+    ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
+    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
 }
 
 TEST(wcore_config_attrs, color_buffer_size)
@@ -324,7 +551,21 @@ testsuite_wcore_config_attrs(void)
 {
     TEST_RUN(wcore_config_attrs, null_attrib_list);
     TEST_RUN(wcore_config_attrs, empty_attrib_list);
+    TEST_RUN(wcore_config_attrs, gl_defaults);
+    TEST_RUN(wcore_config_attrs, gles1_defaults);
+    TEST_RUN(wcore_config_attrs, gles2_defaults);
     TEST_RUN(wcore_config_attrs, bad_attr);
+    TEST_RUN(wcore_config_attrs, gl31_profile_is_ignored);
+    TEST_RUN(wcore_config_attrs, gl32_profile_is_checked);
+    TEST_RUN(wcore_config_attrs, gles1_profile_is_checked);
+    TEST_RUN(wcore_config_attrs, gles2_profile_is_checked);
+    TEST_RUN(wcore_config_attrs, negative_minor_version);
+    TEST_RUN(wcore_config_attrs, gles10);
+    TEST_RUN(wcore_config_attrs, gles11);
+    TEST_RUN(wcore_config_attrs, gles12_is_bad);
+    TEST_RUN(wcore_config_attrs, gles20);
+    TEST_RUN(wcore_config_attrs, gles21);
+    TEST_RUN(wcore_config_attrs, gles2_with_version_30);
     TEST_RUN(wcore_config_attrs, color_buffer_size);
     TEST_RUN(wcore_config_attrs, double_buffered_is_true);
     TEST_RUN(wcore_config_attrs, double_buffered_is_false);
