@@ -84,8 +84,8 @@ struct waffle_context;
         <listitem>
           <para>
             Create a context for OpenGL rendering with the properties specified by <parameter>config</parameter>.
-
           </para>
+
           <para>
             The returned context's actual properties may differ from,
             but are guaranteed to be compatible with,
