@@ -166,17 +166,8 @@ gl_basic_draw(int32_t waffle_context_api,
 {
     int32_t libgl;
 
-    static const int config_context_api_index = 1;
-
-    int32_t config_attrib_list[] = {
-        WAFFLE_CONTEXT_API,     3141592653,
-
-        WAFFLE_RED_SIZE,        8,
-        WAFFLE_GREEN_SIZE,      8,
-        WAFFLE_BLUE_SIZE,       8,
-        WAFFLE_ALPHA_SIZE,      alpha,
-        0,
-    };
+    int32_t config_attrib_list[64];
+    int i;
 
     struct waffle_display *dpy = NULL;
     struct waffle_config *config = NULL;
@@ -184,7 +175,19 @@ gl_basic_draw(int32_t waffle_context_api,
     struct waffle_context *ctx = NULL;
 
     libgl = libgl_from_context_api(waffle_context_api);
-    config_attrib_list[config_context_api_index] = waffle_context_api;
+
+    i = 0;
+    config_attrib_list[i++] = WAFFLE_CONTEXT_API;
+    config_attrib_list[i++] = waffle_context_api;
+    config_attrib_list[i++] = WAFFLE_RED_SIZE;
+    config_attrib_list[i++] = 8;
+    config_attrib_list[i++] = WAFFLE_GREEN_SIZE;
+    config_attrib_list[i++] = 8;
+    config_attrib_list[i++] = WAFFLE_BLUE_SIZE;
+    config_attrib_list[i++] = 8;
+    config_attrib_list[i++] = WAFFLE_ALPHA_SIZE;
+    config_attrib_list[i++] = alpha;
+    config_attrib_list[i++] = 0;
 
     // Check that we've set the EGL_PLATFORM environment variable for Mesa.
     //
