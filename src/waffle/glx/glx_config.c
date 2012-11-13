@@ -72,12 +72,11 @@ glx_config_check_context_attrs(struct glx_display *dpy,
                              "to create a context with version >= 3.2");
                 return false;
             }
-            else if (attrs->context_full_version >= 32 && attrs->context_profile == WAFFLE_NONE) {
-                wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
-                             "WAFFLE_CONTEXT_PROFILE must be provided when "
-                             "the requested context version is >= 3.2");
-                return false;
+            else if (attrs->context_full_version >= 32) {
+                assert(attrs->context_profile == WAFFLE_CONTEXT_CORE_PROFILE ||
+                       attrs->context_profile == WAFFLE_CONTEXT_COMPATIBILITY_PROFILE);
             }
+
             return true;
 
         case WAFFLE_CONTEXT_OPENGL_ES1:

@@ -49,11 +49,10 @@ check_context_attrs(struct wegl_display *dpy,
                              "value 1.0");
                 return false;
             }
-            else if (attrs->context_full_version >= 32 && attrs->context_profile == WAFFLE_NONE) {
-                wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
-                             "WAFFLE_CONTEXT_PROFILE must be provided when "
-                             "the requested context version is >= 3.2");
-                return false;
+
+            if (attrs->context_full_version >= 32) {
+                assert(attrs->context_profile == WAFFLE_CONTEXT_CORE_PROFILE ||
+                       attrs->context_profile == WAFFLE_CONTEXT_COMPATIBILITY_PROFILE);
             }
 
             if (!plat->vtbl->dl_can_open(plat, WAFFLE_DL_OPENGL)) {
