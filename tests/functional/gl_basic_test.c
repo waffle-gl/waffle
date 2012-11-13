@@ -141,6 +141,7 @@ libgl_from_context_api(int32_t waffle_context_api)
         case WAFFLE_CONTEXT_OPENGL:     return WAFFLE_DL_OPENGL;
         case WAFFLE_CONTEXT_OPENGL_ES1: return WAFFLE_DL_OPENGL_ES1;
         case WAFFLE_CONTEXT_OPENGL_ES2: return WAFFLE_DL_OPENGL_ES2;
+        case WAFFLE_CONTEXT_OPENGL_ES3: return WAFFLE_DL_OPENGL_ES3;
 
         default:
             TEST_FAIL();
@@ -628,6 +629,33 @@ TEST(gl_basic, glx_gles20)
                  false /*expect_config_unsupported*/);
 }
 
+TEST(gl_basic, glx_gles3_rgb)
+{
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES3,
+                  WAFFLE_DONT_CARE /*context_version*/,
+                  WAFFLE_DONT_CARE /*context_profile*/,
+                 0 /*alpha*/,
+                 false /*expect_config_unsupported*/);
+}
+
+TEST(gl_basic, glx_gles3_rgba)
+{
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES3,
+                  WAFFLE_DONT_CARE /*context_version*/,
+                  WAFFLE_DONT_CARE /*context_profile*/,
+                 1 /*alpha*/,
+                 false /*expect_config_unsupported*/);
+}
+
+TEST(gl_basic, glx_gles30)
+{
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES3,
+                  30 /*context_version*/,
+                  WAFFLE_DONT_CARE /*context_profile*/,
+                 0 /*alpha*/,
+                 false /*expect_config_unsupported*/);
+}
+
 static void
 testsuite_glx(void)
 {
@@ -671,6 +699,11 @@ testsuite_glx(void)
     TEST_RUN(gl_basic, glx_gles2_rgba);
 
     TEST_RUN(gl_basic, glx_gles20);
+
+    TEST_RUN(gl_basic, glx_gles3_rgb);
+    TEST_RUN(gl_basic, glx_gles3_rgba);
+
+    TEST_RUN(gl_basic, glx_gles30);
 }
 #endif // WAFFLE_HAS_GLX
 
@@ -959,6 +992,33 @@ TEST(gl_basic, wayland_gles20)
                  false /*expect_config_unsupported*/);
 }
 
+TEST(gl_basic, wayland_gles3_rgb)
+{
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES3,
+                  WAFFLE_DONT_CARE /*context_version*/,
+                  WAFFLE_DONT_CARE /*context_profile*/,
+                 0 /*alpha*/,
+                 false /*expect_config_unsupported*/);
+}
+
+TEST(gl_basic, wayland_gles3_rgba)
+{
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES3,
+                  WAFFLE_DONT_CARE /*context_version*/,
+                  WAFFLE_DONT_CARE /*context_profile*/,
+                 1 /*alpha*/,
+                 false /*expect_config_unsupported*/);
+}
+
+TEST(gl_basic, wayland_gles30)
+{
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES3,
+                  30 /*context_version*/,
+                  WAFFLE_DONT_CARE /*context_profile*/,
+                 0 /*alpha*/,
+                 false /*expect_config_unsupported*/);
+}
+
 static void
 testsuite_wayland(void)
 {
@@ -1002,6 +1062,11 @@ testsuite_wayland(void)
     TEST_RUN(gl_basic, wayland_gles2_rgba);
 
     TEST_RUN(gl_basic, wayland_gles20);
+
+    TEST_RUN(gl_basic, wayland_gles3_rgb);
+    TEST_RUN(gl_basic, wayland_gles3_rgba);
+
+    TEST_RUN(gl_basic, wayland_gles30);
 }
 #endif // WAFFLE_HAS_WAYLAND
 
@@ -1290,6 +1355,33 @@ TEST(gl_basic, x11_egl_gles20)
                  false /*expect_config_unsupported*/);
 }
 
+TEST(gl_basic, x11_egl_gles3_rgb)
+{
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES3,
+                  WAFFLE_DONT_CARE /*context_version*/,
+                  WAFFLE_DONT_CARE /*context_profile*/,
+                 0 /*alpha*/,
+                 false /*expect_config_unsupported*/);
+}
+
+TEST(gl_basic, x11_egl_gles3_rgba)
+{
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES3,
+                  WAFFLE_DONT_CARE /*context_version*/,
+                  WAFFLE_DONT_CARE /*context_profile*/,
+                 1 /*alpha*/,
+                 false /*expect_config_unsupported*/);
+}
+
+TEST(gl_basic, x11_egl_gles30)
+{
+    gl_basic_draw(WAFFLE_CONTEXT_OPENGL_ES3,
+                  30 /*context_version*/,
+                  WAFFLE_DONT_CARE /*context_profile*/,
+                 0 /*alpha*/,
+                 false /*expect_config_unsupported*/);
+}
+
 static void
 testsuite_x11_egl(void)
 {
@@ -1333,6 +1425,11 @@ testsuite_x11_egl(void)
     TEST_RUN(gl_basic, x11_egl_gles2_rgba);
 
     TEST_RUN(gl_basic, x11_egl_gles20);
+
+    TEST_RUN(gl_basic, x11_egl_gles3_rgb);
+    TEST_RUN(gl_basic, x11_egl_gles3_rgba);
+
+    TEST_RUN(gl_basic, x11_egl_gles30);
 }
 #endif // WAFFLE_HAS_X11_EGL
 
