@@ -242,6 +242,13 @@ struct waffle_config;
 
             Below is described in detail the rules by which waffle filters the set of accepted values according to the
             value of <constant>WAFFLE_CONTEXT_API</constant>.
+
+            Even if <function>waffle_config_choose()</function> accepts the requested version
+            and successfully returns a config,
+
+            the native platform may later reject the requested version when
+            <citerefentry><refentrytitle>waffle_context_create</refentrytitle><manvolnum>3</manvolnum></citerefentry>
+            is called.
           </para>
 
           <para>
@@ -278,6 +285,13 @@ struct waffle_config;
 
             Below is described in detail the rules by which waffle filters the set of accepted values according to the
             value of <constant>WAFFLE_CONTEXT_API</constant>.
+
+            Even if <function>waffle_config_choose()</function> accepts the requested profile
+            and successfully returns a config,
+
+            the native platform may later reject the requested profile when
+            <citerefentry><refentrytitle>waffle_context_create</refentrytitle><manvolnum>3</manvolnum></citerefentry>
+            is called.
           </para>
 
           <para>
