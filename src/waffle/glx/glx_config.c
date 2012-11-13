@@ -80,7 +80,8 @@ glx_config_check_context_attrs(struct glx_display *dpy,
             return true;
 
         case WAFFLE_CONTEXT_OPENGL_ES1:
-            assert(attrs->context_full_version == 10);
+            assert(attrs->context_full_version == 10 ||
+                   attrs->context_full_version == 11);
 
             if (!dpy->EXT_create_context_es_profile) {
                 wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
@@ -98,7 +99,7 @@ glx_config_check_context_attrs(struct glx_display *dpy,
             return true;
 
         case WAFFLE_CONTEXT_OPENGL_ES2:
-            assert(attrs->context_full_version == 20);
+            assert(attrs->context_major_version == 2);
 
             if (!dpy->EXT_create_context_es2_profile) {
                 wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,

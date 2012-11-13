@@ -86,12 +86,23 @@ create_real_context(struct wegl_config *config,
 
             attrib_list[i++] = EGL_NONE;
             break;
+
         case WAFFLE_CONTEXT_OPENGL_ES1:
         case WAFFLE_CONTEXT_OPENGL_ES2:
             attrib_list[i++] = EGL_CONTEXT_MAJOR_VERSION_KHR;
             attrib_list[i++] = attrs->context_major_version;
+
+            if (dpy->KHR_create_context) {
+                attrib_list[i++] = EGL_CONTEXT_MINOR_VERSION_KHR;
+                attrib_list[i++] = attrs->context_minor_version;
+            }
+            else {
+                assert(attrs->context_minor_version == 0);
+            }
+
             attrib_list[i++] = EGL_NONE;
             break;
+
         default:
             wcore_error_internal("waffle_context_api has bad value %#x",
                                  waffle_context_api);

@@ -253,12 +253,16 @@ struct waffle_config;
 
           <para>
             If the requested API is <constant>WAFFLE_CONTEXT_OPENGL_ES1</constant>,
-            then the default and only accepted value is 1.0.
+            then the default value is 1.0.
+
+            The only accepted values are 1.0 and 1.1.
           </para>
 
           <para>
             If the requested API is <constant>WAFFLE_CONTEXT_OPENGL_ES2</constant>,
-            then the default and only accepted value is 2.0.
+            then the default value is 2.0.
+
+            Waffle accepts any value that is at least 2.0 and strictly less than 3.0.
           </para>
 
           <para>

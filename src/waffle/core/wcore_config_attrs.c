@@ -132,17 +132,21 @@ check_es_context(struct wcore_config_attrs *attrs)
 
     switch (attrs->context_api) {
         case WAFFLE_CONTEXT_OPENGL_ES1:
-            if (attrs->context_full_version != 10) {
+            if (attrs->context_full_version != 10 &&
+                attrs->context_full_version != 11)
+            {
                 wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
-                             "the context version must be 1.0 for OpenGL ES1");
+                             "for OpenGL ES1, the requested context version "
+                             "must be 1.0 or 1.1");
                 return false;
             }
 
             return true;
         case WAFFLE_CONTEXT_OPENGL_ES2:
-            if (attrs->context_full_version != 20) {
+            if (attrs->context_major_version != 2) {
                 wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
-                             "the context version must be 2.0 for OpenGL ES2");
+                             "for OpenGL ES2, the requested major context "
+                             "version must be 2");
                 return false;
             }
 
