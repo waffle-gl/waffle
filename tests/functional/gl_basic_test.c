@@ -219,10 +219,17 @@ gl_basic_draw(int32_t waffle_context_api,
         ASSERT_TRUE(waffle_error_get_code() == WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM);
         TEST_PASS();
     } else if (config == NULL) {
-        if (waffle_error_get_code() == WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM)
+        if (waffle_error_get_code() == WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM) {
             TEST_SKIP();
-        else
+        }
+        else if (waffle_error_get_code() == WAFFLE_ERROR_UNKNOWN) {
+            // Assume that the native platform rejected the requested
+            // context flavor.
+            TEST_SKIP();
+        }
+        else {
             TEST_FAIL();
+        }
     }
 
     ASSERT_TRUE(window = waffle_window_create(config,
@@ -231,10 +238,17 @@ gl_basic_draw(int32_t waffle_context_api,
 
     ctx = waffle_context_create(config, NULL);
     if (!ctx) {
-        if (waffle_error_get_code() == WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM)
+        if (waffle_error_get_code() == WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM) {
             TEST_SKIP();
-        else
+        }
+        else if (waffle_error_get_code() == WAFFLE_ERROR_UNKNOWN) {
+            // Assume that the native platform rejected the requested
+            // context flavor.
+            TEST_SKIP();
+        }
+        else {
             TEST_FAIL();
+        }
     }
 
     // Get GL functions.
