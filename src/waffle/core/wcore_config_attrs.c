@@ -80,6 +80,11 @@ wcore_config_attrs_set_defaults(
             attrs->context_minor_version = 0;
             attrs->context_profile = WAFFLE_NONE;
             return true;
+        case WAFFLE_CONTEXT_OPENGL_ES3:
+            attrs->context_major_version = 3;
+            attrs->context_minor_version = 0;
+            attrs->context_profile = WAFFLE_NONE;
+            return true;
         default:
             wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
                          "WAFFLE_CONTEXT_API has bad value %#x",
@@ -151,6 +156,15 @@ check_es_context(struct wcore_config_attrs *attrs)
             }
 
             return true;
+        case WAFFLE_CONTEXT_OPENGL_ES3:
+            if (attrs->context_major_version != 3) {
+                wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
+                             "for OpenGL ES3, the requested major context "
+                             "version must be 3");
+                return false;
+            }
+
+            return true;
         default:
             assert(0);
             return false;
@@ -176,6 +190,7 @@ check_context(struct wcore_config_attrs *attrs)
             return check_gl_context(attrs);
         case WAFFLE_CONTEXT_OPENGL_ES1:
         case WAFFLE_CONTEXT_OPENGL_ES2:
+        case WAFFLE_CONTEXT_OPENGL_ES3:
             return check_es_context(attrs);
         default:
             wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
