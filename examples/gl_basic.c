@@ -55,13 +55,14 @@ static const char *usage_message =
     "\n"
     "arguments:\n"
     "    platform: One of android, cgl, gbm, glx, wayland, x11_egl.\n"
-    "    context_api: One of gl, gles1, gles2.\n"
+    "    context_api: One of gl, gles1, gles2, gles3.\n"
     "    version: In form \"major.minor\".\n"
     "    profile: One of core, compat, or none.\n"
     "\n"
     "examples:\n"
     "    gl_basic glx gl\n"
-    "    gl_basic x11_egl gl core 3.2"
+    "    gl_basic x11_egl gl core 3.2\n"
+    "    gl_basic wayland gles3\n"
     "\n"
     "description:\n"
     "    Create a window. Fill it with red, green, then blue.\n";
@@ -181,6 +182,7 @@ static const struct enum_map context_api_map[] = {
     {WAFFLE_CONTEXT_OPENGL,         "gl"        },
     {WAFFLE_CONTEXT_OPENGL_ES1,     "gles1"     },
     {WAFFLE_CONTEXT_OPENGL_ES2,     "gles2"     },
+    {WAFFLE_CONTEXT_OPENGL_ES3,     "gles3"     },
     {0,                             0           },
 };
 
@@ -281,6 +283,7 @@ parse_args(int argc, char *argv[], struct options *opts)
         case WAFFLE_CONTEXT_OPENGL:     opts->dl = WAFFLE_DL_OPENGL;      break;
         case WAFFLE_CONTEXT_OPENGL_ES1: opts->dl = WAFFLE_DL_OPENGL_ES1;  break;
         case WAFFLE_CONTEXT_OPENGL_ES2: opts->dl = WAFFLE_DL_OPENGL_ES2;  break;
+        case WAFFLE_CONTEXT_OPENGL_ES3: opts->dl = WAFFLE_DL_OPENGL_ES3;  break;
         default:
             abort();
             break;
