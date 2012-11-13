@@ -89,6 +89,7 @@ create_real_context(struct wegl_config *config,
 
         case WAFFLE_CONTEXT_OPENGL_ES1:
         case WAFFLE_CONTEXT_OPENGL_ES2:
+        case WAFFLE_CONTEXT_OPENGL_ES3:
             attrib_list[i++] = EGL_CONTEXT_MAJOR_VERSION_KHR;
             attrib_list[i++] = attrs->context_major_version;
 
