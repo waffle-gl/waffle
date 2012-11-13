@@ -65,12 +65,16 @@
         <member><constant>WAFFLE_DL_OPENGL</constant></member>
         <member><constant>WAFFLE_DL_OPENGL_ES1</constant></member>
         <member><constant>WAFFLE_DL_OPENGL_ES2</constant></member>
+        <member><constant>WAFFLE_DL_OPENGL_ES3</constant></member>
       </simplelist>
     </para>
 
     <para>
-      For example, on Linux, the <constant>WAFFLE_DL_*</constant> enums map to <filename>libGL.so.1</filename>,
-      <filename>libGLESv1_CM.so</filename>, and <filename>libGLESv2.so</filename>.
+      For example, on Linux, the <constant>WAFFLE_DL_*</constant> enums map to
+      <filename>libGL.so.1</filename>,
+      <filename>libGLESv1_CM.so</filename>,
+      <filename>libGLESv2.so</filename>, and
+      <filename>libGLESv2.so</filename>, repectively.
     </para>
 
     <variablelist>

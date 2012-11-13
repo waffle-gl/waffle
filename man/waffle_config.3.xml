@@ -194,6 +194,7 @@ struct waffle_config;
               <member><constant>WAFFLE_CONTEXT_OPENGL</constant></member>
               <member><constant>WAFFLE_CONTEXT_OPENGL_ES1</constant></member>
               <member><constant>WAFFLE_CONTEXT_OPENGL_ES2</constant></member>
+              <member><constant>WAFFLE_CONTEXT_OPENGL_ES3</constant></member>
             </simplelist>
           </para>
           <para>
@@ -266,6 +267,13 @@ struct waffle_config;
           </para>
 
           <para>
+            If the requested API is <constant>WAFFLE_CONTEXT_OPENGL_ES3</constant>,
+            then the default value is 3.0.
+
+            Waffle accepts any value that is at least 3.0 and strictly less than 4.0.
+          </para>
+
+          <para>
             If the requested API is <constant>WAFFLE_CONTEXT_OPENGL</constant>,
             then the default and minimum accepted value is 1.0.
           </para>
@@ -305,6 +313,7 @@ struct waffle_config;
             If the requested API is
             <constant>WAFFLE_CONTEXT_OPENGL_ES1</constant> or
             <constant>WAFFLE_CONTEXT_OPENGL_ES2</constant>,
+            <constant>WAFFLE_CONTEXT_OPENGL_ES3</constant>,
 
             then the default and only accepted value is <constant>WAFFLE_NONE</constant>.
           </para>

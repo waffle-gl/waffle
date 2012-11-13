@@ -153,8 +153,9 @@ struct waffle_context;
         <listitem>
           <para>
             If the chosen API is
-            <constant>WAFFLE_OPENGL_ES1</constant> or
-            <constant>WAFFLE_OPENGL_ES2</constant>,
+            <constant>WAFFLE_OPENGL_ES1</constant>,
+            <constant>WAFFLE_OPENGL_ES2</constant>, or
+            <constant>WAFFLE_OPENGL_ES3</constant>,
 
             then the returned context may implement any of:
 
