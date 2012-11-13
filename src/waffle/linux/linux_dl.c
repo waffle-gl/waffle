@@ -54,9 +54,20 @@ static const char*
 linux_dl_get_name(int32_t waffle_dl)
 {
     switch (waffle_dl) {
-        case WAFFLE_DL_OPENGL:     return "libGL.so.1";
-        case WAFFLE_DL_OPENGL_ES1: return "libGLESv1_CM.so";
-        case WAFFLE_DL_OPENGL_ES2: return "libGLESv2.so";
+        case WAFFLE_DL_OPENGL:
+            return "libGL.so.1";
+        case WAFFLE_DL_OPENGL_ES1:
+            return "libGLESv1_CM.so";
+        case WAFFLE_DL_OPENGL_ES2:
+        case WAFFLE_DL_OPENGL_ES3:
+            // TODO(chadv): Update the libGLESv2 soversion number to match
+            // shipping GLES3 libraries.
+            //
+            // Currently (2012-11-11), no vendor ships GLES3. I expect that
+            // vendors will increment the minor soversion of libGLESv2 if it
+            // supports GLES3, which would aid Waffle in detecting the
+            // platform's GLES3 support.
+            return "libGLESv2.so";
         default:
             wcore_error_internal("waffle_dl has bad value %#x", waffle_dl);
             return NULL;

@@ -77,6 +77,7 @@ linux_platform_get_dl(
         case WAFFLE_DL_OPENGL:     dl = &self->libgl;    break;
         case WAFFLE_DL_OPENGL_ES1: dl = &self->libgles1; break;
         case WAFFLE_DL_OPENGL_ES2: dl = &self->libgles2; break;
+        case WAFFLE_DL_OPENGL_ES3: dl = &self->libgles2; break;
         default:
             wcore_error_internal("waffle_dl has bad value %#x", waffle_dl);
             return NULL;

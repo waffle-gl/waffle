@@ -50,6 +50,10 @@ cgl_dl_check_enum(int32_t waffle_dl)
             wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
                          "CGL does not support OpenGL ES2");
             return false;
+        case WAFFLE_DL_OPENGL_ES3:
+            wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
+                         "CGL does not support OpenGL ES3");
+            return false;
         default:
             assert(false);
             return false;
