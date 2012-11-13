@@ -69,12 +69,11 @@ create_real_context(struct wegl_config *config,
     bool ok = true;
     int32_t waffle_context_api = attrs->context_api;
     EGLint attrib_list[64];
-    int i;
+    int i = 0;
 
     switch (waffle_context_api) {
         case WAFFLE_CONTEXT_OPENGL:
             if (dpy->KHR_create_context) {
-                i = 0;
                 attrib_list[i++] = EGL_CONTEXT_MAJOR_VERSION_KHR;
                 attrib_list[i++] = attrs->context_major_version;
                 attrib_list[i++] = EGL_CONTEXT_MINOR_VERSION_KHR;
@@ -89,7 +88,6 @@ create_real_context(struct wegl_config *config,
             break;
         case WAFFLE_CONTEXT_OPENGL_ES1:
         case WAFFLE_CONTEXT_OPENGL_ES2:
-            i = 0;
             attrib_list[i++] = EGL_CONTEXT_MAJOR_VERSION_KHR;
             attrib_list[i++] = attrs->context_major_version;
             attrib_list[i++] = EGL_NONE;
