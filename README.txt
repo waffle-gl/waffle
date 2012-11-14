@@ -105,8 +105,8 @@ waffle with support for only GLX and installs into /usr/local.
     make install
 
 If in addition to GLX you want support for X11/EGL, then add
--Dwaffle_has_x11_egl=1 to the cmake arguments. Likewise for Wayland and
--Dwaffle_has_wayland=1.
+-Dwaffle_has_x11_egl=1 to the cmake arguments. Likewise for Wayland, add
+-Dwaffle_has_wayland=1; and for GBM, add -Dwaffle_has_gbm=1.
 
 If you need to install into a custom location, autoconf-esque variables such
 as CMAKE_INSTALL_LIBDIR are supported. For example,
