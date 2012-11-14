@@ -42,12 +42,12 @@ Linux
 Waffle uses CMake for it build system.
 
     Archlinux: pacman -S cmake
-    Fedora: yum install cmake
+    Fedora 17: yum install cmake
 
 To build the manpages, xsltproc and the Docbook XSL stylesheets are required.
 
     Archlinux: pacman -S libxslt docbook-xsl
-    Fedora: yum install libxslt docbook-style-xsl
+    Fedora 17: yum install libxslt docbook-style-xsl
 
 If you choose to enable support for a given platform (for example,
 -Dwaffle_has_glx=1), then CMake will complain if the necessary libraries are
@@ -59,12 +59,12 @@ a comman-separated list of any combination of "x11", "wayland", and "drm".
 
     - GLX:
         - Archlinux: pacman -S libgl libxcb libx11
-        - Fedora: yum install mesa-libGL-devel libxcb-devel libX11-devel
+        - Fedora 17: yum install mesa-libGL-devel libxcb-devel libX11-devel
 
     - X11/EGL:
         - all: If you choose to install Mesa from source, use --with-egl-platforms=x11.
         - Archlinux: pacman -S libegl libxcb libx11
-        - Fedora: yum install mesa-libEGL-devel libxcb-devel libX11-devel
+        - Fedora 17: yum install mesa-libEGL-devel libxcb-devel libX11-devel
 
     - Wayland:
         - all: Install wayland>=1.0 from source.
@@ -73,7 +73,7 @@ a comman-separated list of any combination of "x11", "wayland", and "drm".
     - GBM:
         - all: Install mesa-9.1-devel from source. Use --with-egl-platforms=drm.
         - Archlinux: pacman -S systemd
-        - Fedora: yum install libudev-devel
+        - Fedora 17: yum install libudev-devel
 
 
 Installing
