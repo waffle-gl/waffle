@@ -123,7 +123,7 @@ a dependeny into /usr/local, then:
 2. Configure Waffle with CMake
 -------------------------------
 
-On Linux, you likely want to use the invoke CMake with the following
+On Linux, you likely want to call cmake with the following
 arguments.  It configures Waffle in debug mode and with support for only GLX.
 
     cmake \
