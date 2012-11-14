@@ -49,8 +49,31 @@ To build the manpages, xsltproc and the Docbook XSL stylesheets are required.
     Archlinux: pacman -S libxslt docbook-xsl
     Fedora: yum install libxslt docbook-style-xsl
 
-If you enable support for a given platform (for example, -Dwaffle_has_glx=1),
-then CMake will complain if the necessary libraries are not installed.
+If you choose to enable support for a given platform (for example,
+-Dwaffle_has_glx=1), then CMake will complain if the necessary libraries are
+not installed. Listed below are the required packages for each platform.
+
+If you install Mesa from source, then Mesa must be configured with option
+`--with-egl-platforms=PLATFORM_LIST`, where PLATFORM_LIST is
+a comman-separated list of any combination of "x11", "wayland", and "drm".
+
+    - GLX:
+        - Archlinux: pacman -S libgl libxcb libx11
+        - Fedora: yum install mesa-libGL-devel libxcb-devel libX11-devel
+
+    - X11/EGL:
+        - all: If you choose to install Mesa from source, use --with-egl-platforms=x11.
+        - Archlinux: pacman -S libegl libxcb libx11
+        - Fedora: yum install mesa-libEGL-devel libxcb-devel libX11-devel
+
+    - Wayland:
+        - all: Install wayland>=1.0 from source.
+        - all: Install mesa-9.1-devel from source. Use --with-egl-platforms=wayland.
+
+    - GBM:
+        - all: Install mesa-9.1-devel from source. Use --with-egl-platforms=drm.
+        - Archlinux: pacman -S systemd
+        - Fedora: yum install libudev-devel
 
 
 Installing
