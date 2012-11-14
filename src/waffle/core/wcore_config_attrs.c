@@ -212,7 +212,12 @@ set_context_profile_default(struct wcore_config_attrs *attrs)
 {
     switch (attrs->context_api) {
         case WAFFLE_CONTEXT_OPENGL:
-            attrs->context_profile = WAFFLE_CONTEXT_CORE_PROFILE;
+            if (attrs->context_full_version >= 32) {
+                attrs->context_profile = WAFFLE_CONTEXT_CORE_PROFILE;
+            }
+            else {
+                attrs->context_profile = WAFFLE_NONE;
+            }
             break;
         case WAFFLE_CONTEXT_OPENGL_ES1:
         case WAFFLE_CONTEXT_OPENGL_ES2:
@@ -248,8 +253,12 @@ parse_context_profile(struct wcore_config_attrs *attrs,
                              "WAFFLE_CONTEXT_COMPATIBILITY_PROFILE");
                 return false;
             }
-            else {
-                // Ignore profile.
+            else if (attrs->context_full_version < 32
+                     && attrs->context_profile != WAFFLE_NONE) {
+                wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
+                             "for OpenGL < 3.2, WAFFLE_CONTEXT_PROFILE must "
+                             "WAFFLE_NONE");
+                return false;
             }
             break;
         case WAFFLE_CONTEXT_OPENGL_ES1:

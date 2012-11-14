@@ -320,15 +320,21 @@ struct waffle_config;
           </para>
 
           <para>
-            If the requested API is <constant>WAFFLE_CONTEXT_OPENGL</constant>,
+            If the requested API is <constant>WAFFLE_CONTEXT_OPENGL</constant>
+
+            and the requested version is less than 3.2,
+
+            then the default and only accepted value is <constant>WAFFLE_NONE</constant>.
+          </para>
+
+          <para>
+            If the requested API is <constant>WAFFLE_CONTEXT_OPENGL</constant>
+
+            and the requested version is at least 3.2,
 
             then default value is <constant>WAFFLE_CONTEXT_CORE_PROFILE</constant>.
 
-            If the requested context version is less than 3.2,
-
-            then the value of <constant>WAFFLE_CONTEXT_PROFILE</constant> is ignored.
-
-            If the requested context version is at least 3.2, then the set of accepted values is
+            The set of accepted values is
 
             <constant>WAFFLE_CONTEXT_PROFILE_CORE</constant> and
             <constant>WAFFLE_CONTEXT_PROFILE_COMPATIBILITY</constant>.
