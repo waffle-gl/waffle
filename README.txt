@@ -36,10 +36,17 @@ license:        BSD [http://www.opensource.org/licenses/bsd-license.php]
 Build Requirements
 ==================
 
+Linux
+-----
+
 Waffle uses CMake for it build system.
+
+    Archlinux: pacman -S cmake
     Fedora: yum install cmake
 
 To build the manpages, xsltproc and the Docbook XSL stylesheets are required.
+
+    Archlinux: pacman -S libxslt docbook-xsl
     Fedora: yum install libxslt docbook-style-xsl
 
 If you enable support for a given platform (for example, -Dwaffle_has_glx=1),
