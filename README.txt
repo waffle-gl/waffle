@@ -79,13 +79,12 @@ a comman-separated list of any combination of "x11", "wayland", and "drm".
 Installing
 ==========
 
-If any of Waffle's dependencies are installed in custom locations, you must
-set the PKG_CONFIG_PATH environment variable. For example, if you installed
-a dependeny into /usr/local, then:
+For full details on configuring, building, and installing Waffle, see
+/doc/building.txt. What follows is a quick how-to.
 
-    export PKG_CONFIG_PATH=/usr/local/share/pkgconfig:/usr/local/$libdir/pkgconfig:$PKG_CONFIG_PATH
 
-Enter the top of the waffle source tree.
+0. Be in the correct directory
+------------------------------
 
     git clone git://people.freedesktop.org/~chadversary/waffle
     cd waffle
@@ -95,21 +94,37 @@ or
     tar xvf waffle-0.0.0.tar.xz
     cd waffle-0.0.0
 
-On Linux, you likely want to use the commands below. The commands configure
-waffle with support for only GLX and installs into /usr/local.
 
-    cmake -Dwaffle_has_glx=1 .
+1. Configure pkg-config
+-----------------------
+If any of Waffle's dependencies are installed in custom locations, you must
+set the PKG_CONFIG_PATH environment variable. For example, if you installed
+a dependeny into /usr/local, then:
 
-    make
-    make check
-    make install
+    export PKG_CONFIG_PATH=/usr/local/share/pkgconfig:/usr/local/$libdir/pkgconfig:$PKG_CONFIG_PATH
+
+
+2. Configure Waffle with CMake
+-------------------------------
+
+On Linux, you likely want to use the invoke CMake with the following
+arguments.  It configures Waffle in debug mode and with support for only GLX.
+
+    cmake \
+        -DCMAKE_BUILD_TYPE=debug \
+        -Dwaffle_has_glx=1 \
+        .
 
 If in addition to GLX you want support for X11/EGL, then add
 -Dwaffle_has_x11_egl=1 to the cmake arguments. Likewise for Wayland, add
 -Dwaffle_has_wayland=1; and for GBM, add -Dwaffle_has_gbm=1.
 
-If you need to install into a custom location, autoconf-esque variables such
-as CMAKE_INSTALL_LIBDIR are supported. For example,
+To build the manpages, add -Dwaffle_build_manpages=1.
+
+To install into a custom location, autoconf-esque variables such
+as CMAKE_INSTALL_LIBDIR are supported. See
+$waffle_top/cmake/Modules/GNUInstallDirs.cmake for details. For example, to
+install libwaffle into $HOME/lib, use the following cmake invocation:
 
     cmake \
         -DCMAKE_INSTALL_PREFIX=$HOME \
@@ -117,5 +132,14 @@ as CMAKE_INSTALL_LIBDIR are supported. For example,
         -Dwaffle_has_glx=1 \
         .
 
-For full details on configuring, building, and installing Waffle, see
-/doc/building.txt.
+
+3. Build and Install
+--------------------
+
+    make
+    make check
+    make install
+
+Calling `make check` only runs unittests that do not access the native GL
+platform. To run additional functional tests, which do access the native GL
+platform, call `make check-func`.
