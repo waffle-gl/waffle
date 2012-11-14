@@ -80,9 +80,12 @@ Installing
 ==========
 
 If any of Waffle's dependencies are installed in custom locations, you must
-set the PKG_CONFIG_PATH environment variable.
+set the PKG_CONFIG_PATH environment variable. For example, if you installed
+a dependeny into /usr/local, then:
 
-First, enter the top of the waffle source tree.
+    export PKG_CONFIG_PATH=/usr/local/share/pkgconfig:/usr/local/$libdir/pkgconfig:$PKG_CONFIG_PATH
+
+Enter the top of the waffle source tree.
 
     git clone git://people.freedesktop.org/~chadversary/waffle
     cd waffle
