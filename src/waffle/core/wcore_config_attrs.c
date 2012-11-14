@@ -38,115 +38,148 @@
 #include "wcore_config_attrs.h"
 #include "wcore_error.h"
 
-/// @brief Attribute defaults that apply to all API's.
-static const struct wcore_config_attrs wcore_config_attrs_default_all = {
-    .rgba_size      = 0,
-    .red_size               = WAFFLE_DONT_CARE,
-    .green_size             = WAFFLE_DONT_CARE,
-    .blue_size              = WAFFLE_DONT_CARE,
-    .alpha_size             = WAFFLE_DONT_CARE,
-
-    .depth_size             = WAFFLE_DONT_CARE,
-    .stencil_size           = WAFFLE_DONT_CARE,
-
-    .sample_buffers         = 0,
-    .samples                = 0,
-
-    .double_buffered        = true,
-
-    .accum_buffer           = false,
-};
-
 static bool
-wcore_config_attrs_set_defaults(
-        int32_t context_api,
-        struct wcore_config_attrs *attrs)
+check_keys(const int32_t attrib_list[])
 {
-    memcpy(attrs, &wcore_config_attrs_default_all, sizeof(*attrs));
+    if (attrib_list == NULL)
+        return true;
 
-    switch (context_api) {
-        case WAFFLE_CONTEXT_OPENGL:
-            attrs->context_major_version = 1;
-            attrs->context_minor_version = 0;
-            attrs->context_profile = WAFFLE_CONTEXT_CORE_PROFILE;
-            return true;
-        case WAFFLE_CONTEXT_OPENGL_ES1:
-            attrs->context_major_version = 1;
-            attrs->context_minor_version = 0;
-            attrs->context_profile = WAFFLE_NONE;
-            return true;
-        case WAFFLE_CONTEXT_OPENGL_ES2:
-            attrs->context_major_version = 2;
-            attrs->context_minor_version = 0;
-            attrs->context_profile = WAFFLE_NONE;
-            return true;
-        case WAFFLE_CONTEXT_OPENGL_ES3:
-            attrs->context_major_version = 3;
-            attrs->context_minor_version = 0;
-            attrs->context_profile = WAFFLE_NONE;
-            return true;
-        default:
-            wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
-                         "WAFFLE_CONTEXT_API has bad value %#x",
-                         context_api);
-            return false;
-    }
-}
+    for (int32_t i = 0; attrib_list[i]; i += 2) {
+        int32_t key = attrib_list[i];
 
-/// @brief Check context attributes when api is OpenGL.
-static bool
-check_gl_context(struct wcore_config_attrs *attrs)
-{
-    if (attrs->context_full_version < 10) {
-        wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
-                     "for OpenGL, the requested context version "
-                     "must be >= 1.0");
-        return false;
-    }
-    else if (attrs->context_full_version >= 32 &&
-             attrs->context_profile != WAFFLE_CONTEXT_CORE_PROFILE &&
-             attrs->context_profile != WAFFLE_CONTEXT_COMPATIBILITY_PROFILE) {
-        wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
-                     "for OpenGL >= 3.2,"
-                     "WAFFLE_CONTEXT_PROFILE must be either "
-                     "WAFFLE_CONTEXT_CORE_PROFILE or "
-                     "WAFFLE_CONTEXT_COMPATIBILITY_PROFILE");
-        return false;
-    }
-    else if (attrs->context_full_version >= 32
-             && attrs->context_profile == WAFFLE_CONTEXT_CORE_PROFILE
-             && attrs->accum_buffer) {
-        wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
-                     "core profiles do not support accumulation "
-                     "buffers");
-        return false;
+        switch (key) {
+            case WAFFLE_CONTEXT_API:
+            case WAFFLE_CONTEXT_MAJOR_VERSION:
+            case WAFFLE_CONTEXT_MINOR_VERSION:
+            case WAFFLE_CONTEXT_PROFILE:
+            case WAFFLE_RED_SIZE:
+            case WAFFLE_GREEN_SIZE:
+            case WAFFLE_BLUE_SIZE:
+            case WAFFLE_ALPHA_SIZE:
+            case WAFFLE_DEPTH_SIZE:
+            case WAFFLE_STENCIL_SIZE:
+            case WAFFLE_SAMPLES:
+            case WAFFLE_SAMPLE_BUFFERS:
+            case WAFFLE_DOUBLE_BUFFERED:
+            case WAFFLE_ACCUM_BUFFER:
+                break;
+            default:
+                wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
+                             "unrecognized attribute 0x%x at attrib_list[%d]",
+                             key, i);
+                return false;
+        }
     }
 
     return true;
 }
-/// @brief Check context attributes when api is OpenGL ESx.
+
 static bool
-check_es_context(struct wcore_config_attrs *attrs)
+parse_context_api(struct wcore_config_attrs *attrs,
+                  const int32_t attrib_list[])
 {
-    if (attrs->context_profile != WAFFLE_NONE) {
+    bool found;
+
+    found = waffle_attrib_list_get(attrib_list,
+                                   WAFFLE_CONTEXT_API, &attrs->context_api);
+    if (!found) {
         wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
-                     "for OpenGL ES, WAFFLE_CONTEXT_PROFILE must be "
-                     "WAFFLE_NONE");
+                     "required attribute WAFFLE_CONTEXT_API is missing");
         return false;
     }
 
     switch (attrs->context_api) {
+        case WAFFLE_CONTEXT_OPENGL:
+        case WAFFLE_CONTEXT_OPENGL_ES1:
+        case WAFFLE_CONTEXT_OPENGL_ES2:
+        case WAFFLE_CONTEXT_OPENGL_ES3:
+            break;
+        default:
+            wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
+                         "WAFFLE_CONTEXT_API has bad value %#x",
+                         attrs->context_api);
+            return false;
+    }
+
+    return true;
+}
+
+static bool
+set_context_version_default(struct wcore_config_attrs *attrs)
+{
+    switch (attrs->context_api) {
+        case WAFFLE_CONTEXT_OPENGL:
+            attrs->context_major_version = 1;
+            attrs->context_minor_version = 0;
+            return true;
+        case WAFFLE_CONTEXT_OPENGL_ES1:
+            attrs->context_major_version = 1;
+            attrs->context_minor_version = 0;
+            return true;
+        case WAFFLE_CONTEXT_OPENGL_ES2:
+            attrs->context_major_version = 2;
+            attrs->context_minor_version = 0;
+            return true;
+        case WAFFLE_CONTEXT_OPENGL_ES3:
+            attrs->context_major_version = 3;
+            attrs->context_minor_version = 0;
+            return true;
+        default:
+            wcore_error_internal("attrs->context_api has bad value 0x%x",
+                                 attrs->context_api);
+            return false;
+    }
+}
+
+static bool
+parse_context_version(struct wcore_config_attrs *attrs,
+                      const int32_t attrib_list[])
+{
+    waffle_attrib_list_get_with_default(attrib_list,
+                                        WAFFLE_CONTEXT_MAJOR_VERSION,
+                                        &attrs->context_major_version,
+                                        attrs->context_major_version);
+    waffle_attrib_list_get_with_default(attrib_list,
+                                        WAFFLE_CONTEXT_MINOR_VERSION,
+                                        &attrs->context_minor_version,
+                                        attrs->context_minor_version);
+
+    if (attrs->context_major_version < 1) {
+        wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
+                     "WAFFLE_CONTEXT_MAJOR_VERSION must be >= 1");
+        return false;
+    }
+
+    if (attrs->context_minor_version < 0) {
+        wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
+                     "WAFFLE_CONTEXT_MINOR_VERSION must be >= 0");
+        return false;
+    }
+
+    attrs->context_full_version =
+            10 * attrs->context_major_version
+            + attrs->context_minor_version;
+
+    switch (attrs->context_api) {
+        case WAFFLE_CONTEXT_OPENGL:
+            if (attrs->context_full_version < 10) {
+                wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
+                             "for OpenGL, the requested context version "
+                             "must be >= 1.0");
+                return false;
+            }
+            break;
+
         case WAFFLE_CONTEXT_OPENGL_ES1:
             if (attrs->context_full_version != 10 &&
-                attrs->context_full_version != 11)
-            {
+                attrs->context_full_version != 11) {
                 wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
                              "for OpenGL ES1, the requested context version "
                              "must be 1.0 or 1.1");
                 return false;
             }
+            break;
 
-            return true;
         case WAFFLE_CONTEXT_OPENGL_ES2:
             if (attrs->context_major_version != 2) {
                 wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
@@ -154,8 +187,8 @@ check_es_context(struct wcore_config_attrs *attrs)
                              "version must be 2");
                 return false;
             }
+            break;
 
-            return true;
         case WAFFLE_CONTEXT_OPENGL_ES3:
             if (attrs->context_major_version != 3) {
                 wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
@@ -163,102 +196,134 @@ check_es_context(struct wcore_config_attrs *attrs)
                              "version must be 3");
                 return false;
             }
+            break;
 
-            return true;
         default:
-            assert(0);
+            wcore_error_internal("attrs->context_api has bad value 0x%x",
+                                 attrs->context_api);
             return false;
     }
+
+    return true;
 }
 
-/// @brief Check the context attributes.
-///
-/// The validation done here is independent of the native platform. The native
-/// platform may need to do additional checking. For example, GLX should
-/// reject the attribute list if the API is GLES1.
 static bool
-check_context(struct wcore_config_attrs *attrs)
+set_context_profile_default(struct wcore_config_attrs *attrs)
 {
-    if (attrs->context_minor_version < 0) {
-        wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
-                     "context minor version must be >= 0");
-        return false;
-    }
-
     switch (attrs->context_api) {
         case WAFFLE_CONTEXT_OPENGL:
-            return check_gl_context(attrs);
+            attrs->context_profile = WAFFLE_CONTEXT_CORE_PROFILE;
+            break;
         case WAFFLE_CONTEXT_OPENGL_ES1:
         case WAFFLE_CONTEXT_OPENGL_ES2:
         case WAFFLE_CONTEXT_OPENGL_ES3:
-            return check_es_context(attrs);
+            attrs->context_profile = WAFFLE_NONE;
+            break;
         default:
-            wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
-                         "WAFFLE_CONTEXT_API has bad value %#x",
-                         attrs->context_api);
+            assert(false);
             return false;
     }
+
+    return true;
 }
 
-bool
-wcore_config_attrs_parse(
-      const int32_t waffle_attrib_list[],
-      struct wcore_config_attrs *attrs)
+static bool
+parse_context_profile(struct wcore_config_attrs *attrs,
+                      const int32_t attrib_list[])
 {
-    bool ok;
-    const int32_t *i;
-    int32_t context_api;
+    waffle_attrib_list_get_with_default(attrib_list,
+                                        WAFFLE_CONTEXT_PROFILE,
+                                        &attrs->context_profile,
+                                        attrs->context_profile);
 
-    if (waffle_attrib_list == NULL)
-        goto error_context_api_required;
+    switch (attrs->context_api) {
+        case WAFFLE_CONTEXT_OPENGL:
+            if (attrs->context_full_version >= 32
+                && attrs->context_profile != WAFFLE_CONTEXT_CORE_PROFILE
+                && attrs->context_profile != WAFFLE_CONTEXT_COMPATIBILITY_PROFILE) {
+                wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
+                             "for OpenGL >= 3.2,"
+                             "WAFFLE_CONTEXT_PROFILE must be either "
+                             "WAFFLE_CONTEXT_CORE_PROFILE or "
+                             "WAFFLE_CONTEXT_COMPATIBILITY_PROFILE");
+                return false;
+            }
+            else {
+                // Ignore profile.
+            }
+            break;
+        case WAFFLE_CONTEXT_OPENGL_ES1:
+        case WAFFLE_CONTEXT_OPENGL_ES2:
+        case WAFFLE_CONTEXT_OPENGL_ES3:
+            if (attrs->context_profile != WAFFLE_NONE) {
+                wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
+                             "for OpenGL ES, WAFFLE_CONTEXT_PROFILE must be "
+                             "WAFFLE_NONE");
+                return false;
+            }
+            break;
+        default:
+            assert(false);
+            return false;
+    }
 
-    ok = waffle_attrib_list_get(waffle_attrib_list,
-                                WAFFLE_CONTEXT_API,
-                                &context_api);
-    if (!ok)
-        goto error_context_api_required;
+    return true;
+}
 
-    ok = wcore_config_attrs_set_defaults(context_api, attrs);
-    if (!ok)
-        return false;
+static bool
+set_misc_defaults(struct wcore_config_attrs *attrs)
+{
+    attrs->rgba_size            = 0;
+    attrs->red_size             = WAFFLE_DONT_CARE;
+    attrs->green_size           = WAFFLE_DONT_CARE;
+    attrs->blue_size            = WAFFLE_DONT_CARE;
+    attrs->alpha_size           = WAFFLE_DONT_CARE;
+    attrs->depth_size           = WAFFLE_DONT_CARE;
+    attrs->stencil_size         = WAFFLE_DONT_CARE;
+    attrs->sample_buffers       = 0;
+    attrs->samples              = 0;
+    attrs->double_buffered      = true;
+    attrs->accum_buffer         = false;
 
-    for (i = waffle_attrib_list; *i != 0; i += 2) {
-        int32_t w_attr = i[0];
-        int32_t w_value = i[1];
+    return true;
+}
 
-        switch (w_attr) {
+static bool
+parse_misc(struct wcore_config_attrs *attrs,
+           const int32_t attrib_list[])
+{
+    for (int32_t i = 0; attrib_list[i]; i += 2) {
+        int32_t key = attrib_list[i + 0];
+        int32_t value = attrib_list[i + 1];
+
+        switch (key) {
 
             #define CASE_INT(enum_name, struct_memb)                           \
                 case enum_name:                                                \
-                    if (w_value < -1) {                                        \
+                    if (value < -1) {                                          \
                         wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,               \
-                                     #enum_name " has bad value %d", w_value); \
+                                     #enum_name " has bad value %d", value);   \
                                      return false;                             \
                     }                                                          \
-                    attrs->struct_memb = w_value;                              \
+                    attrs->struct_memb = value;                                \
                     break;
 
             #define CASE_BOOL(enum_name, struct_memb)                              \
                 case enum_name:                                                    \
-                    if (w_value != true && w_value != false) {                     \
+                    if (value != true && value != false) {                         \
                         wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,                   \
-                                     #enum_name " has bad value 0x%x", w_value);   \
+                                     #enum_name " has bad value 0x%x, must be "    \
+                                     "true(1) or false(0)", value);                \
                                      return false;                                 \
                     }                                                              \
-                    attrs->struct_memb = w_value;                                  \
+                    attrs->struct_memb = value;                                    \
                     break;
 
             case WAFFLE_CONTEXT_API:
-                attrs->context_api = w_value;
-                break;
             case WAFFLE_CONTEXT_MAJOR_VERSION:
-                attrs->context_major_version = w_value;
-                break;
             case WAFFLE_CONTEXT_MINOR_VERSION:
-                attrs->context_minor_version = w_value;
-                break;
             case WAFFLE_CONTEXT_PROFILE:
-                attrs->context_profile = w_value;
+                // These keys have already been parsed.
                 break;
 
             CASE_INT(WAFFLE_RED_SIZE, red_size)
@@ -274,16 +339,17 @@ wcore_config_attrs_parse(
             CASE_BOOL(WAFFLE_ACCUM_BUFFER, accum_buffer);
 
             default:
-                wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
-                             "unrecognized attribute 0x%x at attrib_list[%d]",
-                             w_attr, i - waffle_attrib_list);
+                wcore_error_internal("%s", "bad attribute key should have "
+                                     "been found by check_keys()");
                 return false;
-        }
 
-        #undef CASE_INT
-        #undef CASE_BOOL
+
+            #undef CASE_INT
+            #undef CASE_BOOL
+        }
     }
 
+    // Calculate rgb_size.
     attrs->rgb_size = 0;
     if (attrs->red_size != WAFFLE_DONT_CARE)
         attrs->rgb_size += attrs->red_size;
@@ -292,22 +358,65 @@ wcore_config_attrs_parse(
     if (attrs->blue_size != WAFFLE_DONT_CARE)
         attrs->rgb_size += attrs->blue_size;
 
+    // Calculate rgba_size.
     attrs->rgba_size = attrs->rgb_size;
     if (attrs->alpha_size != WAFFLE_DONT_CARE)
         attrs->rgba_size += attrs->alpha_size;
 
-    attrs->context_full_version = 10 * attrs->context_major_version
-                                + attrs->context_minor_version;
+    return true;
+}
 
-    if (!check_context(attrs))
+static bool
+check_final(struct wcore_config_attrs *attrs)
+{
+    if (attrs->context_api == WAFFLE_CONTEXT_OPENGL
+        && attrs->context_profile == WAFFLE_CONTEXT_CORE_PROFILE
+        && attrs->context_full_version >= 32
+        && attrs->accum_buffer) {
+        wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
+                     "%s", "WAFFLE_ACCUM_BUFFER must be false for"
+                     "OpenGL Core profile");
+        return false;
+    }
+
+    return true;
+}
+
+bool
+wcore_config_attrs_parse(
+      const int32_t waffle_attrib_list[],
+      struct wcore_config_attrs *attrs)
+{
+    memset(attrs, 0, sizeof(*attrs));
+
+    if (!check_keys(waffle_attrib_list))
+        return false;
+
+    if (!parse_context_api(attrs, waffle_attrib_list))
+        return false;
+
+    if (!set_context_version_default(attrs))
+        return false;
+
+    if (!parse_context_version(attrs, waffle_attrib_list))
+        return false;
+
+    if (!set_context_profile_default(attrs))
+        return false;
+
+    if (!parse_context_profile(attrs, waffle_attrib_list))
+        return false;
+
+    if (!set_misc_defaults(attrs))
+        return false;
+
+    if (!parse_misc(attrs, waffle_attrib_list))
+        return false;
+
+    if (!check_final(attrs))
         return false;
 
     return true;
-
-error_context_api_required:
-    wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
-                 "attribute WAFFLE_CONTEXT_API is required but missing");
-    return false;
 }
 
 /// @}
