@@ -298,8 +298,9 @@ struct waffle_config;
             <constant>WAFFLE_CONTEXT_MINOR_VERSION</constant>,
             and the native platform.
 
-            Below is described in detail the rules by which waffle filters the set of accepted values according to the
-            value of <constant>WAFFLE_CONTEXT_API</constant>.
+            Below is described in detail the rules by which waffle decides
+
+            the default value and the set of accepted values.
 
             Even if <function>waffle_config_choose()</function> accepts the requested profile
             and successfully returns a config,
@@ -311,8 +312,8 @@ struct waffle_config;
 
           <para>
             If the requested API is
-            <constant>WAFFLE_CONTEXT_OPENGL_ES1</constant> or
-            <constant>WAFFLE_CONTEXT_OPENGL_ES2</constant>,
+            <constant>WAFFLE_CONTEXT_OPENGL_ES1</constant>,
+            <constant>WAFFLE_CONTEXT_OPENGL_ES2</constant>, or
             <constant>WAFFLE_CONTEXT_OPENGL_ES3</constant>,
 
             then the default and only accepted value is <constant>WAFFLE_NONE</constant>.
