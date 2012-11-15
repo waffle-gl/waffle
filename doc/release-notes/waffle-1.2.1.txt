@@ -1,0 +1,28 @@
+Waffle 1.2.1 - 15 Nov 2012
+==========================
+
+Waffle 1.2.1 is now available. This is a bugfix release that fixes critical
+bugs discovered since the 1.2.0 release.
+
+  Download:
+    http://people.freedesktop.org/~chadversary/waffle/files/release/waffle-1.2.1/waffle-1.2.1.tar.xz
+
+ sha256 sum:
+    [TODO:sha256]
+
+
+Bugfixes
+--------
+* Fixes build breakage in Piglit, which uses -std=c90 on Linux.
+* Fix broken url in html documentation.
+
+
+Changes
+-------
+
+The full set of changes can be viewed with `git log waffle-1.2.0..waffle-1.2.1`.
+
+Chad Versace (3):
+  doc/html: Fix fatal typo 'wafffle' in url
+  include: #define restrict for C language < c99
+  doc: Add waffle-1.2.1 release notes
