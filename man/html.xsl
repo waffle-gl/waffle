@@ -6,6 +6,11 @@
   <xsl:import href="http://docbook.sourceforge.net/release/xsl/current/html/docbook.xsl"/>
   <xsl:include href="common.xsl"/>
 
+  <xsl:output
+      method="html"
+      encoding="UTF-8"
+      indent="yes"/>
+
   <xsl:param name="citerefentry.link">1</xsl:param>
   <xsl:param name="funcsynopsis.style">ansi</xsl:param>
   <xsl:param name="html.stylesheet">manpage.css</xsl:param>
