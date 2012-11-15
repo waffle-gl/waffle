@@ -50,6 +50,10 @@ extern "C" {
 #   define WAFFLE_API
 #endif
 
+#if __STDC_VERSION__ < 199901L
+#       define restrict
+#endif
+
 struct waffle_display;
 struct waffle_config;
 struct waffle_context;
