@@ -60,7 +60,8 @@ Waffle uses CMake for it build system.
     Archlinux: pacman -S cmake
     Fedora 17: yum install cmake
 
-To build the manpages, xsltproc and the Docbook XSL stylesheets are required.
+To build the manpages or html documentation, xsltproc and the Docbook XSL
+stylesheets are required.
 
     Archlinux: pacman -S libxslt docbook-xsl
     Fedora 17: yum install libxslt docbook-style-xsl
@@ -135,7 +136,8 @@ If in addition to GLX you want support for X11/EGL, then add
 -Dwaffle_has_x11_egl=1 to the cmake arguments. Likewise for Wayland, add
 -Dwaffle_has_wayland=1; and for GBM, add -Dwaffle_has_gbm=1.
 
-To build the manpages, add -Dwaffle_build_manpages=1.
+To build the manpages, add -Dwaffle_build_manpages=1. To build the html
+documentation, add -Dwaffle_build_htmldocs=1.
 
 To install into a custom location, autoconf-esque variables such
 as CMAKE_INSTALL_LIBDIR are supported. See
