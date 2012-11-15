@@ -1,0 +1,42 @@
+Waffle 1.2.0 - 15 Nov 2012
+==========================
+
+Waffle 1.2.0 is now available.
+
+    http://people.freedesktop.org/~chadversary/waffle/files/release/waffle-1.2.0/waffle-1.2.0.tar.xz
+    [TODO:sha256sum]
+
+Waffle is a cross-platform library that allows one to defer selection of GL
+API and of window system until runtime. For example, on Linux, Waffle enables
+an application to select X11/EGL with an OpenGL 3.3 core profile, Wayland with
+OpenGL ES2, and other window system / API combinations.
+
+The ABI of waffle 1.2 is backwards compatible with waffle 1.0.
+
+
+Major New Features since 1.1
+----------------------------
+
+- Support for EGL_KHR_create_context, which enables selecting the context
+  version and profile on EGL.
+
+- Support for OpenGL ES3 on GLX and EGL platforms.
+
+- Support for OpenGL ES1 on GLX.
+
+
+Minor New Features since 1.1
+----------------------------
+
+- html manpages: To build html manpages, set the new build option
+  -Dwaffle_build_htmldocs=1. (See README for build requirements).
+
+
+Acknowledgements
+----------------
+
+Contributors to this release:
+    Adrian Marius Negreanu <adrian.m.negreanu@intel.com>
+    Chad Versace <chad.versace@linux.intel.com>
+    Juha-Pekka Heikkila <juha-pekka.heikkila@linux.intel.com>
+    Kenneth Graunke <kenneth@whitecape.org>
