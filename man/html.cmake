@@ -28,6 +28,7 @@ set(html_out_dir ${CMAKE_BINARY_DIR}/doc/html)
 file(MAKE_DIRECTORY ${html_out_dir})
 
 set(html_outputs
+    ${html_out_dir}/manpage.css
     ${html_out_dir}/waffle_attrib_list.3.html
     ${html_out_dir}/waffle_config.3.html
     ${html_out_dir}/waffle_context.3.html
@@ -82,6 +83,13 @@ waffle_add_html(3 waffle_wayland)
 waffle_add_html(3 waffle_window)
 waffle_add_html(3 waffle_x11_egl)
 waffle_add_html(7 waffle)
+
+add_custom_command(
+    OUTPUT ${html_out_dir}/manpage.css
+    DEPENDS manpage.css
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    COMMAND cp manpage.css ${html_out_dir}/manpage.css
+    )
 
 add_custom_target(html
     ALL

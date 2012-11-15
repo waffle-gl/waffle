@@ -8,6 +8,7 @@
 
   <xsl:param name="citerefentry.link">1</xsl:param>
   <xsl:param name="funcsynopsis.style">ansi</xsl:param>
+  <xsl:param name="html.stylesheet">manpage.css</xsl:param>
 
   <!--
    ! Generate urls for citations.

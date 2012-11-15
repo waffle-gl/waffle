@@ -1,0 +1,51 @@
+body, table {
+  font-family: "Bitstream Vera Sans", "DejaVu Sans", Tahoma, sans-serif;
+  color: #333333;
+  background: white;
+  font-size: 12px;
+  line-height: 16px;
+}
+
+h1, h2, h3, h4, h5 {
+    padding: 0;
+    margin: 0;
+    font-weight: bold;
+}
+h1 {
+    font-size: 36px;
+    line-height: 40px;
+}
+h2 {
+    font-size: 24px;
+    line-height: 28px;
+    margin-bottom: 8px;
+    padding-top: 8px;
+}
+h3 {
+    font-size: 16px;
+    line-height: 20px;
+    margin-bottom: 8px;
+    padding-top: 8px;
+}
+
+h4 {
+    font-size: 12px;
+    line-height: 16px;
+}
+
+code {
+  font-family: "Bitstream Vera Sans Mono", "DejavVu Sans Mono", monospace;
+}
+
+.funcsynopsis, .funcprototype, .funcsynopsis-table {
+  font-family: "Bitstream Vera Sans Mono", "DejavVu Sans Mono", monospace;
+}
+
+.type, .function {
+  font-family: "Bitstream Vera Sans Mono", "DejavVu Sans Mono", monospace;
+  font-weight: bold;
+}
+
+/*
+ * vim:et:sw=2:ts=2:
+ */
