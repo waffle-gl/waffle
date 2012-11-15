@@ -1,21 +1,38 @@
+# ----------------------------------------------
+# CMake
+# ----------------------------------------------
+
 *.cmake
-*.so
-*_test
-*unittest
-
-# Ninja
-.ninja_log
-build.ninja
-rules.ninja
-
-doc/html/
-examples/simple-x11-egl
-gl_basic
-install_manifest.txt
-lib/
-src/waffle/libwaffle_static.a
-waffle.pc
-waffle-1.pc
-CMakeCache.txt
 CMakeFiles
+
+/install_manifest.txt
+/CMakeCache.txt
+
+# ----------------------------------------------
+# Ninja
+# ----------------------------------------------
+
+/.ninja_log
+/build.ninja
+/rules.ninja
+
+# ----------------------------------------------
+# Make
+# ----------------------------------------------
+
 Makefile
+
+# ----------------------------------------------
+# Build Artifacts
+# ----------------------------------------------
+
+*.so
+
+/doc/html/
+/examples/gl_basic
+/examples/simple-x11-egl
+/lib/
+/src/waffle/libwaffle_static.a
+/tests/functional/gl_basic_test
+/tests/unittests/waffle-unittest
+/waffle-1.pc
