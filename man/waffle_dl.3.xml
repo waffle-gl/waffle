@@ -120,7 +120,8 @@
   <refsect1>
     <title>See Also</title>
     <para>
-      <citerefentry><refentrytitle>waffle</refentrytitle><manvolnum>7</manvolnum></citerefentry>
+      <citerefentry><refentrytitle>waffle</refentrytitle><manvolnum>7</manvolnum></citerefentry>,
+      <citerefentry><refentrytitle>waffle_get_proc_address</refentrytitle><manvolnum>3</manvolnum></citerefentry>
     </para>
   </refsect1>
 
