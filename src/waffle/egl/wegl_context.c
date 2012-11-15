@@ -26,8 +26,6 @@
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
 
-#include "waffle_enum.h"
-
 #include "wcore_error.h"
 
 #include "wegl_config.h"

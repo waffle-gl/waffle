@@ -29,14 +29,14 @@ Much of Waffle's code adheres to an object oriented design. Not only does this
 influence Waffle's architectural design, but also its naming conventions and code
 organization.
 
-For this discussion, we will use `struct waffle_window` as an example. It is
+For this discussion, we will use `struct wegl_window` as an example. It is
 implemented in the files
 
-    /include/waffle/waffle_window.h
-    /src/waffle/api/waffle_window.c
+    wegl_window.h
+    wegl_window.c
 
 A class's header and source file have the same name as the class. For example,
-waffle_window.h and waffle_window.c.
+wegl_window.h and wegl_window.c.
 
 Method names follow the convention of `typename_operation`. This makes it
 immediately obvious on what the function acts and in which file the function

@@ -28,11 +28,6 @@
 
 /// @file
 
-#include <stdlib.h>
-
-#include "waffle_display.h"
-#include "waffle_enum.h"
-
 #include "api_priv.h"
 
 #include "wcore_error.h"

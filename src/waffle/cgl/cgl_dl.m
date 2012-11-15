@@ -26,8 +26,6 @@
 #include <assert.h>
 #include <dlfcn.h>
 
-#include "waffle_enum.h"
-
 #include "wcore_error.h"
 
 #include "cgl_dl.h"

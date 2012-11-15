@@ -29,8 +29,6 @@
 /// @file
 /// @ingroup api
 
-#include "waffle_attrib_list.h"
-
 #include "wcore_error.h"
 
 int32_t

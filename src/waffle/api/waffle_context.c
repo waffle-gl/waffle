@@ -28,10 +28,6 @@
 
 /// @file
 
-#include <stdlib.h>
-
-#include "waffle_context.h"
-
 #include "api_priv.h"
 
 #include "wcore_context.h"

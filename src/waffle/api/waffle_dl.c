@@ -28,9 +28,6 @@
 
 /// @file
 
-#include "waffle_dl.h"
-#include "waffle_enum.h"
-
 #include "api_priv.h"
 
 #include "wcore_error.h"

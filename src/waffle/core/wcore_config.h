@@ -30,8 +30,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "waffle_config.h"
-
 #include "api_object.h"
 
 #include "wcore_display.h"

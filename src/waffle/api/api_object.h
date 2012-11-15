@@ -25,7 +25,7 @@
 
 #pragma once
 
-#include <stddef.h>
+#include "waffle.h"
 
 // This header is so sad and lonely... but there is no other appropriate place
 // to define this struct.

@@ -25,12 +25,6 @@
 
 #pragma once
 
-#include <stdbool.h>
-#include <stdlib.h>
-#include <stdint.h>
-
-#include "waffle_display.h"
-
 #include "api_object.h"
 
 #include "wcore_util.h"

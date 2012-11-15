@@ -26,8 +26,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "waffle_enum.h"
-
 #include "waffle_test/waffle_test.h"
 
 #include "wcore_config_attrs.h"

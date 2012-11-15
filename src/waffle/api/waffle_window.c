@@ -30,8 +30,6 @@
 
 #include <stdlib.h>
 
-#include "waffle_window.h"
-
 #include "api_priv.h"
 
 #include "wcore_config.h"

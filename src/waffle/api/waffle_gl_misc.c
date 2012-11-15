@@ -31,9 +31,6 @@
 #include <stddef.h>
 #include <string.h>
 
-#include "waffle_enum.h"
-#include "waffle_gl_misc.h"
-
 #include "api_priv.h"
 
 #include "wcore_context.h"

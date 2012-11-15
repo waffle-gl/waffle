@@ -25,7 +25,7 @@
 
 #include <string.h>
 
-#include "waffle_attrib_list.h"
+#include "waffle.h"
 
 #include "waffle_test/waffle_test.h"
 

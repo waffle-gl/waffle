@@ -36,6 +36,8 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+#include "waffle.h"
+
 struct api_object;
 struct wcore_platform;
 

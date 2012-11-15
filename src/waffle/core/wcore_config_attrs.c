@@ -32,9 +32,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "waffle_attrib_list.h"
-#include "waffle_enum.h"
-
 #include "wcore_config_attrs.h"
 #include "wcore_error.h"
 

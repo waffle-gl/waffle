@@ -28,10 +28,6 @@
 
 /// @file
 
-#include <stdlib.h>
-
-#include "waffle_config.h"
-
 #include "api_priv.h"
 
 #include "wcore_config_attrs.h"

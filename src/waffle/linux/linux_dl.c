@@ -33,8 +33,6 @@
 
 #include <dlfcn.h>
 
-#include "waffle_enum.h"
-
 #include "wcore_error.h"
 #include "wcore_util.h"
 

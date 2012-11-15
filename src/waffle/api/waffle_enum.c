@@ -28,8 +28,6 @@
 
 /// @file
 
-#include "waffle_enum.h"
-
 #include "wcore_error.h"
 
 const char*
