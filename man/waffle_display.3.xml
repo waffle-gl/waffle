@@ -90,7 +90,7 @@ struct waffle_display;
         <listitem>
           <para>
             Connect to a display. The interpretation of <parameter>name</parameter> differs according to the platform
-            given to <citerefentry><refentrytitle>waffle_init</refentrytitle><manvolnum>3</manvolnum></citerefentry>.
+            given to <citerefentry><refentrytitle><function>waffle_init</function></refentrytitle><manvolnum>3</manvolnum></citerefentry>.
           </para>
           <para>
             On Android and CGL, <parameter>name</parameter> is ignored.
@@ -128,9 +128,9 @@ struct waffle_display;
         <listitem>
           <para>
             Check if the display is capable of creating
-            a <citerefentry><refentrytitle>waffle_context</refentrytitle><manvolnum>3</manvolnum></citerefentry> with
+            a <citerefentry><refentrytitle><function>waffle_context</function></refentrytitle><manvolnum>3</manvolnum></citerefentry> with
             the given <parameter>context_api</parameter>. See
-            <citerefentry><refentrytitle>waffle_config</refentrytitle><manvolnum>3</manvolnum></citerefentry> for
+            <citerefentry><refentrytitle><function>waffle_config</function></refentrytitle><manvolnum>3</manvolnum></citerefentry> for
             choices of <parameter>context_api</parameter> and expectations for each platform.
           </para>
         </listitem>
@@ -141,9 +141,9 @@ struct waffle_display;
         <listitem>
           <para>
             Get the display's underlying native objects. Use
-            <citerefentry><refentrytitle>free</refentrytitle><manvolnum>3</manvolnum></citerefentry> to deallocate the
+            <citerefentry><refentrytitle><function>free</function></refentrytitle><manvolnum>3</manvolnum></citerefentry> to deallocate the
             returned pointer.
-            See <citerefentry><refentrytitle>waffle_native</refentrytitle><manvolnum>3</manvolnum></citerefentry>
+            See <citerefentry><refentrytitle><function>waffle_native</function></refentrytitle><manvolnum>3</manvolnum></citerefentry>
             for the definition of <type>union waffle_native_display</type>.
           </para>
         </listitem>

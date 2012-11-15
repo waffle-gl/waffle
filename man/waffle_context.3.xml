@@ -120,9 +120,9 @@ struct waffle_context;
         <listitem>
           <para>
             Get the context's underlying native objects. Use
-            <citerefentry><refentrytitle>free</refentrytitle><manvolnum>3</manvolnum></citerefentry> to deallocate the
+            <citerefentry><refentrytitle><function>free</function></refentrytitle><manvolnum>3</manvolnum></citerefentry> to deallocate the
             returned pointer.
-            See <citerefentry><refentrytitle>waffle_native</refentrytitle><manvolnum>3</manvolnum></citerefentry>
+            See <citerefentry><refentrytitle><function>waffle_native</function></refentrytitle><manvolnum>3</manvolnum></citerefentry>
             for the definition of <type>union waffle_native_context</type>.
           </para>
         </listitem>

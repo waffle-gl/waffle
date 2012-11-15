@@ -81,7 +81,7 @@ struct waffle_error_info {
     <para>
       The only functions that do not alter waffle's error state are listed here and are explicitly documented as such.
       All functions listed here can be called before waffle has been successfully initialized with
-      <citerefentry><refentrytitle>waffle_init</refentrytitle><manvolnum>3</manvolnum></citerefentry>
+      <citerefentry><refentrytitle><function>waffle_init</function></refentrytitle><manvolnum>3</manvolnum></citerefentry>
     </para>
 
     <variablelist>
@@ -101,7 +101,7 @@ struct waffle_error_info {
           </para>
           <para>
             <structfield>message_length</structfield> is the length of <structfield>message</structfield> according to
-            <citerefentry><refentrytitle>strlen</refentrytitle><manvolnum>3</manvolnum></citerefentry>.
+            <citerefentry><refentrytitle><function>strlen</function></refentrytitle><manvolnum>3</manvolnum></citerefentry>.
           </para>
         </listitem>
       </varlistentry>
@@ -183,7 +183,7 @@ struct waffle_error_info {
                   <para>
                     Waffle encountered an error for which it lacks an error code.  This is
                     usually produced when an underlying native call, such as
-                    <citerefentry><refentrytitle>XOpenDisplay</refentrytitle><manvolnum>3</manvolnum></citerefentry>,
+                    <citerefentry><refentrytitle><function>XOpenDisplay</function></refentrytitle><manvolnum>3</manvolnum></citerefentry>,
                     fails for an unknown reason.
                   </para>
                 </listitem>
@@ -213,7 +213,7 @@ struct waffle_error_info {
                 <listitem>
                   <para>
                     The failed function requires waffle to be initialized with
-                    <citerefentry><refentrytitle>waffle_init</refentrytitle><manvolnum>3</manvolnum></citerefentry>.
+                    <citerefentry><refentrytitle><function>waffle_init</function></refentrytitle><manvolnum>3</manvolnum></citerefentry>.
                   </para>
                 </listitem>
               </varlistentry>
@@ -223,7 +223,7 @@ struct waffle_error_info {
                 <listitem>
                   <para>
                     If waffle has already been initialized by a successful call to
-                    <citerefentry><refentrytitle>waffle_init</refentrytitle><manvolnum>3</manvolnum></citerefentry>,
+                    <citerefentry><refentrytitle><function>waffle_init</function></refentrytitle><manvolnum>3</manvolnum></citerefentry>,
                     then subsequent calls to <function>waffle_init()</function> produce this error.
                   </para>
                 </listitem>

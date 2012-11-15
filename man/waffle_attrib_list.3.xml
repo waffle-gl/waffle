@@ -80,12 +80,12 @@
       An attribute list is a zero-terminated list of <type>int32_t</type> key/value pairs or a null pointer. A null
       pointer is interpreted as an empty list, whose only member is the terminal zero. For concrete examples of
       attribute lists, see the "Examples" section in
-      <citerefentry><refentrytitle>waffle_config</refentrytitle><manvolnum>3</manvolnum></citerefentry>.
+      <citerefentry><refentrytitle><function>waffle_config</function></refentrytitle><manvolnum>3</manvolnum></citerefentry>.
     </para>
 
     <para>
       All attribute list functions can be called before waffle has been successfully initialized with
-      <citerefentry><refentrytitle>waffle_init</refentrytitle><manvolnum>3</manvolnum></citerefentry>.
+      <citerefentry><refentrytitle><function>waffle_init</function></refentrytitle><manvolnum>3</manvolnum></citerefentry>.
     </para>
 
     <variablelist>
@@ -140,7 +140,7 @@
     <para>
       All attribute list functions set the error code to <constant>WAFFLE_NO_ERROR</constant> and can be called before
       waffle has been successfully initialized with
-      <citerefentry><refentrytitle>waffle_init</refentrytitle><manvolnum>3</manvolnum></citerefentry>.
+      <citerefentry><refentrytitle><function>waffle_init</function></refentrytitle><manvolnum>3</manvolnum></citerefentry>.
     </para>
 
     <xi:include href="common/error-codes.xml"/>

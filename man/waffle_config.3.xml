@@ -88,8 +88,8 @@ struct waffle_config;
 
             The config can later be used to create surfaces and contexts with
 
-            <citerefentry><refentrytitle>waffle_window_create</refentrytitle><manvolnum>3</manvolnum></citerefentry> and
-            <citerefentry><refentrytitle>waffle_context_create</refentrytitle><manvolnum>3</manvolnum></citerefentry>.
+            <citerefentry><refentrytitle><function>waffle_window_create</function></refentrytitle><manvolnum>3</manvolnum></citerefentry> and
+            <citerefentry><refentrytitle><function>waffle_context_create</function></refentrytitle><manvolnum>3</manvolnum></citerefentry>.
           </para>
 
           <para>
@@ -121,7 +121,7 @@ struct waffle_config;
         <listitem>
           <para>
             Get the config's underlying native objects. Use
-            <citerefentry><refentrytitle>free</refentrytitle><manvolnum>3</manvolnum></citerefentry> to deallocate the
+            <citerefentry><refentrytitle><function>free</function></refentrytitle><manvolnum>3</manvolnum></citerefentry> to deallocate the
             returned pointer.
             See <citerefentry><refentrytitle>waffle_native</refentrytitle><manvolnum>3</manvolnum></citerefentry>
             for the definition of <type>union waffle_native_config</type>.
@@ -144,7 +144,7 @@ struct waffle_config;
     <para>
       For example, one quirk that Waffle is able to accommodate is that some platforms require specification of context
       attributes at different times.  GLX requires that the context attributes be specified at time of context creation
-      [<citerefentry><refentrytitle>glXCreateContextAttribsARB</refentrytitle><manvolnum>3</manvolnum></citerefentry>]
+      [<citerefentry><refentrytitle><function>glXCreateContextAttribsARB</function></refentrytitle><manvolnum>3</manvolnum></citerefentry>]
       but MacOS requires the attributes to be specified when choosing
       a config [<function>CGLChoosePixelFormat</function>].  Therefore, Waffle is constrained by MacOS to require the
       attributes at time of <function>waffle_config_choose()</function>.
@@ -201,13 +201,13 @@ struct waffle_config;
           <para>
             The actual set of supported values depends on the native platform.  To check if the system supports a given
             API, use
-            <citerefentry><refentrytitle>waffle_display_supports_context_api</refentrytitle><manvolnum>3</manvolnum></citerefentry>.
+            <citerefentry><refentrytitle><function>waffle_display_supports_context_api</function></refentrytitle><manvolnum>3</manvolnum></citerefentry>.
             Invariants and expectations for each platform are discussed below.
           </para>
           <para>
             On Android, <constant>WAFFLE_CONTEXT_OPENGL_ES1</constant> is always supported.  Beginning with Ice Cream
             Sandwich (that is, Android 4.0), <constant>WAFFLE_CONTEXT_OPENGL_ES2</constant> is also supported.  Use
-            <citerefentry><refentrytitle>waffle_display_supports_context_api</refentrytitle><manvolnum>3</manvolnum></citerefentry>
+            <citerefentry><refentrytitle><function>waffle_display_supports_context_api</function></refentrytitle><manvolnum>3</manvolnum></citerefentry>
             to check if additional APIs are supported.
           </para>
           <para>
@@ -216,7 +216,7 @@ struct waffle_config;
           </para>
           <para>
             On EGL platforms other than Android, no API is guaranteed to be supported. One must use
-            <citerefentry><refentrytitle>waffle_display_supports_context_api</refentrytitle><manvolnum>3</manvolnum></citerefentry>
+            <citerefentry><refentrytitle><function>waffle_display_supports_context_api</function></refentrytitle><manvolnum>3</manvolnum></citerefentry>
             to check for supported APIs.
           </para>
           <para>
@@ -234,7 +234,7 @@ struct waffle_config;
             This pair of attributes is optional.
 
             They specify the context version that
-            <citerefentry><refentrytitle>waffle_context_create</refentrytitle><manvolnum>3</manvolnum></citerefentry>
+            <citerefentry><refentrytitle><function>waffle_context_create</function></refentrytitle><manvolnum>3</manvolnum></citerefentry>
             will request.
           </para>
 
@@ -249,7 +249,7 @@ struct waffle_config;
             and successfully returns a config,
 
             the native platform may later reject the requested version when
-            <citerefentry><refentrytitle>waffle_context_create</refentrytitle><manvolnum>3</manvolnum></citerefentry>
+            <citerefentry><refentrytitle><function>waffle_context_create</function></refentrytitle><manvolnum>3</manvolnum></citerefentry>
             is called.
           </para>
 
@@ -288,7 +288,7 @@ struct waffle_config;
             This attributes is optional.
 
             It specifies the context profile that
-            <citerefentry><refentrytitle>waffle_context_create</refentrytitle><manvolnum>3</manvolnum></citerefentry>
+            <citerefentry><refentrytitle><function>waffle_context_create</function></refentrytitle><manvolnum>3</manvolnum></citerefentry>
             will request.
           </para>
 
@@ -307,7 +307,7 @@ struct waffle_config;
             and successfully returns a config,
 
             the native platform may later reject the requested profile when
-            <citerefentry><refentrytitle>waffle_context_create</refentrytitle><manvolnum>3</manvolnum></citerefentry>
+            <citerefentry><refentrytitle><function>waffle_context_create</function></refentrytitle><manvolnum>3</manvolnum></citerefentry>
             is called.
           </para>
 

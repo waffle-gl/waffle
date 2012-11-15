@@ -103,11 +103,11 @@
                 <listitem>
                   <para>
                     [MacOS] Use CGL to create the
-                    <citerefentry><refentrytitle>waffle_config</refentrytitle><manvolnum>3</manvolnum></citerefentry>
+                    <citerefentry><refentrytitle><function>waffle_config</function></refentrytitle><manvolnum>3</manvolnum></citerefentry>
                     and
-                    <citerefentry><refentrytitle>waffle_context</refentrytitle><manvolnum>3</manvolnum></citerefentry>.
+                    <citerefentry><refentrytitle><function>waffle_context</function></refentrytitle><manvolnum>3</manvolnum></citerefentry>.
                     Use Cocoa to create the
-                    <citerefentry><refentrytitle>waffle_window</refentrytitle><manvolnum>3</manvolnum></citerefentry>.
+                    <citerefentry><refentrytitle><function>waffle_window</function></refentrytitle><manvolnum>3</manvolnum></citerefentry>.
                   </para>
                 </listitem>
               </varlistentry>

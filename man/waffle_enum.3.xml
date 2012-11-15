@@ -68,7 +68,7 @@ enum waffle_enum {...};
           <para>
             This function always sets the error code to <constant>WAFFLE_NO_ERROR</constant>.
             It can be called before waffle has been successfully initialized with
-            <citerefentry><refentrytitle>waffle_init</refentrytitle><manvolnum>3</manvolnum></citerefentry>
+            <citerefentry><refentrytitle><function>waffle_init</function></refentrytitle><manvolnum>3</manvolnum></citerefentry>
           </para>
         </listitem>
       </varlistentry>

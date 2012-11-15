@@ -58,10 +58,10 @@
         <listitem>
           <para>
             On GLX, this redirects to
-            <citerefentry><refentrytitle>glXGetProcAddress</refentrytitle><manvolnum>3</manvolnum></citerefentry>.
+            <citerefentry><refentrytitle><function>glXGetProcAddress</function></refentrytitle><manvolnum>3</manvolnum></citerefentry>.
 
             On EGL, this redirects to
-            <citerefentry><refentrytitle>eglGetProcAddress</refentrytitle><manvolnum>3</manvolnum></citerefentry>.
+            <citerefentry><refentrytitle><function>eglGetProcAddress</function></refentrytitle><manvolnum>3</manvolnum></citerefentry>.
 
             On CGL, this function returns <constant>NULL</constant>
 

@@ -75,8 +75,8 @@
           <para>
             This function is analogous to
 
-            <citerefentry><refentrytitle>glXMakeCurrent</refentrytitle><manvolnum>3</manvolnum></citerefentry>,
-            <citerefentry><refentrytitle>eglMakeCurrent</refentrytitle><manvolnum>3</manvolnum></citerefentry>, and
+            <citerefentry><refentrytitle><function>glXMakeCurrent</function></refentrytitle><manvolnum>3</manvolnum></citerefentry>,
+            <citerefentry><refentrytitle><function>eglMakeCurrent</function></refentrytitle><manvolnum>3</manvolnum></citerefentry>, and
             <function>[NSOpenGLContext makeCurrentContext]</function>.
           </para>
         </listitem>
