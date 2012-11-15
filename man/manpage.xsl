@@ -6,6 +6,9 @@
   <xsl:import href="http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl"/>
   <xsl:include href="common.xsl"/>
 
+  <!-- Don't print name of each manpage generated. -->
+  <xsl:param name="man.output.quietly">1</xsl:param>
+
 </xsl:stylesheet>
 
 <!--
