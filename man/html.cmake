@@ -23,7 +23,7 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-set(html_out_dir ${CMAKE_BINARY_DIR}/doc/html)
+set(html_out_dir ${CMAKE_BINARY_DIR}/doc/html/man)
 
 file(MAKE_DIRECTORY ${html_out_dir})
 
@@ -97,4 +97,4 @@ add_custom_target(html
     )
 
 install(DIRECTORY ${html_out_dir}
-        DESTINATION ${CMAKE_INSTALL_FULL_DOCDIR})
+        DESTINATION ${CMAKE_INSTALL_FULL_DOCDIR}/html)
