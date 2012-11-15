@@ -100,9 +100,11 @@ Link with -lwaffle-1.
         <member><citerefentry><refentrytitle>waffle_enum</refentrytitle><manvolnum>3</manvolnum></citerefentry>,</member>
         <member><citerefentry><refentrytitle>waffle_error</refentrytitle><manvolnum>3</manvolnum></citerefentry>,</member>
         <member><citerefentry><refentrytitle>waffle_gbm</refentrytitle><manvolnum>3</manvolnum></citerefentry>,</member>
-        <member><citerefentry><refentrytitle>waffle_gl_misc</refentrytitle><manvolnum>3</manvolnum></citerefentry>,</member>
+        <member><citerefentry><refentrytitle>waffle_get_proc_address</refentrytitle><manvolnum>3</manvolnum></citerefentry>,</member>
         <member><citerefentry><refentrytitle>waffle_glx</refentrytitle><manvolnum>3</manvolnum></citerefentry>,</member>
         <member><citerefentry><refentrytitle>waffle_init</refentrytitle><manvolnum>3</manvolnum></citerefentry>,</member>
+        <member><citerefentry><refentrytitle>waffle_is_extension_in_string</refentrytitle><manvolnum>3</manvolnum></citerefentry>,</member>
+        <member><citerefentry><refentrytitle>waffle_make_current</refentrytitle><manvolnum>3</manvolnum></citerefentry>,</member>
         <member><citerefentry><refentrytitle>waffle_native</refentrytitle><manvolnum>3</manvolnum></citerefentry>,</member>
         <member><citerefentry><refentrytitle>waffle_wayland</refentrytitle><manvolnum>3</manvolnum></citerefentry>,</member>
         <member><citerefentry><refentrytitle>waffle_window</refentrytitle><manvolnum>3</manvolnum></citerefentry>,</member>

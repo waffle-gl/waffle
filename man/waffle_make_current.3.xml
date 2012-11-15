@@ -1,0 +1,114 @@
+<?xml version='1.0'?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+  "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+
+<!--
+  Copyright Intel 2012
+
+  This manual page is licensed under the Creative Commons Attribution-ShareAlike 3.0 United States License (CC BY-SA 3.0
+  US). To view a copy of this license, visit http://creativecommons.org.license/by-sa/3.0/us.
+-->
+
+<refentry
+    id="waffle_make_current"
+    xmlns:xi="http://www.w3.org/2001/XInclude">
+
+  <!-- See http://www.docbook.org/tdg/en/html/refentry.html. -->
+
+  <refmeta>
+    <refentrytitle>waffle_make_current</refentrytitle>
+    <manvolnum>3</manvolnum>
+  </refmeta>
+
+  <refnamediv>
+    <refname>waffle_make_current</refname>
+    <refpurpose>Bind a context for rendering</refpurpose>
+  </refnamediv>
+
+  <refentryinfo>
+    <title>Waffle Manual</title>
+    <productname>waffle</productname>
+    <xi:include href="common/author-chad.versace.xml"/>
+    <xi:include href="common/copyright.xml"/>
+    <xi:include href="common/legalnotice.xml"/>
+  </refentryinfo>
+
+  <refsynopsisdiv>
+    <funcsynopsis language="C">
+
+      <funcsynopsisinfo>
+#include &lt;waffle.h&gt;
+      </funcsynopsisinfo>
+
+      <funcprototype>
+        <funcdef>bool <function>waffle_make_current</function></funcdef>
+        <paramdef>struct waffle_display *<parameter>display</parameter></paramdef>
+        <paramdef>struct waffle_window *<parameter>window</parameter></paramdef>
+        <paramdef>struct waffle_context *<parameter>context</parameter></paramdef>
+      </funcprototype>
+
+    </funcsynopsis>
+  </refsynopsisdiv>
+
+  <refsect1>
+    <title>Description</title>
+
+    <variablelist>
+
+      <varlistentry>
+        <term><function>waffle_make_current()</function></term>
+        <listitem>
+          <para>
+            Bind the given <parameter>window</parameter> and <parameter>context</parameter>
+
+            for rendering on the current thread.
+
+            <parameter>window</parameter> and <parameter>context</parameter>
+
+            must both have been created on the given <parameter>display</parameter>.
+
+            To unbind the current context without binding a new one,
+
+            set <parameter>window</parameter> and <parameter>context</parameter> to <constant>NULL</constant>.
+          </para>
+
+          <para>
+            This function is analogous to
+
+            <function>glXMakeCurrent()</function>,
+            <function>eglMakeCurrent()</function>, and
+            <function>[NSOpenGLContext makeCurrentContext]</function>.
+          </para>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+  </refsect1>
+
+  <refsect1>
+    <title>Return Value</title>
+    <xi:include href="common/return-value.xml"/>
+  </refsect1>
+
+  <refsect1>
+    <title>Errors</title>
+
+    <xi:include href="common/error-codes.xml"/>
+
+    <para>
+      No errors are specific to any functions listed in this manual page.
+    </para>
+  </refsect1>
+
+  <refsect1>
+    <title>See Also</title>
+    <para>
+      <citerefentry><refentrytitle>waffle</refentrytitle><manvolnum>7</manvolnum></citerefentry>
+    </para>
+  </refsect1>
+
+</refentry>
+
+<!--
+vim:tw=120 et ts=2 sw=2:
+-->

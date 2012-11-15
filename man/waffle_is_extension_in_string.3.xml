@@ -1,0 +1,105 @@
+<?xml version='1.0'?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+  "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+
+<!--
+  Copyright Intel 2012
+
+  This manual page is licensed under the Creative Commons Attribution-ShareAlike 3.0 United States License (CC BY-SA 3.0
+  US). To view a copy of this license, visit http://creativecommons.org.license/by-sa/3.0/us.
+-->
+
+<refentry
+    id="waffle_is_extension_in_string"
+    xmlns:xi="http://www.w3.org/2001/XInclude">
+
+  <!-- See http://www.docbook.org/tdg/en/html/refentry.html. -->
+
+  <refmeta>
+    <refentrytitle>waffle_is_extension_in_string</refentrytitle>
+    <manvolnum>3</manvolnum>
+  </refmeta>
+
+  <refnamediv>
+    <refname>waffle_is_extension_in_string</refname>
+    <refpurpose>Check if a name appears in an OpenGL-style extension string</refpurpose>
+  </refnamediv>
+
+  <refentryinfo>
+    <title>Waffle Manual</title>
+    <productname>waffle</productname>
+    <xi:include href="common/author-chad.versace.xml"/>
+    <xi:include href="common/copyright.xml"/>
+    <xi:include href="common/legalnotice.xml"/>
+  </refentryinfo>
+
+  <refsynopsisdiv>
+
+    <funcsynopsis language="C">
+
+      <funcsynopsisinfo>
+#include &lt;waffle.h&gt;
+      </funcsynopsisinfo>
+
+      <funcprototype>
+        <funcdef>bool <function>waffle_is_extension_in_string</function></funcdef>
+        <paramdef>const char *restrict <parameter>extension_string</parameter></paramdef>
+        <paramdef>const char *restrict <parameter>extension_name</parameter></paramdef>
+      </funcprototype>
+
+    </funcsynopsis>
+  </refsynopsisdiv>
+
+  <refsect1>
+    <title>Description</title>
+
+    <variablelist>
+
+      <varlistentry>
+        <term><function>waffle_is_extension_in_string()</function></term>
+        <listitem>
+          <para>
+            Check if an extension name appears in an OpenGL-style extension string.
+          </para>
+
+          <para>
+            The <parameter>extension_string</parameter> must be
+
+            in the format returned by <code>glGetString(GL_EXTENSIONS)</code>.
+
+            Note that this function is not restricted to the GL extension string;
+
+            it can also be used on the GLX and EGL extension strings.
+          </para>
+
+          <para>
+            This function can be called before waffle has been successfully initialized with
+
+            <citerefentry><refentrytitle>waffle_init</refentrytitle><manvolnum>3</manvolnum></citerefentry>.
+          </para>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+  </refsect1>
+
+  <refsect1>
+    <title>Errors</title>
+
+    <para>
+      This function sets the error code to <constant>WAFFLE_NO_ERROR</constant>.
+    </para>
+  </refsect1>
+
+  <refsect1>
+    <title>See Also</title>
+    <para>
+      <citerefentry><refentrytitle>waffle</refentrytitle><manvolnum>7</manvolnum></citerefentry>
+    </para>
+  </refsect1>
+
+</refentry>
+
+<!--
+vim:tw=120 et ts=2 sw=2:
+-->

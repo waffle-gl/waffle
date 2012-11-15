@@ -37,9 +37,11 @@ set(man_outputs
     ${man_out_dir}/man3/waffle_enum.3
     ${man_out_dir}/man3/waffle_error.3
     ${man_out_dir}/man3/waffle_gbm.3
-    ${man_out_dir}/man3/waffle_gl_misc.3
+    ${man_out_dir}/man3/waffle_get_proc_address.3
     ${man_out_dir}/man3/waffle_glx.3
     ${man_out_dir}/man3/waffle_init.3
+    ${man_out_dir}/man3/waffle_is_extension_in_string.3
+    ${man_out_dir}/man3/waffle_make_current.3
     ${man_out_dir}/man3/waffle_native.3
     ${man_out_dir}/man3/waffle_wayland.3
     ${man_out_dir}/man3/waffle_window.3
@@ -69,9 +71,11 @@ waffle_add_manpage(3 waffle_dl)
 waffle_add_manpage(3 waffle_enum)
 waffle_add_manpage(3 waffle_error)
 waffle_add_manpage(3 waffle_gbm)
-waffle_add_manpage(3 waffle_gl_misc)
+waffle_add_manpage(3 waffle_get_proc_address)
 waffle_add_manpage(3 waffle_glx)
 waffle_add_manpage(3 waffle_init)
+waffle_add_manpage(3 waffle_is_extension_in_string)
+waffle_add_manpage(3 waffle_make_current)
 waffle_add_manpage(3 waffle_native)
 waffle_add_manpage(3 waffle_wayland)
 waffle_add_manpage(3 waffle_window)
