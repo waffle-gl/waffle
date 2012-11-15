@@ -3,8 +3,14 @@ Waffle 1.2.0 - 15 Nov 2012
 
 Waffle 1.2.0 is now available.
 
+  Download:
     http://people.freedesktop.org/~chadversary/waffle/files/release/waffle-1.2.0/waffle-1.2.0.tar.xz
-    [TODO:sha256sum]
+
+ sha256 sum:
+    95a3755980f2415f152f6238e952b5d4d817ae854b71e34f08830925bbc12d3c  waffle-1.2.0.tar.xz
+
+The manpages have finally been published online
+at http://people.freedesktop.org/~chadversary/waffle/man/index.html.
 
 Waffle is a cross-platform library that allows one to defer selection of GL
 API and of window system until runtime. For example, on Linux, Waffle enables
@@ -30,6 +36,9 @@ Minor New Features since 1.1
 
 - html manpages: To build html manpages, set the new build option
   -Dwaffle_build_htmldocs=1. (See README for build requirements).
+
+- Added a CMake "find" module, FindWaffle.cmake, for use on platforms such as
+  Android that lack pkg-config.
 
 
 Acknowledgements
