@@ -82,22 +82,11 @@ LOCAL_GENERATED_SOURCES := \
     $(LOCAL_PATH)/include/waffle_version.h
 
 LOCAL_COPY_HEADERS := \
-    include/waffle/waffle_attrib_list.h \
-    include/waffle/waffle_config.h \
-    include/waffle/waffle_context.h \
-    include/waffle/waffle_display.h \
-    include/waffle/waffle_dl.h \
-    include/waffle/waffle_enum.h \
-    include/waffle/waffle_error.h \
-    include/waffle/waffle_gbm.h \
-    include/waffle/waffle_gl_misc.h \
-    include/waffle/waffle_glx.h \
     include/waffle/waffle.h \
-    include/waffle/waffle_init.h \
-    include/waffle/waffle_portability.h \
+    include/waffle/waffle_gbm.h \
+    include/waffle/waffle_glx.h \
     include/waffle/waffle_version.h \
     include/waffle/waffle_wayland.h \
-    include/waffle/waffle_window.h \
     include/waffle/waffle_x11_egl.h \
 
 LOCAL_COPY_HEADERS_TO := waffle-$(waffle_major_version)
