@@ -38,10 +38,12 @@
 static bool
 check_keys(const int32_t attrib_list[])
 {
+    int32_t i;
+
     if (attrib_list == NULL)
         return true;
 
-    for (int32_t i = 0; attrib_list[i]; i += 2) {
+    for (i = 0; attrib_list[i]; i += 2) {
         int32_t key = attrib_list[i];
 
         switch (key) {
@@ -298,7 +300,9 @@ static bool
 parse_misc(struct wcore_config_attrs *attrs,
            const int32_t attrib_list[])
 {
-    for (int32_t i = 0; attrib_list[i]; i += 2) {
+    int32_t i;
+
+    for (i = 0; attrib_list[i]; i += 2) {
         int32_t key = attrib_list[i + 0];
         int32_t value = attrib_list[i + 1];
 
