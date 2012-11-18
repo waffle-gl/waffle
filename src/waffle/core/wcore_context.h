@@ -39,8 +39,6 @@ struct wcore_display;
 union waffle_native_context;
 
 struct wcore_context {
-    const struct wcore_context_vtbl *vtbl;
-
     struct waffle_context {} wfl;
     struct api_object api;
 
