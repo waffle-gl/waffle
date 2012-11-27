@@ -26,6 +26,8 @@ $(waffle_top)/include/waffle_version.h: \
 LOCAL_MODULE_TAGS := eng
 LOCAL_MODULE := libwaffle-$(waffle_major_version)
 
+LOCAL_CC := $(TARGET_CC) -std=c99
+
 LOCAL_CFLAGS := \
     -DANDROID_STUB \
     -DWAFFLE_HAS_ANDROID \
