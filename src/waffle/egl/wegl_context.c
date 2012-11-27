@@ -43,6 +43,7 @@ bind_api(int32_t waffle_context_api)
             break;
         case WAFFLE_CONTEXT_OPENGL_ES1:
         case WAFFLE_CONTEXT_OPENGL_ES2:
+        case WAFFLE_CONTEXT_OPENGL_ES3:
             ok &= eglBindAPI(EGL_OPENGL_ES_API);
             break;
         default:
