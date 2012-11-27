@@ -40,7 +40,7 @@ cmake_minimum_required(VERSION 2.8)
 #
 set(waffle_major_version "1")
 set(waffle_minor_version "2")
-set(waffle_patch_version "0")
+set(waffle_patch_version "75")
 
 set(waffle_version "${waffle_major_version}.${waffle_minor_version}.${waffle_patch_version}")
 
