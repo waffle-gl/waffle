@@ -29,12 +29,11 @@
 int
 wt_main(int *argc, char **argv, void (*test_suites[])(void))
 {
-    int i;
     int num_fail;
 
     wt_runner_init();
 
-    for (i = 0; test_suites[i] != 0; ++i)
+    for (int i = 0; test_suites[i] != 0; ++i)
         test_suites[i]();
 
     wt_runner_print_summary();

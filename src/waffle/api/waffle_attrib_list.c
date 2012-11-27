@@ -53,14 +53,12 @@ waffle_attrib_list_get(
         int32_t key,
         int32_t *value)
 {
-    int i;
-
     wcore_error_reset();
 
     if (attrib_list == NULL)
         return false;
 
-    for (i = 0; attrib_list[i] != 0; i += 2) {
+    for (int i = 0; attrib_list[i] != 0; i += 2) {
         if (attrib_list[i] != key)
             continue;
 

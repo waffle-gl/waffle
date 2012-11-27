@@ -156,11 +156,9 @@ wt_runner_get_totals(int *pass, int *fail, int *ignore)
 void
 wt_runner_print_summary(void)
 {
-    int i;
-
     if (self.num_fail > 0) {
         printf("test: failed tests:\n");
-        for (i = 0; i < self.num_fail; ++i) {
+        for (int i = 0; i < self.num_fail; ++i) {
             struct wt_testname *name = &self.fail_names[i];
             printf("  %s.%s\n", name->group, name->name);
         }

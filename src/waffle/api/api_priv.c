@@ -42,8 +42,6 @@ struct wcore_platform *api_platform = 0;
 bool
 api_check_entry(const struct api_object *obj_list[], int length)
 {
-    int i;
-
     wcore_error_reset();
 
     if (!api_platform) {
@@ -51,7 +49,7 @@ api_check_entry(const struct api_object *obj_list[], int length)
         return false;
     }
 
-    for (i = 0; i < length; ++i) {
+    for (int i = 0; i < length; ++i) {
         if (obj_list[i] == NULL) {
             wcore_errorf(WAFFLE_ERROR_BAD_PARAMETER, "null pointer");
             return false;

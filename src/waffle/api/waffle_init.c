@@ -45,10 +45,9 @@ waffle_init_parse_attrib_list(
         const int32_t attrib_list[],
         int *platform)
 {
-    const int32_t *i;
     bool found_platform = false;
 
-    for (i = attrib_list; *i != 0; i += 2) {
+    for (const int32_t *i = attrib_list; *i != 0; i += 2) {
         const int32_t attr = i[0];
         const int32_t value = i[1];
 

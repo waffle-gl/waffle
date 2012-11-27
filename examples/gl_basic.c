@@ -197,9 +197,7 @@ enum_map_translate_str(
         const char *s,
         int *result)
 {
-    const struct enum_map *i;
-
-    for (i = self; i->i != 0; ++i) {
+    for (const struct enum_map *i = self; i->i != 0; ++i) {
         if (!strncmp(s, i->s, strlen(i->s) + 1)) {
             *result = i->i;
             return true;
@@ -311,7 +309,6 @@ parse_args(int argc, char *argv[], struct options *opts)
 static bool
 draw(struct waffle_window *window)
 {
-    int i, j;
     bool ok;
     unsigned char *colors;
 
@@ -321,7 +318,7 @@ draw(struct waffle_window *window)
         .tv_nsec = 500000000,
     };
 
-    for (i = 0; i < 3; ++i) {
+    for (int i = 0; i < 3; ++i) {
         switch (i) {
             case 0: glClearColor(1, 0, 0, 1); break;
             case 1: glClearColor(0, 1, 0, 1); break;
@@ -336,7 +333,7 @@ draw(struct waffle_window *window)
                      WINDOW_WIDTH, WINDOW_HEIGHT,
                      GL_RGBA, GL_UNSIGNED_BYTE,
                      colors);
-        for (j = 0; j < WINDOW_WIDTH * WINDOW_HEIGHT * 4; j += 4) {
+        for (int j = 0; j < WINDOW_WIDTH * WINDOW_HEIGHT * 4; j += 4) {
            if ((colors[j]   != (i == 0 ? 0xff : 0)) ||
                (colors[j+1] != (i == 1 ? 0xff : 0)) ||
                (colors[j+2] != (i == 2 ? 0xff : 0)) ||
