@@ -110,6 +110,11 @@ glx_context_fill_attrib_list(struct glx_config *config,
     return true;
 }
 
+static int glx_dummy_error_handler(Display *dpy, XErrorEvent *err)
+{
+   return 0;
+}
+
 static GLXContext
 glx_context_create_native(struct glx_config *config,
                           struct glx_context *share_ctx)
@@ -118,6 +123,10 @@ glx_context_create_native(struct glx_config *config,
     GLXContext real_share_ctx = share_ctx ? share_ctx->glx : NULL;
     struct glx_display *dpy = glx_display(config->wcore.display);
     struct glx_platform *platform = glx_platform(dpy->wcore.platform);
+    int (*old_error_handler)(Display *, XErrorEvent *);
+
+    /* This prevents Xlib from killing the process if there's an error. */
+    old_error_handler = XSetErrorHandler(glx_dummy_error_handler);
 
     if (dpy->ARB_create_context) {
         bool ok;
@@ -151,6 +160,8 @@ glx_context_create_native(struct glx_config *config,
             return NULL;
         }
     }
+
+    XSetErrorHandler(old_error_handler);
 
     return ctx;
 }
