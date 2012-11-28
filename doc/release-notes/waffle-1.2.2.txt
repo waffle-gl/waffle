@@ -7,8 +7,8 @@ bugs discovered since the 1.2.1 release.
   Download:
     http://people.freedesktop.org/~chadversary/waffle/files/release/waffle-1.2.2/waffle-1.2.2.tar.xz
 
- sha256 sum:
-    [TODO:sha256]
+  sha256 sum:
+    7e342c859b58d4e051b347ef3d7740ed2f3b6c506b93daec272724afe7dd1311  waffle-1.2.2.tar.xz
 
 
 Bugfixes
