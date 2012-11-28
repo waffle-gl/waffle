@@ -6,7 +6,7 @@ discovered since 1.1.1.
 
 Tarball and sha256sum are:
     http://people.freedesktop.org/~chadversary/waffle/files/release/waffle-1.1.2/waffle-1.1.2.tar.xz
-    [TODO:sha256]  waffle-1.1.2.tar.xz
+    81f82caf541f349333ebe8b1d1a4a44f400aa50ffe26b3efc0a85172cdf84d02  waffle-1.1.2.tar.xz
 
 There is also a waffle-1.1.2 tag in git:
     git://people.freedesktop.org/~chadversary/waffle.git
