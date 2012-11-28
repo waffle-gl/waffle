@@ -1,0 +1,35 @@
+Waffle 1.2.2 - 27 Nov 2012
+==========================
+
+Waffle 1.2.2 is now available. This is a bugfix release that fixes critical
+bugs discovered since the 1.2.1 release.
+
+  Download:
+    http://people.freedesktop.org/~chadversary/waffle/files/release/waffle-1.2.2/waffle-1.2.2.tar.xz
+
+ sha256 sum:
+    [TODO:sha256]
+
+
+Bugfixes
+--------
+* Fix creation of ES3 contexts on EGL.
+* Fix build on Android.
+
+
+Changes
+-------
+
+The full set of changes can be viewed with `git log waffle-1.2.1..waffle-1.2.2`.
+
+Adrian Marius Negreanu (2):
+  android: Fold nearly all headers into waffle.h
+  android: Fix c99-ism in wcore_config_attrs.c
+
+Chad Versace (1):
+  egl: Fix call to eglBindAPI for WAFFLE_OPENGL_ES3
+
+ Android.mk                           | 13 +------------
+ src/waffle/core/wcore_config_attrs.c |  8 ++++++--
+ src/waffle/egl/wegl_context.c        |  1 +
+ 3 files changed, 8 insertions(+), 14 deletions(-)
