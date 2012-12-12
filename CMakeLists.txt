@@ -211,7 +211,7 @@ endif()
 # Compiler Flags
 # ------------------------------------------------------------------------------
 
-set(CMAKE_C_FLAGS "--std=c99 -Wall -Werror=implicit-function-declaration")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} --std=c99 -Wall -Werror=implicit-function-declaration")
 if("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
     # On MacOS, the SSE2 headers trigger this error.
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror=missing-prototypes")
