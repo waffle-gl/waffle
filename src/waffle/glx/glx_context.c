@@ -72,11 +72,38 @@ glx_context_fill_attrib_list(struct glx_config *config,
     struct wcore_config_attrs *attrs = &config->wcore.attrs;
     int i = 0;
 
-    attrib_list[i++] = GLX_CONTEXT_MAJOR_VERSION_ARB;
-    attrib_list[i++] = attrs->context_major_version;
+    // As a workaround for NVidia, do not specify
+    // GLX_CONTEXT_MAJOR_VERSION_ARB and GLX_CONTEXT_MINOR_VERSION_ARB in the
+    // call to glXCreateContextAttribsARB if the user requested an OpenGL
+    // context of unspecified version or if the user explicitly requested an
+    // OpenGL 1.0 context.
+    //
+    // Calling glXCreateContextAttribARB with MAJOR=1 and MINOR=0, according
+    // to the spec, is equivalent to calling it with MAJOR and MINOR
+    // unspecified.  From the GLX_ARB_create_context spec:
+    //
+    //     If an attribute is not specified in <attrib_list>,
+    //     then the default value specified below is used instead.
+    //
+    //     The default values for GLX_CONTEXT_MAJOR_VERSION_ARB and
+    //     GLX_CONTEXT_MINOR_VERSION_ARB are 1 and 0 respectively. In this
+    //     case, implementations will typically return the most recent version
+    //     of OpenGL they support which is backwards compatible with OpenGL 1.0
+    //     (e.g. 3.0, 3.1 + GL_ARB_compatibility, or 3.2 compatibility profile)
+    //
+    // However, NVidia's libGL, circa 2012-12-19, is not compliant. Calling
+    // glXCreateContextAttribsARB with MAJOR=1 and MINOR=0 returns an OpenGL
+    // 2.1 context. Calling it with MAJOR and MINOR unspecified returns
+    // a context of the latest supported OpenGL version.
+    if (attrs->context_api == WAFFLE_CONTEXT_OPENGL &&
+        attrs->context_full_version != 10)
+    {
+        attrib_list[i++] = GLX_CONTEXT_MAJOR_VERSION_ARB;
+        attrib_list[i++] = attrs->context_major_version;
 
-    attrib_list[i++] = GLX_CONTEXT_MINOR_VERSION_ARB;
-    attrib_list[i++] = attrs->context_minor_version;
+        attrib_list[i++] = GLX_CONTEXT_MINOR_VERSION_ARB;
+        attrib_list[i++] = attrs->context_minor_version;
+    }
 
     switch (attrs->context_api) {
         case WAFFLE_CONTEXT_OPENGL:
