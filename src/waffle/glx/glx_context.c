@@ -25,7 +25,7 @@
 
 #define GLX_GLXEXT_PROTOTYPES
 
-// The official glxext.h published by Khronos does not yet defined this bit.
+// The official glxext.h published by Khronos does not yet define this bit.
 // It is an alias of GLX_CONTEXT_ES2_PROFILE_BIT_EXT.
 #define GLX_CONTEXT_ES_PROFILE_BIT_EXT 0x00000004
 
