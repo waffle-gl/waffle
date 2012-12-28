@@ -352,7 +352,11 @@ struct waffle_config;
         <term><constant>WAFFLE_STENCIL_SIZE</constant></term>
         <listitem>
           <para>
-            The default value for each size attribute is <constant>WAFFLE_DONT_CARE</constant>. If the requested size
+            The default value for each size attribute is <constant>0</constant>.
+
+            The range of valid values is the non-negative integers.
+
+            If the requested size
             for a channel is 0, then any surface created with the config will lack that channel. If the requested size
             for a channel is positive, then the number of bits in that channel for any surface created with the config
             will be at least the requested size.

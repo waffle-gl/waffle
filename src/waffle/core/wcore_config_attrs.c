@@ -279,13 +279,19 @@ parse_context_profile(struct wcore_config_attrs *attrs,
 static bool
 set_misc_defaults(struct wcore_config_attrs *attrs)
 {
+    // Per the GLX [1] and EGL [2] specs, the default value of each size
+    // attribute and `samples` is 0.
+    //
+    // [1] GLX 1.4 spec (2005.12.16), Table 3.4
+    // [2] EGL 1.4 spec (2011.04.06), Table 3.4
+
     attrs->rgba_size            = 0;
-    attrs->red_size             = WAFFLE_DONT_CARE;
-    attrs->green_size           = WAFFLE_DONT_CARE;
-    attrs->blue_size            = WAFFLE_DONT_CARE;
-    attrs->alpha_size           = WAFFLE_DONT_CARE;
-    attrs->depth_size           = WAFFLE_DONT_CARE;
-    attrs->stencil_size         = WAFFLE_DONT_CARE;
+    attrs->red_size             = 0;
+    attrs->green_size           = 0;
+    attrs->blue_size            = 0;
+    attrs->alpha_size           = 0;
+    attrs->depth_size           = 0;
+    attrs->stencil_size         = 0;
     attrs->sample_buffers       = 0;
     attrs->samples              = 0;
     attrs->double_buffered      = true;
@@ -306,7 +312,7 @@ parse_misc(struct wcore_config_attrs *attrs,
 
             #define CASE_INT(enum_name, struct_memb)                           \
                 case enum_name:                                                \
-                    if (value < -1) {                                          \
+                    if (value < 0) {                                           \
                         wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,               \
                                      #enum_name " has bad value %d", value);   \
                                      return false;                             \
