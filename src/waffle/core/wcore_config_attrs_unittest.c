@@ -46,13 +46,13 @@ static const struct wcore_config_attrs default_attrs = {
     .rgb_size               = 0,
     .rgba_size              = 0,
 
-    .red_size               = WAFFLE_DONT_CARE,
-    .green_size             = WAFFLE_DONT_CARE,
-    .blue_size              = WAFFLE_DONT_CARE,
-    .alpha_size             = WAFFLE_DONT_CARE,
+    .red_size               = 0,
+    .green_size             = 0,
+    .blue_size              = 0,
+    .alpha_size             = 0,
 
-    .depth_size             = WAFFLE_DONT_CARE,
-    .stencil_size           = WAFFLE_DONT_CARE,
+    .depth_size             = 0,
+    .stencil_size           = 0,
 
     .sample_buffers         = 0,
     .samples                = 0,
@@ -105,12 +105,12 @@ TEST(wcore_config_attrs, gl_defaults)
     ASSERT_TRUE(actual_attrs.context_minor_version == 0);
     ASSERT_TRUE(actual_attrs.context_full_version == 10);
     ASSERT_TRUE(actual_attrs.context_profile == WAFFLE_NONE);
-    ASSERT_TRUE(actual_attrs.red_size == WAFFLE_DONT_CARE);
-    ASSERT_TRUE(actual_attrs.green_size == WAFFLE_DONT_CARE);
-    ASSERT_TRUE(actual_attrs.blue_size == WAFFLE_DONT_CARE);
-    ASSERT_TRUE(actual_attrs.alpha_size == WAFFLE_DONT_CARE);
-    ASSERT_TRUE(actual_attrs.depth_size == WAFFLE_DONT_CARE);
-    ASSERT_TRUE(actual_attrs.stencil_size == WAFFLE_DONT_CARE);
+    ASSERT_TRUE(actual_attrs.red_size == 0);
+    ASSERT_TRUE(actual_attrs.green_size == 0);
+    ASSERT_TRUE(actual_attrs.blue_size == 0);
+    ASSERT_TRUE(actual_attrs.alpha_size == 0);
+    ASSERT_TRUE(actual_attrs.depth_size == 0);
+    ASSERT_TRUE(actual_attrs.stencil_size == 0);
     ASSERT_TRUE(actual_attrs.sample_buffers == false);
     ASSERT_TRUE(actual_attrs.samples == 0);
     ASSERT_TRUE(actual_attrs.double_buffered == true);
@@ -131,12 +131,12 @@ TEST(wcore_config_attrs, gles1_defaults)
     ASSERT_TRUE(actual_attrs.context_full_version == 10);
     ASSERT_TRUE(actual_attrs.context_profile == WAFFLE_NONE);
 
-    ASSERT_TRUE(actual_attrs.red_size == WAFFLE_DONT_CARE);
-    ASSERT_TRUE(actual_attrs.green_size == WAFFLE_DONT_CARE);
-    ASSERT_TRUE(actual_attrs.blue_size == WAFFLE_DONT_CARE);
-    ASSERT_TRUE(actual_attrs.alpha_size == WAFFLE_DONT_CARE);
-    ASSERT_TRUE(actual_attrs.depth_size == WAFFLE_DONT_CARE);
-    ASSERT_TRUE(actual_attrs.stencil_size == WAFFLE_DONT_CARE);
+    ASSERT_TRUE(actual_attrs.red_size == 0);
+    ASSERT_TRUE(actual_attrs.green_size == 0);
+    ASSERT_TRUE(actual_attrs.blue_size == 0);
+    ASSERT_TRUE(actual_attrs.alpha_size == 0);
+    ASSERT_TRUE(actual_attrs.depth_size == 0);
+    ASSERT_TRUE(actual_attrs.stencil_size == 0);
     ASSERT_TRUE(actual_attrs.sample_buffers == false);
     ASSERT_TRUE(actual_attrs.samples == 0);
     ASSERT_TRUE(actual_attrs.double_buffered == true);
@@ -157,12 +157,12 @@ TEST(wcore_config_attrs, gles2_defaults)
     ASSERT_TRUE(actual_attrs.context_full_version == 20);
     ASSERT_TRUE(actual_attrs.context_profile == WAFFLE_NONE);
 
-    ASSERT_TRUE(actual_attrs.red_size == WAFFLE_DONT_CARE);
-    ASSERT_TRUE(actual_attrs.green_size == WAFFLE_DONT_CARE);
-    ASSERT_TRUE(actual_attrs.blue_size == WAFFLE_DONT_CARE);
-    ASSERT_TRUE(actual_attrs.alpha_size == WAFFLE_DONT_CARE);
-    ASSERT_TRUE(actual_attrs.depth_size == WAFFLE_DONT_CARE);
-    ASSERT_TRUE(actual_attrs.stencil_size == WAFFLE_DONT_CARE);
+    ASSERT_TRUE(actual_attrs.red_size == 0);
+    ASSERT_TRUE(actual_attrs.green_size == 0);
+    ASSERT_TRUE(actual_attrs.blue_size == 0);
+    ASSERT_TRUE(actual_attrs.alpha_size == 0);
+    ASSERT_TRUE(actual_attrs.depth_size == 0);
+    ASSERT_TRUE(actual_attrs.stencil_size == 0);
     ASSERT_TRUE(actual_attrs.sample_buffers == false);
     ASSERT_TRUE(actual_attrs.samples == 0);
     ASSERT_TRUE(actual_attrs.double_buffered == true);
@@ -183,12 +183,12 @@ TEST(wcore_config_attrs, gles3_defaults)
     ASSERT_TRUE(actual_attrs.context_full_version == 30);
     ASSERT_TRUE(actual_attrs.context_profile == WAFFLE_NONE);
 
-    ASSERT_TRUE(actual_attrs.red_size == WAFFLE_DONT_CARE);
-    ASSERT_TRUE(actual_attrs.green_size == WAFFLE_DONT_CARE);
-    ASSERT_TRUE(actual_attrs.blue_size == WAFFLE_DONT_CARE);
-    ASSERT_TRUE(actual_attrs.alpha_size == WAFFLE_DONT_CARE);
-    ASSERT_TRUE(actual_attrs.depth_size == WAFFLE_DONT_CARE);
-    ASSERT_TRUE(actual_attrs.stencil_size == WAFFLE_DONT_CARE);
+    ASSERT_TRUE(actual_attrs.red_size == 0);
+    ASSERT_TRUE(actual_attrs.green_size == 0);
+    ASSERT_TRUE(actual_attrs.blue_size == 0);
+    ASSERT_TRUE(actual_attrs.alpha_size == 0);
+    ASSERT_TRUE(actual_attrs.depth_size == 0);
+    ASSERT_TRUE(actual_attrs.stencil_size == 0);
     ASSERT_TRUE(actual_attrs.sample_buffers == false);
     ASSERT_TRUE(actual_attrs.samples == 0);
     ASSERT_TRUE(actual_attrs.double_buffered == true);
