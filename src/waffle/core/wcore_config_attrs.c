@@ -35,6 +35,12 @@
 #include "wcore_config_attrs.h"
 #include "wcore_error.h"
 
+enum {
+    DEFAULT_ACCUM_BUFFERS = false,
+    DEFAULT_DOUBLE_BUFFERED = true,
+    DEFAULT_SAMPLE_BUFFERS = false,
+};
+
 static bool
 check_keys(const int32_t attrib_list[])
 {
@@ -312,23 +318,43 @@ parse_misc(struct wcore_config_attrs *attrs,
 
             #define CASE_INT(enum_name, struct_memb)                           \
                 case enum_name:                                                \
-                    if (value < 0) {                                           \
+                    if (value < -1) {                                          \
                         wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,               \
                                      #enum_name " has bad value %d", value);   \
                                      return false;                             \
                     }                                                          \
-                    attrs->struct_memb = value;                                \
+                    else {                                                     \
+                        /*                                                     \
+                         * Pass WAFFLE_DONT_CARE to platform module.           \
+                         *                                                     \
+                         * From the GLX 1.4 (2005.12.16) spec:                 \
+                         *     GLX_DONT_CARE may be specified for all          \
+                         *     attributes except GLX_LEVEL.                    \
+                         *                                                     \
+                         * From the EGL 1.4 (2011.04.06) spec:                 \
+                         *     EGL_DONT_CARE may be specified for all          \
+                         *     attributes except EGL_LEVEL and                 \
+                         *     EGL_MATCH_NATIVE_PIXMAP.                        \
+                         */                                                    \
+                        attrs->struct_memb = value;                            \
+                    }                                                          \
                     break;
 
-            #define CASE_BOOL(enum_name, struct_memb)                              \
+            #define CASE_BOOL(enum_name, struct_memb, default_value)               \
                 case enum_name:                                                    \
-                    if (value != true && value != false) {                         \
-                        wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,                   \
-                                     #enum_name " has bad value 0x%x, must be "    \
-                                     "true(1) or false(0)", value);                \
-                                     return false;                                 \
+                    switch (value) {                                               \
+                        case WAFFLE_DONT_CARE:                                     \
+                        case true:                                                 \
+                        case false:                                                \
+                            attrs->struct_memb = value;                            \
+                            break;                                                 \
+                        default:                                                   \
+                            wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,               \
+                                         #enum_name " has bad value 0x%x, must be "\
+                                         "true(1) or false(0), or "                \
+                                         "WAFFLE_DONT_CARE(-1)", value);           \
+                            return false;                                          \
                     }                                                              \
-                    attrs->struct_memb = value;                                    \
                     break;
 
             case WAFFLE_CONTEXT_API:
@@ -346,9 +372,9 @@ parse_misc(struct wcore_config_attrs *attrs,
             CASE_INT(WAFFLE_STENCIL_SIZE, stencil_size)
             CASE_INT(WAFFLE_SAMPLES, samples)
 
-            CASE_BOOL(WAFFLE_SAMPLE_BUFFERS, sample_buffers);
-            CASE_BOOL(WAFFLE_DOUBLE_BUFFERED, double_buffered);
-            CASE_BOOL(WAFFLE_ACCUM_BUFFER, accum_buffer);
+            CASE_BOOL(WAFFLE_SAMPLE_BUFFERS, sample_buffers, DEFAULT_SAMPLE_BUFFERS);
+            CASE_BOOL(WAFFLE_DOUBLE_BUFFERED, double_buffered, DEFAULT_DOUBLE_BUFFERED);
+            CASE_BOOL(WAFFLE_ACCUM_BUFFER, accum_buffer, DEFAULT_ACCUM_BUFFER);
 
             default:
                 wcore_error_internal("%s", "bad attribute key should have "
@@ -361,12 +387,19 @@ parse_misc(struct wcore_config_attrs *attrs,
         }
     }
 
-    attrs->rgb_size = attrs->red_size
-                    + attrs->green_size
-                    + attrs->blue_size;
+    // Calculate rgb_size.
+    attrs->rgb_size = 0;
+    if (attrs->red_size != WAFFLE_DONT_CARE)
+        attrs->rgb_size += attrs->red_size;
+    if (attrs->green_size != WAFFLE_DONT_CARE)
+        attrs->rgb_size += attrs->green_size;
+    if (attrs->blue_size != WAFFLE_DONT_CARE)
+        attrs->rgb_size += attrs->blue_size;
 
-    attrs->rgba_size = attrs->rgb_size
-                     + attrs->alpha_size;
+    // Calculate rgba_size.
+    attrs->rgba_size = attrs->rgb_size;
+    if (attrs->alpha_size != WAFFLE_DONT_CARE)
+        attrs->rgba_size += attrs->alpha_size;
 
     return true;
 }

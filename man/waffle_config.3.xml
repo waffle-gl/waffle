@@ -354,7 +354,7 @@ struct waffle_config;
           <para>
             The default value for each size attribute is <constant>0</constant>.
 
-            The range of valid values is the non-negative integers.
+            Valid values are the non-negative integers and <constant>WAFFLE_DONT_CARE</constant>.
 
             If the requested size
             for a channel is 0, then any surface created with the config will lack that channel. If the requested size
@@ -369,10 +369,20 @@ struct waffle_config;
         <term><constant>WAFFLE_SAMPLES</constant></term>
         <listitem>
           <para>
-            The valid values for <constant>WAFFLE_SAMPLE_BUFFERS</constant> are true and false. The default value is
-            false. If false, then any surface created with the config will not be multisampled. If true, the any surface
+            The default value of <constant>WAFFLE_SAMPLE_BUFFERS</constant> is false(0).
+
+            Valid values are true(1), false(0), and <constant>WAFFLE_DONT_CARE</constant>.
+
+            The attribute specifies if a surface created with this config is double-buffered.
+
+            If false, then any surface created with the config will not be multisampled. If true, the any surface
             created with the config will be multisampled, where the number of samples will be at least
-            <constant>WAFFLE_SAMPLES</constant>. The default value of <constant>WAFFLE_SAMPLES</constant> is 0.
+            <constant>WAFFLE_SAMPLES</constant>.
+          </para>
+          <para>
+            The default value of <constant>WAFFLE_SAMPLES</constant> is <constant>0</constant>.
+
+            Valid values are the non-negative integers and <constant>WAFFLE_DONT_CARE</constant>.
           </para>
         </listitem>
       </varlistentry>
@@ -381,8 +391,11 @@ struct waffle_config;
         <term><constant>WAFFLE_DOUBLE_BUFFERED</constant></term>
         <listitem>
           <para>
-            The valid values are true and false. The default is true. This attribute specifies if a surface created with
-            this config is double-buffered.
+            The default value is true(1).
+
+            Valid values are true(1), false(0), and <constant>WAFFLE_DONT_CARE</constant>.
+
+            This attribute specifies if a surface created with this config is double-buffered.
           </para>
         </listitem>
       </varlistentry>
@@ -391,12 +404,15 @@ struct waffle_config;
         <term><constant>WAFFLE_ACCUM_BUFFER</constant></term>
         <listitem>
           <para>
-            The valid values are true and false. The default is false. This attribute specifies if a surface created with
-            this config possesses an accumulation buffer.
+            The default value is false(0).
+
+            Valid values are true(1), false(0), and <constant>WAFFLE_DONT_CARE</constant>.
+
+            This attribute specifies if a surface created with this config possesses an accumulation buffer.
           </para>
         </listitem>
       </varlistentry>
-      
+
     </variablelist>
   </refsect1>
 
