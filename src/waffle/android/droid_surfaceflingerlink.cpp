@@ -108,7 +108,7 @@ droid_setup_surface(
 
     pANWContainer->surface_control =
             pSFContainer->composer_client->createSurface(
-            String8("Waffle Surface"), 0,
+            String8("Waffle Surface"),
             droid_magic_surface_width, droid_magic_surface_height,
             PIXEL_FORMAT_RGB_888, 0);
 
