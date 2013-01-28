@@ -77,8 +77,8 @@ registry_listener_global(void *data,
 }
 
 static const struct wl_registry_listener registry_listener = {
-                 .global = registry_listener_global,
-                 .global_remove = NULL,
+    .global = registry_listener_global,
+    .global_remove = NULL,
 };
 
 struct wcore_display*
