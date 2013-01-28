@@ -113,9 +113,25 @@ wayland_display_connect(struct wcore_platform *wc_plat,
         goto error;
     }
 
-    error = wl_display_dispatch(self->wl_display);
+    // Block until the Wayland server has processed all pending requests and
+    // has sent out pending events on all event queues. This should ensure
+    // that the registry listener has received announcement of the shell and
+    // compositor.
+    error = wl_display_roundtrip(self->wl_display);
     if (error < 0) {
-        wcore_errorf(WAFFLE_ERROR_UNKNOWN, "wl_display_dispatch failed");
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN, "wl_display_roundtrip failed");
+        goto error;
+    }
+
+    if (!self->wl_compositor) {
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN, "failed to bind to the wayland "
+                     "compositor");
+        goto error;
+    }
+
+    if (!self->wl_shell) {
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN, "failed to bind to the wayland "
+                     "shell");
         goto error;
     }
 
