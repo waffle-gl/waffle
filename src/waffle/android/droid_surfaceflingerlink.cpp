@@ -69,8 +69,7 @@ droid_setup_surfaceflinger_link()
     EGLint iRVal;
     droid_surfaceflinger_container* pSFContainer;
 
-    pSFContainer = reinterpret_cast <droid_surfaceflinger_container*>(
-       wcore_malloc( size_t(sizeof(droid_surfaceflinger_container))));
+    pSFContainer = new droid_surfaceflinger_container;
 
     if (pSFContainer == NULL)
         goto error;
@@ -100,8 +99,7 @@ droid_setup_surface(
 
     droid_ANativeWindow_container* pANWContainer;
 
-    pANWContainer = reinterpret_cast <droid_ANativeWindow_container*>(
-       wcore_malloc( size_t(sizeof(droid_ANativeWindow_container))));
+    pANWContainer = new droid_ANativeWindow_container;
 
     if (pANWContainer == NULL)
         goto error;
@@ -115,7 +113,7 @@ droid_setup_surface(
     if (pANWContainer->surface_control == NULL) {
         wcore_errorf(WAFFLE_ERROR_UNKNOWN,
                      "Unable to get android::SurfaceControl");
-        free(static_cast <void*>(pANWContainer));
+        delete pANWContainer;
         goto error;
     }
 
@@ -123,7 +121,7 @@ droid_setup_surface(
     if (bRVal != true) {
         wcore_errorf(WAFFLE_ERROR_UNKNOWN,
                      "Acquired android::SurfaceControl is invalid");
-        free(static_cast <void*>(pANWContainer));
+        delete pANWContainer;
         goto error;
     }
 
@@ -132,7 +130,7 @@ droid_setup_surface(
     if (iRVal != NO_ERROR) {
         wcore_errorf(WAFFLE_ERROR_UNKNOWN,
                      "Error in android::SurfaceControl->setLayer");
-        free(static_cast <void*>(pANWContainer));
+        delete pANWContainer;
         goto error_closeTransaction;
     }
 
@@ -147,7 +145,7 @@ droid_setup_surface(
     if (iRVal != NO_ERROR) {
         wcore_errorf(WAFFLE_ERROR_UNKNOWN,
                      "error in android::SurfaceControl->setSize");
-        free(static_cast <void*>(pANWContainer));
+        delete pANWContainer;
         goto error;
     }
 
@@ -190,7 +188,7 @@ droid_destroy_surface(
     pSFContainer->composer_client->openGlobalTransaction();
     pANWContainer->surface_control->clear();
     pSFContainer->composer_client->closeGlobalTransaction();
-    free(static_cast <void*>(pANWContainer));
+    delete pANWContainer;
 }
 
 
@@ -206,7 +204,7 @@ droid_tear_down_surfaceflinger_link(
         pSFContainer->composer_client = NULL;
     }
 
-    free(static_cast<void*>(pSFContainer));
+    delete pSFContainer;
 }
 
 }; // namespace waffle
