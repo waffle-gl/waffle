@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1FC0C210161149ED005993C4 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1FC0C20D161149ED005993C4 /* Info.plist */; };
 		1FC0C211161149ED005993C4 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1FC0C20E161149ED005993C4 /* InfoPlist.strings */; };
 		1FC0C212161149ED005993C4 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1FC0C20F161149ED005993C4 /* MainMenu.xib */; };
 		1FD783D616113C4300E298F9 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FD783D516113C4300E298F9 /* Cocoa.framework */; };
@@ -145,7 +144,7 @@
 		1FD783BB16113BFB00E298F9 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0450;
+				LastUpgradeCheck = 0460;
 			};
 			buildConfigurationList = 1FD783BE16113BFB00E298F9 /* Build configuration list for PBXProject "gl_basic" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -185,7 +184,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1FC0C210161149ED005993C4 /* Info.plist in Resources */,
 				1FC0C211161149ED005993C4 /* InfoPlist.strings in Resources */,
 				1FC0C212161149ED005993C4 /* MainMenu.xib in Resources */,
 			);
@@ -236,6 +234,7 @@
 		1FD783EE16113C4300E298F9 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = "$(PROJECT_DIR)/gl_basic.xcodeproj/Info.plist";
 			};
 			name = Debug;
@@ -243,6 +242,7 @@
 		1FD783EF16113C4300E298F9 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = "$(PROJECT_DIR)/gl_basic.xcodeproj/Info.plist";
 			};
 			name = Release;

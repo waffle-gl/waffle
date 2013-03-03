@@ -343,7 +343,7 @@
 		1FCDE1E4161139AD00E1247C /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0450;
+				LastUpgradeCheck = 0460;
 			};
 			buildConfigurationList = 1FCDE1E7161139AD00E1247C /* Build configuration list for PBXProject "waffle_cgl" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -426,6 +426,7 @@
 		1FCDE1F2161139AD00E1247C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				EXECUTABLE_PREFIX = lib;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -434,6 +435,7 @@
 		1FCDE1F3161139AD00E1247C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				EXECUTABLE_PREFIX = lib;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
