@@ -73,7 +73,7 @@ static const char *usage_message =
 /// All error handlers exit.
 ///
 
-static void
+static void __attribute__((noreturn))
 gl_basic_error(const char *fmt, ...)
 {
     va_list ap;
@@ -88,7 +88,7 @@ gl_basic_error(const char *fmt, ...)
 
     exit(EXIT_FAILURE);
 }
-static void
+static void __attribute__((noreturn))
 error_usage(void)
 {
     fprintf(stderr, "usage error\n\n");
