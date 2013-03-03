@@ -52,5 +52,6 @@ Makefile
 /lib/
 /src/waffle/libwaffle_static.a
 /tests/functional/gl_basic_test
+/tests/waffle_test/libwaffle_test.dylib
 /tests/unittests/waffle-unittest
 /waffle-1.pc
