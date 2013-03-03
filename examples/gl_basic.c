@@ -61,7 +61,7 @@ static const char *usage_message =
     "\n"
     "examples:\n"
     "    gl_basic glx gl\n"
-    "    gl_basic x11_egl gl core 3.2\n"
+    "    gl_basic x11_egl gl 3.2 core\n"
     "    gl_basic wayland gles3\n"
     "\n"
     "description:\n"
