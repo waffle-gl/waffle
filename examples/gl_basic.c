@@ -45,6 +45,9 @@
 #ifdef __APPLE__
 #    import <Foundation/NSAutoreleasePool.h>
 #    import <Appkit/NSApplication.h>
+
+static void
+removeXcodeArgs(int *argc, char **argv);
 #endif
 
 #include "waffle.h"
@@ -215,12 +218,10 @@ parse_args(int argc, char *argv[], struct options *opts)
     bool ok;
 
 #ifdef __APPLE__
-    // Running from Xcode adds extra arguments like
-    // -ApplePersistenceIgnoreState and -NSDocumentRevisionsDebugMode.
-    if (argc < 3)
-#else
-    if (argc < 3)
+    removeXcodeArgs(&argc, argv);
 #endif
+
+    if (argc < 3)
         error_usage();
 
     // Set some context attrs to invalid values.
@@ -380,6 +381,30 @@ static void
 cocoa_finish(void)
 {
     [pool drain];
+}
+
+static void
+removeArg(int index, int *argc, char **argv)
+{
+    --*argc;
+    for (; index < *argc; ++index)
+        argv[index] = argv[index + 1];
+}
+
+static void
+removeXcodeArgs(int *argc, char **argv)
+{
+    // Xcode sometimes adds additional arguments.
+    for (int i = 1; i < *argc; )
+    {
+        if (strcmp(argv[i], "-NSDocumentRevisionsDebugMode") == 0 ||
+            strcmp(argv[i], "-ApplePersistenceIgnoreState" ) == 0)
+        {
+            removeArg(i, argc, argv);
+            removeArg(i, argc, argv);
+        } else
+            ++i;
+    }
 }
 
 #endif // __APPLE__
