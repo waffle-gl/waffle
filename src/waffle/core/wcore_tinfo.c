@@ -28,6 +28,7 @@
 
 /// @file
 
+#include <assert.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -37,14 +38,7 @@
 #include "wcore_error.h"
 #include "wcore_tinfo.h"
 
-/// @brief Key for @ref wcore_tinfo_tl_singleton.
-static pthread_key_t wcore_tinfo_key;
-
-#ifdef WAFFLE_HAS_TLS
-
-/// @brief Thread-local singleton for thread info.
-///
-/// There exists a distinct pointer for each thread.
+/// @brief Thread-local storage for all of Waffle.
 ///
 /// For documentation on the tls_model, see the GCC manual [1] and
 /// Drepper [2].
@@ -55,115 +49,38 @@ static pthread_key_t wcore_tinfo_key;
 /// [2] Ulrich Drepper. "Elf Handling For Thread Local Storage".
 ///     http://people.redhat.com/drepper/tls.pdf
 
-static __thread struct wcore_tinfo *wcore_tinfo_tl_singleton
+static __thread struct wcore_tinfo wcore_tinfo
 #ifdef WAFFLE_HAS_TLS_MODEL_INITIAL_EXEC
     __attribute__((tls_model("initial-exec")))
 #endif
     ;
 
-#endif
-
 static void
-wcore_tinfo_destroy(struct wcore_tinfo *self)
+wcore_tinfo_init(void)
 {
-    if (!self)
-        return;
+    assert(!wcore_tinfo.is_init);
 
-    if (self->error)
-        wcore_error_tinfo_destroy(self->error);
-
-    free(self);
-}
-
-static struct wcore_tinfo*
-wcore_tinfo_create(void)
-{
-    struct wcore_tinfo *self = calloc(1, sizeof(*self));
-    if (!self)
+    // FIXME: wcore_tinfo.error leaks at thread exit. To fix this, Waffle
+    // FIXME: needs a function like eglTerminate().
+    wcore_tinfo.error = wcore_error_tinfo_create();
+    if (!wcore_tinfo.error)
         goto error;
 
-    self->error = wcore_error_tinfo_create();
-    if (!self->error)
-        goto error;
-
-    return self;
+    wcore_tinfo.is_init = true;
+    return;
 
 error:
-    wcore_tinfo_destroy(self);
-    return NULL;
-}
-
-/// @brief Initialize @ref wcore_tinfo_key.
-///
-/// Once intialized, the key is never de-initialized.
-static void
-wcore_tinfo_key_init(void)
-{
-    static bool is_init = false;
-
-    // The mutex protects is_init.
-    static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
-
-    if (is_init)
-        return;
-
-    pthread_mutex_lock(&mutex);
-    {
-        int error;
-
-        // Another thread may have initialized the key while this thread
-        // blocked on the mutex.
-        if (is_init)
-            goto unlock;
-
-        error = pthread_key_create(&wcore_tinfo_key,
-                                   (void (*)(void*)) wcore_tinfo_destroy);
-        if (error) {
-            printf("waffle: fatal-error: pthread_key_create failed at "
-                    "%s:%d\n", __FILE__, __LINE__);
-            abort();
-        }
-
-        is_init = true;
-        unlock:;
-    }
-    pthread_mutex_unlock(&mutex);
+    printf("waffle: fatal-error: failed to initialize thread local info\n");
+    abort();
 }
 
 struct wcore_tinfo*
 wcore_tinfo_get(void)
 {
-    struct wcore_tinfo *t;
+    if (!wcore_tinfo.is_init)
+        wcore_tinfo_init();
 
-    wcore_tinfo_key_init();
-
-    #ifdef WAFFLE_HAS_TLS
-        t = wcore_tinfo_tl_singleton;
-    #else
-        t = pthread_getspecific(wcore_tinfo_key);
-    #endif
-
-    if (t == NULL) {
-        // If a key is assigned a non-null pointer, then the key's
-        // destructor will be called on that pointer when the thread exits.
-        //
-        // The key should be assigned to the pointer before the thread-local
-        // storage is assigned. If not, a memory leak will occur if a
-        // disaster occurs between assignment to thread-local storage and
-        // assignment to the key.
-        t = wcore_tinfo_create();
-        if (!t) {
-            printf("waffle: fatal-error: failed to allocate thread info\n");
-            abort();
-        }
-        pthread_setspecific(wcore_tinfo_key, t);
-
-        #ifdef WAFFLE_HAS_TLS
-            wcore_tinfo_tl_singleton = t;
-        #endif
-    }
-
-    return t;
+    return &wcore_tinfo;
 }
 
 /// @}

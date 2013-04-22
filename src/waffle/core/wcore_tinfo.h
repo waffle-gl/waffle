@@ -39,6 +39,8 @@ struct wcore_error_tinfo;
 struct wcore_tinfo {
     /// @brief Info for @ref wcore_error.
     struct wcore_error_tinfo *error;
+
+    bool is_init;
 };
 
 /// @brief Get the thread-local info for the current thread.
