@@ -223,8 +223,8 @@ set(CMAKE_C_FLAGS_DEBUG "-g3 -O0 -DDEBUG")
 # single-stepping.
 set(CMAKE_C_FLAGS_RELEASE "-g1 -O2 -DNDEBUG")
 
-if(waffle_has_tls)
-    add_definitions(-DWAFFLE_HAS_TLS)
+if(NOT waffle_has_tls)
+    message(FATAL "Compiler does not support thread local storage with keyword '__thread'")
 endif()
 
 if(waffle_has_tls_model_initial_exec)
