@@ -32,6 +32,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "wcore_attrib_list.h"
 #include "wcore_config_attrs.h"
 #include "wcore_error.h"
 
@@ -83,8 +84,8 @@ parse_context_api(struct wcore_config_attrs *attrs,
 {
     bool found;
 
-    found = waffle_attrib_list_get(attrib_list,
-                                   WAFFLE_CONTEXT_API, &attrs->context_api);
+    found = wcore_attrib_list_get(attrib_list,
+                                  WAFFLE_CONTEXT_API, &attrs->context_api);
     if (!found) {
         wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
                      "required attribute WAFFLE_CONTEXT_API is missing");
@@ -138,14 +139,14 @@ static bool
 parse_context_version(struct wcore_config_attrs *attrs,
                       const int32_t attrib_list[])
 {
-    waffle_attrib_list_get_with_default(attrib_list,
-                                        WAFFLE_CONTEXT_MAJOR_VERSION,
-                                        &attrs->context_major_version,
-                                        attrs->context_major_version);
-    waffle_attrib_list_get_with_default(attrib_list,
-                                        WAFFLE_CONTEXT_MINOR_VERSION,
-                                        &attrs->context_minor_version,
-                                        attrs->context_minor_version);
+    wcore_attrib_list_get_with_default(attrib_list,
+                                       WAFFLE_CONTEXT_MAJOR_VERSION,
+                                       &attrs->context_major_version,
+                                       attrs->context_major_version);
+    wcore_attrib_list_get_with_default(attrib_list,
+                                       WAFFLE_CONTEXT_MINOR_VERSION,
+                                       &attrs->context_minor_version,
+                                       attrs->context_minor_version);
 
     if (attrs->context_major_version < 1) {
         wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
@@ -239,10 +240,10 @@ static bool
 parse_context_profile(struct wcore_config_attrs *attrs,
                       const int32_t attrib_list[])
 {
-    waffle_attrib_list_get_with_default(attrib_list,
-                                        WAFFLE_CONTEXT_PROFILE,
-                                        &attrs->context_profile,
-                                        attrs->context_profile);
+    wcore_attrib_list_get_with_default(attrib_list,
+                                       WAFFLE_CONTEXT_PROFILE,
+                                       &attrs->context_profile,
+                                       attrs->context_profile);
 
     switch (attrs->context_api) {
         case WAFFLE_CONTEXT_OPENGL:
