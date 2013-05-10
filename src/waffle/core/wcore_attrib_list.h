@@ -23,53 +23,29 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @addtogroup waffle_attrib_list
-/// @{
+#pragma once
 
-/// @file
-/// @ingroup api
-
-#include "wcore_attrib_list.h"
-#include "wcore_error.h"
+#include <stdbool.h>
+#include <stdint.h>
 
 int32_t
-waffle_attrib_list_length(const int32_t attrib_list[])
-{
-
-    wcore_error_reset();
-    return wcore_attrib_list_length(attrib_list);
-}
+wcore_attrib_list_length(const int32_t attrib_list[]);
 
 bool
-waffle_attrib_list_get(
+wcore_attrib_list_get(
         const int32_t *attrib_list,
         int32_t key,
-        int32_t *value)
-{
-    wcore_error_reset();
-    return wcore_attrib_list_get(attrib_list, key, value);
-}
+        int32_t *value);
 
 bool
-waffle_attrib_list_get_with_default(
+wcore_attrib_list_get_with_default(
         const int32_t attrib_list[],
         int32_t key,
         int32_t *value,
-        int32_t default_value)
-{
-    wcore_error_reset();
-    return wcore_attrib_list_get_with_default(attrib_list, key, value,
-                                               default_value);
-}
+        int32_t default_value);
 
 bool
-waffle_attrib_list_update(
+wcore_attrib_list_update(
         int32_t *attrib_list,
         int32_t key,
-        int32_t value)
-{
-    wcore_error_reset();
-    return wcore_attrib_list_update(attrib_list, key, value);
-}
-
-/// @}
+        int32_t value);

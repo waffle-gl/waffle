@@ -23,53 +23,81 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @addtogroup waffle_attrib_list
-/// @{
-
-/// @file
-/// @ingroup api
-
 #include "wcore_attrib_list.h"
-#include "wcore_error.h"
+
+#include <stdbool.h>
+#include <stdint.h>
+#include <stddef.h>
 
 int32_t
-waffle_attrib_list_length(const int32_t attrib_list[])
+wcore_attrib_list_length(const int32_t attrib_list[])
 {
+    const int32_t *i = attrib_list;
 
-    wcore_error_reset();
-    return wcore_attrib_list_length(attrib_list);
+    if (attrib_list == NULL)
+        return 0;
+
+    while (*i != 0)
+        i += 2;
+
+    return (i - attrib_list) / 2;
 }
 
 bool
-waffle_attrib_list_get(
+wcore_attrib_list_get(
         const int32_t *attrib_list,
         int32_t key,
         int32_t *value)
 {
-    wcore_error_reset();
-    return wcore_attrib_list_get(attrib_list, key, value);
+    if (attrib_list == NULL)
+        return false;
+
+    for (int i = 0; attrib_list[i] != 0; i += 2) {
+        if (attrib_list[i] != key)
+            continue;
+
+        *value = attrib_list[i + 1];
+        return true;
+    }
+
+    return false;
 }
 
 bool
-waffle_attrib_list_get_with_default(
+wcore_attrib_list_get_with_default(
         const int32_t attrib_list[],
         int32_t key,
         int32_t *value,
         int32_t default_value)
 {
-    wcore_error_reset();
-    return wcore_attrib_list_get_with_default(attrib_list, key, value,
-                                               default_value);
+    if (wcore_attrib_list_get(attrib_list, key, value)) {
+        return true;
+    }
+    else {
+        *value = default_value;
+        return false;
+    }
 }
 
 bool
-waffle_attrib_list_update(
+wcore_attrib_list_update(
         int32_t *attrib_list,
         int32_t key,
         int32_t value)
 {
-    wcore_error_reset();
-    return wcore_attrib_list_update(attrib_list, key, value);
-}
+    int32_t *i = attrib_list;
 
-/// @}
+    if (attrib_list == NULL)
+        return false;
+
+    while (*i != 0 && *i != key)
+        i += 2;
+
+    if (*i == key) {
+        i[1] = value;
+        return true;
+    }
+    else {
+        return false;
+    }
+}
