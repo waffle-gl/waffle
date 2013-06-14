@@ -51,6 +51,7 @@ LOCAL_SRC_FILES := \
     src/waffle/core/wcore_error.c \
     src/waffle/core/wcore_util.c \
     src/waffle/core/wcore_display.c \
+    src/waffle/core/wcore_attrib_list.c \
     src/waffle/api/api_priv.c \
     src/waffle/api/waffle_attrib_list.c \
     src/waffle/api/waffle_config.c \
