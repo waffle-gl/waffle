@@ -40,6 +40,13 @@ droid_show_surface(
     struct droid_surfaceflinger_container* pSFContainer,
     struct droid_ANativeWindow_container* pANWContainer);
 
+bool
+droid_resize_surface(
+    struct droid_surfaceflinger_container* pSFContainer,
+    struct droid_ANativeWindow_container* pANWContainer,
+    int width,
+    int height);
+
 struct droid_ANativeWindow_container*
 droid_create_surface(
     int width,

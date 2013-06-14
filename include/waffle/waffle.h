@@ -246,6 +246,12 @@ WAFFLE_API bool
 waffle_window_show(struct waffle_window *self);
 
 WAFFLE_API bool
+waffle_window_resize(
+        struct waffle_window *self,
+        int32_t width,
+        int32_t height);
+
+WAFFLE_API bool
 waffle_window_swap_buffers(struct waffle_window *self);
 
 WAFFLE_API union waffle_native_window*

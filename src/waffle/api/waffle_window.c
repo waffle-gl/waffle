@@ -93,6 +93,30 @@ waffle_window_show(struct waffle_window *self)
 }
 
 bool
+waffle_window_resize(
+		struct waffle_window *self,
+		int32_t width,
+		int32_t height)
+{
+    struct wcore_window *wc_self = wcore_window(self);
+
+    const struct api_object *obj_list[] = {
+        wc_self ? &wc_self->api : NULL,
+    };
+
+    if (!api_check_entry(obj_list, 1))
+        return false;
+
+    if (api_platform->vtbl->window.resize) {
+        return api_platform->vtbl->window.resize(wc_self, width, height);
+    }
+    else {
+        wcore_error(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM);
+        return NULL;
+    }
+}
+
+bool
 waffle_window_swap_buffers(struct waffle_window *self)
 {
     struct wcore_window *wc_self = wcore_window(self);

@@ -124,6 +124,11 @@ struct wcore_platform_vtbl {
         bool
         (*swap_buffers)(struct wcore_window *window);
 
+        bool
+        (*resize)(struct wcore_window *window,
+                  int32_t height,
+                  int32_t width);
+
         /// May be null.
         union waffle_native_window*
         (*get_native)(struct wcore_window *window);

@@ -180,6 +180,27 @@ droid_show_surface(
     return true;
 }
 
+bool
+droid_resize_surface(
+    droid_surfaceflinger_container* pSFContainer,
+    droid_ANativeWindow_container* pANWContainer,
+    int width,
+    int height)
+{
+    int iRVal;
+
+    pSFContainer->composer_client->openGlobalTransaction();
+    iRVal = pANWContainer->surface_control->setSize(width, height);
+    pSFContainer->composer_client->closeGlobalTransaction();
+
+    if (iRVal != NO_ERROR) {
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN,
+                     "Error in android::SurfaceControl->setSize");
+        return false;
+    }
+    return true;
+}
+
 void
 droid_destroy_surface(
     droid_surfaceflinger_container* pSFContainer,
@@ -247,6 +268,20 @@ droid_show_surface(
             (pSFContainer),
             reinterpret_cast<waffle::droid_ANativeWindow_container*>
             (pANWContainer));
+}
+
+extern "C" bool
+droid_resize_surface(
+    droid_surfaceflinger_container* pSFContainer,
+    droid_ANativeWindow_container* pANWContainer,
+    int height,
+    int width)
+{
+    return waffle::droid_resize_surface(
+            reinterpret_cast<waffle::droid_surfaceflinger_container*>
+            (pSFContainer),
+            reinterpret_cast<waffle::droid_ANativeWindow_container*>
+            (pANWContainer), height, width);
 }
 
 extern "C" void

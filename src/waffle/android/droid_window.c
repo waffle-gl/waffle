@@ -97,3 +97,20 @@ droid_window_show(struct wcore_window *wc_self)
 
     return droid_show_surface(dpy->pSFContainer, self->pANWContainer);
 }
+
+bool
+droid_window_resize(struct wcore_window *wc_self,
+                    int32_t width,
+                    int32_t height)
+{
+    struct droid_window *self = droid_window(wc_self);
+    struct droid_display *dpy;
+
+    if (!self)
+        return false;
+
+    dpy = droid_display(wc_self->display);
+
+    return droid_resize_surface(dpy->pSFContainer, self->pANWContainer,
+        width, height);
+}

@@ -59,3 +59,8 @@ droid_window_destroy(struct wcore_window *wc_self);
 
 bool
 droid_window_show(struct wcore_window *wc_self);
+
+bool
+droid_window_resize(struct wcore_window *wc_self,
+                  int32_t width,
+                  int32_t height);
