@@ -66,6 +66,8 @@
 		1FD7843C16113E0600E298F9 /* waffle_gl_misc.c in Sources */ = {isa = PBXBuildFile; fileRef = 1FD7842E16113E0600E298F9 /* waffle_gl_misc.c */; };
 		1FD7843D16113E0600E298F9 /* waffle_init.c in Sources */ = {isa = PBXBuildFile; fileRef = 1FD7842F16113E0600E298F9 /* waffle_init.c */; };
 		1FD7843E16113E0600E298F9 /* waffle_window.c in Sources */ = {isa = PBXBuildFile; fileRef = 1FD7843016113E0600E298F9 /* waffle_window.c */; };
+		1FEF20DD1785F501006DF1E0 /* wcore_attrib_list.c in Sources */ = {isa = PBXBuildFile; fileRef = 1FEF20DB1785F501006DF1E0 /* wcore_attrib_list.c */; };
+		1FEF20DE1785F501006DF1E0 /* wcore_attrib_list.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FEF20DC1785F501006DF1E0 /* wcore_attrib_list.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -129,6 +131,8 @@
 		1FD7842E16113E0600E298F9 /* waffle_gl_misc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = waffle_gl_misc.c; sourceTree = "<group>"; };
 		1FD7842F16113E0600E298F9 /* waffle_init.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = waffle_init.c; sourceTree = "<group>"; };
 		1FD7843016113E0600E298F9 /* waffle_window.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = waffle_window.c; sourceTree = "<group>"; };
+		1FEF20DB1785F501006DF1E0 /* wcore_attrib_list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = wcore_attrib_list.c; sourceTree = "<group>"; };
+		1FEF20DC1785F501006DF1E0 /* wcore_attrib_list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = wcore_attrib_list.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -234,6 +238,8 @@
 		1FD783FF16113DB300E298F9 /* core */ = {
 			isa = PBXGroup;
 			children = (
+				1FEF20DB1785F501006DF1E0 /* wcore_attrib_list.c */,
+				1FEF20DC1785F501006DF1E0 /* wcore_attrib_list.h */,
 				1FD7840116113DB300E298F9 /* wcore_config.h */,
 				1FD7840216113DB300E298F9 /* wcore_config_attrs.c */,
 				1FD7840316113DB300E298F9 /* wcore_config_attrs.h */,
@@ -312,6 +318,7 @@
 				1FD7841D16113DB300E298F9 /* wcore_tinfo.h in Headers */,
 				1FD7841F16113DB300E298F9 /* wcore_util.h in Headers */,
 				1FD7842016113DB300E298F9 /* wcore_window.h in Headers */,
+				1FEF20DE1785F501006DF1E0 /* wcore_attrib_list.h in Headers */,
 				1FD7843116113E0600E298F9 /* api_object.h in Headers */,
 				1FD7843316113E0600E298F9 /* api_priv.h in Headers */,
 			);
@@ -375,6 +382,7 @@
 				1FD7834416113A5500E298F9 /* cgl_platform.m in Sources */,
 				1FD7834616113A5500E298F9 /* cgl_window.m in Sources */,
 				1FD7834816113A5500E298F9 /* WaffleGLView.m in Sources */,
+				1FEF20DD1785F501006DF1E0 /* wcore_attrib_list.c in Sources */,
 				1FD7841216113DB300E298F9 /* wcore_config_attrs.c in Sources */,
 				1FD7841616113DB300E298F9 /* wcore_display.c in Sources */,
 				1FD7841816113DB300E298F9 /* wcore_error.c in Sources */,
