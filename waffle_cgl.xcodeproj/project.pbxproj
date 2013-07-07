@@ -7,21 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1F5C24381789E8E6003F8529 /* waffle_gbm.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F5C24371789E8E6003F8529 /* waffle_gbm.h */; };
 		1FD7830C16113A5500E298F9 /* waffle.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FD7821A16113A5500E298F9 /* waffle.h */; };
-		1FD7830D16113A5500E298F9 /* waffle_attrib_list.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FD7821B16113A5500E298F9 /* waffle_attrib_list.h */; };
-		1FD7830E16113A5500E298F9 /* waffle_config.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FD7821C16113A5500E298F9 /* waffle_config.h */; };
-		1FD7830F16113A5500E298F9 /* waffle_context.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FD7821D16113A5500E298F9 /* waffle_context.h */; };
-		1FD7831016113A5500E298F9 /* waffle_display.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FD7821E16113A5500E298F9 /* waffle_display.h */; };
-		1FD7831116113A5500E298F9 /* waffle_dl.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FD7821F16113A5500E298F9 /* waffle_dl.h */; };
-		1FD7831216113A5500E298F9 /* waffle_enum.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FD7822016113A5500E298F9 /* waffle_enum.h */; };
-		1FD7831316113A5500E298F9 /* waffle_error.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FD7822116113A5500E298F9 /* waffle_error.h */; };
-		1FD7831416113A5500E298F9 /* waffle_gl_misc.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FD7822216113A5500E298F9 /* waffle_gl_misc.h */; };
 		1FD7831516113A5500E298F9 /* waffle_glx.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FD7822316113A5500E298F9 /* waffle_glx.h */; };
-		1FD7831616113A5500E298F9 /* waffle_init.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FD7822416113A5500E298F9 /* waffle_init.h */; };
-		1FD7831716113A5500E298F9 /* waffle_portability.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FD7822516113A5500E298F9 /* waffle_portability.h */; };
 		1FD7831816113A5500E298F9 /* waffle_version.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FD7822616113A5500E298F9 /* waffle_version.h */; };
 		1FD7831916113A5500E298F9 /* waffle_wayland.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FD7822816113A5500E298F9 /* waffle_wayland.h */; };
-		1FD7831A16113A5500E298F9 /* waffle_window.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FD7822916113A5500E298F9 /* waffle_window.h */; };
 		1FD7831B16113A5500E298F9 /* waffle_x11_egl.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FD7822A16113A5500E298F9 /* waffle_x11_egl.h */; };
 		1FD7833916113A5500E298F9 /* cgl_config.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FD7825216113A5500E298F9 /* cgl_config.h */; };
 		1FD7833A16113A5500E298F9 /* cgl_config.m in Sources */ = {isa = PBXBuildFile; fileRef = 1FD7825316113A5500E298F9 /* cgl_config.m */; };
@@ -71,22 +61,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1F5C24371789E8E6003F8529 /* waffle_gbm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = waffle_gbm.h; sourceTree = "<group>"; };
 		1FCDE1ED161139AD00E1247C /* libwaffle_cgl.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libwaffle_cgl.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		1FD7821A16113A5500E298F9 /* waffle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = waffle.h; sourceTree = "<group>"; };
-		1FD7821B16113A5500E298F9 /* waffle_attrib_list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = waffle_attrib_list.h; sourceTree = "<group>"; };
-		1FD7821C16113A5500E298F9 /* waffle_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = waffle_config.h; sourceTree = "<group>"; };
-		1FD7821D16113A5500E298F9 /* waffle_context.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = waffle_context.h; sourceTree = "<group>"; };
-		1FD7821E16113A5500E298F9 /* waffle_display.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = waffle_display.h; sourceTree = "<group>"; };
-		1FD7821F16113A5500E298F9 /* waffle_dl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = waffle_dl.h; sourceTree = "<group>"; };
-		1FD7822016113A5500E298F9 /* waffle_enum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = waffle_enum.h; sourceTree = "<group>"; };
-		1FD7822116113A5500E298F9 /* waffle_error.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = waffle_error.h; sourceTree = "<group>"; };
-		1FD7822216113A5500E298F9 /* waffle_gl_misc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = waffle_gl_misc.h; sourceTree = "<group>"; };
 		1FD7822316113A5500E298F9 /* waffle_glx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = waffle_glx.h; sourceTree = "<group>"; };
-		1FD7822416113A5500E298F9 /* waffle_init.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = waffle_init.h; sourceTree = "<group>"; };
-		1FD7822516113A5500E298F9 /* waffle_portability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = waffle_portability.h; sourceTree = "<group>"; };
 		1FD7822616113A5500E298F9 /* waffle_version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = waffle_version.h; sourceTree = "<group>"; };
 		1FD7822816113A5500E298F9 /* waffle_wayland.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = waffle_wayland.h; sourceTree = "<group>"; };
-		1FD7822916113A5500E298F9 /* waffle_window.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = waffle_window.h; sourceTree = "<group>"; };
 		1FD7822A16113A5500E298F9 /* waffle_x11_egl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = waffle_x11_egl.h; sourceTree = "<group>"; };
 		1FD7825216113A5500E298F9 /* cgl_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cgl_config.h; sourceTree = "<group>"; };
 		1FD7825316113A5500E298F9 /* cgl_config.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = cgl_config.m; sourceTree = "<group>"; };
@@ -175,20 +155,10 @@
 			isa = PBXGroup;
 			children = (
 				1FD7821A16113A5500E298F9 /* waffle.h */,
-				1FD7821B16113A5500E298F9 /* waffle_attrib_list.h */,
-				1FD7821C16113A5500E298F9 /* waffle_config.h */,
-				1FD7821D16113A5500E298F9 /* waffle_context.h */,
-				1FD7821E16113A5500E298F9 /* waffle_display.h */,
-				1FD7821F16113A5500E298F9 /* waffle_dl.h */,
-				1FD7822016113A5500E298F9 /* waffle_enum.h */,
-				1FD7822116113A5500E298F9 /* waffle_error.h */,
-				1FD7822216113A5500E298F9 /* waffle_gl_misc.h */,
+				1F5C24371789E8E6003F8529 /* waffle_gbm.h */,
 				1FD7822316113A5500E298F9 /* waffle_glx.h */,
-				1FD7822416113A5500E298F9 /* waffle_init.h */,
-				1FD7822516113A5500E298F9 /* waffle_portability.h */,
 				1FD7822616113A5500E298F9 /* waffle_version.h */,
 				1FD7822816113A5500E298F9 /* waffle_wayland.h */,
-				1FD7822916113A5500E298F9 /* waffle_window.h */,
 				1FD7822A16113A5500E298F9 /* waffle_x11_egl.h */,
 			);
 			path = waffle;
@@ -286,25 +256,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				1FD7830C16113A5500E298F9 /* waffle.h in Headers */,
-				1FD7830D16113A5500E298F9 /* waffle_attrib_list.h in Headers */,
-				1FD7830E16113A5500E298F9 /* waffle_config.h in Headers */,
-				1FD7830F16113A5500E298F9 /* waffle_context.h in Headers */,
-				1FD7831016113A5500E298F9 /* waffle_display.h in Headers */,
-				1FD7831116113A5500E298F9 /* waffle_dl.h in Headers */,
-				1FD7831216113A5500E298F9 /* waffle_enum.h in Headers */,
-				1FD7831316113A5500E298F9 /* waffle_error.h in Headers */,
-				1FD7831416113A5500E298F9 /* waffle_gl_misc.h in Headers */,
 				1FD7831516113A5500E298F9 /* waffle_glx.h in Headers */,
-				1FD7831616113A5500E298F9 /* waffle_init.h in Headers */,
-				1FD7831716113A5500E298F9 /* waffle_portability.h in Headers */,
 				1FD7831816113A5500E298F9 /* waffle_version.h in Headers */,
 				1FD7831916113A5500E298F9 /* waffle_wayland.h in Headers */,
-				1FD7831A16113A5500E298F9 /* waffle_window.h in Headers */,
 				1FD7831B16113A5500E298F9 /* waffle_x11_egl.h in Headers */,
 				1FD7833916113A5500E298F9 /* cgl_config.h in Headers */,
 				1FD7833B16113A5500E298F9 /* cgl_context.h in Headers */,
 				1FD7833D16113A5500E298F9 /* cgl_display.h in Headers */,
 				1FD7833F16113A5500E298F9 /* cgl_dl.h in Headers */,
+				1F5C24381789E8E6003F8529 /* waffle_gbm.h in Headers */,
 				1FD7834116113A5500E298F9 /* cgl_error.h in Headers */,
 				1FD7834316113A5500E298F9 /* cgl_platform.h in Headers */,
 				1FD7834516113A5500E298F9 /* cgl_window.h in Headers */,
