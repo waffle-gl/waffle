@@ -28,22 +28,23 @@
 #include "wcore_error.h"
 
 #include "x11_display.h"
+#include "x11_wrappers.h"
 
 bool
 x11_display_init(struct x11_display *self, const char *name)
 {
     assert(self);
 
-    self->xlib = XOpenDisplay(name);
+    self->xlib = wrapped_XOpenDisplay(name);
     if (!self->xlib) {
         wcore_errorf(WAFFLE_ERROR_UNKNOWN, "XOpenDisplay failed");
         return false;
     }
 
-    self->xcb = XGetXCBConnection(self->xlib);
+    self->xcb = wrapped_XGetXCBConnection(self->xlib);
     if (!self->xcb) {
         wcore_errorf(WAFFLE_ERROR_UNKNOWN, "XGetXCBConnection failed");
-        XCloseDisplay(self->xlib);
+        wrapped_XCloseDisplay(self->xlib);
         return false;
     }
 
@@ -63,7 +64,7 @@ x11_display_teardown(struct x11_display *self)
     if (!self->xlib)
        return !error;
 
-    error = XCloseDisplay(self->xlib);
+    error = wrapped_XCloseDisplay(self->xlib);
     if (error)
         wcore_errorf(WAFFLE_ERROR_UNKNOWN, "XCloseDisplay failed");
 
