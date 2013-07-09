@@ -38,6 +38,7 @@
 #include "glx_context.h"
 #include "glx_display.h"
 #include "glx_platform.h"
+#include "glx_wrappers.h"
 
 bool
 glx_context_destroy(struct wcore_context *wc_self)
@@ -53,7 +54,7 @@ glx_context_destroy(struct wcore_context *wc_self)
     dpy = glx_display(wc_self->display);
 
     if (self->glx)
-        glXDestroyContext(dpy->x11.xlib, self->glx);
+        wrapped_glXDestroyContext(dpy->x11.xlib, self->glx);
 
     ok &= wcore_context_teardown(wc_self);
     free(self);
@@ -165,11 +166,12 @@ glx_context_create_native(struct glx_config *config,
         if (!ok)
             return false;
 
-        ctx = platform->glXCreateContextAttribsARB(dpy->x11.xlib,
-                                                   config->glx_fbconfig,
-                                                   real_share_ctx,
-                                                   true /*direct?*/,
-                                                   attrib_list);
+        ctx = wrapped_glXCreateContextAttribsARB(platform,
+                                                 dpy->x11.xlib,
+                                                 config->glx_fbconfig,
+                                                 real_share_ctx,
+                                                 true /*direct?*/,
+                                                 attrib_list);
         if (!ctx) {
             wcore_errorf(WAFFLE_ERROR_UNKNOWN,
                          "glXCreateContextAttribsARB failed");
@@ -177,11 +179,11 @@ glx_context_create_native(struct glx_config *config,
         }
     }
     else {
-        ctx = glXCreateNewContext(dpy->x11.xlib,
-                                  config->glx_fbconfig,
-                                  GLX_RGBA_TYPE,
-                                  real_share_ctx,
-                                  true /*direct?*/);
+        ctx = wrapped_glXCreateNewContext(dpy->x11.xlib,
+                                          config->glx_fbconfig,
+                                          GLX_RGBA_TYPE,
+                                          real_share_ctx,
+                                          true /*direct?*/);
         if (!ctx) {
             wcore_errorf(WAFFLE_ERROR_UNKNOWN, "glXCreateContext failed");
             return NULL;
