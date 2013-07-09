@@ -31,6 +31,7 @@
 
 #include "glx_display.h"
 #include "glx_platform.h"
+#include "glx_wrappers.h"
 
 bool
 glx_display_destroy(struct wcore_display *wc_self)
@@ -51,8 +52,8 @@ static bool
 glx_display_set_extensions(struct glx_display *self)
 {
 
-    const char *s = glXQueryExtensionsString(self->x11.xlib,
-                                             self->x11.screen);
+    const char *s = wrapped_glXQueryExtensionsString(self->x11.xlib,
+                                                     self->x11.screen);
     if (!s) {
         wcore_errorf(WAFFLE_ERROR_UNKNOWN,
                      "glXQueryExtensionsString failed");

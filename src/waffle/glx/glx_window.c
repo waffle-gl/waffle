@@ -31,6 +31,7 @@
 #include "glx_config.h"
 #include "glx_display.h"
 #include "glx_window.h"
+#include "glx_wrappers.h"
 
 bool
 glx_window_destroy(struct wcore_window *wc_self)
@@ -93,7 +94,7 @@ glx_window_swap_buffers(struct wcore_window *wc_self)
     struct glx_window *self = glx_window(wc_self);
     struct glx_display *dpy = glx_display(wc_self->display);
 
-    glXSwapBuffers(dpy->x11.xlib, self->x11.xcb);
+    wrapped_glXSwapBuffers(dpy->x11.xlib, self->x11.xcb);
 
     return true;
 }

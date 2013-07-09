@@ -34,6 +34,7 @@
 #include "glx_display.h"
 #include "glx_platform.h"
 #include "glx_window.h"
+#include "glx_wrappers.h"
 
 static const struct wcore_platform_vtbl glx_platform_vtbl;
 
@@ -88,9 +89,9 @@ glx_platform_make_current(struct wcore_platform *wc_self,
                           struct wcore_window *wc_window,
                           struct wcore_context *wc_ctx)
 {
-    return glXMakeCurrent(glx_display(wc_dpy)->x11.xlib,
-                          wc_window ? glx_window(wc_window)->x11.xcb : 0,
-                          wc_ctx ? glx_context(wc_ctx)->glx : NULL);
+    return wrapped_glXMakeCurrent(glx_display(wc_dpy)->x11.xlib,
+                                  wc_window ? glx_window(wc_window)->x11.xcb : 0,
+                                  wc_ctx ? glx_context(wc_ctx)->glx : NULL);
 }
 
 static void*

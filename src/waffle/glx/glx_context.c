@@ -38,6 +38,7 @@
 #include "glx_context.h"
 #include "glx_display.h"
 #include "glx_platform.h"
+#include "glx_wrappers.h"
 
 bool
 glx_context_destroy(struct wcore_context *wc_self)
@@ -53,7 +54,7 @@ glx_context_destroy(struct wcore_context *wc_self)
     dpy = glx_display(wc_self->display);
 
     if (self->glx)
-        glXDestroyContext(dpy->x11.xlib, self->glx);
+        wrapped_glXDestroyContext(dpy->x11.xlib, self->glx);
 
     ok &= wcore_context_teardown(wc_self);
     free(self);
@@ -137,11 +138,6 @@ glx_context_fill_attrib_list(struct glx_config *config,
     return true;
 }
 
-static int glx_dummy_error_handler(Display *dpy, XErrorEvent *err)
-{
-   return 0;
-}
-
 static GLXContext
 glx_context_create_native(struct glx_config *config,
                           struct glx_context *share_ctx)
@@ -150,10 +146,6 @@ glx_context_create_native(struct glx_config *config,
     GLXContext real_share_ctx = share_ctx ? share_ctx->glx : NULL;
     struct glx_display *dpy = glx_display(config->wcore.display);
     struct glx_platform *platform = glx_platform(dpy->wcore.platform);
-    int (*old_error_handler)(Display *, XErrorEvent *);
-
-    /* This prevents Xlib from killing the process if there's an error. */
-    old_error_handler = XSetErrorHandler(glx_dummy_error_handler);
 
     if (dpy->ARB_create_context) {
         bool ok;
@@ -165,11 +157,12 @@ glx_context_create_native(struct glx_config *config,
         if (!ok)
             return false;
 
-        ctx = platform->glXCreateContextAttribsARB(dpy->x11.xlib,
-                                                   config->glx_fbconfig,
-                                                   real_share_ctx,
-                                                   true /*direct?*/,
-                                                   attrib_list);
+        ctx = wrapped_glXCreateContextAttribsARB(platform,
+                                                 dpy->x11.xlib,
+                                                 config->glx_fbconfig,
+                                                 real_share_ctx,
+                                                 true /*direct?*/,
+                                                 attrib_list);
         if (!ctx) {
             wcore_errorf(WAFFLE_ERROR_UNKNOWN,
                          "glXCreateContextAttribsARB failed");
@@ -177,18 +170,16 @@ glx_context_create_native(struct glx_config *config,
         }
     }
     else {
-        ctx = glXCreateNewContext(dpy->x11.xlib,
-                                  config->glx_fbconfig,
-                                  GLX_RGBA_TYPE,
-                                  real_share_ctx,
-                                  true /*direct?*/);
+        ctx = wrapped_glXCreateNewContext(dpy->x11.xlib,
+                                          config->glx_fbconfig,
+                                          GLX_RGBA_TYPE,
+                                          real_share_ctx,
+                                          true /*direct?*/);
         if (!ctx) {
             wcore_errorf(WAFFLE_ERROR_UNKNOWN, "glXCreateContext failed");
             return NULL;
         }
     }
-
-    XSetErrorHandler(old_error_handler);
 
     return ctx;
 }

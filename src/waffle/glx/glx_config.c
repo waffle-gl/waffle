@@ -34,6 +34,7 @@
 #include "glx_config.h"
 #include "glx_display.h"
 #include "glx_platform.h"
+#include "glx_wrappers.h"
 
 bool
 glx_config_destroy(struct wcore_config *wc_self)
@@ -198,10 +199,10 @@ glx_config_choose(struct wcore_platform *wc_plat,
     };
 
     // Set glx_fbconfig.
-    configs = glXChooseFBConfig(dpy->x11.xlib,
-                                dpy->x11.screen,
-                                attrib_list,
-                                &num_configs);
+    configs = wrapped_glXChooseFBConfig(dpy->x11.xlib,
+                                        dpy->x11.screen,
+                                        attrib_list,
+                                        &num_configs);
     if (!configs || num_configs == 0) {
         wcore_errorf(WAFFLE_ERROR_UNKNOWN,
                      "glXChooseFBConfig returned no matching configs");
@@ -211,18 +212,18 @@ glx_config_choose(struct wcore_platform *wc_plat,
     self->glx_fbconfig = configs[0];
 
     // Set glx_fbconfig_id.
-    ok = !glXGetFBConfigAttrib(dpy->x11.xlib,
-                               self->glx_fbconfig,
-                               GLX_FBCONFIG_ID,
-                               &self->glx_fbconfig_id);
+    ok = !wrapped_glXGetFBConfigAttrib(dpy->x11.xlib,
+                                       self->glx_fbconfig,
+                                       GLX_FBCONFIG_ID,
+                                       &self->glx_fbconfig_id);
     if (!ok) {
         wcore_errorf(WAFFLE_ERROR_UNKNOWN, "glxGetFBConfigAttrib failed");
         goto error;
     }
 
     // Set xcb_visual_id.
-    vi = glXGetVisualFromFBConfig(dpy->x11.xlib,
-                                  self->glx_fbconfig);
+    vi = wrapped_glXGetVisualFromFBConfig(dpy->x11.xlib,
+                                          self->glx_fbconfig);
     if (!vi) {
         wcore_errorf(WAFFLE_ERROR_UNKNOWN,
                      "glXGetVisualInfoFromFBConfig failed with "
