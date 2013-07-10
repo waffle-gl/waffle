@@ -33,6 +33,12 @@
 #include "cgl_config.h"
 #include "cgl_error.h"
 
+#include <AvailabilityMacros.h>
+
+#ifndef MAC_OS_X_VERSION_10_6
+#define MAC_OS_X_VERSION_10_6 1060
+#endif
+
 bool
 cgl_config_destroy(struct wcore_config *wc_self)
 {
@@ -108,6 +114,7 @@ cgl_config_fill_pixel_format_attrs(
             pixel_attrs[i++] = (value); \
         }
 
+#if MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_6
     if (attrs->context_full_version == 10) {
         ADD_ATTR(kCGLPFAOpenGLProfile, (int) kCGLOGLPVersion_Legacy);
     }
@@ -121,6 +128,7 @@ cgl_config_fill_pixel_format_attrs(
                              attrs->context_profile);
         return false;
     }
+#endif
 
     ADD_ATTR(kCGLPFAColorSize,          attrs->rgb_size);
     ADD_ATTR(kCGLPFAAlphaSize,          attrs->alpha_size);
