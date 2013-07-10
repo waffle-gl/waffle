@@ -86,6 +86,7 @@ cgl_window_create_ns_window(NSView *view)
     [window makeFirstResponder:view];
     [window center];
     [window makeKeyAndOrderFront:nil];
+    [window orderFrontRegardless];
 
     return window;
 }
