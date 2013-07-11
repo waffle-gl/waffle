@@ -55,31 +55,32 @@ static __thread struct wcore_tinfo wcore_tinfo
 #endif
     ;
 
-static void
-wcore_tinfo_init(void)
+static void __attribute__((noreturn))
+wcore_tinfo_abort_init(void)
 {
-    assert(!wcore_tinfo.is_init);
+    printf("waffle: fatal-error: failed to initialize thread local info\n");
+    abort();
+}
+
+static void
+wcore_tinfo_init(struct wcore_tinfo *tinfo)
+{
+    if (tinfo->is_init)
+        return;
 
     // FIXME: wcore_tinfo.error leaks at thread exit. To fix this, Waffle
     // FIXME: needs a function like eglTerminate().
-    wcore_tinfo.error = wcore_error_tinfo_create();
-    if (!wcore_tinfo.error)
-        goto error;
+    tinfo->error = wcore_error_tinfo_create();
+    if (!tinfo->error)
+        wcore_tinfo_abort_init();
 
-    wcore_tinfo.is_init = true;
-    return;
-
-error:
-    printf("waffle: fatal-error: failed to initialize thread local info\n");
-    abort();
+    tinfo->is_init = true;
 }
 
 struct wcore_tinfo*
 wcore_tinfo_get(void)
 {
-    if (!wcore_tinfo.is_init)
-        wcore_tinfo_init();
-
+    wcore_tinfo_init(&wcore_tinfo);
     return &wcore_tinfo;
 }
 
