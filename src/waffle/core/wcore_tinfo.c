@@ -38,6 +38,9 @@
 #include "wcore_error.h"
 #include "wcore_tinfo.h"
 
+static pthread_once_t wcore_tinfo_once = PTHREAD_ONCE_INIT;
+static pthread_key_t wcore_tinfo_key;
+
 /// @brief Thread-local storage for all of Waffle.
 ///
 /// For documentation on the tls_model, see the GCC manual [1] and
@@ -63,18 +66,51 @@ wcore_tinfo_abort_init(void)
 }
 
 static void
+wcore_tinfo_key_dtor(void *args)
+{
+    struct wcore_tinfo *tinfo = args;
+    if (!tinfo)
+        return;
+
+    wcore_error_tinfo_destroy(tinfo->error);
+}
+
+static void
+wcore_tinfo_key_create(void)
+{
+    int err;
+
+    err = pthread_key_create(&wcore_tinfo_key, wcore_tinfo_key_dtor);
+    if (err)
+        wcore_tinfo_abort_init();
+}
+
+static void
 wcore_tinfo_init(struct wcore_tinfo *tinfo)
 {
+    int err;
+
     if (tinfo->is_init)
         return;
 
-    // FIXME: wcore_tinfo.error leaks at thread exit. To fix this, Waffle
-    // FIXME: needs a function like eglTerminate().
     tinfo->error = wcore_error_tinfo_create();
     if (!tinfo->error)
         wcore_tinfo_abort_init();
 
     tinfo->is_init = true;
+
+    // Register tinfo with the key's destructor to prevent memory leaks at
+    // thread exit. The destructor must be registered once per process, but
+    // each instance of tinfo must be registered individually. The key's data
+    // is never retrieved because use the key only to register tinfo for
+    // destruction.
+    err = pthread_once(&wcore_tinfo_once, wcore_tinfo_key_create);
+    if (err)
+        wcore_tinfo_abort_init();
+
+    err = pthread_setspecific(wcore_tinfo_key, tinfo);
+    if (err)
+        wcore_tinfo_abort_init();
 }
 
 struct wcore_tinfo*
