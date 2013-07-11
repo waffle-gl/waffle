@@ -1,4 +1,4 @@
-// Copyright 2012 Intel Corporation
+// Copyright 2012-2013 Intel Corporation
 //
 // All rights reserved.
 //
@@ -41,6 +41,7 @@
 static pthread_once_t wcore_tinfo_once = PTHREAD_ONCE_INIT;
 static pthread_key_t wcore_tinfo_key;
 
+#ifdef WAFFLE_HAS_TLS
 /// @brief Thread-local storage for all of Waffle.
 ///
 /// For documentation on the tls_model, see the GCC manual [1] and
@@ -51,12 +52,12 @@ static pthread_key_t wcore_tinfo_key;
 ///
 /// [2] Ulrich Drepper. "Elf Handling For Thread Local Storage".
 ///     http://people.redhat.com/drepper/tls.pdf
-
 static __thread struct wcore_tinfo wcore_tinfo
 #ifdef WAFFLE_HAS_TLS_MODEL_INITIAL_EXEC
     __attribute__((tls_model("initial-exec")))
 #endif
     ;
+#endif // WAFFLE_HAS_TLS
 
 static void __attribute__((noreturn))
 wcore_tinfo_abort_init(void)
@@ -73,6 +74,10 @@ wcore_tinfo_key_dtor(void *args)
         return;
 
     wcore_error_tinfo_destroy(tinfo->error);
+
+#ifndef WAFFLE_HAS_TLS
+    free(tinfo);
+#endif
 }
 
 static void
@@ -99,6 +104,7 @@ wcore_tinfo_init(struct wcore_tinfo *tinfo)
 
     tinfo->is_init = true;
 
+#ifdef WAFFLE_HAS_TLS
     // Register tinfo with the key's destructor to prevent memory leaks at
     // thread exit. The destructor must be registered once per process, but
     // each instance of tinfo must be registered individually. The key's data
@@ -107,6 +113,7 @@ wcore_tinfo_init(struct wcore_tinfo *tinfo)
     err = pthread_once(&wcore_tinfo_once, wcore_tinfo_key_create);
     if (err)
         wcore_tinfo_abort_init();
+#endif
 
     err = pthread_setspecific(wcore_tinfo_key, tinfo);
     if (err)
@@ -116,8 +123,28 @@ wcore_tinfo_init(struct wcore_tinfo *tinfo)
 struct wcore_tinfo*
 wcore_tinfo_get(void)
 {
+#ifdef WAFFLE_HAS_TLS
     wcore_tinfo_init(&wcore_tinfo);
     return &wcore_tinfo;
+#else
+    int err;
+    struct wcore_tinfo *tinfo;
+
+    err = pthread_once(&wcore_tinfo_once, wcore_tinfo_key_create);
+    if (err)
+        wcore_tinfo_abort_init();
+
+    tinfo = pthread_getspecific(wcore_tinfo_key);
+    if (tinfo)
+        return tinfo;
+
+    tinfo = malloc(sizeof(*tinfo));
+    if (!tinfo)
+        wcore_tinfo_abort_init();
+
+    wcore_tinfo_init(tinfo);
+    return tinfo;
+#endif
 }
 
 /// @}
