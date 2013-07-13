@@ -17,7 +17,7 @@ include_directories(
     ${egl_INCLUDE_DIRS}
     ${gbm_INCLUDE_DIRS}
     ${gl_INCLUDE_DIRS}
-    ${udev_INCLUDE_DIRS}
+    ${libudev_INCLUDE_DIRS}
     ${wayland-client_INCLUDE_DIRS}
     ${wayland-egl_INCLUDE_DIRS}
     ${x11-xcb_INCLUDE_DIRS}
@@ -31,7 +31,7 @@ set(waffle_libdeps
     ${egl_LDFLAGS}
     ${gbm_LDFLAGS}
     ${gl_LDFLAGS}
-    ${udev_LDFLAGS}
+    ${libudev_LDFLAGS}
     ${wayland-client_LDFLAGS}
     ${wayland-egl_LDFLAGS}
     ${x11_LDFLAGS}

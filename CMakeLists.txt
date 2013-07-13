@@ -203,7 +203,7 @@ endif()
 
 if(waffle_has_gbm)
     pkg_check_modules(gbm REQUIRED gbm)
-    pkg_check_modules(udev REQUIRED udev)
+    pkg_check_modules(libudev REQUIRED libudev)
 endif()
 
 
