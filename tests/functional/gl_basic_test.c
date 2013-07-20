@@ -386,6 +386,162 @@ TEST(gl_basic, cgl_gl_fwdcompat_bad_attribute)
                   .expect_error=WAFFLE_ERROR_BAD_ATTRIBUTE);
 }
 
+TEST(gl_basic, cgl_gl10)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .version=10);
+}
+
+TEST(gl_basic, cgl_gl11)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .version=11);
+}
+
+TEST(gl_basic, cgl_gl12)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .version=12);
+}
+
+TEST(gl_basic, cgl_gl13)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .version=13);
+}
+
+TEST(gl_basic, cgl_gl14)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .version=14);
+}
+
+TEST(gl_basic, cgl_gl15)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .version=15);
+}
+
+TEST(gl_basic, cgl_gl20)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .version=20);
+}
+
+TEST(gl_basic, cgl_gl21)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .version=21);
+}
+
+TEST(gl_basic, cgl_gl30)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .version=30,
+                  .expect_error=WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM);
+}
+
+TEST(gl_basic, cgl_gl31)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .version=31);
+}
+
+TEST(gl_basic, cgl_gl32_core)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .version=32,
+                  .profile=WAFFLE_CONTEXT_CORE_PROFILE);
+}
+
+TEST(gl_basic, cgl_gl33_core)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .version=33,
+                  .profile=WAFFLE_CONTEXT_CORE_PROFILE,
+                  .expect_error=WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM);
+}
+
+TEST(gl_basic, cgl_gl40_core)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .version=40,
+                  .profile=WAFFLE_CONTEXT_CORE_PROFILE,
+                  .expect_error=WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM);
+}
+
+TEST(gl_basic, cgl_gl41_core)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .version=41,
+                  .profile=WAFFLE_CONTEXT_CORE_PROFILE,
+                  .expect_error=WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM);
+}
+
+TEST(gl_basic, cgl_gl42_core)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .version=42,
+                  .profile=WAFFLE_CONTEXT_CORE_PROFILE,
+                  .expect_error=WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM);
+}
+
+TEST(gl_basic, cgl_gl43_core)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .version=43,
+                  .profile=WAFFLE_CONTEXT_CORE_PROFILE,
+                  .expect_error=WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM);
+}
+
+TEST(gl_basic, cgl_gl32_compat)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .version=32,
+                  .profile=WAFFLE_CONTEXT_COMPATIBILITY_PROFILE,
+                  .expect_error=WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM);
+}
+
+TEST(gl_basic, cgl_gl33_compat)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .version=33,
+                  .profile=WAFFLE_CONTEXT_COMPATIBILITY_PROFILE,
+                  .expect_error=WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM);
+}
+
+TEST(gl_basic, cgl_gl40_compat)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .version=40,
+                  .profile=WAFFLE_CONTEXT_COMPATIBILITY_PROFILE,
+                  .expect_error=WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM);
+}
+
+TEST(gl_basic, cgl_gl41_compat)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .version=41,
+                  .profile=WAFFLE_CONTEXT_COMPATIBILITY_PROFILE,
+                  .expect_error=WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM);
+}
+
+TEST(gl_basic, cgl_gl42_compat)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .version=42,
+                  .profile=WAFFLE_CONTEXT_COMPATIBILITY_PROFILE,
+                  .expect_error=WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM);
+}
+
+TEST(gl_basic, cgl_gl43_compat)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .version=43,
+                  .profile=WAFFLE_CONTEXT_COMPATIBILITY_PROFILE,
+                  .expect_error=WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM);
+}
+
 static void
 testsuite_cgl(void)
 {
@@ -396,8 +552,34 @@ testsuite_cgl(void)
 
     TEST_RUN(gl_basic, cgl_gl_rgb);
     TEST_RUN(gl_basic, cgl_gl_rgba);
+
     TEST_RUN(gl_basic, cgl_gl_debug_is_unsupported);
     TEST_RUN(gl_basic, cgl_gl_fwdcompat_bad_attribute);
+
+    TEST_RUN(gl_basic, cgl_gl10);
+    TEST_RUN(gl_basic, cgl_gl11);
+    TEST_RUN(gl_basic, cgl_gl12);
+    TEST_RUN(gl_basic, cgl_gl13);
+    TEST_RUN(gl_basic, cgl_gl14);
+    TEST_RUN(gl_basic, cgl_gl15);
+    TEST_RUN(gl_basic, cgl_gl20);
+    TEST_RUN(gl_basic, cgl_gl21);
+    TEST_RUN(gl_basic, cgl_gl30);
+    TEST_RUN(gl_basic, cgl_gl31);
+
+    TEST_RUN(gl_basic, cgl_gl32_core);
+    TEST_RUN(gl_basic, cgl_gl33_core);
+    TEST_RUN(gl_basic, cgl_gl40_core);
+    TEST_RUN(gl_basic, cgl_gl41_core);
+    TEST_RUN(gl_basic, cgl_gl42_core);
+    TEST_RUN(gl_basic, cgl_gl43_core);
+
+    TEST_RUN(gl_basic, cgl_gl32_compat);
+    TEST_RUN(gl_basic, cgl_gl33_compat);
+    TEST_RUN(gl_basic, cgl_gl40_compat);
+    TEST_RUN(gl_basic, cgl_gl41_compat);
+    TEST_RUN(gl_basic, cgl_gl42_compat);
+    TEST_RUN(gl_basic, cgl_gl43_compat);
 }
 #endif // WAFFLE_HAS_CGL
 
