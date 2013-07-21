@@ -106,6 +106,12 @@ cgl_platform_create(void)
     if (!ok)
         goto error;
 
+    if (self->system_version_full <= 0x104) {
+        wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
+                     "Mac OS < 10.4 is unsupported");
+        goto error;
+    }
+
     self->wcore.vtbl = &cgl_platform_vtbl;
     return &self->wcore;
 
