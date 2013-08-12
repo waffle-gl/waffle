@@ -66,12 +66,16 @@ wegl_display_init(struct wegl_display *dpy,
         goto fail;
 
     dpy->egl = eglGetDisplay((EGLNativeDisplayType) native_display);
-    if (!dpy->egl)
+    if (!dpy->egl) {
+        wegl_emit_error("eglGetDisplay");
         goto fail;
+    }
 
     ok = eglInitialize(dpy->egl, &major, &minor);
-    if (!ok)
+    if (!ok) {
+        wegl_emit_error("eglInitialize");
         goto fail;
+    }
 
     ok = get_extensions(dpy);
     if (!ok)
