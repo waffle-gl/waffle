@@ -45,6 +45,7 @@ find_package(PkgConfig)
 # ------------------------------------------------------------------------------
 
 include_directories(
+    include
     include/waffle
     src
     )
