@@ -27,6 +27,7 @@
 
 #include "wegl_context.h"
 #include "wegl_display.h"
+#include "wegl_imports.h"
 #include "wegl_util.h"
 #include "wegl_window.h"
 

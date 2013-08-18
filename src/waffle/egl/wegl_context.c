@@ -30,6 +30,7 @@
 
 #include "wegl_config.h"
 #include "wegl_context.h"
+#include "wegl_imports.h"
 #include "wegl_util.h"
 
 static bool

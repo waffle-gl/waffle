@@ -29,6 +29,7 @@
 #include "wcore_platform.h"
 
 #include "wegl_display.h"
+#include "wegl_imports.h"
 #include "wegl_util.h"
 
 static bool
