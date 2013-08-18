@@ -58,6 +58,7 @@ set(waffle_soversion "0")
 # Includes
 # ------------------------------------------------------------------------------
 
+include(Options.cmake)
 include(CheckThreadLocalStorage)
 
 #
@@ -73,35 +74,6 @@ include(GNUInstallDirs)
 set(PROJECT_NAME "waffle")
 
 find_package(PkgConfig)
-
-
-# ------------------------------------------------------------------------------
-# Waffle Options
-# ------------------------------------------------------------------------------
-
-# All options here are prefixed with `waffle_`. Most options are cache
-# variables set by the user.
-
-# ----------------------------------------------
-# Set waffle options
-# ----------------------------------------------
-
-option(waffle_build_tests "Build tests" ON)
-
-# Most users don't have the necessary tools installed to build from
-# Docbook sources, so require users to explicitly enable building them.
-option(waffle_build_manpages "Build manpages" OFF)
-option(waffle_build_htmldoc "Build html documentation" OFF)
-
-option(waffle_build_examples "Build examples" ON)
-
-option(waffle_has_glx "Build support for GLX" OFF)
-option(waffle_has_wayland "Build support for Wayland" OFF)
-option(waffle_has_x11_egl "Build support for X11/EGL" OFF)
-option(waffle_has_gbm "Build support for GBM" OFF)
-
-set(waffle_xsltproc "xsltproc"
-    CACHE STRING "Tool used to process XSLT stylesheets")
 
 # ----------------------------------------------
 # Emit errors for removed options
