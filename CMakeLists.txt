@@ -27,38 +27,13 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules")
 project(waffle C)
 cmake_minimum_required(VERSION 2.8)
 
-# -----------------------------------------------------------------------------
-# Version Numbers
-# -----------------------------------------------------------------------------
-
-# See /doc/versioning-rules.txt.
-
-#
-# Release versions.
-#
-# !!! Must be updated in tandem with the Android.mk !!!
-#
-set(waffle_major_version "1")
-set(waffle_minor_version "2")
-set(waffle_patch_version "75")
-
-set(waffle_version "${waffle_major_version}.${waffle_minor_version}.${waffle_patch_version}")
-
-
-#
-# Library versions.
-#
-# On Linux, libwaffle's filename is:
-#   libwaffle-MAJOR.so.0.MINOR.PATCH
-#
-set(waffle_libname "waffle-${waffle_major_version}")
-set(waffle_soversion "0")
 
 # ------------------------------------------------------------------------------
 # Includes
 # ------------------------------------------------------------------------------
 
 include(Options.cmake)
+include(WaffleDefineVersion)
 include(WaffleCheckThreadLocalStorage)
 
 #
