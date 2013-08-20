@@ -59,7 +59,7 @@ set(waffle_soversion "0")
 # ------------------------------------------------------------------------------
 
 include(Options.cmake)
-include(CheckThreadLocalStorage)
+include(WaffleCheckThreadLocalStorage)
 
 #
 # Include GNUInstallDirs.

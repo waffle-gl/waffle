@@ -28,7 +28,7 @@
 #     Check if the compiler supports various types of thread-local storage.
 #
 # Usage:
-#     include(CheckThreadLocalStorage)
+#     include(WaffleCheckThreadLocalStorage)
 #     waffle_check_thread_local_storage()
 #
 # Output Variables:
