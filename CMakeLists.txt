@@ -24,7 +24,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules")
-project(waffle C)
+project(waffle1 C)
 cmake_minimum_required(VERSION 2.8)
 
 
@@ -35,18 +35,7 @@ cmake_minimum_required(VERSION 2.8)
 include(Options.cmake)
 include(WaffleDefineVersion)
 include(WaffleCheckThreadLocalStorage)
-
-#
-# Include GNUInstallDirs.
-#
-# Hackishly rename PROJECT_NAME temporarily in order to workaround the default
-# of CMAKE_INSTALL_DOCDIR. The default value is "DATAROOTDIR/doc/PROJECT_NAME",
-# which evaluates to the undesirable "DATAROOTDIR/doc/waffle". Instead, we
-# want to install to "DATAROOTDIR/doc/waffle-MAJOR_VERSION".
-#
-set(PROJECT_NAME "waffle-${waffle_major_version}")
 include(GNUInstallDirs)
-set(PROJECT_NAME "waffle")
 
 find_package(PkgConfig)
 
