@@ -37,41 +37,10 @@ include(WaffleDefineInternalOptions)
 include(WaffleValidateOptions)
 include(WaffleDefineVersion)
 include(WaffleDefineCompilerFlags)
+include(WaffleFindDependencies)
 include(GNUInstallDirs)
 
 find_package(PkgConfig)
-
-# ------------------------------------------------------------------------------
-# Find Libraries
-# ------------------------------------------------------------------------------
-
-if("${CMAKE_SYSTEM_NAME}" STREQUAL "Darwin")
-    find_package(OpenGL REQUIRED)
-    find_library(COCOA_FRAMEWORK Cocoa REQUIRED)
-    find_library(CORE_FOUNDATION_FRAMEWORK CoreFoundation REQUIRED)
-endif()
-
-if(waffle_has_egl)
-    pkg_check_modules(egl REQUIRED egl)
-endif()
-
-if(waffle_has_glx)
-    pkg_check_modules(gl REQUIRED gl)
-endif()
-
-if(waffle_has_wayland)
-    pkg_check_modules(wayland-client REQUIRED wayland-client>=1)
-    pkg_check_modules(wayland-egl REQUIRED wayland-egl>=9.1)
-endif()
-
-if(waffle_has_x11)
-    pkg_check_modules(x11-xcb REQUIRED x11-xcb)
-endif()
-
-if(waffle_has_gbm)
-    pkg_check_modules(gbm REQUIRED gbm)
-    pkg_check_modules(libudev REQUIRED libudev)
-endif()
 
 # ------------------------------------------------------------------------------
 # Add subdirectories
