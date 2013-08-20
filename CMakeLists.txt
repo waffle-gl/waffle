@@ -33,6 +33,7 @@ cmake_minimum_required(VERSION 2.8)
 # ------------------------------------------------------------------------------
 
 include(Options.cmake)
+include(WaffleDefineInternalOptions)
 include(WaffleDefineVersion)
 include(WaffleDefineCompilerFlags)
 include(GNUInstallDirs)
@@ -62,22 +63,6 @@ if(DEFINED waffle_install_docdir)
             "replaced by CMAKE_INSTALL_DOCDIR. You may need to edit the "
             "CMakeCache to delete the option. See /doc/building.txt for "
             "details.")
-endif()
-
-#
-# Set internal options.
-#
-
-if(waffle_has_wayland OR waffle_has_x11_egl OR waffle_has_gbm)
-    set(waffle_has_egl TRUE)
-else(waffle_has_wayland OR waffle_has_x11_egl)
-    set(waffle_has_egl FALSE)
-endif()
-
-if(waffle_has_glx OR waffle_has_x11_egl)
-    set(waffle_has_x11 TRUE)
-else()
-    set(waffle_has_x11 FALSE)
 endif()
 
 # ----------------------------------------------
