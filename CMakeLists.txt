@@ -107,7 +107,7 @@ endif()
 # Set the following:
 #     waffle_has_tls
 #     waffle_tls_model_initial_exec
-check_thread_local_storage()
+waffle_check_thread_local_storage()
 
 if(waffle_has_wayland OR waffle_has_x11_egl OR waffle_has_gbm)
     set(waffle_has_egl TRUE)
