@@ -34,7 +34,7 @@ cmake_minimum_required(VERSION 2.8)
 
 include(Options.cmake)
 include(WaffleDefineVersion)
-include(WaffleCheckThreadLocalStorage)
+include(WaffleDefineCompilerFlags)
 include(GNUInstallDirs)
 
 find_package(PkgConfig)
@@ -67,11 +67,6 @@ endif()
 #
 # Set internal options.
 #
-
-# Set the following:
-#     waffle_has_tls
-#     waffle_tls_model_initial_exec
-waffle_check_thread_local_storage()
 
 if(waffle_has_wayland OR waffle_has_x11_egl OR waffle_has_gbm)
     set(waffle_has_egl TRUE)
@@ -140,57 +135,6 @@ endif()
 if(waffle_has_gbm)
     pkg_check_modules(gbm REQUIRED gbm)
     pkg_check_modules(libudev REQUIRED libudev)
-endif()
-
-
-# ------------------------------------------------------------------------------
-# Compiler Flags
-# ------------------------------------------------------------------------------
-
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} --std=c99 -Wall -Werror=implicit-function-declaration")
-if("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
-    # On MacOS, the SSE2 headers trigger this error.
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror=missing-prototypes")
-endif()
-
-set(CMAKE_C_FLAGS_DEBUG "-g3 -O0 -DDEBUG")
-
-# Produce enough debug info for generating backtraces, but not
-# single-stepping.
-set(CMAKE_C_FLAGS_RELEASE "-g1 -O2 -DNDEBUG")
-
-if(waffle_has_tls)
-    add_definitions(-DWAFFLE_HAS_TLS)
-endif()
-
-if(waffle_has_tls_model_initial_exec)
-    add_definitions(-DWAFFLE_HAS_TLS_MODEL_INITIAL_EXEC)
-endif()
-
-#
-# Define macros WAFFLE_HAS_{PLATFORM}.
-#
-# Android is not in this list because it uses a separate build system.
-#
-
-if("${CMAKE_SYSTEM_NAME}" STREQUAL "Darwin")
-    add_definitions(-DWAFFLE_HAS_CGL)
-endif()
-
-if(waffle_has_glx)
-    add_definitions(-DWAFFLE_HAS_GLX)
-endif()
-
-if(waffle_has_wayland)
-    add_definitions(-DWAFFLE_HAS_WAYLAND)
-endif()
-
-if(waffle_has_x11_egl)
-    add_definitions(-DWAFFLE_HAS_X11_EGL)
-endif()
-
-if(waffle_has_gbm)
-    add_definitions(-DWAFFLE_HAS_GBM)
 endif()
 
 # ------------------------------------------------------------------------------
