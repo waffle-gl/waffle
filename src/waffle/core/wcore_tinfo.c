@@ -138,7 +138,7 @@ wcore_tinfo_get(void)
     if (tinfo)
         return tinfo;
 
-    tinfo = malloc(sizeof(*tinfo));
+    tinfo = calloc(1, sizeof(*tinfo));
     if (!tinfo)
         wcore_tinfo_abort_init();
 
