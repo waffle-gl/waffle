@@ -34,61 +34,12 @@ cmake_minimum_required(VERSION 2.8)
 
 include(Options.cmake)
 include(WaffleDefineInternalOptions)
+include(WaffleValidateOptions)
 include(WaffleDefineVersion)
 include(WaffleDefineCompilerFlags)
 include(GNUInstallDirs)
 
 find_package(PkgConfig)
-
-# ----------------------------------------------
-# Emit errors for removed options
-# ----------------------------------------------
-
-if(DEFINED waffle_install_includedir)
-    message(FATAL_ERROR "Option waffle_install_includedir has been "
-            "replaced by CMAKE_INSTALL_INCLUDEDIR. You may need to edit the "
-            "CMakeCache to delete the option. See /doc/building.txt for "
-            "details.")
-endif()
-
-if(DEFINED waffle_install_libdir)
-    message(FATAL_ERROR "Option waffle_install_libdir has been "
-            "replaced by CMAKE_INSTALL_LIBDIR. You may need to edit the "
-            "CMakeCache to delete the option. See /doc/building.txt for "
-            "details.")
-endif()
-
-if(DEFINED waffle_install_docdir)
-    message(FATAL_ERROR "Option waffle_install_docdir has been "
-            "replaced by CMAKE_INSTALL_DOCDIR. You may need to edit the "
-            "CMakeCache to delete the option. See /doc/building.txt for "
-            "details.")
-endif()
-
-# ----------------------------------------------
-# Validate waffle options
-# ----------------------------------------------
-
-if("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
-    if(NOT waffle_has_glx AND NOT waffle_has_wayland AND
-       NOT waffle_has_x11_egl AND NOT waffle_has_gbm)
-        message(FATAL_ERROR
-                "Must enable at least one of: "
-                "waffle_has_glx, waffle_has_wayland, "
-                "waffle_has_x11_egl, waffle_has_gbm.")
-    endif()
-elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "Darwin")
-    if(waffle_has_glx)
-        message(FATAL_ERROR "Option is not supported on Darwin: waffle_has_glx.")
-    endif()
-    if(waffle_has_wayland)
-        message(FATAL_ERROR "Option is not supported on Darwin: waffle_has_wayland.")
-    endif()
-    if(waffle_has_x11_egl)
-        message(FATAL_ERROR "Option is not supported on Darwin: waffle_has_x11_egl.")
-    endif()
-endif()
-
 
 # ------------------------------------------------------------------------------
 # Find Libraries
