@@ -28,8 +28,8 @@
 #     Check if the compiler supports various types of thread-local storage.
 #
 # Usage:
-#     include(CheckThreadLocalStorage)
-#     check_thread_local_storage()
+#     include(WaffleCheckThreadLocalStorage)
+#     waffle_check_thread_local_storage()
 #
 # Output Variables:
 #     waffle_has_tls
@@ -42,7 +42,7 @@
 
 include(CheckCSourceCompiles)
 
-macro(check_thread_local_storage)
+macro(waffle_check_thread_local_storage)
     # Clang, in its zeal for compatibility with gcc, emits only a warning if
     # it encounters an __attribute__ that it does not recognize. To prevent
     # this function from returning a false positive in that situation, force

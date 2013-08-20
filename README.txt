@@ -121,9 +121,8 @@ a dependeny into /usr/local, then:
     export PKG_CONFIG_PATH=/usr/local/share/pkgconfig:/usr/local/$libdir/pkgconfig:$PKG_CONFIG_PATH
 
 
-2. Configure Waffle with CMake
--------------------------------
-
+2. Configure CMake
+------------------
 On Linux, you likely want to call cmake with the following
 arguments.  It configures Waffle in debug mode and with support for only GLX.
 
@@ -136,8 +135,7 @@ If in addition to GLX you want support for X11/EGL, then add
 -Dwaffle_has_x11_egl=1 to the cmake arguments. Likewise for Wayland, add
 -Dwaffle_has_wayland=1; and for GBM, add -Dwaffle_has_gbm=1.
 
-To build the manpages, add -Dwaffle_build_manpages=1. To build the html
-documentation, add -Dwaffle_build_htmldocs=1.
+For the full list of Waffle's custom CMake options, see file `Options.cmake`.
 
 To install into a custom location, autoconf-esque variables such
 as CMAKE_INSTALL_LIBDIR are supported. See
