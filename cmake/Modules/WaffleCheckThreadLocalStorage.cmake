@@ -61,7 +61,7 @@ macro(waffle_check_thread_local_storage)
 
         waffle_has_tls
 
-        FAIL_REGEX "warning|error"
+        FAIL_REGEX "warning: |error: "
         )
 
     check_c_source_compiles(
@@ -77,6 +77,6 @@ macro(waffle_check_thread_local_storage)
 
         waffle_has_tls_model_initial_exec
 
-        FAIL_REGEX "warning|error"
+        FAIL_REGEX "warning: |error: "
         )
 endmacro()
