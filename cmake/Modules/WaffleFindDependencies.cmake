@@ -25,7 +25,7 @@
 
 find_package(PkgConfig)
 
-if("${CMAKE_SYSTEM_NAME}" STREQUAL "Darwin")
+if(waffle_on_mac)
     find_package(OpenGL REQUIRED)
     find_library(COCOA_FRAMEWORK Cocoa REQUIRED)
     find_library(CORE_FOUNDATION_FRAMEWORK CoreFoundation REQUIRED)

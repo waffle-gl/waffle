@@ -44,7 +44,7 @@ if(DEFINED waffle_install_docdir)
             "details.")
 endif()
 
-if("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
+if(waffle_on_linux)
     if(NOT waffle_has_glx AND NOT waffle_has_wayland AND
        NOT waffle_has_x11_egl AND NOT waffle_has_gbm)
         message(FATAL_ERROR
@@ -52,7 +52,7 @@ if("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
                 "waffle_has_glx, waffle_has_wayland, "
                 "waffle_has_x11_egl, waffle_has_gbm.")
     endif()
-elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "Darwin")
+elseif(waffle_on_mac)
     if(waffle_has_gbm)
         message(FATAL_ERROR "Option is not supported on Darwin: waffle_has_gbm.")
     endif()

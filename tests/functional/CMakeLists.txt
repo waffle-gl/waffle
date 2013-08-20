@@ -7,7 +7,7 @@ set(gl_basic_test_sources
     gl_basic_test.c
     )
 
-if("${CMAKE_SYSTEM_NAME}" STREQUAL "Darwin")
+if(waffle_on_mac)
     list(APPEND gl_basic_test_sources
         gl_basic_cocoa.m
         )

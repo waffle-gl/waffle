@@ -59,7 +59,7 @@ set(waffle_sources
     core/wcore_util.c
     )
 
-if("${CMAKE_SYSTEM_NAME}" STREQUAL "Darwin")
+if(waffle_on_mac)
     list(APPEND waffle_sources
         cgl/cgl_config.m
         cgl/cgl_context.m
@@ -98,7 +98,7 @@ if(waffle_has_glx)
         )
 endif()
 
-if("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
+if(waffle_on_linux)
     list(APPEND waffle_sources
         linux/linux_dl.c
         linux/linux_platform.c

@@ -1,4 +1,4 @@
-if("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
+if(waffle_on_linux)
     # On Linux, you must enable at least one of the below options.
     option(waffle_has_glx "Build support for GLX" OFF)
     option(waffle_has_wayland "Build support for Wayland" OFF)

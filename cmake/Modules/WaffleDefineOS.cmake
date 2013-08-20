@@ -23,49 +23,10 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-include(WaffleCheckThreadLocalStorage)
-
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} --std=c99")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror=implicit-function-declaration")
-
-if(waffle_on_linux)
-    # On MacOS, the SSE2 headers trigger this error.
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror=missing-prototypes")
-endif()
-
-set(CMAKE_C_FLAGS_DEBUG "-g3 -O0 -DDEBUG")
-
-# Use '-g1' to produce enough debug info for generating backtraces, but not
-# enough for single-stepping.
-set(CMAKE_C_FLAGS_RELEASE "-g1 -O2 -DNDEBUG")
-
-waffle_check_thread_local_storage()
-
-if(waffle_has_tls)
-    add_definitions(-DWAFFLE_HAS_TLS)
-endif()
-
-if(waffle_has_tls_model_initial_exec)
-    add_definitions(-DWAFFLE_HAS_TLS_MODEL_INITIAL_EXEC)
-endif()
-
-if(waffle_on_mac)
-    add_definitions(-DWAFFLE_HAS_CGL)
-endif()
-
-if(waffle_has_glx)
-    add_definitions(-DWAFFLE_HAS_GLX)
-endif()
-
-if(waffle_has_wayland)
-    add_definitions(-DWAFFLE_HAS_WAYLAND)
-endif()
-
-if(waffle_has_x11_egl)
-    add_definitions(-DWAFFLE_HAS_X11_EGL)
-endif()
-
-if(waffle_has_gbm)
-    add_definitions(-DWAFFLE_HAS_GBM)
+if("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
+    set(waffle_on_linux true)
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "Darwin")
+    set(waffle_on_mac true)
+else()
+    message(FATAL_ERROR "Unrecognized CMAKE_SYSTEM_NAME=\"${CMAKE_SYSTEM_NAME|\"")
 endif()
