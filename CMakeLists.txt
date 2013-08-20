@@ -51,7 +51,6 @@ include_directories(
     src
     )
 
-add_subdirectory(cmake)
 add_subdirectory(doc)
 add_subdirectory(pkg)
 add_subdirectory(src)
@@ -96,13 +95,16 @@ if(waffle_build_tests)
 endif()
 
 # ------------------------------------------------------------------------------
-# Install: waffle.pc
+# Install packaging files: waffle.pc, FindWaffle.cmake
 # ------------------------------------------------------------------------------
 
 configure_file(waffle.pc.in ${waffle_libname}.pc @ONLY)
 
 install(FILES ${CMAKE_BINARY_DIR}/${waffle_libname}.pc
         DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}/pkgconfig)
+
+install(FILES cmake/Modules/FindWaffle.cmake
+        DESTINATION "${CMAKE_INSTALL_FULL_DATAROOTDIR}/cmake/Modules")
 
 # ------------------------------------------------------------------------------
 
