@@ -264,7 +264,6 @@ endif()
 include_directories(
     include/waffle
     src
-    third_party/khronos
     )
 
 add_subdirectory(cmake)
