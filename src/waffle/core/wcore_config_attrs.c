@@ -80,6 +80,32 @@ check_keys(const int32_t attrib_list[])
 }
 
 static bool
+parse_bool(const int32_t attrib_list[],
+		   int32_t attrib_name,
+		   bool *value,
+		   bool default_value)
+{
+	int32_t raw_value;
+
+	wcore_attrib_list_get_with_default(attrib_list, attrib_name,
+                                       &raw_value, default_value);
+
+	if (raw_value == WAFFLE_DONT_CARE) {
+		*value = default_value;
+	} else if (raw_value == true || raw_value == false) {
+		*value = raw_value;
+	} else {
+		wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
+					 "%s has bad value 0x%x. "
+					 "Must be true(1), false(0), or WAFFLE_DONT_CARE(-1)",
+					 waffle_enum_to_string(attrib_name), raw_value);
+		return false;
+	}
+
+    return true;
+}
+
+static bool
 parse_context_api(struct wcore_config_attrs *attrs,
                   const int32_t attrib_list[])
 {
@@ -288,24 +314,8 @@ static bool
 parse_context_forward_compatible(struct wcore_config_attrs *attrs,
                                  const int32_t attrib_list[])
 {
-    int32_t raw_value;
-
-    assert(attrs->context_api != 0);
-    assert(attrs->context_full_version != 0);
-
-    wcore_attrib_list_get_with_default(attrib_list,
-                                       WAFFLE_CONTEXT_FORWARD_COMPATIBLE,
-                                       &raw_value, false);
-
-    if (raw_value == WAFFLE_DONT_CARE) {
-        attrs->context_forward_compatible = false;
-    } else if (raw_value == true || raw_value == false) {
-        attrs->context_forward_compatible = raw_value;
-    } else {
-        wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
-                     "WAFFLE_CONTEXT_FORWARD_COMPATIBLE has bad value 0x%x. "
-                     "Must be true(1), false(0), or WAFFLE_DONT_CARE(-1)",
-                     raw_value);
+    if (!parse_bool(attrib_list, WAFFLE_CONTEXT_FORWARD_COMPATIBLE,
+                    &attrs->context_forward_compatible, false)) {
         return false;
     }
 
@@ -392,20 +402,11 @@ parse_misc(struct wcore_config_attrs *attrs,
 
             #define CASE_BOOL(enum_name, struct_memb, default_value)               \
                 case enum_name:                                                    \
-                    switch (value) {                                               \
-                        case WAFFLE_DONT_CARE:                                     \
-                        case true:                                                 \
-                        case false:                                                \
-                            attrs->struct_memb = value;                            \
-                            break;                                                 \
-                        default:                                                   \
-                            wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,               \
-                                         #enum_name " has bad value 0x%x, must be "\
-                                         "true(1) or false(0), or "                \
-                                         "WAFFLE_DONT_CARE(-1)", value);           \
-                            return false;                                          \
+                    if (!parse_bool(attrib_list, enum_name,                        \
+                                    &attrs->struct_memb, default_value)) {         \
+                        return false;                                              \
                     }                                                              \
-                    break;
+                break;
 
             case WAFFLE_CONTEXT_API:
             case WAFFLE_CONTEXT_MAJOR_VERSION:
