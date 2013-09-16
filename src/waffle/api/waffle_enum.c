@@ -29,48 +29,13 @@
 /// @file
 
 #include "wcore_error.h"
+#include "wcore_util.h"
 
 const char*
 waffle_enum_to_string(int32_t e)
 {
     wcore_error_reset();
-
-    switch (e) {
-#define CASE(x) case x: return #x
-        CASE(WAFFLE_DONT_CARE);
-        CASE(WAFFLE_NONE);
-        CASE(WAFFLE_PLATFORM);
-        CASE(WAFFLE_PLATFORM_ANDROID);
-        CASE(WAFFLE_PLATFORM_CGL);
-        CASE(WAFFLE_PLATFORM_GLX);
-        CASE(WAFFLE_PLATFORM_WAYLAND);
-        CASE(WAFFLE_PLATFORM_X11_EGL);
-        CASE(WAFFLE_CONTEXT_API);
-        CASE(WAFFLE_CONTEXT_OPENGL);
-        CASE(WAFFLE_CONTEXT_OPENGL_ES1);
-        CASE(WAFFLE_CONTEXT_OPENGL_ES2);
-        CASE(WAFFLE_CONTEXT_OPENGL_ES3);
-        CASE(WAFFLE_CONTEXT_MAJOR_VERSION);
-        CASE(WAFFLE_CONTEXT_MINOR_VERSION);
-        CASE(WAFFLE_CONTEXT_PROFILE);
-        CASE(WAFFLE_CONTEXT_CORE_PROFILE);
-        CASE(WAFFLE_CONTEXT_COMPATIBILITY_PROFILE);
-        CASE(WAFFLE_RED_SIZE);
-        CASE(WAFFLE_GREEN_SIZE);
-        CASE(WAFFLE_BLUE_SIZE);
-        CASE(WAFFLE_ALPHA_SIZE);
-        CASE(WAFFLE_DEPTH_SIZE);
-        CASE(WAFFLE_STENCIL_SIZE);
-        CASE(WAFFLE_SAMPLE_BUFFERS);
-        CASE(WAFFLE_SAMPLES);
-        CASE(WAFFLE_DOUBLE_BUFFERED);
-        CASE(WAFFLE_ACCUM_BUFFER);
-        CASE(WAFFLE_DL_OPENGL);
-        CASE(WAFFLE_DL_OPENGL_ES1);
-        CASE(WAFFLE_DL_OPENGL_ES2);
-        default: return 0;
-#undef CASE
-    }
+    return wcore_enum_to_string(e);
 }
 
 /// @}
