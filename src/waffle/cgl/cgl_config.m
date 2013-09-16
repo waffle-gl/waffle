@@ -56,6 +56,14 @@ cgl_config_destroy(struct wcore_config *wc_self)
 static bool
 cgl_config_check_attrs(const struct wcore_config_attrs *attrs)
 {
+    if (attrs->context_forward_compatible) {
+        // As of 2013-09-16 and up to Mac OS 10.8 Mountain Lion, CGL does not
+        // support forward-compatible contexts.
+        wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
+                     "CGL does not support forward-compatible contexts");
+        return false;
+    }
+
     switch (attrs->context_api) {
         case WAFFLE_CONTEXT_OPENGL:
             switch (attrs->context_full_version) {
