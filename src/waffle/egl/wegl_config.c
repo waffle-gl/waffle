@@ -42,6 +42,11 @@ check_context_attrs(struct wegl_display *dpy,
 {
     struct wcore_platform *plat = dpy->wcore.platform;
 
+    if (attrs->context_forward_compatible) {
+        assert(attrs->context_api == WAFFLE_CONTEXT_OPENGL);
+        assert(attrs->context_full_version >= 30);
+    }
+
     switch (attrs->context_api) {
         case WAFFLE_CONTEXT_OPENGL:
             if (attrs->context_full_version != 10 && !dpy->KHR_create_context) {
@@ -55,6 +60,13 @@ check_context_attrs(struct wegl_display *dpy,
             if (attrs->context_full_version >= 32) {
                 assert(attrs->context_profile == WAFFLE_CONTEXT_CORE_PROFILE ||
                        attrs->context_profile == WAFFLE_CONTEXT_COMPATIBILITY_PROFILE);
+            }
+
+            if (attrs->context_forward_compatible && !dpy->KHR_create_context) {
+                wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
+                             "EGL_KHR_create_context is required in order to "
+                             "request a forward-compatible context");
+                return false;
             }
 
             if (!plat->vtbl->dl_can_open(plat, WAFFLE_DL_OPENGL)) {

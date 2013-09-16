@@ -69,6 +69,7 @@ create_real_context(struct wegl_config *config,
     bool ok = true;
     int32_t waffle_context_api = attrs->context_api;
     EGLint attrib_list[64];
+    EGLint context_flags = 0;
     int i = 0;
 
     switch (waffle_context_api) {
@@ -84,7 +85,11 @@ create_real_context(struct wegl_config *config,
                 assert(attrs->context_minor_version == 0);
             }
 
-            attrib_list[i++] = EGL_NONE;
+            if (attrs->context_forward_compatible) {
+                assert(dpy->KHR_create_context);
+                context_flags |= EGL_CONTEXT_OPENGL_FORWARD_COMPATIBLE_BIT_KHR;
+            }
+
             break;
 
         case WAFFLE_CONTEXT_OPENGL_ES1:
@@ -101,7 +106,6 @@ create_real_context(struct wegl_config *config,
                 assert(attrs->context_minor_version == 0);
             }
 
-            attrib_list[i++] = EGL_NONE;
             break;
 
         default:
@@ -109,6 +113,13 @@ create_real_context(struct wegl_config *config,
                                  waffle_context_api);
             return EGL_NO_CONTEXT;
     }
+
+    if (context_flags != 0) {
+        attrib_list[i++] = EGL_CONTEXT_FLAGS_KHR;
+        attrib_list[i++] = context_flags;
+    }
+
+    attrib_list[i++] = EGL_NONE;
 
     ok = bind_api(waffle_context_api);
     if (!ok)
