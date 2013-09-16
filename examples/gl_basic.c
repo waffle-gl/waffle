@@ -254,11 +254,11 @@ parse_args(int argc, char *argv[], struct options *opts)
 
     // Set context_version.
     if (argc >= 4) {
-	int major;
-	int minor;
-	int match_count;
+        int major;
+        int minor;
+        int match_count;
 
-	arg = argv[3];
+        arg = argv[3];
         match_count = sscanf(arg, "%d.%d", &major, &minor);
         if (match_count != 2) {
             usage_error_printf("'%s' is not a valid GL version", arg);
