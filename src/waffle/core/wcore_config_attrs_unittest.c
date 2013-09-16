@@ -42,6 +42,7 @@ static const struct wcore_config_attrs default_attrs = {
     .context_minor_version  = 0,
     .context_full_version   = 10,
     .context_profile        = WAFFLE_NONE,
+    .context_forward_compatible = false,
 
     .rgb_size               = 0,
     .rgba_size              = 0,
@@ -115,6 +116,7 @@ TEST(wcore_config_attrs, gl_defaults)
     ASSERT_TRUE(actual_attrs.samples == 0);
     ASSERT_TRUE(actual_attrs.double_buffered == true);
     ASSERT_TRUE(actual_attrs.accum_buffer == false);
+    ASSERT_TRUE(actual_attrs.context_forward_compatible == false);
 }
 
 TEST(wcore_config_attrs, gles1_defaults)
@@ -720,6 +722,180 @@ TEST(wcore_config_attrs, negative_samples)
     EXPECT_TRUE(strstr(wcore_error_get_info()->message, "-2"));
 }
 
+
+TEST(wcore_config_attrs, forward_compat_gles1_emits_bad_attribute)
+{
+    const int32_t attrib_list[] = {
+        WAFFLE_CONTEXT_API,                     WAFFLE_CONTEXT_OPENGL_ES1,
+        WAFFLE_CONTEXT_FORWARD_COMPATIBLE,      true,
+        0,
+    };
+
+    ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
+    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
+}
+
+TEST(wcore_config_attrs, forward_compat_gles2_emits_bad_attribute)
+{
+    const int32_t attrib_list[] = {
+        WAFFLE_CONTEXT_API,                     WAFFLE_CONTEXT_OPENGL_ES2,
+        WAFFLE_CONTEXT_FORWARD_COMPATIBLE,      true,
+        0,
+    };
+
+    ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
+    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
+}
+
+TEST(wcore_config_attrs, forward_compat_gles3_emits_bad_attribute)
+{
+    const int32_t attrib_list[] = {
+        WAFFLE_CONTEXT_API,                     WAFFLE_CONTEXT_OPENGL_ES3,
+        WAFFLE_CONTEXT_FORWARD_COMPATIBLE,      true,
+        0,
+    };
+
+    ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
+    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
+}
+
+TEST(wcore_config_attrs, forward_compat_gl_emits_bad_attribute)
+{
+    const int32_t attrib_list[] = {
+        WAFFLE_CONTEXT_API,                     WAFFLE_CONTEXT_OPENGL,
+        WAFFLE_CONTEXT_FORWARD_COMPATIBLE,      true,
+        0,
+    };
+
+    ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
+    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
+}
+
+TEST(wcore_config_attrs, forward_compat_gl10_emits_bad_attribute)
+{
+    const int32_t attrib_list[] = {
+        WAFFLE_CONTEXT_API,                     WAFFLE_CONTEXT_OPENGL,
+        WAFFLE_CONTEXT_MAJOR_VERSION,           1,
+        WAFFLE_CONTEXT_MAJOR_VERSION,           0,
+        WAFFLE_CONTEXT_FORWARD_COMPATIBLE,      true,
+        0,
+    };
+
+    ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
+    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
+}
+
+TEST(wcore_config_attrs, forward_compat_gl21_emits_bad_attribute)
+{
+    const int32_t attrib_list[] = {
+        WAFFLE_CONTEXT_API,                     WAFFLE_CONTEXT_OPENGL,
+        WAFFLE_CONTEXT_MAJOR_VERSION,           2,
+        WAFFLE_CONTEXT_MAJOR_VERSION,           1,
+        WAFFLE_CONTEXT_FORWARD_COMPATIBLE,      true,
+        0,
+    };
+
+    ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
+    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
+}
+
+TEST(wcore_config_attrs, forward_compat_gl30)
+{
+    const int32_t attrib_list[] = {
+        WAFFLE_CONTEXT_API,                     WAFFLE_CONTEXT_OPENGL,
+        WAFFLE_CONTEXT_MAJOR_VERSION,           3,
+        WAFFLE_CONTEXT_MAJOR_VERSION,           0,
+        WAFFLE_CONTEXT_FORWARD_COMPATIBLE,      true,
+        0,
+    };
+
+    expect_attrs.context_full_version = 30;
+    expect_attrs.context_major_version = 3;
+    expect_attrs.context_minor_version = 0;
+    expect_attrs.context_forward_compatible = true;
+
+    ASSERT_TRUE(wcore_config_attrs_parse(attrib_list, &actual_attrs));
+    EXPECT_TRUE(!wcore_error_get_code());
+    EXPECT_TRUE(memcmp(&actual_attrs, &expect_attrs, sizeof(expect_attrs)) == 0);
+}
+
+TEST(wcore_config_attrs, forward_compat_gl32)
+{
+    const int32_t attrib_list[] = {
+        WAFFLE_CONTEXT_API,                     WAFFLE_CONTEXT_OPENGL,
+        WAFFLE_CONTEXT_MAJOR_VERSION,           3,
+        WAFFLE_CONTEXT_MINOR_VERSION,           2,
+        WAFFLE_CONTEXT_FORWARD_COMPATIBLE,      true,
+        0,
+    };
+
+    expect_attrs.context_full_version = 32;
+    expect_attrs.context_major_version = 3;
+    expect_attrs.context_minor_version = 2;
+    expect_attrs.context_profile = WAFFLE_CONTEXT_CORE_PROFILE;
+    expect_attrs.context_forward_compatible = true;
+
+    ASSERT_TRUE(wcore_config_attrs_parse(attrib_list, &actual_attrs));
+    EXPECT_TRUE(!wcore_error_get_code());
+    EXPECT_TRUE(memcmp(&actual_attrs, &expect_attrs, sizeof(expect_attrs)) == 0);
+}
+
+TEST(wcore_config_attrs, forward_compat_gl41)
+{
+    const int32_t attrib_list[] = {
+        WAFFLE_CONTEXT_API,                     WAFFLE_CONTEXT_OPENGL,
+        WAFFLE_CONTEXT_MAJOR_VERSION,           4,
+        WAFFLE_CONTEXT_MINOR_VERSION,           1,
+        WAFFLE_CONTEXT_FORWARD_COMPATIBLE,      true,
+        0,
+    };
+
+    expect_attrs.context_full_version = 41;
+    expect_attrs.context_major_version = 4;
+    expect_attrs.context_minor_version = 1;
+    expect_attrs.context_profile = WAFFLE_CONTEXT_CORE_PROFILE;
+    expect_attrs.context_forward_compatible = true;
+
+    ASSERT_TRUE(wcore_config_attrs_parse(attrib_list, &actual_attrs));
+    EXPECT_TRUE(!wcore_error_get_code());
+    EXPECT_TRUE(memcmp(&actual_attrs, &expect_attrs, sizeof(expect_attrs)) == 0);
+}
+
+TEST(wcore_config_attrs, forward_compat_gl30_dont_care)
+{
+    const int32_t attrib_list[] = {
+        WAFFLE_CONTEXT_API,                     WAFFLE_CONTEXT_OPENGL,
+        WAFFLE_CONTEXT_MAJOR_VERSION,           3,
+        WAFFLE_CONTEXT_MAJOR_VERSION,           0,
+        WAFFLE_CONTEXT_FORWARD_COMPATIBLE,      WAFFLE_DONT_CARE,
+        0,
+    };
+
+    expect_attrs.context_full_version = 30;
+    expect_attrs.context_major_version = 3;
+    expect_attrs.context_minor_version = 0;
+    expect_attrs.context_forward_compatible = false;
+
+    ASSERT_TRUE(wcore_config_attrs_parse(attrib_list, &actual_attrs));
+    EXPECT_TRUE(!wcore_error_get_code());
+    EXPECT_TRUE(memcmp(&actual_attrs, &expect_attrs, sizeof(expect_attrs)) == 0);
+}
+
+TEST(wcore_config_attrs, forward_compat_gl30_bad_value)
+{
+    const int32_t attrib_list[] = {
+        WAFFLE_CONTEXT_API,                     WAFFLE_CONTEXT_OPENGL,
+        WAFFLE_CONTEXT_MAJOR_VERSION,           3,
+        WAFFLE_CONTEXT_MAJOR_VERSION,           0,
+        WAFFLE_CONTEXT_FORWARD_COMPATIBLE,      2,
+        0,
+    };
+
+    ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
+    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
+    EXPECT_TRUE(strstr(wcore_error_get_info()->message, "2"));
+}
+
 void
 testsuite_wcore_config_attrs(void);
 
@@ -769,4 +945,15 @@ testsuite_wcore_config_attrs(void)
     TEST_RUN(wcore_config_attrs, negative_depth);
     TEST_RUN(wcore_config_attrs, negative_stencil);
     TEST_RUN(wcore_config_attrs, negative_samples);
+    TEST_RUN(wcore_config_attrs, forward_compat_gles1_emits_bad_attribute);
+    TEST_RUN(wcore_config_attrs, forward_compat_gles2_emits_bad_attribute);
+    TEST_RUN(wcore_config_attrs, forward_compat_gles3_emits_bad_attribute);
+    TEST_RUN(wcore_config_attrs, forward_compat_gl_emits_bad_attribute);
+    TEST_RUN(wcore_config_attrs, forward_compat_gl10_emits_bad_attribute);
+    TEST_RUN(wcore_config_attrs, forward_compat_gl21_emits_bad_attribute);
+    TEST_RUN(wcore_config_attrs, forward_compat_gl30);
+    TEST_RUN(wcore_config_attrs, forward_compat_gl32);
+    TEST_RUN(wcore_config_attrs, forward_compat_gl41);
+    TEST_RUN(wcore_config_attrs, forward_compat_gl30_dont_care);
+    TEST_RUN(wcore_config_attrs, forward_compat_gl30_bad_value);
 }
