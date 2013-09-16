@@ -56,6 +56,11 @@ glx_config_check_context_attrs(struct glx_display *dpy,
 {
     struct glx_platform *plat = glx_platform(dpy->wcore.platform);
 
+    if (attrs->context_forward_compatible) {
+        assert(attrs->context_api == WAFFLE_CONTEXT_OPENGL);
+        assert(attrs->context_full_version >= 30);
+    }
+
     switch (attrs->context_api) {
         case WAFFLE_CONTEXT_OPENGL:
             if (attrs->context_full_version != 10 && !dpy->ARB_create_context) {
@@ -76,11 +81,19 @@ glx_config_check_context_attrs(struct glx_display *dpy,
                        attrs->context_profile == WAFFLE_CONTEXT_COMPATIBILITY_PROFILE);
             }
 
+            if (attrs->context_forward_compatible && !dpy->ARB_create_context) {
+                wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
+                             "GLX_ARB_create_context is required in order to "
+                             "request a forward-compatible context");
+                return false;
+            }
+
             return true;
 
         case WAFFLE_CONTEXT_OPENGL_ES1:
             assert(attrs->context_full_version == 10 ||
                    attrs->context_full_version == 11);
+            assert(!attrs->context_forward_compatible);
 
             if (!dpy->EXT_create_context_es_profile) {
                 wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
@@ -99,6 +112,7 @@ glx_config_check_context_attrs(struct glx_display *dpy,
 
         case WAFFLE_CONTEXT_OPENGL_ES2:
             assert(attrs->context_major_version == 2);
+            assert(!attrs->context_forward_compatible);
 
             if (!dpy->EXT_create_context_es2_profile) {
                 wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
