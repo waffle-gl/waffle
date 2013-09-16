@@ -37,7 +37,7 @@
 #include "wcore_error.h"
 
 enum {
-    DEFAULT_ACCUM_BUFFERS = false,
+    DEFAULT_ACCUM_BUFFER = false,
     DEFAULT_DOUBLE_BUFFERED = true,
     DEFAULT_SAMPLE_BUFFERS = false,
 };
