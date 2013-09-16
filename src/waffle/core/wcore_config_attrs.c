@@ -56,6 +56,7 @@ check_keys(const int32_t attrib_list[])
             case WAFFLE_CONTEXT_MAJOR_VERSION:
             case WAFFLE_CONTEXT_MINOR_VERSION:
             case WAFFLE_CONTEXT_PROFILE:
+            case WAFFLE_CONTEXT_FORWARD_COMPATIBLE:
             case WAFFLE_RED_SIZE:
             case WAFFLE_GREEN_SIZE:
             case WAFFLE_BLUE_SIZE:
@@ -284,6 +285,54 @@ parse_context_profile(struct wcore_config_attrs *attrs,
 }
 
 static bool
+parse_context_forward_compatible(struct wcore_config_attrs *attrs,
+                                 const int32_t attrib_list[])
+{
+    int32_t raw_value;
+
+    assert(attrs->context_api != 0);
+    assert(attrs->context_full_version != 0);
+
+    wcore_attrib_list_get_with_default(attrib_list,
+                                       WAFFLE_CONTEXT_FORWARD_COMPATIBLE,
+                                       &raw_value, false);
+
+    if (raw_value == WAFFLE_DONT_CARE) {
+        attrs->context_forward_compatible = false;
+    } else if (raw_value == true || raw_value == false) {
+        attrs->context_forward_compatible = raw_value;
+    } else {
+        wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
+                     "WAFFLE_CONTEXT_FORWARD_COMPATIBLE has bad value 0x%x. "
+                     "Must be true(1), false(0), or WAFFLE_DONT_CARE(-1)",
+                     raw_value);
+        return false;
+    }
+
+    if (!attrs->context_forward_compatible) {
+        /* It's always valid to request a non-forward-compatible context. */
+        return true;
+    }
+
+    if (attrs->context_api != WAFFLE_CONTEXT_OPENGL) {
+        wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
+                     "To request a forward-compatible context, the context "
+                     "API must be WAFFLE_CONTEXT_OPENGL");
+        return false;
+
+    }
+
+    if (attrs->context_full_version < 30) {
+        wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
+                     "To request a forward-compatible context, the context "
+                     "version must be at least 3.0");
+        return false;
+    }
+
+    return true;
+}
+
+static bool
 set_misc_defaults(struct wcore_config_attrs *attrs)
 {
     // Per the GLX [1] and EGL [2] specs, the default value of each size
@@ -362,6 +411,7 @@ parse_misc(struct wcore_config_attrs *attrs,
             case WAFFLE_CONTEXT_MAJOR_VERSION:
             case WAFFLE_CONTEXT_MINOR_VERSION:
             case WAFFLE_CONTEXT_PROFILE:
+            case WAFFLE_CONTEXT_FORWARD_COMPATIBLE:
                 // These keys have already been parsed.
                 break;
 
@@ -444,6 +494,9 @@ wcore_config_attrs_parse(
         return false;
 
     if (!parse_context_profile(attrs, waffle_attrib_list))
+        return false;
+
+    if (!parse_context_forward_compatible(attrs, waffle_attrib_list))
         return false;
 
     if (!set_misc_defaults(attrs))
