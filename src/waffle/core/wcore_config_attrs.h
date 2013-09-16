@@ -55,11 +55,11 @@ struct wcore_config_attrs {
     int32_t depth_size;
     int32_t stencil_size;
 
-    int32_t sample_buffers;
     int32_t samples;
 
     bool context_forward_compatible;
     bool double_buffered;
+    bool sample_buffers;
     bool accum_buffer;
 };
 
