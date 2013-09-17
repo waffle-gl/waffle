@@ -397,7 +397,7 @@ testsuite_cgl(void)
     TEST_RUN(gl_basic, cgl_gl_rgb);
     TEST_RUN(gl_basic, cgl_gl_rgba);
     TEST_RUN(gl_basic, cgl_gl_debug_is_unsupported);
-    TEST_RUN(gl_basic, cgl_gl_fwdcompat_bad_attribute)
+    TEST_RUN(gl_basic, cgl_gl_fwdcompat_bad_attribute);
 }
 #endif // WAFFLE_HAS_CGL
 
