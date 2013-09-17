@@ -72,6 +72,10 @@ create_real_context(struct wegl_config *config,
     EGLint context_flags = 0;
     int i = 0;
 
+    if (attrs->context_debug) {
+        context_flags |= EGL_CONTEXT_OPENGL_DEBUG_BIT_KHR;
+    }
+
     switch (waffle_context_api) {
         case WAFFLE_CONTEXT_OPENGL:
             if (dpy->KHR_create_context) {

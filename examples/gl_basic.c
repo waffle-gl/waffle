@@ -60,6 +60,7 @@ static const char *usage_message =
     "             [--version=MAJOR.MINOR]\n"
     "             [--profile=core|compat|none]\n"
     "             [--forward-compatible]\n"
+    "             [--debug]\n"
     "\n"
     "examples:\n"
     "    gl_basic --platform=glx --api=gl\n"
@@ -67,13 +68,22 @@ static const char *usage_message =
     "    gl_basic --platform=wayland --api=gles3\n"
     "\n"
     "description:\n"
-    "    Create a window. Fill it with red, green, then blue.\n";
+    "    Create a window. Fill it with red, green, then blue.\n"
+    "\n"
+    "options:\n"
+    "    --forward-compatible\n"
+    "        Create a forward-compatible context.\n"
+    "\n"
+    "    --debug\n"
+    "        Create a debug context.\n"
+    ;
 
 enum {
     OPT_PLATFORM = 1,
     OPT_API,
     OPT_VERSION,
     OPT_PROFILE,
+    OPT_DEBUG,
     OPT_FORWARD_COMPATIBLE,
 };
 
@@ -82,6 +92,7 @@ static const struct option get_opts[] = {
     { .name = "api",            .has_arg = required_argument,     .val = OPT_API },
     { .name = "version",        .has_arg = required_argument,     .val = OPT_VERSION },
     { .name = "profile",        .has_arg = required_argument,     .val = OPT_PROFILE },
+    { .name = "debug",          .has_arg = no_argument,           .val = OPT_DEBUG },
     { .name = "forward-compatible", .has_arg = no_argument,       .val = OPT_FORWARD_COMPATIBLE },
     { 0 },
 };
@@ -165,6 +176,7 @@ enum {
 
     GL_CONTEXT_FLAGS = 0x821e,
     GL_CONTEXT_FLAG_FORWARD_COMPATIBLE_BIT = 0x00000001,
+    GL_CONTEXT_FLAG_DEBUG_BIT              = 0x00000002,
 };
 
 #define WINDOW_WIDTH  320
@@ -193,6 +205,7 @@ struct options {
     int context_version;
 
     bool context_forward_compatible;
+    bool context_debug;
 
     /// @brief One of `WAFFLE_DL_*`.
     int dl;
@@ -308,6 +321,9 @@ parse_args(int argc, char *argv[], struct options *opts)
                 break;
             case OPT_FORWARD_COMPATIBLE:
                 opts->context_forward_compatible = true;
+                break;
+            case OPT_DEBUG:
+                opts->context_debug = true;
                 break;
             default:
                 abort();
@@ -528,6 +544,11 @@ main(int argc, char **argv)
         config_attrib_list[i++] = true;
     }
 
+    if (opts.context_debug) {
+        config_attrib_list[i++] = WAFFLE_CONTEXT_DEBUG;
+        config_attrib_list[i++] = true;
+    }
+
     config_attrib_list[i++] = WAFFLE_RED_SIZE;
     config_attrib_list[i++] = 8;
     config_attrib_list[i++] = WAFFLE_GREEN_SIZE;
@@ -558,13 +579,19 @@ main(int argc, char **argv)
     if (!ok)
         error_waffle();
 
-    if (opts.context_forward_compatible) {
-        // Verify that the context is really forward-compatible.
-        GLint context_flags = 0;
+    GLint context_flags = 0;
+    if (opts.context_forward_compatible || opts.context_debug) {
         glGetIntegerv(GL_CONTEXT_FLAGS, &context_flags);
-        if (!(context_flags & GL_CONTEXT_FLAG_FORWARD_COMPATIBLE_BIT)) {
-            gl_basic_error("context is not forward-compatible");
-        }
+    }
+
+    if (opts.context_forward_compatible
+        && !(context_flags & GL_CONTEXT_FLAG_FORWARD_COMPATIBLE_BIT)) {
+        gl_basic_error("context is not forward-compatible");
+    }
+
+    if (opts.context_debug
+        && !(context_flags & GL_CONTEXT_FLAG_DEBUG_BIT)) {
+        gl_basic_error("context is not a debug context");
     }
 
     ok = draw(window);

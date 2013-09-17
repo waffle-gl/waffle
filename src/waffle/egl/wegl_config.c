@@ -47,6 +47,13 @@ check_context_attrs(struct wegl_display *dpy,
         assert(attrs->context_full_version >= 30);
     }
 
+    if (attrs->context_debug && !dpy->KHR_create_context) {
+        wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
+                     "EGL_KHR_create_context is required in order to "
+                     "request a debug context");
+        return false;
+    }
+
     switch (attrs->context_api) {
         case WAFFLE_CONTEXT_OPENGL:
             if (attrs->context_full_version != 10 && !dpy->KHR_create_context) {

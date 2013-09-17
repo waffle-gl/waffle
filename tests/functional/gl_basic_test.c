@@ -110,6 +110,7 @@ typedef double              GLclampd;   /* double precision float in [0,1] */
 #define GL_CONTEXT_FLAGS            0x821e
 
 #define GL_CONTEXT_FLAG_FORWARD_COMPATIBLE_BIT 0x00000001
+#define GL_CONTEXT_FLAG_DEBUG_BIT              0x00000002
 
 static GLenum (*glGetError)(void);
 static void (*glGetIntegerv)(GLenum pname, GLint *params);
@@ -170,6 +171,7 @@ gl_basic_init(int32_t waffle_platform)
         .version = WAFFLE_DONT_CARE, \
         .profile = WAFFLE_DONT_CARE, \
         .forward_compatible = false, \
+        .debug = false, \
         .alpha = false, \
         .expect_error = WAFFLE_NO_ERROR, \
         __VA_ARGS__ \
@@ -181,6 +183,7 @@ struct gl_basic_draw_args__ {
     int32_t profile;
     int32_t expect_error;
     bool forward_compatible;
+    bool debug;
     bool alpha;
 };
 
@@ -192,6 +195,7 @@ gl_basic_draw__(struct gl_basic_draw_args__ args)
     int32_t context_profile = args.profile;
     int32_t expect_error = args.expect_error;
     bool context_forward_compatible = args.forward_compatible;
+    bool context_debug = args.debug;
     bool alpha = args.alpha;
 
     int32_t libgl;
@@ -221,6 +225,10 @@ gl_basic_draw__(struct gl_basic_draw_args__ args)
     }
     if (context_forward_compatible) {
         config_attrib_list[i++] = WAFFLE_CONTEXT_FORWARD_COMPATIBLE;
+        config_attrib_list[i++] = true;
+    }
+    if (context_debug) {
+        config_attrib_list[i++] = WAFFLE_CONTEXT_DEBUG;
         config_attrib_list[i++] = true;
     }
     config_attrib_list[i++] = WAFFLE_RED_SIZE;
@@ -292,11 +300,17 @@ gl_basic_draw__(struct gl_basic_draw_args__ args)
 
     ASSERT_TRUE(waffle_make_current(dpy, window, ctx));
 
-    if (context_forward_compatible) {
-        // Verify that the context is really forward-compatible.
-        GLint context_flags = 0;
+    GLint context_flags = 0;
+    if (context_forward_compatible || context_debug) {
         glGetIntegerv(GL_CONTEXT_FLAGS, &context_flags);
+    }
+
+    if (context_forward_compatible) {
         ASSERT_TRUE(context_flags & GL_CONTEXT_FLAG_FORWARD_COMPATIBLE_BIT);
+    }
+
+    if (context_debug) {
+        ASSERT_TRUE(context_flags & GL_CONTEXT_FLAG_DEBUG_BIT);
     }
 
     // Draw.
@@ -365,6 +379,13 @@ TEST(gl_basic, cgl_gl_rgba)
                   .alpha=true);
 }
 
+TEST(gl_basic, cgl_gl_debug_is_unsupported)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .debug=true,
+                  .expect_error=WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM);
+}
+
 static void
 testsuite_cgl(void)
 {
@@ -375,6 +396,7 @@ testsuite_cgl(void)
 
     TEST_RUN(gl_basic, cgl_gl_rgb);
     TEST_RUN(gl_basic, cgl_gl_rgba);
+    TEST_RUN(gl_basic, cgl_gl_debug_is_unsupported);
     TEST_RUN(gl_basic, cgl_gl_fwdcompat_bad_attribute)
 }
 #endif // WAFFLE_HAS_CGL
@@ -394,6 +416,12 @@ TEST(gl_basic, glx_gl_rgba)
 {
     gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
                   .alpha=true);
+}
+
+TEST(gl_basic, glx_gl_debug)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .debug=true);
 }
 
 TEST(gl_basic, glx_gl_fwdcompat_bad_attribute)
@@ -664,6 +692,7 @@ testsuite_glx(void)
 
     TEST_RUN(gl_basic, glx_gl_rgb);
     TEST_RUN(gl_basic, glx_gl_rgba);
+    TEST_RUN(gl_basic, glx_gl_debug);
     TEST_RUN(gl_basic, glx_gl_fwdcompat_bad_attribute);
 
     TEST_RUN(gl_basic, glx_gl10);
@@ -731,6 +760,12 @@ TEST(gl_basic, wayland_gl_rgba)
 {
     gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
                   .alpha=true);
+}
+
+TEST(gl_basic, wayland_gl_debug)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .debug=true);
 }
 
 TEST(gl_basic, wayland_gl_fwdcompat_bad_attribute)
@@ -1001,6 +1036,7 @@ testsuite_wayland(void)
 
     TEST_RUN(gl_basic, wayland_gl_rgb);
     TEST_RUN(gl_basic, wayland_gl_rgba);
+    TEST_RUN(gl_basic, wayland_gl_debug);
     TEST_RUN(gl_basic, wayland_gl_fwdcompat_bad_attribute);
 
     TEST_RUN(gl_basic, wayland_gl10);
@@ -1068,6 +1104,12 @@ TEST(gl_basic, x11_egl_gl_rgba)
 {
     gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
                   .alpha=true);
+}
+
+TEST(gl_basic, x11_egl_gl_debug)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .debug=true);
 }
 
 TEST(gl_basic, x11_egl_gl_fwdcompat_bad_attribute)
@@ -1338,6 +1380,7 @@ testsuite_x11_egl(void)
 
     TEST_RUN(gl_basic, x11_egl_gl_rgb);
     TEST_RUN(gl_basic, x11_egl_gl_rgba);
+    TEST_RUN(gl_basic, x11_egl_gl_debug);
     TEST_RUN(gl_basic, x11_egl_gl_fwdcompat_bad_attribute);
 
     TEST_RUN(gl_basic, x11_egl_gl10);

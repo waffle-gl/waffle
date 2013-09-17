@@ -57,6 +57,7 @@ check_keys(const int32_t attrib_list[])
             case WAFFLE_CONTEXT_MINOR_VERSION:
             case WAFFLE_CONTEXT_PROFILE:
             case WAFFLE_CONTEXT_FORWARD_COMPATIBLE:
+            case WAFFLE_CONTEXT_DEBUG:
             case WAFFLE_RED_SIZE:
             case WAFFLE_GREEN_SIZE:
             case WAFFLE_BLUE_SIZE:
@@ -351,6 +352,8 @@ set_misc_defaults(struct wcore_config_attrs *attrs)
     // [1] GLX 1.4 spec (2005.12.16), Table 3.4
     // [2] EGL 1.4 spec (2011.04.06), Table 3.4
 
+    attrs->context_debug        = false;
+
     attrs->rgba_size            = 0;
     attrs->red_size             = 0;
     attrs->green_size           = 0;
@@ -424,6 +427,7 @@ parse_misc(struct wcore_config_attrs *attrs,
             CASE_INT(WAFFLE_STENCIL_SIZE, stencil_size)
             CASE_INT(WAFFLE_SAMPLES, samples)
 
+            CASE_BOOL(WAFFLE_CONTEXT_DEBUG, context_debug, false);
             CASE_BOOL(WAFFLE_SAMPLE_BUFFERS, sample_buffers, DEFAULT_SAMPLE_BUFFERS);
             CASE_BOOL(WAFFLE_DOUBLE_BUFFERED, double_buffered, DEFAULT_DOUBLE_BUFFERED);
             CASE_BOOL(WAFFLE_ACCUM_BUFFER, accum_buffer, DEFAULT_ACCUM_BUFFER);
