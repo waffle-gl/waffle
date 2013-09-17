@@ -349,13 +349,6 @@ TEST(gl_basic, cgl_init)
     gl_basic_init(WAFFLE_PLATFORM_CGL);
 }
 
-TEST(gl_basic, cgl_gl_fwdcompat_bad_attribute)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .forward_compatible=true,
-                  .expect_error=WAFFLE_ERROR_BAD_ATTRIBUTE);
-}
-
 TEST(gl_basic, cgl_gles1_unsupported)
 {
     gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL_ES1,
@@ -384,6 +377,13 @@ TEST(gl_basic, cgl_gl_debug_is_unsupported)
     gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
                   .debug=true,
                   .expect_error=WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM);
+}
+
+TEST(gl_basic, cgl_gl_fwdcompat_bad_attribute)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .forward_compatible=true,
+                  .expect_error=WAFFLE_ERROR_BAD_ATTRIBUTE);
 }
 
 static void
