@@ -92,13 +92,25 @@ gl_basic_error(const char *fmt, ...)
     exit(EXIT_FAILURE);
 }
 static void __attribute__((noreturn))
-error_usage(void)
+usage_error_printf(const char *fmt, ...)
 {
-    fprintf(stderr, "usage error\n\n");
+    fflush(stdout);
+    fprintf(stderr, "gl_basic: usage error");
+
+    if (fmt) {
+        va_list ap;
+        va_start(ap, fmt);
+        fprintf(stderr, ": ");
+        vfprintf(stderr, fmt, ap);
+        va_end(ap);
+    }
+
+    fprintf(stderr, "\n");
+    fprintf(stderr, "\n");
     fprintf(stderr, "%s", usage_message);
+
     exit(EXIT_FAILURE);
 }
-
 
 static void
 error_waffle(void)
@@ -220,7 +232,7 @@ parse_args(int argc, char *argv[], struct options *opts)
 #endif
 
     if (argc < 3)
-        error_usage();
+        usage_error_printf("not enough arguments");
 
     // Set some context attrs to invalid values.
     opts->context_profile = -1;
@@ -230,16 +242,14 @@ parse_args(int argc, char *argv[], struct options *opts)
     arg = argv[1];
     ok = enum_map_translate_str(platform_map, arg, &opts->platform);
     if (!ok) {
-        fprintf(stderr, "error: '%s' is not a valid platform\n", arg);
-        error_usage();
+        usage_error_printf("'%s' is not a valid platform", arg);
     }
 
     // Set context_api.
     arg = argv[2];
     ok = enum_map_translate_str(context_api_map, arg, &opts->context_api);
     if (!ok) {
-        fprintf(stderr, "error: '%s' is not a valid API for a GL context\n", arg);
-        error_usage();
+        usage_error_printf("'%s' is not a valid API for a GL context", arg);
     }
 
     // Set context_version.
@@ -251,8 +261,7 @@ parse_args(int argc, char *argv[], struct options *opts)
 	arg = argv[3];
         match_count = sscanf(arg, "%d.%d", &major, &minor);
         if (match_count != 2) {
-            fprintf(stderr, "error: '%s' is not a valid GL version\n", arg);
-            error_usage();
+            usage_error_printf("'%s' is not a valid GL version", arg);
         }
         opts->context_version = 10 * major + minor;
     }
@@ -267,13 +276,12 @@ parse_args(int argc, char *argv[], struct options *opts)
         else if (strcmp(arg, "compat") == 0)
             opts->context_profile = WAFFLE_CONTEXT_COMPATIBILITY_PROFILE;
         else {
-            fprintf(stderr, "error: '%s' is not a valid GL profile\n", arg);
-            error_usage();
+            usage_error_printf("'%s' is not a valid GL profile", arg);
         }
     }
 
     if (argc >= 6)
-        error_usage();
+        usage_error_printf("too many arguments");
 
     // Set dl.
     switch (opts->context_api) {
