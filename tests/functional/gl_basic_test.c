@@ -167,7 +167,7 @@ gl_basic_init(int32_t waffle_platform)
         .version = WAFFLE_DONT_CARE, \
         .profile = WAFFLE_DONT_CARE, \
         .alpha = false, \
-        .expect_unsupported = false, \
+        .expect_error = WAFFLE_NO_ERROR, \
         __VA_ARGS__ \
         })
 
@@ -175,8 +175,8 @@ struct gl_basic_draw_args__ {
     int32_t api;
     int32_t version;
     int32_t profile;
+    int32_t expect_error;
     bool alpha;
-    bool expect_unsupported;
 };
 
 static void
@@ -185,8 +185,8 @@ gl_basic_draw__(struct gl_basic_draw_args__ args)
     int32_t waffle_context_api = args.api;
     int32_t context_version = args.version;
     int32_t context_profile = args.profile;
+    int32_t expect_error = args.expect_error;
     bool alpha = args.alpha;
-    bool expect_config_unsupported = args.expect_unsupported;
 
     int32_t libgl;
 
@@ -236,9 +236,9 @@ gl_basic_draw__(struct gl_basic_draw_args__ args)
     ASSERT_TRUE(dpy = waffle_display_connect(NULL));
 
     config = waffle_config_choose(dpy, config_attrib_list);
-    if (expect_config_unsupported) {
+    if (expect_error) {
         ASSERT_TRUE(config == NULL);
-        ASSERT_TRUE(waffle_error_get_code() == WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM);
+        ASSERT_TRUE(waffle_error_get_code() == expect_error);
         TEST_PASS();
     } else if (config == NULL) {
         if (waffle_error_get_code() == WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM) {
@@ -319,13 +319,13 @@ TEST(gl_basic, cgl_init)
 TEST(gl_basic, cgl_gles1_unsupported)
 {
     gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL_ES1,
-                  .expect_unsupported=true);
+                  .expect_error=WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM);
 }
 
 TEST(gl_basic, cgl_gles2_unsupported)
 {
     gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL_ES2,
-                  .expect_unsupported=true);
+                  .expect_error=WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM);
 }
 
 TEST(gl_basic, cgl_gl_rgb)
