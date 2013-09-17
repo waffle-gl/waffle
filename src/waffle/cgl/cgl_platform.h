@@ -33,6 +33,12 @@ struct linux_platform;
 struct cgl_platform {
     struct wcore_platform wcore;
 
+    int32_t system_version_major;
+    int32_t system_version_minor;
+
+    /// @brief Has value (major << 8) | minor.
+    int32_t system_version_full;
+
     /// @brief The OpenGL library obtained with dlopen().
     void *dl_gl;
 };
