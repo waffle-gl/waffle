@@ -107,9 +107,12 @@ typedef double              GLclampd;   /* double precision float in [0,1] */
 #define GL_RGB                      0x1907
 #define GL_RGBA                     0x1908
 #define GL_COLOR_BUFFER_BIT         0x00004000
+#define GL_CONTEXT_FLAGS            0x821e
 
+#define GL_CONTEXT_FLAG_FORWARD_COMPATIBLE_BIT 0x00000001
 
 static GLenum (*glGetError)(void);
+static void (*glGetIntegerv)(GLenum pname, GLint *params);
 static void (*glClearColor)(GLclampf red,
                             GLclampf green,
                             GLclampf blue,
@@ -166,6 +169,7 @@ gl_basic_init(int32_t waffle_platform)
         .api = 0, \
         .version = WAFFLE_DONT_CARE, \
         .profile = WAFFLE_DONT_CARE, \
+        .forward_compatible = false, \
         .alpha = false, \
         .expect_error = WAFFLE_NO_ERROR, \
         __VA_ARGS__ \
@@ -176,6 +180,7 @@ struct gl_basic_draw_args__ {
     int32_t version;
     int32_t profile;
     int32_t expect_error;
+    bool forward_compatible;
     bool alpha;
 };
 
@@ -186,6 +191,7 @@ gl_basic_draw__(struct gl_basic_draw_args__ args)
     int32_t context_version = args.version;
     int32_t context_profile = args.profile;
     int32_t expect_error = args.expect_error;
+    bool context_forward_compatible = args.forward_compatible;
     bool alpha = args.alpha;
 
     int32_t libgl;
@@ -212,6 +218,10 @@ gl_basic_draw__(struct gl_basic_draw_args__ args)
     if (context_profile != WAFFLE_DONT_CARE) {
         config_attrib_list[i++] = WAFFLE_CONTEXT_PROFILE;
         config_attrib_list[i++] = context_profile;
+    }
+    if (context_forward_compatible) {
+        config_attrib_list[i++] = WAFFLE_CONTEXT_FORWARD_COMPATIBLE;
+        config_attrib_list[i++] = true;
     }
     config_attrib_list[i++] = WAFFLE_RED_SIZE;
     config_attrib_list[i++] = 8;
@@ -277,10 +287,19 @@ gl_basic_draw__(struct gl_basic_draw_args__ args)
     ASSERT_TRUE(glClear         = waffle_dl_sym(libgl, "glClear"));
     ASSERT_TRUE(glClearColor    = waffle_dl_sym(libgl, "glClearColor"));
     ASSERT_TRUE(glGetError      = waffle_dl_sym(libgl, "glGetError"));
+    ASSERT_TRUE(glGetIntegerv   = waffle_dl_sym(libgl, "glGetIntegerv"));
     ASSERT_TRUE(glReadPixels    = waffle_dl_sym(libgl, "glReadPixels"));
 
-    // Draw.
     ASSERT_TRUE(waffle_make_current(dpy, window, ctx));
+
+    if (context_forward_compatible) {
+        // Verify that the context is really forward-compatible.
+        GLint context_flags = 0;
+        glGetIntegerv(GL_CONTEXT_FLAGS, &context_flags);
+        ASSERT_TRUE(context_flags & GL_CONTEXT_FLAG_FORWARD_COMPATIBLE_BIT);
+    }
+
+    // Draw.
     ASSERT_GL(glClearColor(RED_F, GREEN_F, BLUE_F, ALPHA_F));
     ASSERT_GL(glClear(GL_COLOR_BUFFER_BIT));
     ASSERT_GL(glReadPixels(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT,
@@ -316,6 +335,13 @@ TEST(gl_basic, cgl_init)
     gl_basic_init(WAFFLE_PLATFORM_CGL);
 }
 
+TEST(gl_basic, cgl_gl_fwdcompat_bad_attribute)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .forward_compatible=true,
+                  .expect_error=WAFFLE_ERROR_BAD_ATTRIBUTE);
+}
+
 TEST(gl_basic, cgl_gles1_unsupported)
 {
     gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL_ES1,
@@ -349,6 +375,7 @@ testsuite_cgl(void)
 
     TEST_RUN(gl_basic, cgl_gl_rgb);
     TEST_RUN(gl_basic, cgl_gl_rgba);
+    TEST_RUN(gl_basic, cgl_gl_fwdcompat_bad_attribute)
 }
 #endif // WAFFLE_HAS_CGL
 
@@ -367,6 +394,13 @@ TEST(gl_basic, glx_gl_rgba)
 {
     gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
                   .alpha=true);
+}
+
+TEST(gl_basic, glx_gl_fwdcompat_bad_attribute)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .forward_compatible=true,
+                  .expect_error=WAFFLE_ERROR_BAD_ATTRIBUTE);
 }
 
 TEST(gl_basic, glx_gl10)
@@ -417,10 +451,25 @@ TEST(gl_basic, glx_gl21)
                   .version=21);
 }
 
+TEST(gl_basic, glx_gl21_fwdcompat_bad_attribute)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .version=21,
+                  .forward_compatible=true,
+                  .expect_error=WAFFLE_ERROR_BAD_ATTRIBUTE);
+}
+
 TEST(gl_basic, glx_gl30)
 {
     gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
                   .version=30);
+}
+
+TEST(gl_basic, glx_gl30_fwdcompat)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .version=30,
+                  .forward_compatible=true);
 }
 
 TEST(gl_basic, glx_gl31)
@@ -429,11 +478,26 @@ TEST(gl_basic, glx_gl31)
                   .version=31);
 }
 
+TEST(gl_basic, glx_gl31_fwdcompat)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .version=31,
+                  .forward_compatible=true);
+}
+
 TEST(gl_basic, glx_gl32_core)
 {
     gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
                   .version=32,
                   .profile=WAFFLE_CONTEXT_CORE_PROFILE);
+}
+
+TEST(gl_basic, glx_gl32_core_fwdcompat)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .version=32,
+                  .profile=WAFFLE_CONTEXT_CORE_PROFILE,
+                  .forward_compatible=true);
 }
 
 TEST(gl_basic, glx_gl33_core)
@@ -531,6 +595,13 @@ TEST(gl_basic, glx_gles10)
                    .alpha=true);
 }
 
+TEST(gl_basic, glx_gles1_fwdcompat_bad_attribute)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL_ES1,
+                  .forward_compatible=true,
+                  .expect_error=WAFFLE_ERROR_BAD_ATTRIBUTE);
+}
+
 TEST(gl_basic, glx_gles11)
 {
      gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL_ES1,
@@ -555,6 +626,13 @@ TEST(gl_basic, glx_gles20)
                   .version=20);
 }
 
+TEST(gl_basic, glx_gles2_fwdcompat_bad_attribute)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL_ES2,
+                  .forward_compatible=true,
+                  .expect_error=WAFFLE_ERROR_BAD_ATTRIBUTE);
+}
+
 TEST(gl_basic, glx_gles3_rgb)
 {
     gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL_ES3);
@@ -572,6 +650,13 @@ TEST(gl_basic, glx_gles30)
                   .version=30);
 }
 
+TEST(gl_basic, glx_gles3_fwdcompat_bad_attribute)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL_ES3,
+                  .forward_compatible=true,
+                  .expect_error=WAFFLE_ERROR_BAD_ATTRIBUTE);
+}
+
 static void
 testsuite_glx(void)
 {
@@ -579,6 +664,7 @@ testsuite_glx(void)
 
     TEST_RUN(gl_basic, glx_gl_rgb);
     TEST_RUN(gl_basic, glx_gl_rgba);
+    TEST_RUN(gl_basic, glx_gl_fwdcompat_bad_attribute);
 
     TEST_RUN(gl_basic, glx_gl10);
     TEST_RUN(gl_basic, glx_gl11);
@@ -588,10 +674,14 @@ testsuite_glx(void)
     TEST_RUN(gl_basic, glx_gl15);
     TEST_RUN(gl_basic, glx_gl20);
     TEST_RUN(gl_basic, glx_gl21);
+    TEST_RUN(gl_basic, glx_gl21_fwdcompat_bad_attribute);
     TEST_RUN(gl_basic, glx_gl30);
+    TEST_RUN(gl_basic, glx_gl30_fwdcompat);
     TEST_RUN(gl_basic, glx_gl31);
+    TEST_RUN(gl_basic, glx_gl31_fwdcompat);
 
     TEST_RUN(gl_basic, glx_gl32_core);
+    TEST_RUN(gl_basic, glx_gl32_core_fwdcompat);
     TEST_RUN(gl_basic, glx_gl33_core);
     TEST_RUN(gl_basic, glx_gl40_core);
     TEST_RUN(gl_basic, glx_gl41_core);
@@ -607,17 +697,20 @@ testsuite_glx(void)
 
     TEST_RUN(gl_basic, glx_gles1_rgb);
     TEST_RUN(gl_basic, glx_gles1_rgba);
+    TEST_RUN(gl_basic, glx_gles1_fwdcompat_bad_attribute);
 
     TEST_RUN(gl_basic, glx_gles10);
     TEST_RUN(gl_basic, glx_gles11);
 
     TEST_RUN(gl_basic, glx_gles2_rgb);
     TEST_RUN(gl_basic, glx_gles2_rgba);
+    TEST_RUN(gl_basic, glx_gles2_fwdcompat_bad_attribute);
 
     TEST_RUN(gl_basic, glx_gles20);
 
     TEST_RUN(gl_basic, glx_gles3_rgb);
     TEST_RUN(gl_basic, glx_gles3_rgba);
+    TEST_RUN(gl_basic, glx_gles3_fwdcompat_bad_attribute);
 
     TEST_RUN(gl_basic, glx_gles30);
 }
@@ -638,6 +731,13 @@ TEST(gl_basic, wayland_gl_rgba)
 {
     gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
                   .alpha=true);
+}
+
+TEST(gl_basic, wayland_gl_fwdcompat_bad_attribute)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .forward_compatible=true,
+                  .expect_error=WAFFLE_ERROR_BAD_ATTRIBUTE);
 }
 
 TEST(gl_basic, wayland_gl10)
@@ -688,10 +788,25 @@ TEST(gl_basic, wayland_gl21)
                   .version=21);
 }
 
+TEST(gl_basic, wayland_gl21_fwdcompat_bad_attribute)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .version=21,
+                  .forward_compatible=true,
+                  .expect_error=WAFFLE_ERROR_BAD_ATTRIBUTE);
+}
+
 TEST(gl_basic, wayland_gl30)
 {
     gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
                   .version=30);
+}
+
+TEST(gl_basic, wayland_gl30_fwdcompat)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .version=30,
+                  .forward_compatible=true);
 }
 
 TEST(gl_basic, wayland_gl31)
@@ -700,11 +815,26 @@ TEST(gl_basic, wayland_gl31)
                   .version=31);
 }
 
+TEST(gl_basic, wayland_gl31_fwdcompat)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .version=31,
+                  .forward_compatible=true);
+}
+
 TEST(gl_basic, wayland_gl32_core)
 {
     gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
                   .version=32,
                   .profile=WAFFLE_CONTEXT_CORE_PROFILE);
+}
+
+TEST(gl_basic, wayland_gl32_core_fwdcompat)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .version=32,
+                  .profile=WAFFLE_CONTEXT_CORE_PROFILE,
+                  .forward_compatible=true);
 }
 
 TEST(gl_basic, wayland_gl33_core)
@@ -802,6 +932,13 @@ TEST(gl_basic, wayland_gles10)
                   .alpha=true);
 }
 
+TEST(gl_basic, wayland_gles1_fwdcompat_bad_attribute)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL_ES1,
+                  .forward_compatible=true,
+                  .expect_error=WAFFLE_ERROR_BAD_ATTRIBUTE);
+}
+
 TEST(gl_basic, wayland_gles11)
 {
     gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL_ES1,
@@ -826,6 +963,13 @@ TEST(gl_basic, wayland_gles20)
                   .version=20);
 }
 
+TEST(gl_basic, wayland_gles2_fwdcompat_bad_attribute)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL_ES2,
+                  .forward_compatible=true,
+                  .expect_error=WAFFLE_ERROR_BAD_ATTRIBUTE);
+}
+
 TEST(gl_basic, wayland_gles3_rgb)
 {
     gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL_ES3);
@@ -843,6 +987,13 @@ TEST(gl_basic, wayland_gles30)
                   .version=30);
 }
 
+TEST(gl_basic, wayland_gles3_fwdcompat_bad_attribute)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL_ES3,
+                  .forward_compatible=true,
+                  .expect_error=WAFFLE_ERROR_BAD_ATTRIBUTE);
+}
+
 static void
 testsuite_wayland(void)
 {
@@ -850,6 +1001,7 @@ testsuite_wayland(void)
 
     TEST_RUN(gl_basic, wayland_gl_rgb);
     TEST_RUN(gl_basic, wayland_gl_rgba);
+    TEST_RUN(gl_basic, wayland_gl_fwdcompat_bad_attribute);
 
     TEST_RUN(gl_basic, wayland_gl10);
     TEST_RUN(gl_basic, wayland_gl11);
@@ -859,10 +1011,14 @@ testsuite_wayland(void)
     TEST_RUN(gl_basic, wayland_gl15);
     TEST_RUN(gl_basic, wayland_gl20);
     TEST_RUN(gl_basic, wayland_gl21);
+    TEST_RUN(gl_basic, wayland_gl21_fwdcompat_bad_attribute);
     TEST_RUN(gl_basic, wayland_gl30);
+    TEST_RUN(gl_basic, wayland_gl30_fwdcompat);
     TEST_RUN(gl_basic, wayland_gl31);
+    TEST_RUN(gl_basic, wayland_gl31_fwdcompat);
 
     TEST_RUN(gl_basic, wayland_gl32_core);
+    TEST_RUN(gl_basic, wayland_gl32_core_fwdcompat);
     TEST_RUN(gl_basic, wayland_gl33_core);
     TEST_RUN(gl_basic, wayland_gl40_core);
     TEST_RUN(gl_basic, wayland_gl41_core);
@@ -878,17 +1034,20 @@ testsuite_wayland(void)
 
     TEST_RUN(gl_basic, wayland_gles1_rgb);
     TEST_RUN(gl_basic, wayland_gles1_rgba);
+    TEST_RUN(gl_basic, wayland_gles1_fwdcompat_bad_attribute);
 
     TEST_RUN(gl_basic, wayland_gles10);
     TEST_RUN(gl_basic, wayland_gles11);
 
     TEST_RUN(gl_basic, wayland_gles2_rgb);
     TEST_RUN(gl_basic, wayland_gles2_rgba);
+    TEST_RUN(gl_basic, wayland_gles2_fwdcompat_bad_attribute);
 
     TEST_RUN(gl_basic, wayland_gles20);
 
     TEST_RUN(gl_basic, wayland_gles3_rgb);
     TEST_RUN(gl_basic, wayland_gles3_rgba);
+    TEST_RUN(gl_basic, wayland_gles3_fwdcompat_bad_attribute);
 
     TEST_RUN(gl_basic, wayland_gles30);
 }
@@ -909,6 +1068,13 @@ TEST(gl_basic, x11_egl_gl_rgba)
 {
     gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
                   .alpha=true);
+}
+
+TEST(gl_basic, x11_egl_gl_fwdcompat_bad_attribute)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .forward_compatible=true,
+                  .expect_error=WAFFLE_ERROR_BAD_ATTRIBUTE);
 }
 
 TEST(gl_basic, x11_egl_gl10)
@@ -959,10 +1125,25 @@ TEST(gl_basic, x11_egl_gl21)
                   .version=21);
 }
 
+TEST(gl_basic, x11_egl_gl21_fwdcompat_bad_attribute)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .version=21,
+                  .forward_compatible=true,
+                  .expect_error=WAFFLE_ERROR_BAD_ATTRIBUTE);
+}
+
 TEST(gl_basic, x11_egl_gl30)
 {
     gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
                   .version=30);
+}
+
+TEST(gl_basic, x11_egl_gl30_fwdcompat)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .version=30,
+                  .forward_compatible=true);
 }
 
 TEST(gl_basic, x11_egl_gl31)
@@ -971,11 +1152,26 @@ TEST(gl_basic, x11_egl_gl31)
                   .version=31);
 }
 
+TEST(gl_basic, x11_egl_gl31_fwdcompat)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .version=31,
+                  .forward_compatible=true);
+}
+
 TEST(gl_basic, x11_egl_gl32_core)
 {
     gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
                   .version=32,
                   .profile=WAFFLE_CONTEXT_CORE_PROFILE);
+}
+
+TEST(gl_basic, x11_egl_gl32_core_fwdcompat)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .version=32,
+                  .profile=WAFFLE_CONTEXT_CORE_PROFILE,
+                  .forward_compatible=true);
 }
 
 TEST(gl_basic, x11_egl_gl33_core)
@@ -1080,6 +1276,13 @@ TEST(gl_basic, x11_egl_gles11)
                   .alpha=true);
 }
 
+TEST(gl_basic, x11_egl_gles1_fwdcompat_bad_attribute)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL_ES1,
+                  .forward_compatible=true,
+                  .expect_error=WAFFLE_ERROR_BAD_ATTRIBUTE);
+}
+
 TEST(gl_basic, x11_egl_gles2_rgb)
 {
     gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL_ES2);
@@ -1095,6 +1298,13 @@ TEST(gl_basic, x11_egl_gles20)
 {
     gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL_ES2,
                   .version=20);
+}
+
+TEST(gl_basic, x11_egl_gles2_fwdcompat_bad_attribute)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL_ES2,
+                  .forward_compatible=true,
+                  .expect_error=WAFFLE_ERROR_BAD_ATTRIBUTE);
 }
 
 TEST(gl_basic, x11_egl_gles3_rgb)
@@ -1114,6 +1324,13 @@ TEST(gl_basic, x11_egl_gles30)
                   .version=30);
 }
 
+TEST(gl_basic, x11_egl_gles3_fwdcompat_bad_attribute)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL_ES3,
+                  .forward_compatible=true,
+                  .expect_error=WAFFLE_ERROR_BAD_ATTRIBUTE);
+}
+
 static void
 testsuite_x11_egl(void)
 {
@@ -1121,6 +1338,7 @@ testsuite_x11_egl(void)
 
     TEST_RUN(gl_basic, x11_egl_gl_rgb);
     TEST_RUN(gl_basic, x11_egl_gl_rgba);
+    TEST_RUN(gl_basic, x11_egl_gl_fwdcompat_bad_attribute);
 
     TEST_RUN(gl_basic, x11_egl_gl10);
     TEST_RUN(gl_basic, x11_egl_gl11);
@@ -1130,10 +1348,14 @@ testsuite_x11_egl(void)
     TEST_RUN(gl_basic, x11_egl_gl15);
     TEST_RUN(gl_basic, x11_egl_gl20);
     TEST_RUN(gl_basic, x11_egl_gl21);
+    TEST_RUN(gl_basic, x11_egl_gl21_fwdcompat_bad_attribute);
     TEST_RUN(gl_basic, x11_egl_gl30);
+    TEST_RUN(gl_basic, x11_egl_gl30_fwdcompat);
     TEST_RUN(gl_basic, x11_egl_gl31);
+    TEST_RUN(gl_basic, x11_egl_gl31_fwdcompat);
 
     TEST_RUN(gl_basic, x11_egl_gl32_core);
+    TEST_RUN(gl_basic, x11_egl_gl32_core_fwdcompat);
     TEST_RUN(gl_basic, x11_egl_gl33_core);
     TEST_RUN(gl_basic, x11_egl_gl40_core);
     TEST_RUN(gl_basic, x11_egl_gl41_core);
@@ -1149,17 +1371,20 @@ testsuite_x11_egl(void)
 
     TEST_RUN(gl_basic, x11_egl_gles1_rgb);
     TEST_RUN(gl_basic, x11_egl_gles1_rgba);
+    TEST_RUN(gl_basic, x11_egl_gles1_fwdcompat_bad_attribute);
 
     TEST_RUN(gl_basic, x11_egl_gles10);
     TEST_RUN(gl_basic, x11_egl_gles11);
 
     TEST_RUN(gl_basic, x11_egl_gles2_rgb);
     TEST_RUN(gl_basic, x11_egl_gles2_rgba);
+    TEST_RUN(gl_basic, x11_egl_gles2_fwdcompat_bad_attribute);
 
     TEST_RUN(gl_basic, x11_egl_gles20);
 
     TEST_RUN(gl_basic, x11_egl_gles3_rgb);
     TEST_RUN(gl_basic, x11_egl_gles3_rgba);
+    TEST_RUN(gl_basic, x11_egl_gles3_fwdcompat_bad_attribute);
 
     TEST_RUN(gl_basic, x11_egl_gles30);
 }
