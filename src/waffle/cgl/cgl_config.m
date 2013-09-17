@@ -94,7 +94,6 @@ cgl_config_check_attrs(const struct wcore_config_attrs *attrs)
                     wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
                                  "On CGL, the requested OpenGL version must "
                                  "be 1.0 or 3.2");
-                    assert(false);
                     return false;
             }
         case WAFFLE_CONTEXT_OPENGL_ES1:
