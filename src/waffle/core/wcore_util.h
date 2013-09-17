@@ -77,3 +77,6 @@ wcore_calloc(size_t size);
             if (union_var)                                              \
                 union_var->union_member = (void*) (union_var + 1);      \
         } while (0)
+
+const char*
+wcore_enum_to_string(int32_t e);

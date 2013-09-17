@@ -344,6 +344,38 @@ struct waffle_config;
       </varlistentry>
 
       <varlistentry>
+        <term><constant>WAFFLE_CONTEXT_FORWARD_COMPATIBLE</constant></term>
+        <listitem>
+          <para>
+            This attribute, if true, instructs
+            <citerefentry><refentrytitle><function>waffle_context_create</function></refentrytitle><manvolnum>3</manvolnum></citerefentry>
+            to create a forward-compatible context.
+
+            However, even if <function>waffle_config_choose()</function>
+            successfully returns a config for a forward-compatible context, the
+            native platform may later reject it when
+            <citerefentry><refentrytitle><function>waffle_context_create</function></refentrytitle><manvolnum>3</manvolnum></citerefentry>
+            is called.
+          </para>
+          <para>
+            Forward-compatible contexts do not support functionality marked as
+            deprecated by that version of the API.  A non-forward-compatible
+            context supports all functionality in that version, deprecated or
+            not.
+          </para>
+          <para>
+            This attribute is optional and its default value is false(0).
+
+            Valid values are true(1), false(0), and <constant>WAFFLE_DONT_CARE</constant>.
+
+            However, true(1) is valid only if
+            the requested context API is <constant>WAFFLE_CONTEXT_OPENGL</constant>
+            and its version is at least 3.0.
+          </para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
         <term><constant>WAFFLE_RED_SIZE</constant></term>
         <term><constant>WAFFLE_GREEN_SIZE</constant></term>
         <term><constant>WAFFLE_BLUE_SIZE</constant></term>

@@ -72,6 +72,7 @@ glx_context_fill_attrib_list(struct glx_config *config,
     struct glx_display *dpy = glx_display(config->wcore.display);
     struct wcore_config_attrs *attrs = &config->wcore.attrs;
     int i = 0;
+    int context_flags = 0;
 
     // As a workaround for NVidia, do not specify
     // GLX_CONTEXT_MAJOR_VERSION_ARB and GLX_CONTEXT_MINOR_VERSION_ARB in the
@@ -125,6 +126,11 @@ glx_context_fill_attrib_list(struct glx_config *config,
                         break;
                 }
             }
+
+            if (attrs->context_forward_compatible) {
+                context_flags |= GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB;
+            }
+
             break;
         case WAFFLE_CONTEXT_OPENGL_ES1:
         case WAFFLE_CONTEXT_OPENGL_ES2:
@@ -132,6 +138,11 @@ glx_context_fill_attrib_list(struct glx_config *config,
             attrib_list[i++] = GLX_CONTEXT_PROFILE_MASK_ARB;
             attrib_list[i++] = GLX_CONTEXT_ES_PROFILE_BIT_EXT;
             break;
+    }
+
+    if (context_flags != 0) {
+        attrib_list[i++] = GLX_CONTEXT_FLAGS_ARB;
+        attrib_list[i++] = context_flags;
     }
 
     attrib_list[i++] = 0;

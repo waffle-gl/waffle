@@ -59,6 +59,7 @@ static const char *usage_message =
     "             --api=gl|gles1|gles2|gles3\n"
     "             [--version=MAJOR.MINOR]\n"
     "             [--profile=core|compat|none]\n"
+    "             [--forward-compatible]\n"
     "\n"
     "examples:\n"
     "    gl_basic --platform=glx --api=gl\n"
@@ -73,6 +74,7 @@ enum {
     OPT_API,
     OPT_VERSION,
     OPT_PROFILE,
+    OPT_FORWARD_COMPATIBLE,
 };
 
 static const struct option get_opts[] = {
@@ -80,6 +82,7 @@ static const struct option get_opts[] = {
     { .name = "api",            .has_arg = required_argument,     .val = OPT_API },
     { .name = "version",        .has_arg = required_argument,     .val = OPT_VERSION },
     { .name = "profile",        .has_arg = required_argument,     .val = OPT_PROFILE },
+    { .name = "forward-compatible", .has_arg = no_argument,       .val = OPT_FORWARD_COMPATIBLE },
     { 0 },
 };
 
@@ -155,10 +158,13 @@ typedef unsigned int GLenum;
 typedef void GLvoid;
 
 enum {
-    // Copied for <GL/gl.h>.
+    // Copied from <GL/gl*.h>.
     GL_UNSIGNED_BYTE =    0x00001401,
     GL_RGBA =             0x00001908,
     GL_COLOR_BUFFER_BIT = 0x00004000,
+
+    GL_CONTEXT_FLAGS = 0x821e,
+    GL_CONTEXT_FLAG_FORWARD_COMPATIBLE_BIT = 0x00000001,
 };
 
 #define WINDOW_WIDTH  320
@@ -166,6 +172,7 @@ enum {
 
 static void (*glClearColor)(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha);
 static void (*glClear)(GLbitfield mask);
+static void (*glGetIntegerv)(GLenum pname, GLint *params);
 static void (*glReadPixels)(GLint x, GLint y, GLsizei width, GLsizei height,
                             GLenum format, GLenum type, GLvoid* data);
 
@@ -184,6 +191,8 @@ struct options {
     int context_profile;
 
     int context_version;
+
+    bool context_forward_compatible;
 
     /// @brief One of `WAFFLE_DL_*`.
     int dl;
@@ -296,6 +305,9 @@ parse_args(int argc, char *argv[], struct options *opts)
                     usage_error_printf("'%s' is not a valid GL profile",
                                        optarg);
                 }
+                break;
+            case OPT_FORWARD_COMPATIBLE:
+                opts->context_forward_compatible = true;
                 break;
             default:
                 abort();
@@ -487,6 +499,10 @@ main(int argc, char **argv)
     if (!glClearColor)
         error_get_gl_symbol("glClearColor");
 
+    glGetIntegerv = waffle_dl_sym(opts.dl, "glGetIntegerv");
+    if (!glGetIntegerv)
+        error_get_gl_symbol("glGetIntegerv");
+
     glReadPixels = waffle_dl_sym(opts.dl, "glReadPixels");
     if (!glReadPixels)
         error_get_gl_symbol("glReadPixels");
@@ -505,6 +521,11 @@ main(int argc, char **argv)
         config_attrib_list[i++] = opts.context_version / 10;
         config_attrib_list[i++] = WAFFLE_CONTEXT_MINOR_VERSION;
         config_attrib_list[i++] = opts.context_version % 10;
+    }
+
+    if (opts.context_forward_compatible) {
+        config_attrib_list[i++] = WAFFLE_CONTEXT_FORWARD_COMPATIBLE;
+        config_attrib_list[i++] = true;
     }
 
     config_attrib_list[i++] = WAFFLE_RED_SIZE;
@@ -536,6 +557,15 @@ main(int argc, char **argv)
     ok = waffle_make_current(dpy, window, ctx);
     if (!ok)
         error_waffle();
+
+    if (opts.context_forward_compatible) {
+        // Verify that the context is really forward-compatible.
+        GLint context_flags = 0;
+        glGetIntegerv(GL_CONTEXT_FLAGS, &context_flags);
+        if (!(context_flags & GL_CONTEXT_FLAG_FORWARD_COMPATIBLE_BIT)) {
+            gl_basic_error("context is not forward-compatible");
+        }
+    }
 
     ok = draw(window);
     if (!ok)
