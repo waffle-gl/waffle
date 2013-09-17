@@ -35,6 +35,7 @@
 
 #define _POSIX_C_SOURCE 199309L // glibc feature macro for nanosleep.
 
+#include <getopt.h>
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -54,21 +55,33 @@ removeXcodeArgs(int *argc, char **argv);
 
 static const char *usage_message =
     "usage:\n"
-    "    gl_basic <platform> <context_api> [version] [profile]\n"
-    "\n"
-    "arguments:\n"
-    "    platform: One of android, cgl, gbm, glx, wayland, x11_egl.\n"
-    "    context_api: One of gl, gles1, gles2, gles3.\n"
-    "    version: In form \"major.minor\".\n"
-    "    profile: One of core, compat, or none.\n"
+    "    gl_basic --platform=android|cgl|gbm|glx|wayland|x11_egl\n"
+    "             --api=gl|gles1|gles2|gles3\n"
+    "             [--version=MAJOR.MINOR]\n"
+    "             [--profile=core|compat|none]\n"
     "\n"
     "examples:\n"
-    "    gl_basic glx gl\n"
-    "    gl_basic x11_egl gl 3.2 core\n"
-    "    gl_basic wayland gles3\n"
+    "    gl_basic --platform=glx --api=gl\n"
+    "    gl_basic --platform=x11_egl --api=gl --version=3.2 --profile=core\n"
+    "    gl_basic --platform=wayland --api=gles3\n"
     "\n"
     "description:\n"
     "    Create a window. Fill it with red, green, then blue.\n";
+
+enum {
+    OPT_PLATFORM = 1,
+    OPT_API,
+    OPT_VERSION,
+    OPT_PROFILE,
+};
+
+static const struct option get_opts[] = {
+    { .name = "platform",       .has_arg = required_argument,     .val = OPT_PLATFORM },
+    { .name = "api",            .has_arg = required_argument,     .val = OPT_API },
+    { .name = "version",        .has_arg = required_argument,     .val = OPT_VERSION },
+    { .name = "profile",        .has_arg = required_argument,     .val = OPT_PROFILE },
+    { 0 },
+};
 
 /// @defgroup Error handlers
 /// @{
@@ -224,64 +237,84 @@ enum_map_translate_str(
 static bool
 parse_args(int argc, char *argv[], struct options *opts)
 {
-    const char *arg;
     bool ok;
+    bool loop_get_opt = true;
 
 #ifdef __APPLE__
     removeXcodeArgs(&argc, argv);
 #endif
 
-    if (argc < 3)
-        usage_error_printf("not enough arguments");
-
     // Set some context attrs to invalid values.
     opts->context_profile = -1;
     opts->context_version = -1;
 
-    // Set platform.
-    arg = argv[1];
-    ok = enum_map_translate_str(platform_map, arg, &opts->platform);
-    if (!ok) {
-        usage_error_printf("'%s' is not a valid platform", arg);
-    }
+    while (loop_get_opt) {
+        int opt = getopt_long(argc, argv, "", get_opts, NULL);
+        switch (opt) {
+            case -1:
+                loop_get_opt = false;
+                break;
+            case '?':
+                goto error_unrecognized_arg;
+            case OPT_PLATFORM:
+                ok = enum_map_translate_str(platform_map, optarg,
+                                            &opts->platform);
+                if (!ok) {
+                    usage_error_printf("'%s' is not a valid platform",
+                                       optarg);
+                }
+                break;
+            case OPT_API:
+                ok = enum_map_translate_str(context_api_map, optarg,
+                                            &opts->context_api);
+                if (!ok) {
+                    usage_error_printf("'%s' is not a valid API for a GL "
+                                       "context", optarg);
+                }
+                break;
+            case OPT_VERSION: {
+                int major;
+                int minor;
+                int match_count;
 
-    // Set context_api.
-    arg = argv[2];
-    ok = enum_map_translate_str(context_api_map, arg, &opts->context_api);
-    if (!ok) {
-        usage_error_printf("'%s' is not a valid API for a GL context", arg);
-    }
-
-    // Set context_version.
-    if (argc >= 4) {
-        int major;
-        int minor;
-        int match_count;
-
-        arg = argv[3];
-        match_count = sscanf(arg, "%d.%d", &major, &minor);
-        if (match_count != 2) {
-            usage_error_printf("'%s' is not a valid GL version", arg);
+                match_count = sscanf(optarg, "%d.%d", &major, &minor);
+                if (match_count != 2) {
+                    usage_error_printf("'%s' is not a valid GL version",
+                                       optarg);
+                }
+                opts->context_version = 10 * major + minor;
+                break;
+            }
+            case OPT_PROFILE:
+                if (strcmp(optarg, "none") == 0) {
+                    opts->context_profile = WAFFLE_NONE;
+                } else if (strcmp(optarg, "core") == 0) {
+                    opts->context_profile = WAFFLE_CONTEXT_CORE_PROFILE;
+                } else if (strcmp(optarg, "compat") == 0) {
+                    opts->context_profile = WAFFLE_CONTEXT_COMPATIBILITY_PROFILE;
+                } else {
+                    usage_error_printf("'%s' is not a valid GL profile",
+                                       optarg);
+                }
+                break;
+            default:
+                abort();
+                loop_get_opt = false;
+                break;
         }
-        opts->context_version = 10 * major + minor;
     }
 
-    // Set context_profile.
-    if (argc >= 5) {
-        arg = argv[4];
-        if (strcmp(arg, "none") == 0)
-            opts->context_profile = WAFFLE_NONE;
-        else if (strcmp(arg, "core") == 0)
-            opts->context_profile = WAFFLE_CONTEXT_CORE_PROFILE;
-        else if (strcmp(arg, "compat") == 0)
-            opts->context_profile = WAFFLE_CONTEXT_COMPATIBILITY_PROFILE;
-        else {
-            usage_error_printf("'%s' is not a valid GL profile", arg);
-        }
+    if (optind < argc) {
+        goto error_unrecognized_arg;
     }
 
-    if (argc >= 6)
-        usage_error_printf("too many arguments");
+    if (!opts->platform) {
+        usage_error_printf("--platform is required");
+    }
+
+    if (!opts->context_api) {
+        usage_error_printf("--api is required");
+    }
 
     // Set dl.
     switch (opts->context_api) {
@@ -295,6 +328,9 @@ parse_args(int argc, char *argv[], struct options *opts)
     }
 
     return true;
+
+error_unrecognized_arg:
+    usage_error_printf("unrecognized option '%s'", optarg);
 }
 
 /// @}
@@ -407,7 +443,7 @@ main(int argc, char **argv)
     bool ok;
     int i;
 
-    struct options opts;
+    struct options opts = {0};
 
     int32_t init_attrib_list[3];
     int32_t config_attrib_list[64];
