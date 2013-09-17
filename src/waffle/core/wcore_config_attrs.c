@@ -260,7 +260,7 @@ parse_context_profile(struct wcore_config_attrs *attrs,
             else if (attrs->context_full_version < 32
                      && attrs->context_profile != WAFFLE_NONE) {
                 wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
-                             "for OpenGL < 3.2, WAFFLE_CONTEXT_PROFILE must "
+                             "for OpenGL < 3.2, WAFFLE_CONTEXT_PROFILE must be "
                              "WAFFLE_NONE");
                 return false;
             }
