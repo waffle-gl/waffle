@@ -162,8 +162,6 @@ struct options {
 
     /// @brief One of `WAFFLE_DL_*`.
     int dl;
-
-    const char *display_name;
 };
 
 struct enum_map {
@@ -285,20 +283,6 @@ parse_args(int argc, char *argv[], struct options *opts)
         case WAFFLE_CONTEXT_OPENGL_ES3: opts->dl = WAFFLE_DL_OPENGL_ES3;  break;
         default:
             abort();
-            break;
-    }
-
-    // Set display_name.
-    switch (opts->platform) {
-        case WAFFLE_PLATFORM_GLX:
-        case WAFFLE_PLATFORM_X11_EGL:
-            opts->display_name = getenv("DISPLAY");
-            break;
-        case WAFFLE_PLATFORM_WAYLAND:
-            opts->display_name = getenv("WAYLAND_DISPLAY");
-            break;
-        default:
-            opts->display_name = NULL;
             break;
     }
 
@@ -442,7 +426,7 @@ main(int argc, char **argv)
     if (!ok)
         error_waffle();
 
-    dpy = waffle_display_connect(opts.display_name);
+    dpy = waffle_display_connect(NULL);
     if (!dpy)
         error_waffle();
 
