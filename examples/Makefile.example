@@ -2,7 +2,7 @@
 all: gl_basic simple-x11-egl
 
 gl_basic: gl_basic.c
-	$(CC) $(shell pkg-config --cflags --libs waffle-1) -o gl_basic gl_basic.c
+	$(CC) -std=c99 $(shell pkg-config --cflags --libs waffle-1) -o gl_basic gl_basic.c
 
 simple-x11-egl: simple-x11-egl.c
-	$(CC) $(shell pkg-config --cflags --libs waffle-1) -o simple-x11-egl simple-x11-egl.c
+	$(CC) -std=c99 $(shell pkg-config --cflags --libs waffle-1) -o simple-x11-egl simple-x11-egl.c
