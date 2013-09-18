@@ -58,6 +58,10 @@ bool
 cgl_window_show(struct wcore_window *wc_self);
 
 bool
+cgl_window_resize(struct wcore_window *wc_self,
+                  int32_t width, int32_t height);
+
+bool
 cgl_window_swap_buffers(struct wcore_window *wc_self);
 
 union waffle_native_window*
