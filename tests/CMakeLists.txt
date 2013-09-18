@@ -1,3 +1,5 @@
+add_definitions(-DWAFFLE_API_VERSION=${waffle_api_version})
+
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 add_subdirectory(waffle_test)
