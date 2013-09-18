@@ -117,11 +117,9 @@ wayland_display_connect(struct wcore_platform *wc_plat,
     // has sent out pending events on all event queues. This should ensure
     // that the registry listener has received announcement of the shell and
     // compositor.
-    error = wl_display_roundtrip(self->wl_display);
-    if (error < 0) {
-        wcore_errorf(WAFFLE_ERROR_UNKNOWN, "wl_display_roundtrip failed");
+    ok = wayland_display_sync(self);
+    if (!ok)
         goto error;
-    }
 
     if (!self->wl_compositor) {
         wcore_errorf(WAFFLE_ERROR_UNKNOWN, "failed to bind to the wayland "
@@ -169,4 +167,15 @@ wayland_display_get_native(struct wcore_display *wc_self)
     wayland_display_fill_native(self, n_dpy->wayland);
 
     return n_dpy;
+}
+
+bool
+wayland_display_sync(struct wayland_display *dpy)
+{
+    if (wl_display_roundtrip(dpy->wl_display) == -1) {
+        wcore_error_errno("error on wl_display");
+        return false;
+    }
+
+    return true;
 }

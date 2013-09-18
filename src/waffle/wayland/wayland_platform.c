@@ -174,7 +174,7 @@ static const struct wcore_platform_vtbl wayland_platform_vtbl = {
         .create = wayland_window_create,
         .destroy = wayland_window_destroy,
         .show = wayland_window_show,
-        .swap_buffers = wegl_window_swap_buffers,
+        .swap_buffers = wayland_window_swap_buffers,
         .get_native = wayland_window_get_native,
     },
 };

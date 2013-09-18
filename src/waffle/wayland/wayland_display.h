@@ -74,3 +74,19 @@ wayland_display_fill_native(struct wayland_display *self,
 
 union waffle_native_display*
 wayland_display_get_native(struct wcore_display *wc_self);
+
+/// @brief Synchronize with server.
+///
+/// Wayland has flushing requirements that differ from X, largely due to
+/// Wayland being agressively asyncrhonous. For example, according to
+/// wl_display(3), in event loops "the client should always call
+/// wl_display_dispatch_pending() and then wl_display_flush() prior to going
+/// back to sleep". Otherwise, all pending requests may not be dispatched to
+/// the server.
+///
+/// Waffle can't expect the client to be aware of Wayland's flushing
+/// requirements and to make the needed native Wayland calls before blocking.
+/// Instead, the only sensible solution (for now, at least) is to make the
+/// public entry points synchronous.
+bool
+wayland_display_sync(struct wayland_display *dpy);
