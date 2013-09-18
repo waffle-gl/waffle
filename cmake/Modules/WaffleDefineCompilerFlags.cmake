@@ -28,6 +28,8 @@ include(WaffleCheckThreadLocalStorage)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} --std=c99")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror=implicit-function-declaration")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror=incompatible-pointer-types")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror=int-conversion")
 
 if(waffle_on_linux)
     # On MacOS, the SSE2 headers trigger this error.
