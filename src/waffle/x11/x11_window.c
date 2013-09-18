@@ -201,3 +201,25 @@ x11_window_show(struct x11_window *self)
 
     return !error;
 }
+
+bool
+x11_window_resize(struct x11_window *self, int32_t width, int32_t height)
+{
+    xcb_void_cookie_t cookie;
+    xcb_generic_error_t *error;
+
+    cookie = xcb_configure_window(
+        self->display->xcb, self->xcb,
+        XCB_CONFIG_WINDOW_WIDTH | XCB_CONFIG_WINDOW_HEIGHT,
+        (uint32_t[]){width, height});
+
+    error = xcb_request_check(self->display->xcb, cookie);
+    if (error) {
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN,
+                     "xcb_configure_window() failed to resize width, "
+                     "height: error=0x%x\n", error->error_code);
+        return false;
+    }
+
+    return true;
+}
