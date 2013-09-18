@@ -347,6 +347,10 @@ struct waffle_config;
         <term><constant>WAFFLE_CONTEXT_FORWARD_COMPATIBLE</constant></term>
         <listitem>
           <para>
+            Feature test macro: <code>WAFFLE_API_VERSION >= 0x0103</code>.
+            (See <citerefentry><refentrytitle>waffle_feature_test_macros</refentrytitle><manvolnum>7</manvolnum></citerefentry>).
+          </para>
+          <para>
             This attribute, if true, instructs
             <citerefentry><refentrytitle><function>waffle_context_create</function></refentrytitle><manvolnum>3</manvolnum></citerefentry>
             to create a forward-compatible context.
@@ -378,6 +382,10 @@ struct waffle_config;
       <varlistentry>
         <term><constant>WAFFLE_CONTEXT_DEBUG</constant></term>
         <listitem>
+          <para>
+            Feature test macro: <code>WAFFLE_API_VERSION >= 0x0103</code>.
+            (See <citerefentry><refentrytitle>waffle_feature_test_macros</refentrytitle><manvolnum>7</manvolnum></citerefentry>).
+          </para>
           <para>
             This attribute, if true, instructs
             <citerefentry><refentrytitle><function>waffle_context_create</function></refentrytitle><manvolnum>3</manvolnum></citerefentry>

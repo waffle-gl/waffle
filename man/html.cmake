@@ -46,6 +46,7 @@ set(html_outputs
     ${html_out_dir}/waffle_window.3.html
     ${html_out_dir}/waffle_x11_egl.3.html
     ${html_out_dir}/waffle.7.html
+    ${html_out_dir}/waffle_feature_test_macros.7.html
     )
 
 set(html_common_sources
@@ -82,6 +83,7 @@ waffle_add_html(3 waffle_wayland)
 waffle_add_html(3 waffle_window)
 waffle_add_html(3 waffle_x11_egl)
 waffle_add_html(7 waffle)
+waffle_add_html(7 waffle_feature_test_macros)
 
 add_custom_target(html
     ALL

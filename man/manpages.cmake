@@ -47,6 +47,7 @@ set(man_outputs
     ${man_out_dir}/man3/waffle_window.3
     ${man_out_dir}/man3/waffle_x11_egl.3
     ${man_out_dir}/man7/waffle.7
+    ${man_out_dir}/man7/waffle_feature_test_macros.7
     )
 
 set(man_common_sources
@@ -81,6 +82,7 @@ waffle_add_manpage(3 waffle_wayland)
 waffle_add_manpage(3 waffle_window)
 waffle_add_manpage(3 waffle_x11_egl)
 waffle_add_manpage(7 waffle)
+waffle_add_manpage(7 waffle_feature_test_macros)
 
 add_custom_target(man
     ALL
