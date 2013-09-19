@@ -89,6 +89,13 @@ glx_window_show(struct wcore_window *wc_self)
 }
 
 bool
+glx_window_resize(struct wcore_window *wc_self,
+                  int32_t width, int32_t height)
+{
+    return x11_window_resize(&glx_window(wc_self)->x11, width, height);
+}
+
+bool
 glx_window_swap_buffers(struct wcore_window *wc_self)
 {
     struct glx_window *self = glx_window(wc_self);

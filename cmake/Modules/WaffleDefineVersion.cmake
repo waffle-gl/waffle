@@ -53,3 +53,14 @@ set(waffle_version "${waffle_major_version}.${waffle_minor_version}.${waffle_pat
 #
 set(waffle_libname "waffle-${waffle_major_version}")
 set(waffle_soversion "0")
+
+
+#
+# API version.
+#
+# This gets bumped to x.(y+1) immediately after each waffle-x.y.0 release.
+#
+math(EXPR waffle_api_version "(${waffle_major_version} << 8) | ${waffle_minor_version}")
+if (waffle_patch_version GREATER 89)
+    math(EXPR waffle_api_version "${waffle_api_version} + 1")
+endif()

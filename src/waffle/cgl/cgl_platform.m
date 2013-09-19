@@ -182,6 +182,7 @@ static const struct wcore_platform_vtbl cgl_platform_vtbl = {
         .create = cgl_window_create,
         .destroy = cgl_window_destroy,
         .show = cgl_window_show,
+        .resize = cgl_window_resize,
         .swap_buffers = cgl_window_swap_buffers,
         .get_native = NULL,
     },

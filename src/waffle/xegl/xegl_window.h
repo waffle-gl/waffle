@@ -65,5 +65,9 @@ xegl_window_destroy(struct wcore_window *wc_self);
 bool
 xegl_window_show(struct wcore_window *wc_self);
 
+bool
+xegl_window_resize(struct wcore_window *wc_self,
+                   int32_t width, int32_t height);
+
 union waffle_native_window*
 xegl_window_get_native(struct wcore_window *wc_self);

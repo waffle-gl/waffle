@@ -112,6 +112,10 @@ wayland_window_create(struct wcore_platform *wc_plat,
     if (!ok)
         goto error;
 
+    ok = wayland_display_sync(dpy);
+    if (!ok)
+       goto error;
+
     return &self->wegl.wcore;
 
 error:
@@ -124,11 +128,51 @@ bool
 wayland_window_show(struct wcore_window *wc_self)
 {
     struct wayland_window *self = wayland_window(wc_self);
+    struct wayland_display *dpy = wayland_display(wc_self->display);
+    bool ok = true;
 
     wl_shell_surface_set_toplevel(self->wl_shell_surface);
 
+    ok = wayland_display_sync(dpy);
+    if (!ok)
+       return false;
+
     // FIXME: How to detect errors in Wayland?
     return true;
+}
+
+bool
+wayland_window_swap_buffers(struct wcore_window *wc_self)
+{
+   struct wayland_display *dpy = wayland_display(wc_self->display);
+   bool ok;
+
+   ok = wegl_window_swap_buffers(wc_self);
+   if (!ok)
+      return false;
+
+   ok = wayland_display_sync(dpy);
+   if (!ok)
+      return false;
+
+   return true;
+}
+
+bool
+wayland_window_resize(struct wcore_window *wc_self,
+                      int32_t width, int32_t height)
+{
+   struct wayland_window *self = wayland_window(wc_self);
+   struct wayland_display *dpy = wayland_display(self->wegl.wcore.display);
+
+   wl_egl_window_resize(wayland_window(wc_self)->wl_window,
+                        width, height, 0, 0);
+
+   if (!wayland_display_sync(dpy))
+      return false;
+
+   // FIXME: How to detect if the resize failed?
+   return true;
 }
 
 union waffle_native_window*

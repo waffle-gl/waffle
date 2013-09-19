@@ -139,8 +139,10 @@ enum waffle_enum {
         WAFFLE_CONTEXT_CORE_PROFILE                             = 0x0211,
         WAFFLE_CONTEXT_COMPATIBILITY_PROFILE                    = 0x0212,
 
+#if WAFFLE_API_VERSION >= 0x0103
     WAFFLE_CONTEXT_FORWARD_COMPATIBLE                           = 0x0215,
     WAFFLE_CONTEXT_DEBUG                                        = 0x0216,
+#endif
 
     WAFFLE_RED_SIZE                                             = 0x0201,
     WAFFLE_GREEN_SIZE                                           = 0x0202,
@@ -249,16 +251,18 @@ WAFFLE_API bool
 waffle_window_show(struct waffle_window *self);
 
 WAFFLE_API bool
-waffle_window_resize(
-        struct waffle_window *self,
-        int32_t width,
-        int32_t height);
-
-WAFFLE_API bool
 waffle_window_swap_buffers(struct waffle_window *self);
 
 WAFFLE_API union waffle_native_window*
 waffle_window_get_native(struct waffle_window *self);
+
+#if WAFFLE_API_VERSION >= 0x0103
+WAFFLE_API bool
+waffle_window_resize(
+        struct waffle_window *self,
+        int32_t width,
+        int32_t height);
+#endif
 
 // ---------------------------------------------------------------------------
 // waffle_dl

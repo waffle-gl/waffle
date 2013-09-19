@@ -103,6 +103,13 @@ xegl_window_show(struct wcore_window *wc_self)
     return x11_window_show(&xegl_window(wc_self)->x11);
 }
 
+bool
+xegl_window_resize(struct wcore_window *wc_self,
+                   int32_t width, int32_t height)
+{
+   return x11_window_resize(&xegl_window(wc_self)->x11, width, height);
+}
+
 union waffle_native_window*
 xegl_window_get_native(struct wcore_window *wc_self)
 {

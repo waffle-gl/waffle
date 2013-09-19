@@ -48,3 +48,6 @@ x11_window_teardown(struct x11_window *self);
 
 bool
 x11_window_show(struct x11_window *self);
+
+bool
+x11_window_resize(struct x11_window *self, int32_t width, int32_t height);

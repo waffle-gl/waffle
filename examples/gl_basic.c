@@ -34,6 +34,7 @@
 ///        each buffer swap.
 
 #define _POSIX_C_SOURCE 199309L // glibc feature macro for nanosleep.
+#define WAFFLE_API_VERSION 0x0103
 
 #include <getopt.h>
 #include <stdarg.h>
@@ -61,6 +62,7 @@ static const char *usage_message =
     "             [--profile=core|compat|none]\n"
     "             [--forward-compatible]\n"
     "             [--debug]\n"
+    "             [--resize-window]\n"
     "\n"
     "examples:\n"
     "    gl_basic --platform=glx --api=gl\n"
@@ -76,6 +78,9 @@ static const char *usage_message =
     "\n"
     "    --debug\n"
     "        Create a debug context.\n"
+    "\n"
+    "    --resize-window\n"
+    "        Resize the window between each draw call.\n"
     ;
 
 enum {
@@ -85,6 +90,7 @@ enum {
     OPT_PROFILE,
     OPT_DEBUG,
     OPT_FORWARD_COMPATIBLE,
+    OPT_RESIZE_WINDOW,
 };
 
 static const struct option get_opts[] = {
@@ -94,6 +100,7 @@ static const struct option get_opts[] = {
     { .name = "profile",        .has_arg = required_argument,     .val = OPT_PROFILE },
     { .name = "debug",          .has_arg = no_argument,           .val = OPT_DEBUG },
     { .name = "forward-compatible", .has_arg = no_argument,       .val = OPT_FORWARD_COMPATIBLE },
+    { .name = "resize-window",  .has_arg = no_argument,           .val = OPT_RESIZE_WINDOW },
     { 0 },
 };
 
@@ -187,6 +194,7 @@ static void (*glClear)(GLbitfield mask);
 static void (*glGetIntegerv)(GLenum pname, GLint *params);
 static void (*glReadPixels)(GLint x, GLint y, GLsizei width, GLsizei height,
                             GLenum format, GLenum type, GLvoid* data);
+static void (*glViewport)(GLint x, GLint y, GLsizei width, GLsizei height);
 
 /// @}
 /// @defgroup Parsing Options
@@ -206,6 +214,8 @@ struct options {
 
     bool context_forward_compatible;
     bool context_debug;
+
+    bool resize_window;
 
     /// @brief One of `WAFFLE_DL_*`.
     int dl;
@@ -325,6 +335,9 @@ parse_args(int argc, char *argv[], struct options *opts)
             case OPT_DEBUG:
                 opts->context_debug = true;
                 break;
+            case OPT_RESIZE_WINDOW:
+                opts->resize_window = true;
+                break;
             default:
                 abort();
                 loop_get_opt = false;
@@ -364,10 +377,12 @@ error_unrecognized_arg:
 /// @}
 
 static bool
-draw(struct waffle_window *window)
+draw(struct waffle_window *window, bool resize)
 {
     bool ok;
     unsigned char *colors;
+    int width = WINDOW_WIDTH;
+    int height = WINDOW_HEIGHT;
 
     static const struct timespec sleep_time = {
          // 0.5 sec
@@ -383,27 +398,41 @@ draw(struct waffle_window *window)
             case 3: abort(); break;
         }
 
+        if (resize) {
+            width = (i + 2) * 40;
+            height = width;
+            waffle_window_resize(window, width, height);
+            glViewport(0, 0, width, height);
+        }
+
         glClear(GL_COLOR_BUFFER_BIT);
 
-        colors = calloc(WINDOW_WIDTH * WINDOW_HEIGHT * 4, sizeof(*colors));
+        colors = calloc(width * height * 4, sizeof(*colors));
         glReadPixels(0, 0,
-                     WINDOW_WIDTH, WINDOW_HEIGHT,
+                     width, height,
                      GL_RGBA, GL_UNSIGNED_BYTE,
                      colors);
-        for (int j = 0; j < WINDOW_WIDTH * WINDOW_HEIGHT * 4; j += 4) {
+        for (int j = 0; j < width * height * 4; j += 4) {
            if ((colors[j]   != (i == 0 ? 0xff : 0)) ||
                (colors[j+1] != (i == 1 ? 0xff : 0)) ||
                (colors[j+2] != (i == 2 ? 0xff : 0)) ||
                (colors[j+3] != 0xff)) {
-              free(colors);
-              gl_basic_error("glReadPixels returned unexpected result");
+              fprintf(stderr, "glReadPixels returned unexpected result\n");
+              break;
            }
         }
         free(colors);
 
+        if (i == 0) {
+            ok = waffle_window_show(window);
+            if (!ok)
+                return false;
+        }
+
         ok = waffle_window_swap_buffers(window);
         if (!ok)
             return false;
+
         nanosleep(&sleep_time, NULL);
     }
 
@@ -523,6 +552,10 @@ main(int argc, char **argv)
     if (!glReadPixels)
         error_get_gl_symbol("glReadPixels");
 
+    glViewport = waffle_dl_sym(opts.dl, "glViewport");
+    if (!glViewport)
+        error_get_gl_symbol("glViewport");
+
     i = 0;
     config_attrib_list[i++] = WAFFLE_CONTEXT_API;
     config_attrib_list[i++] = opts.context_api;
@@ -571,10 +604,6 @@ main(int argc, char **argv)
     if (!window)
         error_waffle();
 
-    ok = waffle_window_show(window);
-    if (!ok)
-        error_waffle();
-
     ok = waffle_make_current(dpy, window, ctx);
     if (!ok)
         error_waffle();
@@ -594,7 +623,7 @@ main(int argc, char **argv)
         gl_basic_error("context is not a debug context");
     }
 
-    ok = draw(window);
+    ok = draw(window, opts.resize_window);
     if (!ok)
         error_waffle();
 

@@ -92,6 +92,12 @@ Link with -lwaffle-1.
 
     <para>
       <simplelist>
+        <member><citerefentry><refentrytitle>waffle_feature_test_macros</refentrytitle><manvolnum>7</manvolnum></citerefentry></member>
+      </simplelist>
+    </para>
+
+    <para>
+      <simplelist>
         <member><citerefentry><refentrytitle>waffle_attrib_list</refentrytitle><manvolnum>3</manvolnum></citerefentry>,</member>
         <member><citerefentry><refentrytitle>waffle_config</refentrytitle><manvolnum>3</manvolnum></citerefentry>,</member>
         <member><citerefentry><refentrytitle>waffle_context</refentrytitle><manvolnum>3</manvolnum></citerefentry>,</member>

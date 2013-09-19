@@ -150,6 +150,7 @@ static const struct wcore_platform_vtbl glx_platform_vtbl = {
         .create = glx_window_create,
         .destroy = glx_window_destroy,
         .show = glx_window_show,
+        .resize = glx_window_resize,
         .swap_buffers = glx_window_swap_buffers,
         .get_native = glx_window_get_native,
     },

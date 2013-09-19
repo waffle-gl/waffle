@@ -28,6 +28,9 @@
 
 /// @file
 
+#define _XOPEN_SOURCE 600 // for strerror_r
+
+#include <errno.h>
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -134,6 +137,42 @@ wcore_errorf(int error, const char *format, ...)
     va_start(ap, format);
     vsnprintf(t->message, WCORE_ERROR_MESSAGE_BUFSIZE - 1, format, ap);
     va_end(ap);
+}
+
+void
+wcore_error_errno(const char *format, ...)
+{
+   int saved_errno = errno;
+
+   struct wcore_error_tinfo *t = wcore_tinfo_get()->error;
+   char *cur = t->message;
+   char *end = t->message + WCORE_ERROR_MESSAGE_BUFSIZE;
+   int printed;
+
+   if (!t->is_enabled)
+       return;
+
+   t->code = WAFFLE_ERROR_UNKNOWN;
+
+   if (format) {
+       va_list ap;
+
+       va_start(ap, format);
+       printed = vsnprintf(cur, end - cur, format, ap);
+       cur += printed;
+       va_end(ap);
+
+       if (printed < 0 || cur >= end)
+           return;
+
+       printed = snprintf(cur, end - cur, ": ");
+       cur += printed;
+
+       if (printed < 0 || cur >= end)
+           return;
+   }
+
+   strerror_r(saved_errno, cur, end - cur);
 }
 
 void
