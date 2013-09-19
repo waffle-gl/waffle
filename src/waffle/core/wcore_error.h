@@ -66,6 +66,14 @@ wcore_error(int error);
 void
 wcore_errorf(int error, const char *format, ...);
 
+/// @brief Emit error for errno.
+///
+/// Set error code to WAFFLE_ERROR_UNKNOWN and place the output of
+/// strerror() in the error message. If \a format is not null,
+/// then prepend the strerror() message with "${format}: ".
+void
+wcore_error_errno(const char *format, ...);
+
 /// @brief Set error to WAFFLE_INTERNAL_ERROR with source location.
 #define wcore_error_internal(format, ...) \
     _wcore_error_internal(__FILE__, __LINE__, format, __VA_ARGS__)
