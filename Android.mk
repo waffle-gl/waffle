@@ -8,7 +8,8 @@ waffle_top := $(LOCAL_PATH)
 #
 waffle_major_version := 1
 waffle_minor_version := 2
-waffle_patch_version := 75
+waffle_patch_version := 90
+waffle_api_version := 0x0103
 
 waffle_android_major_version := $(word 1, $(subst ., , $(PLATFORM_VERSION)))
 waffle_android_minor_version := $(word 2, $(subst ., , $(PLATFORM_VERSION)))
@@ -30,6 +31,7 @@ LOCAL_CC := $(TARGET_CC) -std=c99
 
 LOCAL_CFLAGS := \
     -DANDROID_STUB \
+    -DWAFFLE_API_VERSION=$(waffle_api_version) \
     -DWAFFLE_HAS_ANDROID \
     -DWAFFLE_ANDROID_MAJOR_VERSION=$(waffle_android_major_version) \
     -DWAFFLE_ANDROID_MINOR_VERSION=$(waffle_android_minor_version) \
