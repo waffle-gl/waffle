@@ -23,24 +23,32 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+include(CheckCCompilerFlag)
 include(WaffleCheckThreadLocalStorage)
+
+function(waffle_add_c_flag flag var)
+    check_c_compiler_flag("${flag}" ${var})
+    if(${var})
+        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${flag}" PARENT_SCOPE)
+    endif()
+endfunction()
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} --std=c99")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror=implicit-function-declaration")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror=incompatible-pointer-types")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror=int-conversion")
-
-if(waffle_on_linux)
-    # On MacOS, the SSE2 headers trigger this error.
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror=missing-prototypes")
-endif()
-
 set(CMAKE_C_FLAGS_DEBUG "-g3 -O0 -DDEBUG")
 
 # Use '-g1' to produce enough debug info for generating backtraces, but not
 # enough for single-stepping.
 set(CMAKE_C_FLAGS_RELEASE "-g1 -O2 -DNDEBUG")
+
+waffle_add_c_flag("-Werror=implicit-function-declaration" WERROR_IMPLICIT_FUNCTION_DECLARATION)
+waffle_add_c_flag("-Werror=incompatible-pointer-types" WERROR_INCOMPATIBLE_POINTER_TYPES)
+waffle_add_c_flag("-Werror=int-conversion" WERROR_INT_CONVERSION)
+
+if(waffle_on_linux)
+    # On MacOS, the SSE2 headers trigger this error.
+    waffle_add_c_flag("-Werror=missing-prototypes" WERROR_MISSING_PROTOTYPES)
+endif()
 
 waffle_check_thread_local_storage()
 
