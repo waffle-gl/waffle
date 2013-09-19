@@ -53,6 +53,39 @@ cgl_platform_destroy(struct wcore_platform *wc_self)
     return ok;
 }
 
+static bool
+cgl_platform_set_system_version(struct cgl_platform *self)
+{
+    OSStatus st;
+    const char *majorminor;
+
+    st = Gestalt(gestaltSystemVersionMajor,
+                 &self->system_version_major);
+    if (st) {
+        majorminor = "Major";
+        goto error;
+    }
+
+    st = Gestalt(gestaltSystemVersionMinor,
+                 &self->system_version_minor);
+    if (st) {
+        majorminor = "Minor";
+        goto error;
+    }
+
+    self->system_version_full = (self->system_version_major << 8)
+                              | self->system_version_minor;
+
+    return true;
+
+error:
+    wcore_errorf(WAFFLE_ERROR_UNKNOWN,
+                 "failed to get system version. "
+                 "Gestalt(gestaltSystemVersion%s) failed with 0x%x\n",
+                 majorminor, st);
+    return false;
+}
+
 struct wcore_platform*
 cgl_platform_create(void)
 {
@@ -68,6 +101,16 @@ cgl_platform_create(void)
     ok = wcore_platform_init(&self->wcore);
     if (!ok)
         goto error;
+
+    ok = cgl_platform_set_system_version(self);
+    if (!ok)
+        goto error;
+
+    if (self->system_version_full <= 0x104) {
+        wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
+                     "Mac OS < 10.4 is unsupported");
+        goto error;
+    }
 
     self->wcore.vtbl = &cgl_platform_vtbl;
     return &self->wcore;
