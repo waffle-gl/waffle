@@ -1,0 +1,32 @@
+Waffle 1.3.0 - TODO
+===================
+
+Waffle 1.3.0 is now available. This release introduces the ability create
+forward-compatible and debug contexts as well as improved support for Mac OS.
+Details below.
+
+  Download:
+    http://people.freedesktop.org/~chadversary/waffle/files/release/waffle-1.3.0/waffle-1.3.0.tar.xz
+
+  sha256 sum:
+    TODO  waffle-1.3.0.tar.xz
+
+
+New Features
+------------
+- [all platforms] Support for creating forward-compatible OpenGL contexts.
+  See the documentation for WAFFLE_CONTEXT_FORWARD_COMPATIBLE in manpage
+  waffle_config(3).
+
+- [all platforms] Support for creating OpenGL and OpenGL ES debug contexts.
+  See the documentation for WAFFLE_CONTEXT_DEBUG in manpage waffle_config(3).
+
+- [cgl] Improved support on Mac OS for choosing the OpenGL context version.
+  This will be needed for Piglit to transparently run OpenGL 3.1 tests on Mac
+  OS.
+
+  Previously, Waffle required the client to choose exactly either 3.2 or leave
+  the context version at its default value, 1.0. Now, Waffle emulates the
+  behavior of EGL: the client may request any context flavor, and Waffle will
+  promote the requested flavor to the latest supported flavor
+  backwards-compatible with the requested one).
