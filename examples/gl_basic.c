@@ -35,6 +35,7 @@
 
 #define _POSIX_C_SOURCE 199309L // glibc feature macro for nanosleep.
 #define WAFFLE_API_VERSION 0x0103
+#define WAFFLE_API_EXPERIMENTAL
 
 #include <getopt.h>
 #include <stdarg.h>

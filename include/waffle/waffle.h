@@ -256,7 +256,7 @@ waffle_window_swap_buffers(struct waffle_window *self);
 WAFFLE_API union waffle_native_window*
 waffle_window_get_native(struct waffle_window *self);
 
-#if WAFFLE_API_VERSION >= 0x0103
+#if defined(WAFFLE_API_EXPERIMENTAL) && WAFFLE_API_VERSION >= 0x0103
 WAFFLE_API bool
 waffle_window_resize(
         struct waffle_window *self,
