@@ -32,6 +32,7 @@ LOCAL_CC := $(TARGET_CC) -std=c99
 LOCAL_CFLAGS := \
     -DANDROID_STUB \
     -DWAFFLE_API_VERSION=$(waffle_api_version) \
+    -DWAFFLE_API_EXPERIMENTAL \
     -DWAFFLE_HAS_ANDROID \
     -DWAFFLE_ANDROID_MAJOR_VERSION=$(waffle_android_major_version) \
     -DWAFFLE_ANDROID_MINOR_VERSION=$(waffle_android_minor_version) \

@@ -2,7 +2,10 @@
 # Applies to all targets in this CMakeLists.
 # ----------------------------------------------------------------------------
 
-add_definitions(-DWAFFLE_API_VERSION=${waffle_api_version})
+add_definitions(
+    -DWAFFLE_API_VERSION=${waffle_api_version}
+    -DWAFFLE_API_EXPERIMENTAL
+    )
 
 include_directories(
     android
