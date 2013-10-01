@@ -8,7 +8,7 @@ endif()
 
 option(waffle_build_tests "Build tests" ON)
 option(waffle_build_manpages "Build manpages" OFF)
-option(waffle_build_htmldoc "Build html documentation" OFF)
+option(waffle_build_htmldocs "Build html documentation" OFF)
 option(waffle_build_examples "Build example programs" ON)
 
 set(waffle_xsltproc "xsltproc"
