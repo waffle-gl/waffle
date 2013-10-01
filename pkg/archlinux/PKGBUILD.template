@@ -19,6 +19,10 @@ depends=(
 makedepends=(
   'cmake'
   'xcb-proto'
+
+  # For building the docs.
+  'libxslt'
+  'docbook-xsl'
   )
 source=("http://people.freedesktop.org/~chadversary/waffle/files/release/$pkgname-$pkgver/$pkgname-$pkgver.tar.xz")
 sha256sums=('@TODO@')
@@ -34,6 +38,8 @@ build() {
     -Dwaffle_has_glx=1 \
     -Dwaffle_has_x11_egl=1 \
     -Dwaffle_has_wayland=1 \
+    -Dwaffle_build_manpages=1 \
+    -Dwaffle_build_htmldocs=1 \
     -Dwaffle_build_examples=0
   make
 }
