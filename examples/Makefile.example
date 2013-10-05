@@ -1,5 +1,11 @@
+EXES := gl_basic simple-x11-egl
+
 .PHONY: all
-all: gl_basic simple-x11-egl
+all: $(EXES)
+
+.PHONY: clean
+clean:
+	-rm $(EXES)
 
 gl_basic: gl_basic.c
 	$(CC) -std=c99 $(shell pkg-config --cflags --libs waffle-1) -o gl_basic gl_basic.c
