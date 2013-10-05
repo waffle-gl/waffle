@@ -1,0 +1,32 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+
+PortSystem          1.0
+PortGroup           cmake 1.0
+
+name                waffle
+version             1.3.0
+categories          devel
+platforms           darwin
+license             BSD
+maintainers         chad@chad-versace.us
+description         A library for choosing window system and OpenGL API at runtime
+long_description    ${description}
+homepage            http://people.freedesktop.org/~chadversary/waffle
+
+variant doc description {Install manpages and HTML documentation} {
+    depends_build-append \
+        port:libxslt \
+        port:docbook-xml
+
+    configure.args-append \
+        -Dwaffle_build_manpages=1 \
+        -Dwaffle_build_htmldocs=1
+}
+
+use_xz              yes
+master_sites        ${homepage}/files/release/${name}-${version}
+checksums           sha256 340ee04172dba878249469018cd7ec9d1ecd41af26b612c741b8b52e713bca8e
+
+livecheck.type      regex
+livecheck.url       ${homepage}/releases.html
+livecheck.regex     "${name}-(\\d+\\.\\d+\\.\\d+)"
