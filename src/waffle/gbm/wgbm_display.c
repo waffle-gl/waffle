@@ -65,7 +65,7 @@ wgbm_display_destroy(struct wcore_display *wc_self)
 }
 
 static int
-wgbm_get_fd(void)
+wgbm_get_default_fd_for_pattern(const char *pattern)
 {
     struct udev *ud;
     struct udev_enumerate *en;
@@ -77,7 +77,7 @@ wgbm_get_fd(void)
     ud = udev_new();
     en = udev_enumerate_new(ud);
     udev_enumerate_add_match_subsystem(en, "drm");
-    udev_enumerate_add_match_sysname(en, "card[0-9]*");
+    udev_enumerate_add_match_sysname(en, pattern);
     udev_enumerate_scan_devices(en);
 
     udev_list_entry_foreach(entry, udev_enumerate_get_list_entry(en)) {
@@ -92,6 +92,21 @@ wgbm_get_fd(void)
     }
 
     return -1;
+}
+
+static int
+wgbm_get_default_fd(void)
+{
+    int fd;
+
+    // Try opening render node first
+    fd = wgbm_get_default_fd_for_pattern("renderD[0-9]*");
+    if (fd >= 0)
+        return fd;
+
+    // If render nodes are not supported, then fall back to the card
+    fd = wgbm_get_default_fd_for_pattern("card[0-9]*");
+    return fd;
 }
 
 struct wcore_display*
@@ -109,7 +124,7 @@ wgbm_display_connect(struct wcore_platform *wc_plat,
     if (name != NULL) {
         fd = open(name, O_RDWR | O_CLOEXEC);
     } else {
-        fd = wgbm_get_fd();
+        fd = wgbm_get_default_fd();
     }
 
     if (fd < 0) {
