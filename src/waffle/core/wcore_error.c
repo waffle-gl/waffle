@@ -46,7 +46,7 @@ enum {
 
 struct wcore_error_tinfo {
     bool is_enabled;
-    int32_t code;
+    enum waffle_error code;
     char message[WCORE_ERROR_MESSAGE_BUFSIZE];
 
     /// @brief The user-visible portion of the error state.
@@ -99,7 +99,7 @@ wcore_error_reset(void)
 }
 
 void
-wcore_error(int error)
+wcore_error(enum waffle_error error)
 {
     struct wcore_error_tinfo *t = wcore_tinfo_get()->error;
 
@@ -118,7 +118,7 @@ wcore_error(int error)
 }
 
 void
-wcore_errorf(int error, const char *format, ...)
+wcore_errorf(enum waffle_error error, const char *format, ...)
 {
     struct wcore_error_tinfo *t = wcore_tinfo_get()->error;
     va_list ap;
@@ -213,7 +213,7 @@ _wcore_error_internal(const char *file, int line, const char *format, ...)
     snprintf(cur, end - cur, " (report this bug to chad@chad-versace.us)");
 }
 
-int
+enum waffle_error
 wcore_error_get_code(void)
 {
     return wcore_tinfo_get()->error->code;

@@ -46,7 +46,7 @@
 enum waffle_error {...};
 
 struct waffle_error_info {
-    int32_t code;
+    enum waffle_error code;
     const char *message;
     size_t message_length;
 };
@@ -58,7 +58,7 @@ struct waffle_error_info {
       </funcprototype>
 
       <funcprototype>
-        <funcdef>int32_t <function>waffle_error_get_code</function></funcdef>
+        <funcdef>enum waffle_error <function>waffle_error_get_code</function></funcdef>
         <void/>
       </funcprototype>
 

@@ -57,14 +57,14 @@ wcore_error_reset(void);
 ///
 /// @param error is an `enum waffle_error`.
 void
-wcore_error(int error);
+wcore_error(enum waffle_error error);
 
 /// @brief Set error code and message for client.
 ///
 /// @param error is an `enum waffle_error`.
 /// @param format may be null.
 void
-wcore_errorf(int error, const char *format, ...);
+wcore_errorf(enum waffle_error error, const char *format, ...);
 
 /// @brief Emit error for errno.
 ///
@@ -87,7 +87,7 @@ wcore_error_errno(const char *format, ...);
     } while (0)
 
 /// @brief Get the last set error code.
-int
+enum waffle_error
 wcore_error_get_code(void);
 
 /// @brief Get the user-visible portion of the error state.

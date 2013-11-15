@@ -32,7 +32,7 @@
 
 #include "wcore_error.h"
 
-int32_t
+enum waffle_error
 waffle_error_get_code(void)
 {
     return wcore_error_get_code();

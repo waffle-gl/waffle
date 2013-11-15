@@ -156,14 +156,14 @@ struct thread_arg {
 static bool
 thread_start(struct thread_arg *a)
 {
-    static const int error_codes[NUM_THREADS] = {
+    static const enum waffle_error error_codes[NUM_THREADS] = {
         WAFFLE_ERROR_BAD_ATTRIBUTE,
         WAFFLE_ERROR_UNKNOWN,
         WAFFLE_ERROR_ALREADY_INITIALIZED,
     };
 
     bool ok = true;
-    int error_code = error_codes[a->thread_id];
+    enum waffle_error error_code = error_codes[a->thread_id];
 
     // Each thread begins in an error-free state.
     ok &= wcore_error_get_code() == WAFFLE_NO_ERROR;

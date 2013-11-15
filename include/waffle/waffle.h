@@ -84,12 +84,12 @@ enum waffle_error {
 };
 
 struct waffle_error_info {
-    int32_t code;
+    enum waffle_error code;
     const char *message;
     size_t message_length;
 };
 
-WAFFLE_API int32_t
+WAFFLE_API enum waffle_error
 waffle_error_get_code(void);
 
 WAFFLE_API const struct waffle_error_info*
