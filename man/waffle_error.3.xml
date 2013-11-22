@@ -64,7 +64,7 @@ struct waffle_error_info {
 
       <funcprototype>
         <funcdef>const char* <function>waffle_error_to_string</function></funcdef>
-        <paramdef>int32_t <parameter>e</parameter></paramdef>
+        <paramdef>enum waffle_error<parameter>e</parameter></paramdef>
       </funcprototype>
 
     </funcsynopsis>

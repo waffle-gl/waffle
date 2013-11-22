@@ -45,7 +45,7 @@ waffle_error_get_info(void)
 }
 
 const char*
-waffle_error_to_string(int32_t e)
+waffle_error_to_string(enum waffle_error e)
 {
     switch (e) {
 #define CASE(x) case x: return #x

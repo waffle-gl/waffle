@@ -96,7 +96,7 @@ WAFFLE_API const struct waffle_error_info*
 waffle_error_get_info(void);
 
 WAFFLE_API const char*
-waffle_error_to_string(int32_t e);
+waffle_error_to_string(enum waffle_error e);
 
 // ---------------------------------------------------------------------------
 // waffle_enum
