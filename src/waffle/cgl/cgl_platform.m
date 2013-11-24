@@ -56,34 +56,38 @@ cgl_platform_destroy(struct wcore_platform *wc_self)
 static bool
 cgl_platform_set_system_version(struct cgl_platform *self)
 {
-    OSStatus st;
-    const char *majorminor;
-
-    st = Gestalt(gestaltSystemVersionMajor,
-                 &self->system_version_major);
-    if (st) {
-        majorminor = "Major";
-        goto error;
+    NSString *plistPath = @"/System/Library/CoreServices/SystemVersion.plist";
+    NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile:plistPath];
+    if (!dict) {
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN,
+            "failed to open 'SystemVersion.plist'; "
+            "failed to get system version");
+        return false;
     }
 
-    st = Gestalt(gestaltSystemVersionMinor,
-                 &self->system_version_minor);
-    if (st) {
-        majorminor = "Minor";
-        goto error;
+    NSString *str = [dict objectForKey:@"ProductVersion"];
+    if (!str) {
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN,
+            "failed to get key 'ProductVersion' from 'SystemVersion.plist'; "
+            "failed to get system version");
+        return false;
     }
 
+    NSArray *array = [str componentsSeparatedByString:@"."];
+    int len = [array count];
+    if (len < 2) {
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN,
+            "SystemVersion.plit:ProductVersion=\"%s\" has too few comonents; "
+            "failed to get system version",
+            [str UTF8String]);
+        return false;
+    }
+
+    self->system_version_major = [(NSString*)[array objectAtIndex:0] integerValue];
+    self->system_version_minor = [(NSString*)[array objectAtIndex:1] integerValue];
     self->system_version_full = (self->system_version_major << 8)
                               | self->system_version_minor;
-
     return true;
-
-error:
-    wcore_errorf(WAFFLE_ERROR_UNKNOWN,
-                 "failed to get system version. "
-                 "Gestalt(gestaltSystemVersion%s) failed with 0x%x\n",
-                 majorminor, st);
-    return false;
 }
 
 struct wcore_platform*
