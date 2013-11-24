@@ -89,7 +89,7 @@ cgl_config_check_attrs(const struct cgl_platform *plat,
             }
 
             if (attrs->context_full_version > 32) {
-                if (plat->system_version_full >= 0x1090) {
+                if (plat->system_version_full >= 0x0a09) {
                     wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
                                  "Waffle CGL was built only with Mac OS 10.8 "
                                  "capabilities, and so cannot create an "
@@ -106,7 +106,7 @@ cgl_config_check_attrs(const struct cgl_platform *plat,
             else if (attrs->context_full_version == 32) {
                 assert(attrs->context_profile == WAFFLE_CONTEXT_CORE_PROFILE);
 
-                if (plat->system_version_full < 0x1070)
+                if (plat->system_version_full < 0x0a07)
                     goto error_need_os_10_7;
 
                 return true;
@@ -117,7 +117,7 @@ cgl_config_check_attrs(const struct cgl_platform *plat,
                 // OpenGL 3.2 Core Profile.
                 assert(attrs->context_profile == WAFFLE_NONE);
 
-                if (plat->system_version_full < 0x1070)
+                if (plat->system_version_full < 0x0a07)
                     goto error_need_os_10_7;
 
                 return true;
@@ -178,7 +178,7 @@ cgl_config_fill_pixel_format_attrs(
     // Emulate EGL_KHR_create_context, which allows the implementation to
     // return a context of the latest supported flavor that is
     // backwards-compatibile with the requested flavor.
-    if (plat->system_version_full >= 0x1070) {
+    if (plat->system_version_full >= 0x0a07) {
         if (attrs->context_full_version == 32) {
             ADD_ATTR(kCGLPFAOpenGLProfile, (int) kCGLOGLPVersion_3_2_Core);
         }

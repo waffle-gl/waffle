@@ -37,6 +37,8 @@ struct cgl_platform {
     int32_t system_version_minor;
 
     /// @brief Has value (major << 8) | minor.
+    ///
+    /// For example, 0x0a09 indicates OS X 10.9 Mavericks.
     int32_t system_version_full;
 
     /// @brief The OpenGL library obtained with dlopen().
