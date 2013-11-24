@@ -170,7 +170,7 @@ cgl_config_fill_pixel_format_attrs(
     // CGL does not have an analogue for EGL_DONT_CARE. Instead, one indicates
     // "don't care" by omitting the attribute.
     #define ADD_ATTR(name, value) \
-        if ((value) != WAFFLE_DONT_CARE) { \
+        if ((int)(value) != WAFFLE_DONT_CARE) { \
             pixel_attrs[i++] = (name); \
             pixel_attrs[i++] = (value); \
         }
