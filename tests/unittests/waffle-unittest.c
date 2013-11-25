@@ -25,12 +25,10 @@
 
 #include "waffle_test/waffle_test.h"
 
-void testsuite_wcore_attrib_list(void);
 void testsuite_wcore_config_attrs(void);
 void testsuite_wcore_error(void);
 
 static void (*test_suites[])(void) = {
-    testsuite_wcore_attrib_list,
     testsuite_wcore_config_attrs,
     testsuite_wcore_error,
     0,

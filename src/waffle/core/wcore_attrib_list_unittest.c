@@ -230,10 +230,7 @@ TEST(wcore_attrib_list_update, missing_key)
     ASSERT_TRUE(!wcore_attrib_list_update(attrib_list, 50, 99));
 }
 
-void
-testsuite_wcore_attrib_list(void);
-
-void
+static void
 testsuite_wcore_attrib_list(void)
 {
     TEST_RUN(wcore_attrib_list_get, null);
@@ -254,4 +251,15 @@ testsuite_wcore_attrib_list(void)
     TEST_RUN(wcore_attrib_list_update, at_0);
     TEST_RUN(wcore_attrib_list_update, at_1);
     TEST_RUN(wcore_attrib_list_update, missing_key);
+}
+
+int
+main(int argc, char *argv[])
+{
+    void (*test_runners[])(void) = {
+        testsuite_wcore_attrib_list,
+        0,
+    };
+
+    return wt_main(&argc, argv, test_runners);
 }

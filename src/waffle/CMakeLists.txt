@@ -199,3 +199,7 @@ set_target_properties(waffle_static
     OUTPUT_NAME "waffle-${waffle_major_version}"
     ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
     )
+
+# ----------------------------------------------------------------------------
+
+include(unittests.cmake)
