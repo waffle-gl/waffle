@@ -41,6 +41,25 @@ include(GNUInstallDirs)
 find_package(PkgConfig)
 
 # ------------------------------------------------------------------------------
+# Targets: check, check-func
+# ------------------------------------------------------------------------------
+
+#
+# Target 'check' runs unit tests, but no functional tests.
+#
+add_custom_target(check)
+
+#
+# Target 'check-func' runs functional tests as well as unit tests.
+#
+# The unit tests are ran first (due to the depenency on 'check'). If any unit
+# test fails, then no functional tests run.
+#
+add_custom_target(check-func
+    DEPENDS check
+    )
+
+# ------------------------------------------------------------------------------
 # Add subdirectories
 # ------------------------------------------------------------------------------
 

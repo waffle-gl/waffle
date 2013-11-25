@@ -31,3 +31,10 @@ set_source_files_properties(
 add_executable(gl_basic_test
     ${gl_basic_test_sources}
     )
+
+add_custom_target(gl_basic_test_run
+    DEPENDS gl_basic_test
+    COMMAND ${CMAKE_BINARY_DIR}/tests/functional/gl_basic_test
+    )
+
+add_dependencies(check-func gl_basic_test_run)
