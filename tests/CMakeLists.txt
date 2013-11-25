@@ -3,5 +3,4 @@ add_definitions(
     -DWAFFLE_API_EXPERIMENTAL
     )
 
-add_subdirectory(unittests)
 add_subdirectory(functional)
