@@ -35,6 +35,7 @@
 #include "wcore_attrib_list.h"
 #include "wcore_config_attrs.h"
 #include "wcore_error.h"
+#include "wcore_util.h"
 
 enum {
     DEFAULT_ACCUM_BUFFER = false,
@@ -99,7 +100,7 @@ parse_bool(const int32_t attrib_list[],
 		wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
 					 "%s has bad value 0x%x. "
 					 "Must be true(1), false(0), or WAFFLE_DONT_CARE(-1)",
-					 waffle_enum_to_string(attrib_name), raw_value);
+					 wcore_enum_to_string(attrib_name), raw_value);
 		return false;
 	}
 
