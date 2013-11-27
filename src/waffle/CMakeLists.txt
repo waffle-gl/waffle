@@ -201,5 +201,32 @@ set_target_properties(waffle_static
     )
 
 # ----------------------------------------------------------------------------
+# Unit Tests
+# ----------------------------------------------------------------------------
 
-include(unittests.cmake)
+function(add_unittest unittest_name)
+    add_executable(${unittest_name} ${ARGN})
+    set_target_properties(${unittest_name}
+        PROPERTIES
+            RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/tests"
+    )
+    target_link_libraries(${unittest_name}
+        waffle_static
+        waffle_test
+    )
+    add_custom_target(${unittest_name}_run
+        DEPENDS ${unittest_name}
+        COMMAND "${CMAKE_BINARY_DIR}/tests/${unittest_name}"
+    )
+    add_dependencies(check ${unittest_name}_run)
+endfunction()
+
+add_unittest(wcore_attrib_list_unittest
+    core/wcore_attrib_list_unittest.c
+)
+add_unittest(wcore_config_attrs_unittest
+    core/wcore_config_attrs_unittest.c
+)
+add_unittest(wcore_error_unittest
+    core/wcore_error_unittest.c
+)
