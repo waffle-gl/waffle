@@ -230,10 +230,7 @@ TEST(wcore_error, thread_local)
     pthread_mutex_destroy(&mutex);
 }
 
-void
-testsuite_wcore_error(void);
-
-void
+static void
 testsuite_wcore_error(void)
 {
     TEST_RUN(wcore_error, code_unknown_error);
@@ -247,4 +244,15 @@ testsuite_wcore_error(void)
     TEST_RUN(wcore_error, disable_then_errorf);
     TEST_RUN(wcore_error, disable_then_error_internal);
     TEST_RUN(wcore_error, thread_local);
+}
+
+int
+main(int argc, char *argv[])
+{
+    void (*test_runners[])(void) = {
+        testsuite_wcore_error,
+        0,
+    };
+
+    return wt_main(&argc, argv, test_runners);
 }
