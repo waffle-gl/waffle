@@ -196,5 +196,5 @@ target_link_libraries(waffle_static ${waffle_libdeps})
 
 set_target_properties(waffle_static
     PROPERTIES
-    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib
+    ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
     )
