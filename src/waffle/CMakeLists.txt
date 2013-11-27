@@ -192,7 +192,7 @@ add_library(waffle_static
     ${waffle_sources}
     )
 
-target_link_libraries(waffle_static)
+target_link_libraries(waffle_static ${waffle_libdeps})
 
 set_target_properties(waffle_static
     PROPERTIES
