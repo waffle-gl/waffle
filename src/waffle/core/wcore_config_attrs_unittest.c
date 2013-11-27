@@ -1033,10 +1033,8 @@ TEST(wcore_config_attrs, debug_gles3)
     EXPECT_TRUE(!wcore_error_get_code());
     EXPECT_TRUE(memcmp(&actual_attrs, &expect_attrs, sizeof(expect_attrs)) == 0);
 }
-void
-testsuite_wcore_config_attrs(void);
 
-void
+static void
 testsuite_wcore_config_attrs(void)
 {
     TEST_RUN(wcore_config_attrs, null_attrib_list);
@@ -1100,4 +1098,15 @@ testsuite_wcore_config_attrs(void)
     TEST_RUN(wcore_config_attrs, debug_gles1);
     TEST_RUN(wcore_config_attrs, debug_gles2);
     TEST_RUN(wcore_config_attrs, debug_gles3);
+}
+
+int
+main(int argc, char *argv[])
+{
+    void (*test_runners[])(void) = {
+        testsuite_wcore_config_attrs,
+        0,
+    };
+
+    return wt_main(&argc, argv, test_runners);
 }
