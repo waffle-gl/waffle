@@ -25,6 +25,7 @@
 
 #if WAFFLE_ANDROID_MAJOR_VERSION >= 4 && \
 	WAFFLE_ANDROID_MINOR_VERSION >= 1
+#	include <gui/Surface.h>
 #	include <gui/SurfaceComposerClient.h>
 #elif WAFFLE_ANROID_MAJOR_VERSION >= 4 && \
 	  WAFFLE_ANDROID_MINOR_VERSION == 0
