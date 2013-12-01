@@ -23,35 +23,35 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#include <setjmp.h>
+#include <stdarg.h>
 #include <string.h>
 
-#include "waffle_test/waffle_test.h"
+#include <cmocka.h>
 
 #include "waffle.h"
 #include "wcore_attrib_list.h"
 
-TESTGROUP_SIMPLE(wcore_attrib_list_get)
-
-TEST(wcore_attrib_list_get, null)
-{
+static void
+test_wcore_attrib_list_get_null(void **state) {
     int32_t *attrib_list = NULL;
     int32_t key = 0;
     int32_t value;
 
-    EXPECT_TRUE(!wcore_attrib_list_get(attrib_list, key, &value));
+    assert_false(wcore_attrib_list_get(attrib_list, key, &value));
 }
 
-TEST(wcore_attrib_list_get, empty)
-{
+static void
+test_wcore_attrib_list_get_empty(void **state) {
     int32_t attrib_list[] = { 0 };
     int32_t key = 0;
     int32_t value;
 
-    EXPECT_TRUE(!wcore_attrib_list_get(attrib_list, key, &value));
+    assert_false(wcore_attrib_list_get(attrib_list, key, &value));
 }
 
-TEST(wcore_attrib_list_get, missing_value)
-{
+static void
+test_wcore_attrib_list_get_missing_value(void **state) {
     int32_t attrib_list[] = {
         1, 11,
         0,
@@ -59,11 +59,11 @@ TEST(wcore_attrib_list_get, missing_value)
     int32_t key = 2;
     int32_t value;
 
-    ASSERT_TRUE(!wcore_attrib_list_get(attrib_list, key, &value));
+    assert_false(wcore_attrib_list_get(attrib_list, key, &value));
 }
 
-TEST(wcore_attrib_list_get, trailing_items)
-{
+static void
+test_wcore_attrib_list_get_trailing_items(void **state) {
     int32_t attrib_list[] = {
         1, 11,
         0,
@@ -72,23 +72,23 @@ TEST(wcore_attrib_list_get, trailing_items)
     int32_t key = 2;
     int32_t value;
 
-    ASSERT_TRUE(!wcore_attrib_list_get(attrib_list, key, &value));
+    assert_false(wcore_attrib_list_get(attrib_list, key, &value));
 }
 
-TEST(wcore_attrib_list_get, value_not_modified_if_not_found)
-{
+static void
+test_wcore_attrib_list_get_value_not_modified_if_not_found(void **state) {
     int32_t attrib_list[] = {
         1, 11,
         0,
     };
     int32_t value = 17;
 
-    ASSERT_TRUE(!wcore_attrib_list_get(attrib_list, 2, &value));
-    ASSERT_TRUE(value == 17);
+    assert_false(wcore_attrib_list_get(attrib_list, 2, &value));
+    assert_int_equal(value, 17);
 }
 
-TEST(wcore_attrib_list_get, key_is_first)
-{
+static void
+test_wcore_attrib_list_get_key_is_first(void **state) {
     int32_t attrib_list[] = {
         1, 11,
         2, 22,
@@ -98,12 +98,12 @@ TEST(wcore_attrib_list_get, key_is_first)
     int32_t key = 1;
     int32_t value;
 
-    ASSERT_TRUE(wcore_attrib_list_get(attrib_list, key, &value));
-    ASSERT_TRUE(value == 11);
+    assert_true(wcore_attrib_list_get(attrib_list, key, &value));
+    assert_int_equal(value, 11);
 }
 
-TEST(wcore_attrib_list_get, key_is_last)
-{
+static void
+test_wcore_attrib_list_get_key_is_last(void **state) {
     int32_t attrib_list[] = {
         1, 11,
         2, 22,
@@ -113,54 +113,52 @@ TEST(wcore_attrib_list_get, key_is_last)
     int32_t key = 3;
     int32_t value;
 
-    ASSERT_TRUE(wcore_attrib_list_get(attrib_list, key, &value));
-    ASSERT_TRUE(value == 33);
+    assert_true(wcore_attrib_list_get(attrib_list, key, &value));
+    assert_int_equal(value, 33);
 }
 
-TESTGROUP_SIMPLE(wcore_attrib_list_length)
-
-TEST(wcore_attrib_list_length, null)
-{
+static void
+test_wcore_attrib_list_length_null(void **state) {
     int32_t *attrib_list = NULL;
-    ASSERT_TRUE(wcore_attrib_list_length(attrib_list) == 0);
+    assert_int_equal(wcore_attrib_list_length(attrib_list), 0);
 }
 
-TEST(wcore_attrib_list_length, is_0)
-{
+static void
+test_wcore_attrib_list_length_is_0(void **state) {
     int32_t attrib_list[] = {0};
-    ASSERT_TRUE(wcore_attrib_list_length(attrib_list) == 0);
+    assert_int_equal(wcore_attrib_list_length(attrib_list), 0);
 }
 
-TEST(wcore_attrib_list_length, is_1)
-{
+static void
+test_wcore_attrib_list_length_is_1(void **state) {
     int32_t attrib_list[] = {
         1, 1,
         0,
     };
-    ASSERT_TRUE(wcore_attrib_list_length(attrib_list) == 1);
+    assert_int_equal(wcore_attrib_list_length(attrib_list), 1);
 }
 
-TEST(wcore_attrib_list_length, is_2)
-{
+static void
+test_wcore_attrib_list_length_is_2(void **state) {
     int32_t attrib_list[] = {
         1, 1,
         2, 2,
         0,
     };
-    ASSERT_TRUE(wcore_attrib_list_length(attrib_list) == 2);
+    assert_int_equal(wcore_attrib_list_length(attrib_list), 2);
 }
 
-TEST(wcore_attrib_list_length, is_37)
-{
+static void
+test_wcore_attrib_list_length_is_37(void **state) {
     int32_t attrib_list[75];
     memset(attrib_list, 0xff, 74 * sizeof(int32_t));
     attrib_list[74] = 0;
 
-    ASSERT_TRUE(wcore_attrib_list_length(attrib_list) == 37);
+    assert_int_equal(wcore_attrib_list_length(attrib_list), 37);
 }
 
-TEST(wcore_attrib_list_length, trailing_items)
-{
+static void
+test_wcore_attrib_list_length_trailing_items(void **state) {
     int32_t attrib_list[] = {
         1, 1,
         2, 2,
@@ -171,95 +169,85 @@ TEST(wcore_attrib_list_length, trailing_items)
         0,
     };
 
-    ASSERT_TRUE(wcore_attrib_list_length(attrib_list) == 3);
-}
-
-TESTGROUP_SIMPLE(wcore_attrib_list_update)
-
-TEST(wcore_attrib_list_update, null)
-{
-    int32_t *attrib_list = NULL;
-    ASSERT_TRUE(!wcore_attrib_list_update(attrib_list, 7, 7));
-}
-
-TEST(wcore_attrib_list_update, empty_list)
-{
-    int32_t attrib_list[] = {0};
-    ASSERT_TRUE(!wcore_attrib_list_update(attrib_list, 7, 7));
-}
-
-TEST(wcore_attrib_list_update, at_0)
-{
-    int32_t v;
-    int32_t attrib_list[] = {
-        10, 10,
-        20, 20,
-        30, 30,
-        0,
-    };
-
-    ASSERT_TRUE(wcore_attrib_list_update(attrib_list, 10, 99));
-    ASSERT_TRUE(wcore_attrib_list_get(attrib_list, 10, &v));
-    ASSERT_TRUE(v == 99);
-}
-
-TEST(wcore_attrib_list_update, at_1)
-{
-    int32_t v;
-    int32_t attrib_list[] = {
-        10, 10,
-        20, 20,
-        30, 30,
-        0,
-    };
-
-    ASSERT_TRUE(wcore_attrib_list_update(attrib_list, 20, 99));
-    ASSERT_TRUE(wcore_attrib_list_get(attrib_list, 20, &v));
-    ASSERT_TRUE(v == 99);
-}
-
-TEST(wcore_attrib_list_update, missing_key)
-{
-    int32_t attrib_list[] = {
-        10, 10,
-        20, 20,
-        30, 30,
-        0,
-    };
-
-    ASSERT_TRUE(!wcore_attrib_list_update(attrib_list, 50, 99));
+    assert_int_equal(wcore_attrib_list_length(attrib_list), 3);
 }
 
 static void
-testsuite_wcore_attrib_list(void)
-{
-    TEST_RUN(wcore_attrib_list_get, null);
-    TEST_RUN(wcore_attrib_list_get, empty);
-    TEST_RUN(wcore_attrib_list_get, missing_value);
-    TEST_RUN(wcore_attrib_list_get, trailing_items);
-    TEST_RUN(wcore_attrib_list_get, value_not_modified_if_not_found);
-    TEST_RUN(wcore_attrib_list_get, key_is_first);
-    TEST_RUN(wcore_attrib_list_get, key_is_last);
-    TEST_RUN(wcore_attrib_list_length, null);
-    TEST_RUN(wcore_attrib_list_length, is_0);
-    TEST_RUN(wcore_attrib_list_length, is_1);
-    TEST_RUN(wcore_attrib_list_length, is_2);
-    TEST_RUN(wcore_attrib_list_length, is_37);
-    TEST_RUN(wcore_attrib_list_length, trailing_items);
-    TEST_RUN(wcore_attrib_list_update, null);
-    TEST_RUN(wcore_attrib_list_update, empty_list);
-    TEST_RUN(wcore_attrib_list_update, at_0);
-    TEST_RUN(wcore_attrib_list_update, at_1);
-    TEST_RUN(wcore_attrib_list_update, missing_key);
+test_wcore_attrib_list_update_null(void **state) {
+    int32_t *attrib_list = NULL;
+    assert_false(wcore_attrib_list_update(attrib_list, 7, 7));
 }
 
-int
-main(int argc, char *argv[])
-{
-    void (*test_runners[])(void) = {
-        testsuite_wcore_attrib_list,
+static void
+test_wcore_attrib_list_update_empty_list(void **state) {
+    int32_t attrib_list[] = {0};
+    assert_false(wcore_attrib_list_update(attrib_list, 7, 7));
+}
+
+static void
+test_wcore_attrib_list_update_at_0(void **state) {
+    int32_t v;
+    int32_t attrib_list[] = {
+        10, 10,
+        20, 20,
+        30, 30,
         0,
     };
 
-    return wt_main(&argc, argv, test_runners);
+    assert_true(wcore_attrib_list_update(attrib_list, 10, 99));
+    assert_true(wcore_attrib_list_get(attrib_list, 10, &v));
+    assert_int_equal(v, 99);
+}
+
+static void
+test_wcore_attrib_list_update_at_1(void **state) {
+    int32_t v;
+    int32_t attrib_list[] = {
+        10, 10,
+        20, 20,
+        30, 30,
+        0,
+    };
+
+    assert_true(wcore_attrib_list_update(attrib_list, 20, 99));
+    assert_true(wcore_attrib_list_get(attrib_list, 20, &v));
+    assert_int_equal(v, 99);
+}
+
+static void
+test_wcore_attrib_list_update_missing_key(void **state) {
+    int32_t attrib_list[] = {
+        10, 10,
+        20, 20,
+        30, 30,
+        0,
+    };
+
+    assert_false(wcore_attrib_list_update(attrib_list, 50, 99));
+}
+
+int
+main(void) {
+    const UnitTest tests[] = {
+        unit_test(test_wcore_attrib_list_get_null),
+        unit_test(test_wcore_attrib_list_get_empty),
+        unit_test(test_wcore_attrib_list_get_missing_value),
+        unit_test(test_wcore_attrib_list_get_trailing_items),
+        unit_test(test_wcore_attrib_list_get_value_not_modified_if_not_found),
+        unit_test(test_wcore_attrib_list_get_key_is_first),
+        unit_test(test_wcore_attrib_list_get_key_is_last),
+        unit_test(test_wcore_attrib_list_length_null),
+        unit_test(test_wcore_attrib_list_length_is_0),
+        unit_test(test_wcore_attrib_list_length_is_1),
+        unit_test(test_wcore_attrib_list_length_is_2),
+        unit_test(test_wcore_attrib_list_length_is_37),
+        unit_test(test_wcore_attrib_list_length_trailing_items),
+        unit_test(test_wcore_attrib_list_update_null),
+        unit_test(test_wcore_attrib_list_update_empty_list),
+        unit_test(test_wcore_attrib_list_update_at_0),
+        unit_test(test_wcore_attrib_list_update_at_1),
+        unit_test(test_wcore_attrib_list_update_missing_key),
+    };
+
+    return run_tests(tests);
 }
