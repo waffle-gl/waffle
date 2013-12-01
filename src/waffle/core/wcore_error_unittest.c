@@ -1,4 +1,4 @@
-// Copyright 2012 Intel Corporation
+// Copyright 2012-2013 Intel Corporation
 //
 // All rights reserved.
 //
@@ -27,96 +27,95 @@
 #   define _XOPEN_SOURCE 600
 #endif
 
+#include <setjmp.h>
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include <pthread.h>
 
-#include "waffle_test/waffle_test.h"
+#include <cmocka.h>
 
 #include "wcore_error.h"
 
-TESTGROUP_SIMPLE(wcore_error)
-
-TEST(wcore_error, code_unknown_error)
-{
+static void
+test_wcore_error_code_unknown_error(void **state) {
     wcore_error_reset();
     wcore_error(WAFFLE_ERROR_UNKNOWN);
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_UNKNOWN);
-    EXPECT_TRUE(!strcmp(wcore_error_get_info()->message, ""));
+    assert_int_equal(wcore_error_get_code(), WAFFLE_ERROR_UNKNOWN);
+    assert_string_equal(wcore_error_get_info()->message, "");
 
 }
 
-TEST(wcore_error, code_bad_attribute)
-{
+static void
+test_wcore_error_code_bad_attribute(void **state) {
     wcore_error_reset();
     wcore_error(WAFFLE_ERROR_BAD_ATTRIBUTE);
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
-    EXPECT_TRUE(!strcmp(wcore_error_get_info()->message, ""));
-
+    assert_int_equal(wcore_error_get_code(), WAFFLE_ERROR_BAD_ATTRIBUTE);
+    assert_string_equal(wcore_error_get_info()->message, "");
 }
 
-TEST(wcore_error, with_message)
-{
+static void
+test_wcore_error_with_message(void **state) {
     wcore_error_reset();
     wcore_errorf(WAFFLE_ERROR_BAD_PARAMETER, "bad %s (0x%x)", "gl_api", 0x17);
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_PARAMETER);
-    EXPECT_TRUE(!strcmp(wcore_error_get_info()->message, "bad gl_api (0x17)"));
+    assert_int_equal(wcore_error_get_code(), WAFFLE_ERROR_BAD_PARAMETER);
+    assert_string_equal(wcore_error_get_info()->message, "bad gl_api (0x17)");
 }
 
-TEST(wcore_error, internal_error)
-{
+static void
+test_wcore_error_internal_error(void **state) {
     char error_location[1024];
     snprintf(error_location, 1024, "%s:%d:", __FILE__, __LINE__ + 3);
 
     wcore_error_reset();
     wcore_error_internal("%s zoroaster %d", "hello", 5);
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_INTERNAL);
-    EXPECT_TRUE(strstr(wcore_error_get_info()->message, "hello zoroaster 5"));
-    EXPECT_TRUE(strstr(wcore_error_get_info()->message, error_location));
+    assert_int_equal(wcore_error_get_code(), WAFFLE_ERROR_INTERNAL);
+    assert_true(strstr(wcore_error_get_info()->message, "hello zoroaster 5"));
+    assert_true(strstr(wcore_error_get_info()->message, error_location));
 }
 
-TEST(wcore_error, first_call_without_message_wins)
-{
+static void
+test_wcore_error_first_call_without_message_wins(void **state) {
     wcore_error_reset();
     wcore_errorf(WAFFLE_ERROR_UNKNOWN, "cookies");
     wcore_error(WAFFLE_ERROR_BAD_ATTRIBUTE);
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_UNKNOWN);
-    EXPECT_TRUE(!strcmp(wcore_error_get_info()->message, "cookies"));
+    assert_int_equal(wcore_error_get_code(), WAFFLE_ERROR_UNKNOWN);
+    assert_string_equal(wcore_error_get_info()->message, "cookies");
 }
 
-TEST(wcore_error, first_call_with_message_wins)
-{
+static void
+test_wcore_error_first_call_with_message_wins(void **state) {
     wcore_error_reset();
     wcore_errorf(WAFFLE_ERROR_UNKNOWN, "cookies");
     wcore_errorf(WAFFLE_NO_ERROR, "all is well");
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_UNKNOWN);
-    EXPECT_TRUE(!strcmp(wcore_error_get_info()->message, "cookies"));
+    assert_int_equal(wcore_error_get_code(), WAFFLE_ERROR_UNKNOWN);
+    assert_string_equal(wcore_error_get_info()->message, "cookies");
 }
 
-TEST(wcore_error, disable_then_error)
-{
+static void
+test_wcore_error_disable_then_error(void **state) {
     wcore_error_reset();
     wcore_error(WAFFLE_ERROR_NOT_INITIALIZED);
     WCORE_ERROR_DISABLED(
         wcore_error(WAFFLE_ERROR_BAD_ATTRIBUTE);
     );
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_NOT_INITIALIZED);
+    assert_int_equal(wcore_error_get_code(), WAFFLE_ERROR_NOT_INITIALIZED);
 }
 
-TEST(wcore_error, disable_then_errorf)
-{
+static void
+test_wcore_error_disable_then_errorf(void **state) {
     wcore_error_reset();
     wcore_error(WAFFLE_ERROR_NOT_INITIALIZED);
     WCORE_ERROR_DISABLED(
         wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE, "i'm not here");
     );
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_NOT_INITIALIZED);
+    assert_int_equal(wcore_error_get_code(), WAFFLE_ERROR_NOT_INITIALIZED);
 }
 
-TEST(wcore_error, disable_then_error_internal)
-{
+static void
+test_wcore_error_disable_then_error_internal(void **state) {
     wcore_error_reset();
     wcore_error(WAFFLE_ERROR_NOT_INITIALIZED);
     WCORE_ERROR_DISABLED({
@@ -124,7 +123,7 @@ TEST(wcore_error, disable_then_error_internal)
         // here. So directly the macro's implementing function.
         _wcore_error_internal(__FILE__, __LINE__, "this isn't happening");
     });
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_NOT_INITIALIZED);
+    assert_int_equal(wcore_error_get_code(), WAFFLE_ERROR_NOT_INITIALIZED);
 }
 
 /// Number of threads in test wcore_error.thread_local.
@@ -187,8 +186,8 @@ thread_start(struct thread_arg *a)
 }
 
 // Test that threads do not clobber each other's error codes.
-TEST(wcore_error, thread_local)
-{
+static void
+test_wcore_error_thread_local(void **state) {
     pthread_mutex_t mutex;
     pthread_cond_t cond;
     volatile int num_threads_waiting = 0;
@@ -223,36 +222,28 @@ TEST(wcore_error, thread_local)
 
     for (int i = 0; i < NUM_THREADS; ++i) {
         pthread_join(threads[i], (void**) &exit_codes[i]);
-        EXPECT_TRUE(exit_codes[i] == true);
+        assert_true(exit_codes[i]);
     }
 
     pthread_cond_destroy(&cond);
     pthread_mutex_destroy(&mutex);
 }
 
-static void
-testsuite_wcore_error(void)
-{
-    TEST_RUN(wcore_error, code_unknown_error);
-    TEST_RUN(wcore_error, code_bad_attribute);
-    TEST_RUN(wcore_error, code_unknown_error);
-    TEST_RUN(wcore_error, with_message);
-    TEST_RUN(wcore_error, internal_error);
-    TEST_RUN(wcore_error, first_call_without_message_wins);
-    TEST_RUN(wcore_error, first_call_with_message_wins);
-    TEST_RUN(wcore_error, disable_then_error);
-    TEST_RUN(wcore_error, disable_then_errorf);
-    TEST_RUN(wcore_error, disable_then_error_internal);
-    TEST_RUN(wcore_error, thread_local);
-}
-
 int
-main(int argc, char *argv[])
-{
-    void (*test_runners[])(void) = {
-        testsuite_wcore_error,
-        0,
+main(void) {
+    const UnitTest tests[] = {
+        unit_test(test_wcore_error_code_unknown_error),
+        unit_test(test_wcore_error_code_bad_attribute),
+        unit_test(test_wcore_error_code_unknown_error),
+        unit_test(test_wcore_error_with_message),
+        unit_test(test_wcore_error_internal_error),
+        unit_test(test_wcore_error_first_call_without_message_wins),
+        unit_test(test_wcore_error_first_call_with_message_wins),
+        unit_test(test_wcore_error_disable_then_error),
+        unit_test(test_wcore_error_disable_then_errorf),
+        unit_test(test_wcore_error_disable_then_error_internal),
+        unit_test(test_wcore_error_thread_local),
     };
 
-    return wt_main(&argc, argv, test_runners);
+    return run_tests(tests);
 }
