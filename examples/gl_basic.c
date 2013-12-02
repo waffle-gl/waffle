@@ -112,7 +112,7 @@ static const struct option get_opts[] = {
 ///
 
 static void __attribute__((noreturn))
-gl_basic_error(const char *fmt, ...)
+error_printf(const char *fmt, ...)
 {
     va_list ap;
 
@@ -154,15 +154,15 @@ error_waffle(void)
     const char *code = waffle_error_to_string(info->code);
 
     if (info->message_length > 0)
-        gl_basic_error("%s: %s", code, info->message);
+        error_printf("%s: %s", code, info->message);
     else
-        gl_basic_error("%s", code);
+        error_printf("%s", code);
 }
 
 static void
 error_get_gl_symbol(const char *name)
 {
-    gl_basic_error("failed to get function pointer for %s", name);
+    error_printf("failed to get function pointer for %s", name);
 }
 
 /// @}
@@ -533,8 +533,8 @@ main(int argc, char **argv)
         error_waffle();
 
     if (!waffle_display_supports_context_api(dpy, opts.context_api)) {
-        gl_basic_error("Display does not support %s",
-                       waffle_enum_to_string(opts.context_api));
+        error_printf("Display does not support %s",
+                     waffle_enum_to_string(opts.context_api));
     }
 
     glClear = waffle_dl_sym(opts.dl, "glClear");
@@ -616,12 +616,12 @@ main(int argc, char **argv)
 
     if (opts.context_forward_compatible
         && !(context_flags & GL_CONTEXT_FLAG_FORWARD_COMPATIBLE_BIT)) {
-        gl_basic_error("context is not forward-compatible");
+        error_printf("context is not forward-compatible");
     }
 
     if (opts.context_debug
         && !(context_flags & GL_CONTEXT_FLAG_DEBUG_BIT)) {
-        gl_basic_error("context is not a debug context");
+        error_printf("context is not a debug context");
     }
 
     ok = draw(window, opts.resize_window);
