@@ -213,7 +213,6 @@ function(add_unittest unittest_name)
     target_link_libraries(${unittest_name}
         cmocka
         waffle_static
-        waffle_test
     )
     add_custom_target(${unittest_name}_run
         DEPENDS ${unittest_name}
