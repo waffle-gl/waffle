@@ -38,6 +38,10 @@ include(WaffleDefineCompilerFlags)
 include(WaffleFindDependencies)
 include(GNUInstallDirs)
 
+if(waffle_build_tests)
+    include(WaffleCMocka)
+endif()
+
 find_package(PkgConfig)
 
 # ------------------------------------------------------------------------------

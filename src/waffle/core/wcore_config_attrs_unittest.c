@@ -23,195 +23,217 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#include <setjmp.h>
+#include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
+#include <string.h>
 
-#include "waffle_test/waffle_test.h"
+#include <cmocka.h>
 
 #include "wcore_config_attrs.h"
 #include "wcore_error.h"
 
-static struct wcore_config_attrs actual_attrs;
-static struct wcore_config_attrs expect_attrs;
+struct test_state_wcore_config_attrs {
 
-static const struct wcore_config_attrs default_attrs = {
-    // There is no default context api, so arbitrarily choose OpenGL. The
-    // remaining context attrs are the defaults for OpenGL.
-    .context_api            = WAFFLE_CONTEXT_OPENGL,
-    .context_major_version  = 1,
-    .context_minor_version  = 0,
-    .context_full_version   = 10,
-    .context_profile        = WAFFLE_NONE,
-    .context_debug          = false,
-    .context_forward_compatible = false,
-
-    .rgb_size               = 0,
-    .rgba_size              = 0,
-
-    .red_size               = 0,
-    .green_size             = 0,
-    .blue_size              = 0,
-    .alpha_size             = 0,
-
-    .depth_size             = 0,
-    .stencil_size           = 0,
-
-    .sample_buffers         = 0,
-    .samples                = 0,
-
-    .double_buffered        = true,
+    struct wcore_config_attrs actual_attrs;
+    struct wcore_config_attrs expect_attrs;
 };
 
 static void
-testgroup_wcore_config_attrs_setup(void)
-{
+setup(void **state) {
+    static const struct wcore_config_attrs default_attrs = {
+        // There is no default context api, so arbitrarily choose OpenGL. The
+        // remaining context attrs are the defaults for OpenGL.
+        .context_api            = WAFFLE_CONTEXT_OPENGL,
+        .context_major_version  = 1,
+        .context_minor_version  = 0,
+        .context_full_version   = 10,
+        .context_profile        = WAFFLE_NONE,
+        .context_debug          = false,
+        .context_forward_compatible = false,
+
+        .rgb_size               = 0,
+        .rgba_size              = 0,
+
+        .red_size               = 0,
+        .green_size             = 0,
+        .blue_size              = 0,
+        .alpha_size             = 0,
+
+        .depth_size             = 0,
+        .stencil_size           = 0,
+
+        .sample_buffers         = 0,
+        .samples                = 0,
+
+        .double_buffered        = true,
+    };
+
+    struct test_state_wcore_config_attrs *ts;
+
     wcore_error_reset();
 
+    *state = ts = calloc(1, sizeof(*ts));
+
     // Fill actual_attrs with canaries.
-    memset(&actual_attrs, 0x99, sizeof(actual_attrs));
+    memset(&ts->actual_attrs, 0x99, sizeof(ts->actual_attrs));
 
     // Set expect_attrs to defaults.
-    memcpy(&expect_attrs, &default_attrs, sizeof(expect_attrs));
+    memcpy(&ts->expect_attrs, &default_attrs, sizeof(ts->expect_attrs));
 }
 
 static void
-testgroup_wcore_config_attrs_teardown(void)
-{
-    // empty
+teardown(void **state) {
+    free(*state);
 }
 
-TEST(wcore_config_attrs, null_attrib_list)
-{
-    ASSERT_TRUE(!wcore_config_attrs_parse(NULL, &actual_attrs));
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
+static void
+test_wcore_config_attrs_null_attrib_list(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
+    assert_false(wcore_config_attrs_parse(NULL, &ts->actual_attrs));
+    assert_int_equal(wcore_error_get_code(), WAFFLE_ERROR_BAD_ATTRIBUTE);
 }
 
-TEST(wcore_config_attrs, empty_attrib_list)
-{
+static void
+test_wcore_config_attrs_empty_attrib_list(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
     const int32_t attrib_list[] = {0};
 
-    ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
+    assert_false(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(wcore_error_get_code(), WAFFLE_ERROR_BAD_ATTRIBUTE);
 }
 
-TEST(wcore_config_attrs, gl_defaults)
-{
+static void
+test_wcore_config_attrs_gl_defaults(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API, WAFFLE_CONTEXT_OPENGL,
         0,
     };
 
-    ASSERT_TRUE(wcore_config_attrs_parse(attrib_list, &actual_attrs));
+    assert_true(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
 
-    ASSERT_TRUE(actual_attrs.context_major_version == 1);
-    ASSERT_TRUE(actual_attrs.context_minor_version == 0);
-    ASSERT_TRUE(actual_attrs.context_full_version == 10);
-    ASSERT_TRUE(actual_attrs.context_profile == WAFFLE_NONE);
-    ASSERT_TRUE(actual_attrs.red_size == 0);
-    ASSERT_TRUE(actual_attrs.green_size == 0);
-    ASSERT_TRUE(actual_attrs.blue_size == 0);
-    ASSERT_TRUE(actual_attrs.alpha_size == 0);
-    ASSERT_TRUE(actual_attrs.depth_size == 0);
-    ASSERT_TRUE(actual_attrs.stencil_size == 0);
-    ASSERT_TRUE(actual_attrs.sample_buffers == false);
-    ASSERT_TRUE(actual_attrs.samples == 0);
-    ASSERT_TRUE(actual_attrs.double_buffered == true);
-    ASSERT_TRUE(actual_attrs.accum_buffer == false);
-    ASSERT_TRUE(actual_attrs.context_forward_compatible == false);
+    assert_int_equal(ts->actual_attrs.context_major_version, 1);
+    assert_int_equal(ts->actual_attrs.context_minor_version, 0);
+    assert_int_equal(ts->actual_attrs.context_full_version, 10);
+    assert_int_equal(ts->actual_attrs.context_profile, WAFFLE_NONE);
+    assert_int_equal(ts->actual_attrs.red_size, 0);
+    assert_int_equal(ts->actual_attrs.green_size, 0);
+    assert_int_equal(ts->actual_attrs.blue_size, 0);
+    assert_int_equal(ts->actual_attrs.alpha_size, 0);
+    assert_int_equal(ts->actual_attrs.depth_size, 0);
+    assert_int_equal(ts->actual_attrs.stencil_size, 0);
+    assert_int_equal(ts->actual_attrs.sample_buffers, false);
+    assert_int_equal(ts->actual_attrs.samples, 0);
+    assert_int_equal(ts->actual_attrs.double_buffered, true);
+    assert_int_equal(ts->actual_attrs.accum_buffer, false);
+    assert_int_equal(ts->actual_attrs.context_forward_compatible, false);
 }
 
-TEST(wcore_config_attrs, gles1_defaults)
-{
+static void
+test_wcore_config_attrs_gles1_defaults(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API, WAFFLE_CONTEXT_OPENGL_ES1,
         0,
     };
 
-    ASSERT_TRUE(wcore_config_attrs_parse(attrib_list, &actual_attrs));
+    assert_true(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
 
-    ASSERT_TRUE(actual_attrs.context_major_version == 1);
-    ASSERT_TRUE(actual_attrs.context_minor_version == 0);
-    ASSERT_TRUE(actual_attrs.context_full_version == 10);
-    ASSERT_TRUE(actual_attrs.context_profile == WAFFLE_NONE);
+    assert_int_equal(ts->actual_attrs.context_major_version, 1);
+    assert_int_equal(ts->actual_attrs.context_minor_version, 0);
+    assert_int_equal(ts->actual_attrs.context_full_version, 10);
+    assert_int_equal(ts->actual_attrs.context_profile, WAFFLE_NONE);
 
-    ASSERT_TRUE(actual_attrs.red_size == 0);
-    ASSERT_TRUE(actual_attrs.green_size == 0);
-    ASSERT_TRUE(actual_attrs.blue_size == 0);
-    ASSERT_TRUE(actual_attrs.alpha_size == 0);
-    ASSERT_TRUE(actual_attrs.depth_size == 0);
-    ASSERT_TRUE(actual_attrs.stencil_size == 0);
-    ASSERT_TRUE(actual_attrs.sample_buffers == false);
-    ASSERT_TRUE(actual_attrs.samples == 0);
-    ASSERT_TRUE(actual_attrs.double_buffered == true);
-    ASSERT_TRUE(actual_attrs.accum_buffer == false);
+    assert_int_equal(ts->actual_attrs.red_size, 0);
+    assert_int_equal(ts->actual_attrs.green_size, 0);
+    assert_int_equal(ts->actual_attrs.blue_size, 0);
+    assert_int_equal(ts->actual_attrs.alpha_size, 0);
+    assert_int_equal(ts->actual_attrs.depth_size, 0);
+    assert_int_equal(ts->actual_attrs.stencil_size, 0);
+    assert_int_equal(ts->actual_attrs.sample_buffers, false);
+    assert_int_equal(ts->actual_attrs.samples, 0);
+    assert_int_equal(ts->actual_attrs.double_buffered, true);
+    assert_int_equal(ts->actual_attrs.accum_buffer, false);
 }
 
-TEST(wcore_config_attrs, gles2_defaults)
-{
+static void
+test_wcore_config_attrs_gles2_defaults(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API, WAFFLE_CONTEXT_OPENGL_ES2,
         0,
     };
 
-    ASSERT_TRUE(wcore_config_attrs_parse(attrib_list, &actual_attrs));
+    assert_true(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
 
-    ASSERT_TRUE(actual_attrs.context_major_version == 2);
-    ASSERT_TRUE(actual_attrs.context_minor_version == 0);
-    ASSERT_TRUE(actual_attrs.context_full_version == 20);
-    ASSERT_TRUE(actual_attrs.context_profile == WAFFLE_NONE);
+    assert_int_equal(ts->actual_attrs.context_major_version, 2);
+    assert_int_equal(ts->actual_attrs.context_minor_version, 0);
+    assert_int_equal(ts->actual_attrs.context_full_version, 20);
+    assert_int_equal(ts->actual_attrs.context_profile, WAFFLE_NONE);
 
-    ASSERT_TRUE(actual_attrs.red_size == 0);
-    ASSERT_TRUE(actual_attrs.green_size == 0);
-    ASSERT_TRUE(actual_attrs.blue_size == 0);
-    ASSERT_TRUE(actual_attrs.alpha_size == 0);
-    ASSERT_TRUE(actual_attrs.depth_size == 0);
-    ASSERT_TRUE(actual_attrs.stencil_size == 0);
-    ASSERT_TRUE(actual_attrs.sample_buffers == false);
-    ASSERT_TRUE(actual_attrs.samples == 0);
-    ASSERT_TRUE(actual_attrs.double_buffered == true);
-    ASSERT_TRUE(actual_attrs.accum_buffer == false);
+    assert_int_equal(ts->actual_attrs.red_size, 0);
+    assert_int_equal(ts->actual_attrs.green_size, 0);
+    assert_int_equal(ts->actual_attrs.blue_size, 0);
+    assert_int_equal(ts->actual_attrs.alpha_size, 0);
+    assert_int_equal(ts->actual_attrs.depth_size, 0);
+    assert_int_equal(ts->actual_attrs.stencil_size, 0);
+    assert_int_equal(ts->actual_attrs.sample_buffers, false);
+    assert_int_equal(ts->actual_attrs.samples, 0);
+    assert_int_equal(ts->actual_attrs.double_buffered, true);
+    assert_int_equal(ts->actual_attrs.accum_buffer, false);
 }
 
-TEST(wcore_config_attrs, gles3_defaults)
-{
+static void
+test_wcore_config_attrs_gles3_defaults(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API, WAFFLE_CONTEXT_OPENGL_ES3,
         0,
     };
 
-    ASSERT_TRUE(wcore_config_attrs_parse(attrib_list, &actual_attrs));
+    assert_true(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
 
-    ASSERT_TRUE(actual_attrs.context_major_version == 3);
-    ASSERT_TRUE(actual_attrs.context_minor_version == 0);
-    ASSERT_TRUE(actual_attrs.context_full_version == 30);
-    ASSERT_TRUE(actual_attrs.context_profile == WAFFLE_NONE);
+    assert_int_equal(ts->actual_attrs.context_major_version, 3);
+    assert_int_equal(ts->actual_attrs.context_minor_version, 0);
+    assert_int_equal(ts->actual_attrs.context_full_version, 30);
+    assert_int_equal(ts->actual_attrs.context_profile, WAFFLE_NONE);
 
-    ASSERT_TRUE(actual_attrs.red_size == 0);
-    ASSERT_TRUE(actual_attrs.green_size == 0);
-    ASSERT_TRUE(actual_attrs.blue_size == 0);
-    ASSERT_TRUE(actual_attrs.alpha_size == 0);
-    ASSERT_TRUE(actual_attrs.depth_size == 0);
-    ASSERT_TRUE(actual_attrs.stencil_size == 0);
-    ASSERT_TRUE(actual_attrs.sample_buffers == false);
-    ASSERT_TRUE(actual_attrs.samples == 0);
-    ASSERT_TRUE(actual_attrs.double_buffered == true);
-    ASSERT_TRUE(actual_attrs.accum_buffer == false);
+    assert_int_equal(ts->actual_attrs.red_size, 0);
+    assert_int_equal(ts->actual_attrs.green_size, 0);
+    assert_int_equal(ts->actual_attrs.blue_size, 0);
+    assert_int_equal(ts->actual_attrs.alpha_size, 0);
+    assert_int_equal(ts->actual_attrs.depth_size, 0);
+    assert_int_equal(ts->actual_attrs.stencil_size, 0);
+    assert_int_equal(ts->actual_attrs.sample_buffers, false);
+    assert_int_equal(ts->actual_attrs.samples, 0);
+    assert_int_equal(ts->actual_attrs.double_buffered, true);
+    assert_int_equal(ts->actual_attrs.accum_buffer, false);
 }
 
-TEST(wcore_config_attrs, bad_attr)
-{
+static void
+test_wcore_config_attrs_bad_attr(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,              WAFFLE_CONTEXT_OPENGL,
         WAFFLE_CONTEXT_CORE_PROFILE,     WAFFLE_CONTEXT_OPENGL_ES2,
         0,
     };
 
-    ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
+    assert_false(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(wcore_error_get_code(), WAFFLE_ERROR_BAD_ATTRIBUTE);
 }
 
-TEST(wcore_config_attrs, gl31_none_profile)
-{
+static void
+test_wcore_config_attrs_gl31_none_profile(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,             WAFFLE_CONTEXT_OPENGL,
         WAFFLE_CONTEXT_MAJOR_VERSION,   3,
@@ -220,12 +242,14 @@ TEST(wcore_config_attrs, gl31_none_profile)
         0,
     };
 
-    ASSERT_TRUE(wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    ASSERT_TRUE(actual_attrs.context_profile == WAFFLE_NONE);
+    assert_true(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(ts->actual_attrs.context_profile, WAFFLE_NONE);
 }
 
-TEST(wcore_config_attrs, gl31_trash_profile)
-{
+static void
+test_wcore_config_attrs_gl31_trash_profile(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,             WAFFLE_CONTEXT_OPENGL,
         WAFFLE_CONTEXT_MAJOR_VERSION,   3,
@@ -234,12 +258,14 @@ TEST(wcore_config_attrs, gl31_trash_profile)
         0,
     };
 
-    ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
+    assert_false(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(wcore_error_get_code(), WAFFLE_ERROR_BAD_ATTRIBUTE);
 }
 
-TEST(wcore_config_attrs, gl31_core)
-{
+static void
+test_wcore_config_attrs_gl31_core(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,             WAFFLE_CONTEXT_OPENGL,
         WAFFLE_CONTEXT_MAJOR_VERSION,   3,
@@ -248,12 +274,14 @@ TEST(wcore_config_attrs, gl31_core)
         0,
     };
 
-    ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
+    assert_false(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(wcore_error_get_code(), WAFFLE_ERROR_BAD_ATTRIBUTE);
 }
 
-TEST(wcore_config_attrs, gl31_compat)
-{
+static void
+test_wcore_config_attrs_gl31_compat(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,             WAFFLE_CONTEXT_OPENGL,
         WAFFLE_CONTEXT_MAJOR_VERSION,   3,
@@ -262,12 +290,14 @@ TEST(wcore_config_attrs, gl31_compat)
         0,
     };
 
-    ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
+    assert_false(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(wcore_error_get_code(), WAFFLE_ERROR_BAD_ATTRIBUTE);
 }
 
-TEST(wcore_config_attrs, gl32_none_profile)
-{
+static void
+test_wcore_config_attrs_gl32_none_profile(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,             WAFFLE_CONTEXT_OPENGL,
         WAFFLE_CONTEXT_MAJOR_VERSION,   3,
@@ -276,12 +306,14 @@ TEST(wcore_config_attrs, gl32_none_profile)
         0,
     };
 
-    ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
+    assert_false(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(wcore_error_get_code(), WAFFLE_ERROR_BAD_ATTRIBUTE);
 }
 
-TEST(wcore_config_attrs, gl32_trash_profile)
-{
+static void
+test_wcore_config_attrs_gl32_trash_profile(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,             WAFFLE_CONTEXT_OPENGL,
         WAFFLE_CONTEXT_MAJOR_VERSION,   3,
@@ -290,12 +322,14 @@ TEST(wcore_config_attrs, gl32_trash_profile)
         0,
     };
 
-    ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
+    assert_false(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(wcore_error_get_code(), WAFFLE_ERROR_BAD_ATTRIBUTE);
 }
 
-TEST(wcore_config_attrs, gl32_core)
-{
+static void
+test_wcore_config_attrs_gl32_core(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,             WAFFLE_CONTEXT_OPENGL,
         WAFFLE_CONTEXT_MAJOR_VERSION,   3,
@@ -304,12 +338,14 @@ TEST(wcore_config_attrs, gl32_core)
         0,
     };
 
-    ASSERT_TRUE(wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    ASSERT_TRUE(actual_attrs.context_profile == WAFFLE_CONTEXT_CORE_PROFILE);
+    assert_true(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(ts->actual_attrs.context_profile, WAFFLE_CONTEXT_CORE_PROFILE);
 }
 
-TEST(wcore_config_attrs, gl32_compat)
-{
+static void
+test_wcore_config_attrs_gl32_compat(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,             WAFFLE_CONTEXT_OPENGL,
         WAFFLE_CONTEXT_MAJOR_VERSION,   3,
@@ -318,63 +354,73 @@ TEST(wcore_config_attrs, gl32_compat)
         0,
     };
 
-    ASSERT_TRUE(wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    ASSERT_TRUE(actual_attrs.context_profile == WAFFLE_CONTEXT_COMPATIBILITY_PROFILE);
+    assert_true(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(ts->actual_attrs.context_profile, WAFFLE_CONTEXT_COMPATIBILITY_PROFILE);
 }
 
-TEST(wcore_config_attrs, gles1_profile_is_checked)
-{
+static void
+test_wcore_config_attrs_gles1_profile_is_checked(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,             WAFFLE_CONTEXT_OPENGL_ES1,
         WAFFLE_CONTEXT_PROFILE,         WAFFLE_CONTEXT_CORE_PROFILE,
         0,
     };
 
-    ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
-    EXPECT_TRUE(strstr(wcore_error_get_info()->message, "WAFFLE_CONTEXT_PROFILE"));
+    assert_false(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(wcore_error_get_code(), WAFFLE_ERROR_BAD_ATTRIBUTE);
+    assert_true(strstr(wcore_error_get_info()->message, "WAFFLE_CONTEXT_PROFILE"));
 }
 
-TEST(wcore_config_attrs, gles2_profile_is_checked)
-{
+static void
+test_wcore_config_attrs_gles2_profile_is_checked(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,             WAFFLE_CONTEXT_OPENGL_ES2,
         WAFFLE_CONTEXT_PROFILE,         WAFFLE_CONTEXT_CORE_PROFILE,
         0,
     };
 
-    ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
-    EXPECT_TRUE(strstr(wcore_error_get_info()->message, "WAFFLE_CONTEXT_PROFILE"));
+    assert_false(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(wcore_error_get_code(), WAFFLE_ERROR_BAD_ATTRIBUTE);
+    assert_true(strstr(wcore_error_get_info()->message, "WAFFLE_CONTEXT_PROFILE"));
 }
 
-TEST(wcore_config_attrs, gles3_profile_is_checked)
-{
+static void
+test_wcore_config_attrs_gles3_profile_is_checked(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,             WAFFLE_CONTEXT_OPENGL_ES3,
         WAFFLE_CONTEXT_PROFILE,         WAFFLE_CONTEXT_CORE_PROFILE,
         0,
     };
 
-    ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
-    EXPECT_TRUE(strstr(wcore_error_get_info()->message, "WAFFLE_CONTEXT_PROFILE"));
+    assert_false(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(wcore_error_get_code(), WAFFLE_ERROR_BAD_ATTRIBUTE);
+    assert_true(strstr(wcore_error_get_info()->message, "WAFFLE_CONTEXT_PROFILE"));
 }
 
-TEST(wcore_config_attrs, negative_minor_version)
-{
+static void
+test_wcore_config_attrs_negative_minor_version(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,             WAFFLE_CONTEXT_OPENGL,
         WAFFLE_CONTEXT_MINOR_VERSION,   -1,
         0,
     };
 
-    ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
+    assert_false(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(wcore_error_get_code(), WAFFLE_ERROR_BAD_ATTRIBUTE);
 }
 
-TEST(wcore_config_attrs, gles10)
-{
+static void
+test_wcore_config_attrs_gles10(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,             WAFFLE_CONTEXT_OPENGL_ES1,
         WAFFLE_CONTEXT_MAJOR_VERSION,   1,
@@ -382,14 +428,16 @@ TEST(wcore_config_attrs, gles10)
         0,
     };
 
-    ASSERT_TRUE(wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    ASSERT_TRUE(actual_attrs.context_major_version == 1);
-    ASSERT_TRUE(actual_attrs.context_minor_version == 0);
-    ASSERT_TRUE(actual_attrs.context_full_version == 10);
+    assert_true(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(ts->actual_attrs.context_major_version, 1);
+    assert_int_equal(ts->actual_attrs.context_minor_version, 0);
+    assert_int_equal(ts->actual_attrs.context_full_version, 10);
 }
 
-TEST(wcore_config_attrs, gles11)
-{
+static void
+test_wcore_config_attrs_gles11(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,             WAFFLE_CONTEXT_OPENGL_ES1,
         WAFFLE_CONTEXT_MAJOR_VERSION,   1,
@@ -397,14 +445,16 @@ TEST(wcore_config_attrs, gles11)
         0,
     };
 
-    ASSERT_TRUE(wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    ASSERT_TRUE(actual_attrs.context_major_version == 1);
-    ASSERT_TRUE(actual_attrs.context_minor_version == 1);
-    ASSERT_TRUE(actual_attrs.context_full_version == 11);
+    assert_true(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(ts->actual_attrs.context_major_version, 1);
+    assert_int_equal(ts->actual_attrs.context_minor_version, 1);
+    assert_int_equal(ts->actual_attrs.context_full_version, 11);
 }
 
-TEST(wcore_config_attrs, gles12_is_bad)
-{
+static void
+test_wcore_config_attrs_gles12_is_bad(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,             WAFFLE_CONTEXT_OPENGL_ES1,
         WAFFLE_CONTEXT_MAJOR_VERSION,   1,
@@ -412,12 +462,14 @@ TEST(wcore_config_attrs, gles12_is_bad)
         0,
     };
 
-    ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
+    assert_false(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(wcore_error_get_code(), WAFFLE_ERROR_BAD_ATTRIBUTE);
 }
 
-TEST(wcore_config_attrs, gles20)
-{
+static void
+test_wcore_config_attrs_gles20(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,             WAFFLE_CONTEXT_OPENGL_ES2,
         WAFFLE_CONTEXT_MAJOR_VERSION,   2,
@@ -425,14 +477,16 @@ TEST(wcore_config_attrs, gles20)
         0,
     };
 
-    ASSERT_TRUE(wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    ASSERT_TRUE(actual_attrs.context_major_version == 2);
-    ASSERT_TRUE(actual_attrs.context_minor_version == 0);
-    ASSERT_TRUE(actual_attrs.context_full_version == 20);
+    assert_true(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(ts->actual_attrs.context_major_version, 2);
+    assert_int_equal(ts->actual_attrs.context_minor_version, 0);
+    assert_int_equal(ts->actual_attrs.context_full_version, 20);
 }
 
-TEST(wcore_config_attrs, gles21)
-{
+static void
+test_wcore_config_attrs_gles21(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,             WAFFLE_CONTEXT_OPENGL_ES2,
         WAFFLE_CONTEXT_MAJOR_VERSION,   2,
@@ -440,14 +494,16 @@ TEST(wcore_config_attrs, gles21)
         0,
     };
 
-    ASSERT_TRUE(wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    ASSERT_TRUE(actual_attrs.context_major_version == 2);
-    ASSERT_TRUE(actual_attrs.context_minor_version == 1);
-    ASSERT_TRUE(actual_attrs.context_full_version == 21);
+    assert_true(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(ts->actual_attrs.context_major_version, 2);
+    assert_int_equal(ts->actual_attrs.context_minor_version, 1);
+    assert_int_equal(ts->actual_attrs.context_full_version, 21);
 }
 
-TEST(wcore_config_attrs, gles2_with_version_30)
-{
+static void
+test_wcore_config_attrs_gles2_with_version_30(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,             WAFFLE_CONTEXT_OPENGL_ES2,
         WAFFLE_CONTEXT_MAJOR_VERSION,   3,
@@ -455,12 +511,14 @@ TEST(wcore_config_attrs, gles2_with_version_30)
         0,
     };
 
-    ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
+    assert_false(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(wcore_error_get_code(), WAFFLE_ERROR_BAD_ATTRIBUTE);
 }
 
-TEST(wcore_config_attrs, gles30)
-{
+static void
+test_wcore_config_attrs_gles30(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,             WAFFLE_CONTEXT_OPENGL_ES3,
         WAFFLE_CONTEXT_MAJOR_VERSION,   3,
@@ -468,14 +526,16 @@ TEST(wcore_config_attrs, gles30)
         0,
     };
 
-    ASSERT_TRUE(wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    ASSERT_TRUE(actual_attrs.context_major_version == 3);
-    ASSERT_TRUE(actual_attrs.context_minor_version == 0);
-    ASSERT_TRUE(actual_attrs.context_full_version == 30);
+    assert_true(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(ts->actual_attrs.context_major_version, 3);
+    assert_int_equal(ts->actual_attrs.context_minor_version, 0);
+    assert_int_equal(ts->actual_attrs.context_full_version, 30);
 }
 
-TEST(wcore_config_attrs, gles31)
-{
+static void
+test_wcore_config_attrs_gles31(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,             WAFFLE_CONTEXT_OPENGL_ES3,
         WAFFLE_CONTEXT_MAJOR_VERSION,   3,
@@ -483,14 +543,16 @@ TEST(wcore_config_attrs, gles31)
         0,
     };
 
-    ASSERT_TRUE(wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    ASSERT_TRUE(actual_attrs.context_major_version == 3);
-    ASSERT_TRUE(actual_attrs.context_minor_version == 1);
-    ASSERT_TRUE(actual_attrs.context_full_version == 31);
+    assert_true(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(ts->actual_attrs.context_major_version, 3);
+    assert_int_equal(ts->actual_attrs.context_minor_version, 1);
+    assert_int_equal(ts->actual_attrs.context_full_version, 31);
 }
 
-TEST(wcore_config_attrs, gles3_with_version_20)
-{
+static void
+test_wcore_config_attrs_gles3_with_version_20(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,             WAFFLE_CONTEXT_OPENGL_ES3,
         WAFFLE_CONTEXT_MAJOR_VERSION,   2,
@@ -498,12 +560,14 @@ TEST(wcore_config_attrs, gles3_with_version_20)
         0,
     };
 
-    ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
+    assert_false(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(wcore_error_get_code(), WAFFLE_ERROR_BAD_ATTRIBUTE);
 }
 
-TEST(wcore_config_attrs, gles3_with_version_40)
-{
+static void
+test_wcore_config_attrs_gles3_with_version_40(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,             WAFFLE_CONTEXT_OPENGL_ES3,
         WAFFLE_CONTEXT_MAJOR_VERSION,   4,
@@ -511,12 +575,14 @@ TEST(wcore_config_attrs, gles3_with_version_40)
         0,
     };
 
-    ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
+    assert_false(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(wcore_error_get_code(), WAFFLE_ERROR_BAD_ATTRIBUTE);
 }
 
-TEST(wcore_config_attrs, color_buffer_size)
-{
+static void
+test_wcore_config_attrs_color_buffer_size(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API, WAFFLE_CONTEXT_OPENGL,
 
@@ -528,88 +594,102 @@ TEST(wcore_config_attrs, color_buffer_size)
         0,
     };
 
-    expect_attrs.samples = 4;
-    expect_attrs.alpha_size = 8;
-    expect_attrs.red_size = 5;
-    expect_attrs.green_size = 6;
+    ts->expect_attrs.samples = 4;
+    ts->expect_attrs.alpha_size = 8;
+    ts->expect_attrs.red_size = 5;
+    ts->expect_attrs.green_size = 6;
 
-    expect_attrs.rgb_size = 5 + 6;
-    expect_attrs.rgba_size = 8 + 5 + 6;
+    ts->expect_attrs.rgb_size = 5 + 6;
+    ts->expect_attrs.rgba_size = 8 + 5 + 6;
 
-    ASSERT_TRUE(wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    ASSERT_TRUE(!memcmp(&actual_attrs, &expect_attrs, sizeof(expect_attrs)));
+    assert_true(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_memory_equal(&ts->actual_attrs, &ts->expect_attrs, sizeof(ts->expect_attrs));
 }
 
-TEST(wcore_config_attrs, double_buffered_is_true)
-{
+static void
+test_wcore_config_attrs_double_buffered_is_true(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,      WAFFLE_CONTEXT_OPENGL,
         WAFFLE_DOUBLE_BUFFERED, 1,
         0,
     };
-    expect_attrs.double_buffered = true;
 
-    ASSERT_TRUE(wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    ASSERT_TRUE(!memcmp(&actual_attrs, &expect_attrs, sizeof(expect_attrs)));
+    ts->expect_attrs.double_buffered = true;
+
+    assert_true(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_memory_equal(&ts->actual_attrs, &ts->expect_attrs, sizeof(ts->expect_attrs));
 }
 
-TEST(wcore_config_attrs, double_buffered_is_false)
-{
+static void
+test_wcore_config_attrs_double_buffered_is_false(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,     WAFFLE_CONTEXT_OPENGL,
         WAFFLE_DOUBLE_BUFFERED, 0,
         0,
     };
-    expect_attrs.double_buffered = false;
 
-    ASSERT_TRUE(wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    ASSERT_TRUE(!memcmp(&actual_attrs, &expect_attrs, sizeof(expect_attrs)));
+    ts->expect_attrs.double_buffered = false;
+
+    assert_true(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_memory_equal(&ts->actual_attrs, &ts->expect_attrs, sizeof(ts->expect_attrs));
 }
 
-TEST(wcore_config_attrs, double_buffered_is_bad)
-{
+static void
+test_wcore_config_attrs_double_buffered_is_bad(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,     WAFFLE_CONTEXT_OPENGL,
         WAFFLE_DOUBLE_BUFFERED, 0x31415926,
         0,
     };
 
-    ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
-    EXPECT_TRUE(strstr(wcore_error_get_info()->message, "WAFFLE_DOUBLE_BUFFERED"));
-    EXPECT_TRUE(strstr(wcore_error_get_info()->message, "0x31415926"));
+    assert_false(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(wcore_error_get_code(), WAFFLE_ERROR_BAD_ATTRIBUTE);
+    assert_true(strstr(wcore_error_get_info()->message, "WAFFLE_DOUBLE_BUFFERED"));
+    assert_true(strstr(wcore_error_get_info()->message, "0x31415926"));
 }
 
-TEST(wcore_config_attrs, sample_buffers_is_bad)
-{
+static void
+test_wcore_config_attrs_sample_buffers_is_bad(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,     WAFFLE_CONTEXT_OPENGL,
         WAFFLE_SAMPLE_BUFFERS,  0x31415926,
         0,
     };
 
-    ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
-    EXPECT_TRUE(strstr(wcore_error_get_info()->message, "WAFFLE_SAMPLE_BUFFERS"));
-    EXPECT_TRUE(strstr(wcore_error_get_info()->message, "0x31415926"));
+    assert_false(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(wcore_error_get_code(), WAFFLE_ERROR_BAD_ATTRIBUTE);
+    assert_true(strstr(wcore_error_get_info()->message, "WAFFLE_SAMPLE_BUFFERS"));
+    assert_true(strstr(wcore_error_get_info()->message, "0x31415926"));
 }
 
-TEST(wcore_config_attrs, accum_buffer_is_bad)
-{
+static void
+test_wcore_config_attrs_accum_buffer_is_bad(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,     WAFFLE_CONTEXT_OPENGL,
         WAFFLE_ACCUM_BUFFER,    0x31415926,
         0,
     };
 
-    ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
-    EXPECT_TRUE(strstr(wcore_error_get_info()->message, "WAFFLE_ACCUM_BUFFER"));
-    EXPECT_TRUE(strstr(wcore_error_get_info()->message, "0x31415926"));
+    assert_false(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(wcore_error_get_code(), WAFFLE_ERROR_BAD_ATTRIBUTE);
+    assert_true(strstr(wcore_error_get_info()->message, "WAFFLE_ACCUM_BUFFER"));
+    assert_true(strstr(wcore_error_get_info()->message, "0x31415926"));
 }
 
-TEST(wcore_config_attrs, core_profile_and_accum_buffer)
-{
+static void
+test_wcore_config_attrs_core_profile_and_accum_buffer(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,                 WAFFLE_CONTEXT_OPENGL,
         WAFFLE_CONTEXT_MAJOR_VERSION,       3,
@@ -621,159 +701,183 @@ TEST(wcore_config_attrs, core_profile_and_accum_buffer)
         0,
     };
 
-    ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
+    assert_false(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(wcore_error_get_code(), WAFFLE_ERROR_BAD_ATTRIBUTE);
 }
 
-TEST(wcore_config_attrs, negative_red)
-{
+static void
+test_wcore_config_attrs_negative_red(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,       WAFFLE_CONTEXT_OPENGL,
         WAFFLE_RED_SIZE,          -2,
         0,
     };
 
-    ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
-    EXPECT_TRUE(strstr(wcore_error_get_info()->message, "WAFFLE_RED_SIZE"));
-    EXPECT_TRUE(strstr(wcore_error_get_info()->message, "-2"));
+    assert_false(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(wcore_error_get_code(), WAFFLE_ERROR_BAD_ATTRIBUTE);
+    assert_true(strstr(wcore_error_get_info()->message, "WAFFLE_RED_SIZE"));
+    assert_true(strstr(wcore_error_get_info()->message, "-2"));
 }
 
-TEST(wcore_config_attrs, negative_green)
-{
+static void
+test_wcore_config_attrs_negative_green(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,       WAFFLE_CONTEXT_OPENGL,
         WAFFLE_GREEN_SIZE,        -2,
         0,
     };
 
-    ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
-    EXPECT_TRUE(strstr(wcore_error_get_info()->message, "WAFFLE_GREEN_SIZE"));
-    EXPECT_TRUE(strstr(wcore_error_get_info()->message, "-2"));
+    assert_false(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(wcore_error_get_code(), WAFFLE_ERROR_BAD_ATTRIBUTE);
+    assert_true(strstr(wcore_error_get_info()->message, "WAFFLE_GREEN_SIZE"));
+    assert_true(strstr(wcore_error_get_info()->message, "-2"));
 }
 
-TEST(wcore_config_attrs, negative_blue)
-{
+static void
+test_wcore_config_attrs_negative_blue(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,       WAFFLE_CONTEXT_OPENGL,
         WAFFLE_BLUE_SIZE,         -2,
         0,
     };
 
-    ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
-    EXPECT_TRUE(strstr(wcore_error_get_info()->message, "WAFFLE_BLUE_SIZE"));
-    EXPECT_TRUE(strstr(wcore_error_get_info()->message, "-2"));
+    assert_false(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(wcore_error_get_code(), WAFFLE_ERROR_BAD_ATTRIBUTE);
+    assert_true(strstr(wcore_error_get_info()->message, "WAFFLE_BLUE_SIZE"));
+    assert_true(strstr(wcore_error_get_info()->message, "-2"));
 }
 
-TEST(wcore_config_attrs, negative_alpha)
-{
+static void
+test_wcore_config_attrs_negative_alpha(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,       WAFFLE_CONTEXT_OPENGL,
         WAFFLE_ALPHA_SIZE,        -2,
         0,
     };
 
-    ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
-    EXPECT_TRUE(strstr(wcore_error_get_info()->message, "WAFFLE_ALPHA_SIZE"));
-    EXPECT_TRUE(strstr(wcore_error_get_info()->message, "-2"));
+    assert_false(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(wcore_error_get_code(), WAFFLE_ERROR_BAD_ATTRIBUTE);
+    assert_true(strstr(wcore_error_get_info()->message, "WAFFLE_ALPHA_SIZE"));
+    assert_true(strstr(wcore_error_get_info()->message, "-2"));
 }
 
-TEST(wcore_config_attrs, negative_depth)
-{
+static void
+test_wcore_config_attrs_negative_depth(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,       WAFFLE_CONTEXT_OPENGL,
         WAFFLE_DEPTH_SIZE,        -2,
         0,
     };
 
-    ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
-    EXPECT_TRUE(strstr(wcore_error_get_info()->message, "WAFFLE_DEPTH_SIZE"));
-    EXPECT_TRUE(strstr(wcore_error_get_info()->message, "-2"));
+    assert_false(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(wcore_error_get_code(), WAFFLE_ERROR_BAD_ATTRIBUTE);
+    assert_true(strstr(wcore_error_get_info()->message, "WAFFLE_DEPTH_SIZE"));
+    assert_true(strstr(wcore_error_get_info()->message, "-2"));
 }
 
-TEST(wcore_config_attrs, negative_stencil)
-{
+static void
+test_wcore_config_attrs_negative_stencil(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,       WAFFLE_CONTEXT_OPENGL,
         WAFFLE_STENCIL_SIZE,      -2,
         0,
     };
 
-    ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
-    EXPECT_TRUE(strstr(wcore_error_get_info()->message, "WAFFLE_STENCIL_SIZE"));
-    EXPECT_TRUE(strstr(wcore_error_get_info()->message, "-2"));
+    assert_false(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(wcore_error_get_code(), WAFFLE_ERROR_BAD_ATTRIBUTE);
+    assert_true(strstr(wcore_error_get_info()->message, "WAFFLE_STENCIL_SIZE"));
+    assert_true(strstr(wcore_error_get_info()->message, "-2"));
 }
 
-TEST(wcore_config_attrs, negative_samples)
-{
+static void
+test_wcore_config_attrs_negative_samples(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,       WAFFLE_CONTEXT_OPENGL,
         WAFFLE_SAMPLES,           -2,
         0,
     };
 
-    ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
-    EXPECT_TRUE(strstr(wcore_error_get_info()->message, "WAFFLE_SAMPLES"));
-    EXPECT_TRUE(strstr(wcore_error_get_info()->message, "-2"));
+    assert_false(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(wcore_error_get_code(), WAFFLE_ERROR_BAD_ATTRIBUTE);
+    assert_true(strstr(wcore_error_get_info()->message, "WAFFLE_SAMPLES"));
+    assert_true(strstr(wcore_error_get_info()->message, "-2"));
 }
 
 
-TEST(wcore_config_attrs, forward_compat_gles1_emits_bad_attribute)
-{
+static void
+test_wcore_config_attrs_forward_compat_gles1_emits_bad_attribute(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,                     WAFFLE_CONTEXT_OPENGL_ES1,
         WAFFLE_CONTEXT_FORWARD_COMPATIBLE,      true,
         0,
     };
 
-    ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
+    assert_false(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(wcore_error_get_code(), WAFFLE_ERROR_BAD_ATTRIBUTE);
 }
 
-TEST(wcore_config_attrs, forward_compat_gles2_emits_bad_attribute)
-{
+static void
+test_wcore_config_attrs_forward_compat_gles2_emits_bad_attribute(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,                     WAFFLE_CONTEXT_OPENGL_ES2,
         WAFFLE_CONTEXT_FORWARD_COMPATIBLE,      true,
         0,
     };
 
-    ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
+    assert_false(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(wcore_error_get_code(), WAFFLE_ERROR_BAD_ATTRIBUTE);
 }
 
-TEST(wcore_config_attrs, forward_compat_gles3_emits_bad_attribute)
-{
+static void
+test_wcore_config_attrs_forward_compat_gles3_emits_bad_attribute(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,                     WAFFLE_CONTEXT_OPENGL_ES3,
         WAFFLE_CONTEXT_FORWARD_COMPATIBLE,      true,
         0,
     };
 
-    ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
+    assert_false(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(wcore_error_get_code(), WAFFLE_ERROR_BAD_ATTRIBUTE);
 }
 
-TEST(wcore_config_attrs, forward_compat_gl_emits_bad_attribute)
-{
+static void
+test_wcore_config_attrs_forward_compat_gl_emits_bad_attribute(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,                     WAFFLE_CONTEXT_OPENGL,
         WAFFLE_CONTEXT_FORWARD_COMPATIBLE,      true,
         0,
     };
 
-    ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
+    assert_false(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(wcore_error_get_code(), WAFFLE_ERROR_BAD_ATTRIBUTE);
 }
 
-TEST(wcore_config_attrs, forward_compat_gl10_emits_bad_attribute)
-{
+static void
+test_wcore_config_attrs_forward_compat_gl10_emits_bad_attribute(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,                     WAFFLE_CONTEXT_OPENGL,
         WAFFLE_CONTEXT_MAJOR_VERSION,           1,
@@ -782,12 +886,14 @@ TEST(wcore_config_attrs, forward_compat_gl10_emits_bad_attribute)
         0,
     };
 
-    ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
+    assert_false(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(wcore_error_get_code(), WAFFLE_ERROR_BAD_ATTRIBUTE);
 }
 
-TEST(wcore_config_attrs, forward_compat_gl21_emits_bad_attribute)
-{
+static void
+test_wcore_config_attrs_forward_compat_gl21_emits_bad_attribute(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,                     WAFFLE_CONTEXT_OPENGL,
         WAFFLE_CONTEXT_MAJOR_VERSION,           2,
@@ -796,12 +902,14 @@ TEST(wcore_config_attrs, forward_compat_gl21_emits_bad_attribute)
         0,
     };
 
-    ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
+    assert_false(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(wcore_error_get_code(), WAFFLE_ERROR_BAD_ATTRIBUTE);
 }
 
-TEST(wcore_config_attrs, forward_compat_gl30)
-{
+static void
+test_wcore_config_attrs_forward_compat_gl30(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,                     WAFFLE_CONTEXT_OPENGL,
         WAFFLE_CONTEXT_MAJOR_VERSION,           3,
@@ -810,18 +918,20 @@ TEST(wcore_config_attrs, forward_compat_gl30)
         0,
     };
 
-    expect_attrs.context_full_version = 30;
-    expect_attrs.context_major_version = 3;
-    expect_attrs.context_minor_version = 0;
-    expect_attrs.context_forward_compatible = true;
+    ts->expect_attrs.context_full_version = 30;
+    ts->expect_attrs.context_major_version = 3;
+    ts->expect_attrs.context_minor_version = 0;
+    ts->expect_attrs.context_forward_compatible = true;
 
-    ASSERT_TRUE(wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    EXPECT_TRUE(!wcore_error_get_code());
-    EXPECT_TRUE(memcmp(&actual_attrs, &expect_attrs, sizeof(expect_attrs)) == 0);
+    assert_true(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(wcore_error_get_code(), WAFFLE_NO_ERROR);
+    assert_memory_equal(&ts->actual_attrs, &ts->expect_attrs, sizeof(ts->expect_attrs));
 }
 
-TEST(wcore_config_attrs, forward_compat_gl32)
-{
+static void
+test_wcore_config_attrs_forward_compat_gl32(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,                     WAFFLE_CONTEXT_OPENGL,
         WAFFLE_CONTEXT_MAJOR_VERSION,           3,
@@ -830,19 +940,21 @@ TEST(wcore_config_attrs, forward_compat_gl32)
         0,
     };
 
-    expect_attrs.context_full_version = 32;
-    expect_attrs.context_major_version = 3;
-    expect_attrs.context_minor_version = 2;
-    expect_attrs.context_profile = WAFFLE_CONTEXT_CORE_PROFILE;
-    expect_attrs.context_forward_compatible = true;
+    ts->expect_attrs.context_full_version = 32;
+    ts->expect_attrs.context_major_version = 3;
+    ts->expect_attrs.context_minor_version = 2;
+    ts->expect_attrs.context_profile = WAFFLE_CONTEXT_CORE_PROFILE;
+    ts->expect_attrs.context_forward_compatible = true;
 
-    ASSERT_TRUE(wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    EXPECT_TRUE(!wcore_error_get_code());
-    EXPECT_TRUE(memcmp(&actual_attrs, &expect_attrs, sizeof(expect_attrs)) == 0);
+    assert_true(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(wcore_error_get_code(), WAFFLE_NO_ERROR);
+    assert_memory_equal(&ts->actual_attrs, &ts->expect_attrs, sizeof(ts->expect_attrs));
 }
 
-TEST(wcore_config_attrs, forward_compat_gl41)
-{
+static void
+test_wcore_config_attrs_forward_compat_gl41(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,                     WAFFLE_CONTEXT_OPENGL,
         WAFFLE_CONTEXT_MAJOR_VERSION,           4,
@@ -851,19 +963,21 @@ TEST(wcore_config_attrs, forward_compat_gl41)
         0,
     };
 
-    expect_attrs.context_full_version = 41;
-    expect_attrs.context_major_version = 4;
-    expect_attrs.context_minor_version = 1;
-    expect_attrs.context_profile = WAFFLE_CONTEXT_CORE_PROFILE;
-    expect_attrs.context_forward_compatible = true;
+    ts->expect_attrs.context_full_version = 41;
+    ts->expect_attrs.context_major_version = 4;
+    ts->expect_attrs.context_minor_version = 1;
+    ts->expect_attrs.context_profile = WAFFLE_CONTEXT_CORE_PROFILE;
+    ts->expect_attrs.context_forward_compatible = true;
 
-    ASSERT_TRUE(wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    EXPECT_TRUE(!wcore_error_get_code());
-    EXPECT_TRUE(memcmp(&actual_attrs, &expect_attrs, sizeof(expect_attrs)) == 0);
+    assert_true(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(wcore_error_get_code(), WAFFLE_NO_ERROR);
+    assert_memory_equal(&ts->actual_attrs, &ts->expect_attrs, sizeof(ts->expect_attrs));
 }
 
-TEST(wcore_config_attrs, forward_compat_gl30_dont_care)
-{
+static void
+test_wcore_config_attrs_forward_compat_gl30_dont_care(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,                     WAFFLE_CONTEXT_OPENGL,
         WAFFLE_CONTEXT_MAJOR_VERSION,           3,
@@ -872,18 +986,20 @@ TEST(wcore_config_attrs, forward_compat_gl30_dont_care)
         0,
     };
 
-    expect_attrs.context_full_version = 30;
-    expect_attrs.context_major_version = 3;
-    expect_attrs.context_minor_version = 0;
-    expect_attrs.context_forward_compatible = false;
+    ts->expect_attrs.context_full_version = 30;
+    ts->expect_attrs.context_major_version = 3;
+    ts->expect_attrs.context_minor_version = 0;
+    ts->expect_attrs.context_forward_compatible = false;
 
-    ASSERT_TRUE(wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    EXPECT_TRUE(!wcore_error_get_code());
-    EXPECT_TRUE(memcmp(&actual_attrs, &expect_attrs, sizeof(expect_attrs)) == 0);
+    assert_true(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(wcore_error_get_code(), WAFFLE_NO_ERROR);
+    assert_memory_equal(&ts->actual_attrs, &ts->expect_attrs, sizeof(ts->expect_attrs));
 }
 
-TEST(wcore_config_attrs, forward_compat_gl30_bad_value)
-{
+static void
+test_wcore_config_attrs_forward_compat_gl30_bad_value(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,                     WAFFLE_CONTEXT_OPENGL,
         WAFFLE_CONTEXT_MAJOR_VERSION,           3,
@@ -892,29 +1008,33 @@ TEST(wcore_config_attrs, forward_compat_gl30_bad_value)
         0,
     };
 
-    ASSERT_TRUE(!wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    EXPECT_TRUE(wcore_error_get_code() == WAFFLE_ERROR_BAD_ATTRIBUTE);
-    EXPECT_TRUE(strstr(wcore_error_get_info()->message, "2"));
+    assert_false(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(wcore_error_get_code(), WAFFLE_ERROR_BAD_ATTRIBUTE);
+    assert_true(strstr(wcore_error_get_info()->message, "2"));
 }
 
-TEST(wcore_config_attrs, debug_gl)
-{
+static void
+test_wcore_config_attrs_debug_gl(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,                     WAFFLE_CONTEXT_OPENGL,
         WAFFLE_CONTEXT_DEBUG,                   true,
         0,
     };
 
-    expect_attrs.context_api = WAFFLE_CONTEXT_OPENGL;
-    expect_attrs.context_debug = true;
+    ts->expect_attrs.context_api = WAFFLE_CONTEXT_OPENGL;
+    ts->expect_attrs.context_debug = true;
 
-    ASSERT_TRUE(wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    EXPECT_TRUE(!wcore_error_get_code());
-    EXPECT_TRUE(memcmp(&actual_attrs, &expect_attrs, sizeof(expect_attrs)) == 0);
+    assert_true(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(wcore_error_get_code(), WAFFLE_NO_ERROR);
+    assert_memory_equal(&ts->actual_attrs, &ts->expect_attrs, sizeof(ts->expect_attrs));
 }
 
-TEST(wcore_config_attrs, debug_gl21)
-{
+static void
+test_wcore_config_attrs_debug_gl21(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,                     WAFFLE_CONTEXT_OPENGL,
         WAFFLE_CONTEXT_MAJOR_VERSION,           2,
@@ -923,19 +1043,21 @@ TEST(wcore_config_attrs, debug_gl21)
         0,
     };
 
-    expect_attrs.context_api = WAFFLE_CONTEXT_OPENGL;
-    expect_attrs.context_full_version = 21;
-    expect_attrs.context_major_version = 2;
-    expect_attrs.context_minor_version = 1;
-    expect_attrs.context_debug = true;
+    ts->expect_attrs.context_api = WAFFLE_CONTEXT_OPENGL;
+    ts->expect_attrs.context_full_version = 21;
+    ts->expect_attrs.context_major_version = 2;
+    ts->expect_attrs.context_minor_version = 1;
+    ts->expect_attrs.context_debug = true;
 
-    ASSERT_TRUE(wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    EXPECT_TRUE(!wcore_error_get_code());
-    EXPECT_TRUE(memcmp(&actual_attrs, &expect_attrs, sizeof(expect_attrs)) == 0);
+    assert_true(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(wcore_error_get_code(), WAFFLE_NO_ERROR);
+    assert_memory_equal(&ts->actual_attrs, &ts->expect_attrs, sizeof(ts->expect_attrs));
 }
 
-TEST(wcore_config_attrs, debug_gl32_core)
-{
+static void
+test_wcore_config_attrs_debug_gl32_core(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,                     WAFFLE_CONTEXT_OPENGL,
         WAFFLE_CONTEXT_PROFILE,                 WAFFLE_CONTEXT_CORE_PROFILE,
@@ -945,20 +1067,22 @@ TEST(wcore_config_attrs, debug_gl32_core)
         0,
     };
 
-    expect_attrs.context_api = WAFFLE_CONTEXT_OPENGL;
-    expect_attrs.context_profile = WAFFLE_CONTEXT_CORE_PROFILE;
-    expect_attrs.context_full_version = 32;
-    expect_attrs.context_major_version = 3;
-    expect_attrs.context_minor_version = 2;
-    expect_attrs.context_debug = true;
+    ts->expect_attrs.context_api = WAFFLE_CONTEXT_OPENGL;
+    ts->expect_attrs.context_profile = WAFFLE_CONTEXT_CORE_PROFILE;
+    ts->expect_attrs.context_full_version = 32;
+    ts->expect_attrs.context_major_version = 3;
+    ts->expect_attrs.context_minor_version = 2;
+    ts->expect_attrs.context_debug = true;
 
-    ASSERT_TRUE(wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    EXPECT_TRUE(!wcore_error_get_code());
-    EXPECT_TRUE(memcmp(&actual_attrs, &expect_attrs, sizeof(expect_attrs)) == 0);
+    assert_true(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(wcore_error_get_code(), WAFFLE_NO_ERROR);
+    assert_memory_equal(&ts->actual_attrs, &ts->expect_attrs, sizeof(ts->expect_attrs));
 }
 
-TEST(wcore_config_attrs, debug_gl32_compat)
-{
+static void
+test_wcore_config_attrs_debug_gl32_compat(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,                     WAFFLE_CONTEXT_OPENGL,
         WAFFLE_CONTEXT_PROFILE,                 WAFFLE_CONTEXT_COMPATIBILITY_PROFILE,
@@ -968,145 +1092,147 @@ TEST(wcore_config_attrs, debug_gl32_compat)
         0,
     };
 
-    expect_attrs.context_api = WAFFLE_CONTEXT_OPENGL;
-    expect_attrs.context_profile = WAFFLE_CONTEXT_COMPATIBILITY_PROFILE;
-    expect_attrs.context_full_version = 32;
-    expect_attrs.context_major_version = 3;
-    expect_attrs.context_minor_version = 2;
-    expect_attrs.context_debug = true;
+    ts->expect_attrs.context_api = WAFFLE_CONTEXT_OPENGL;
+    ts->expect_attrs.context_profile = WAFFLE_CONTEXT_COMPATIBILITY_PROFILE;
+    ts->expect_attrs.context_full_version = 32;
+    ts->expect_attrs.context_major_version = 3;
+    ts->expect_attrs.context_minor_version = 2;
+    ts->expect_attrs.context_debug = true;
 
-    ASSERT_TRUE(wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    EXPECT_TRUE(!wcore_error_get_code());
-    EXPECT_TRUE(memcmp(&actual_attrs, &expect_attrs, sizeof(expect_attrs)) == 0);
+    assert_true(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(wcore_error_get_code(), WAFFLE_NO_ERROR);
+    assert_memory_equal(&ts->actual_attrs, &ts->expect_attrs, sizeof(ts->expect_attrs));
 }
 
-TEST(wcore_config_attrs, debug_gles1)
-{
+static void
+test_wcore_config_attrs_debug_gles1(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,                     WAFFLE_CONTEXT_OPENGL_ES1,
         WAFFLE_CONTEXT_DEBUG,                   true,
         0,
     };
 
-    expect_attrs.context_api = WAFFLE_CONTEXT_OPENGL_ES1;
-    expect_attrs.context_full_version = 10;
-    expect_attrs.context_major_version = 1;
-    expect_attrs.context_debug = true;
+    ts->expect_attrs.context_api = WAFFLE_CONTEXT_OPENGL_ES1;
+    ts->expect_attrs.context_full_version = 10;
+    ts->expect_attrs.context_major_version = 1;
+    ts->expect_attrs.context_debug = true;
 
-    ASSERT_TRUE(wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    EXPECT_TRUE(!wcore_error_get_code());
-    EXPECT_TRUE(memcmp(&actual_attrs, &expect_attrs, sizeof(expect_attrs)) == 0);
+    assert_true(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(wcore_error_get_code(), WAFFLE_NO_ERROR);
+    assert_memory_equal(&ts->actual_attrs, &ts->expect_attrs, sizeof(ts->expect_attrs));
 }
 
-TEST(wcore_config_attrs, debug_gles2)
-{
+static void
+test_wcore_config_attrs_debug_gles2(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,                     WAFFLE_CONTEXT_OPENGL_ES2,
         WAFFLE_CONTEXT_DEBUG,                   true,
         0,
     };
 
-    expect_attrs.context_api = WAFFLE_CONTEXT_OPENGL_ES2;
-    expect_attrs.context_full_version = 20;
-    expect_attrs.context_major_version = 2;
-    expect_attrs.context_debug = true;
+    ts->expect_attrs.context_api = WAFFLE_CONTEXT_OPENGL_ES2;
+    ts->expect_attrs.context_full_version = 20;
+    ts->expect_attrs.context_major_version = 2;
+    ts->expect_attrs.context_debug = true;
 
-    ASSERT_TRUE(wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    EXPECT_TRUE(!wcore_error_get_code());
-    EXPECT_TRUE(memcmp(&actual_attrs, &expect_attrs, sizeof(expect_attrs)) == 0);
+    assert_true(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(wcore_error_get_code(), WAFFLE_NO_ERROR);
+    assert_memory_equal(&ts->actual_attrs, &ts->expect_attrs, sizeof(ts->expect_attrs));
 }
 
-TEST(wcore_config_attrs, debug_gles3)
-{
+static void
+test_wcore_config_attrs_debug_gles3(void **state) {
+    struct test_state_wcore_config_attrs *ts = *state;
+
     const int32_t attrib_list[] = {
         WAFFLE_CONTEXT_API,                     WAFFLE_CONTEXT_OPENGL_ES3,
         WAFFLE_CONTEXT_DEBUG,                   true,
         0,
     };
 
-    expect_attrs.context_api = WAFFLE_CONTEXT_OPENGL_ES3;
-    expect_attrs.context_full_version = 30;
-    expect_attrs.context_major_version = 3;
-    expect_attrs.context_debug = true;
+    ts->expect_attrs.context_api = WAFFLE_CONTEXT_OPENGL_ES3;
+    ts->expect_attrs.context_full_version = 30;
+    ts->expect_attrs.context_major_version = 3;
+    ts->expect_attrs.context_debug = true;
 
-    ASSERT_TRUE(wcore_config_attrs_parse(attrib_list, &actual_attrs));
-    EXPECT_TRUE(!wcore_error_get_code());
-    EXPECT_TRUE(memcmp(&actual_attrs, &expect_attrs, sizeof(expect_attrs)) == 0);
-}
-
-static void
-testsuite_wcore_config_attrs(void)
-{
-    TEST_RUN(wcore_config_attrs, null_attrib_list);
-    TEST_RUN(wcore_config_attrs, empty_attrib_list);
-    TEST_RUN(wcore_config_attrs, gl_defaults);
-    TEST_RUN(wcore_config_attrs, gles1_defaults);
-    TEST_RUN(wcore_config_attrs, gles2_defaults);
-    TEST_RUN(wcore_config_attrs, gles3_defaults);
-    TEST_RUN(wcore_config_attrs, bad_attr);
-    TEST_RUN(wcore_config_attrs, gl31_none_profile);
-    TEST_RUN(wcore_config_attrs, gl31_trash_profile);
-    TEST_RUN(wcore_config_attrs, gl31_core);
-    TEST_RUN(wcore_config_attrs, gl31_compat);
-    TEST_RUN(wcore_config_attrs, gl32_none_profile);
-    TEST_RUN(wcore_config_attrs, gl32_trash_profile);
-    TEST_RUN(wcore_config_attrs, gl32_core);
-    TEST_RUN(wcore_config_attrs, gl32_compat);
-    TEST_RUN(wcore_config_attrs, gles1_profile_is_checked);
-    TEST_RUN(wcore_config_attrs, gles2_profile_is_checked);
-    TEST_RUN(wcore_config_attrs, gles3_profile_is_checked);
-    TEST_RUN(wcore_config_attrs, negative_minor_version);
-    TEST_RUN(wcore_config_attrs, gles10);
-    TEST_RUN(wcore_config_attrs, gles11);
-    TEST_RUN(wcore_config_attrs, gles12_is_bad);
-    TEST_RUN(wcore_config_attrs, gles20);
-    TEST_RUN(wcore_config_attrs, gles21);
-    TEST_RUN(wcore_config_attrs, gles2_with_version_30);
-    TEST_RUN(wcore_config_attrs, gles30);
-    TEST_RUN(wcore_config_attrs, gles31);
-    TEST_RUN(wcore_config_attrs, gles3_with_version_20);
-    TEST_RUN(wcore_config_attrs, gles3_with_version_40);
-    TEST_RUN(wcore_config_attrs, color_buffer_size);
-    TEST_RUN(wcore_config_attrs, double_buffered_is_true);
-    TEST_RUN(wcore_config_attrs, double_buffered_is_false);
-    TEST_RUN(wcore_config_attrs, double_buffered_is_bad);
-    TEST_RUN(wcore_config_attrs, sample_buffers_is_bad);
-    TEST_RUN(wcore_config_attrs, accum_buffer_is_bad);
-    TEST_RUN(wcore_config_attrs, core_profile_and_accum_buffer);
-    TEST_RUN(wcore_config_attrs, negative_red);
-    TEST_RUN(wcore_config_attrs, negative_green);
-    TEST_RUN(wcore_config_attrs, negative_blue);
-    TEST_RUN(wcore_config_attrs, negative_alpha);
-    TEST_RUN(wcore_config_attrs, negative_depth);
-    TEST_RUN(wcore_config_attrs, negative_stencil);
-    TEST_RUN(wcore_config_attrs, negative_samples);
-    TEST_RUN(wcore_config_attrs, forward_compat_gles1_emits_bad_attribute);
-    TEST_RUN(wcore_config_attrs, forward_compat_gles2_emits_bad_attribute);
-    TEST_RUN(wcore_config_attrs, forward_compat_gles3_emits_bad_attribute);
-    TEST_RUN(wcore_config_attrs, forward_compat_gl_emits_bad_attribute);
-    TEST_RUN(wcore_config_attrs, forward_compat_gl10_emits_bad_attribute);
-    TEST_RUN(wcore_config_attrs, forward_compat_gl21_emits_bad_attribute);
-    TEST_RUN(wcore_config_attrs, forward_compat_gl30);
-    TEST_RUN(wcore_config_attrs, forward_compat_gl32);
-    TEST_RUN(wcore_config_attrs, forward_compat_gl41);
-    TEST_RUN(wcore_config_attrs, forward_compat_gl30_dont_care);
-    TEST_RUN(wcore_config_attrs, forward_compat_gl30_bad_value);
-    TEST_RUN(wcore_config_attrs, debug_gl);
-    TEST_RUN(wcore_config_attrs, debug_gl21);
-    TEST_RUN(wcore_config_attrs, debug_gl32_core);
-    TEST_RUN(wcore_config_attrs, debug_gl32_compat);
-    TEST_RUN(wcore_config_attrs, debug_gles1);
-    TEST_RUN(wcore_config_attrs, debug_gles2);
-    TEST_RUN(wcore_config_attrs, debug_gles3);
+    assert_true(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
+    assert_int_equal(wcore_error_get_code(), WAFFLE_NO_ERROR);
+    assert_memory_equal(&ts->actual_attrs, &ts->expect_attrs, sizeof(ts->expect_attrs));
 }
 
 int
-main(int argc, char *argv[])
-{
-    void (*test_runners[])(void) = {
-        testsuite_wcore_config_attrs,
-        0,
+main(void) {
+    const UnitTest tests[] = {
+        #define unit_test_make(name) unit_test_setup_teardown(name, setup, teardown)
+
+        unit_test_make(test_wcore_config_attrs_null_attrib_list),
+        unit_test_make(test_wcore_config_attrs_empty_attrib_list),
+        unit_test_make(test_wcore_config_attrs_gl_defaults),
+        unit_test_make(test_wcore_config_attrs_gles1_defaults),
+        unit_test_make(test_wcore_config_attrs_gles2_defaults),
+        unit_test_make(test_wcore_config_attrs_gles3_defaults),
+        unit_test_make(test_wcore_config_attrs_bad_attr),
+        unit_test_make(test_wcore_config_attrs_gl31_none_profile),
+        unit_test_make(test_wcore_config_attrs_gl31_trash_profile),
+        unit_test_make(test_wcore_config_attrs_gl31_core),
+        unit_test_make(test_wcore_config_attrs_gl31_compat),
+        unit_test_make(test_wcore_config_attrs_gl32_none_profile),
+        unit_test_make(test_wcore_config_attrs_gl32_trash_profile),
+        unit_test_make(test_wcore_config_attrs_gl32_core),
+        unit_test_make(test_wcore_config_attrs_gl32_compat),
+        unit_test_make(test_wcore_config_attrs_gles1_profile_is_checked),
+        unit_test_make(test_wcore_config_attrs_gles2_profile_is_checked),
+        unit_test_make(test_wcore_config_attrs_gles3_profile_is_checked),
+        unit_test_make(test_wcore_config_attrs_negative_minor_version),
+        unit_test_make(test_wcore_config_attrs_gles10),
+        unit_test_make(test_wcore_config_attrs_gles11),
+        unit_test_make(test_wcore_config_attrs_gles12_is_bad),
+        unit_test_make(test_wcore_config_attrs_gles20),
+        unit_test_make(test_wcore_config_attrs_gles21),
+        unit_test_make(test_wcore_config_attrs_gles2_with_version_30),
+        unit_test_make(test_wcore_config_attrs_gles30),
+        unit_test_make(test_wcore_config_attrs_gles31),
+        unit_test_make(test_wcore_config_attrs_gles3_with_version_20),
+        unit_test_make(test_wcore_config_attrs_gles3_with_version_40),
+        unit_test_make(test_wcore_config_attrs_color_buffer_size),
+        unit_test_make(test_wcore_config_attrs_double_buffered_is_true),
+        unit_test_make(test_wcore_config_attrs_double_buffered_is_false),
+        unit_test_make(test_wcore_config_attrs_double_buffered_is_bad),
+        unit_test_make(test_wcore_config_attrs_sample_buffers_is_bad),
+        unit_test_make(test_wcore_config_attrs_accum_buffer_is_bad),
+        unit_test_make(test_wcore_config_attrs_core_profile_and_accum_buffer),
+        unit_test_make(test_wcore_config_attrs_negative_red),
+        unit_test_make(test_wcore_config_attrs_negative_green),
+        unit_test_make(test_wcore_config_attrs_negative_blue),
+        unit_test_make(test_wcore_config_attrs_negative_alpha),
+        unit_test_make(test_wcore_config_attrs_negative_depth),
+        unit_test_make(test_wcore_config_attrs_negative_stencil),
+        unit_test_make(test_wcore_config_attrs_negative_samples),
+        unit_test_make(test_wcore_config_attrs_forward_compat_gles1_emits_bad_attribute),
+        unit_test_make(test_wcore_config_attrs_forward_compat_gles2_emits_bad_attribute),
+        unit_test_make(test_wcore_config_attrs_forward_compat_gles3_emits_bad_attribute),
+        unit_test_make(test_wcore_config_attrs_forward_compat_gl_emits_bad_attribute),
+        unit_test_make(test_wcore_config_attrs_forward_compat_gl10_emits_bad_attribute),
+        unit_test_make(test_wcore_config_attrs_forward_compat_gl21_emits_bad_attribute),
+        unit_test_make(test_wcore_config_attrs_forward_compat_gl30),
+        unit_test_make(test_wcore_config_attrs_forward_compat_gl32),
+        unit_test_make(test_wcore_config_attrs_forward_compat_gl41),
+        unit_test_make(test_wcore_config_attrs_forward_compat_gl30_dont_care),
+        unit_test_make(test_wcore_config_attrs_forward_compat_gl30_bad_value),
+        unit_test_make(test_wcore_config_attrs_debug_gl),
+        unit_test_make(test_wcore_config_attrs_debug_gl21),
+        unit_test_make(test_wcore_config_attrs_debug_gl32_core),
+        unit_test_make(test_wcore_config_attrs_debug_gl32_compat),
+        unit_test_make(test_wcore_config_attrs_debug_gles1),
+        unit_test_make(test_wcore_config_attrs_debug_gles2),
+        unit_test_make(test_wcore_config_attrs_debug_gles3),
+
+        #undef unit_test_make
     };
 
-    return wt_main(&argc, argv, test_runners);
+    return run_tests(tests);
 }

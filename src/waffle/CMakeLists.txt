@@ -211,8 +211,8 @@ function(add_unittest unittest_name)
             RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/tests"
     )
     target_link_libraries(${unittest_name}
+        cmocka
         waffle_static
-        waffle_test
     )
     add_custom_target(${unittest_name}_run
         DEPENDS ${unittest_name}
