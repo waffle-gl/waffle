@@ -205,6 +205,10 @@ set_target_properties(waffle_static
 # ----------------------------------------------------------------------------
 
 function(add_unittest unittest_name)
+    if(NOT waffle_build_tests)
+        return()
+    endif()
+
     add_executable(${unittest_name} ${ARGN})
     set_target_properties(${unittest_name}
         PROPERTIES
