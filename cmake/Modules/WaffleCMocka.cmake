@@ -43,7 +43,7 @@ set_target_properties(cmocka
     PROPERTIES
         IMPORTED_LOCATION ${cmocka_library_location}
 )
-add_dependencies(cmocka ${cmocka_library_location})
+add_dependencies(cmocka cmocka-build)
 add_custom_command(
     OUTPUT ${cmocka_library_location}
     WORKING_DIRECTORY ${cmocka_build_dir}
