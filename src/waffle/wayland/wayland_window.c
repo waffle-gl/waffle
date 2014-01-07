@@ -64,6 +64,35 @@ wayland_window_destroy(struct wcore_window *wc_self)
     return ok;
 }
 
+static void
+shell_surface_listener_ping(void *data,
+                            struct wl_shell_surface *shell_surface,
+                            uint32_t serial)
+{
+    wl_shell_surface_pong(shell_surface, serial);
+}
+
+static void
+shell_surface_listener_configure(void *data,
+                                 struct wl_shell_surface *shell_surface,
+                                 uint32_t edges,
+                                 int32_t width,
+                                 int32_t height)
+{
+}
+
+static void
+shell_surface_listener_popup_done(void *data,
+                                  struct wl_shell_surface *shell_surface)
+{
+}
+
+static const struct wl_shell_surface_listener shell_surface_listener = {
+    .ping = shell_surface_listener_ping,
+    .configure = shell_surface_listener_configure,
+    .popup_done = shell_surface_listener_popup_done
+};
+
 struct wcore_window*
 wayland_window_create(struct wcore_platform *wc_plat,
                       struct wcore_config *wc_config,
@@ -101,6 +130,10 @@ wayland_window_create(struct wcore_platform *wc_plat,
                      "wl_shell_get_shell_surface failed");
         goto error;
     }
+
+    wl_shell_surface_add_listener(self->wl_shell_surface,
+                                  &shell_surface_listener,
+                                  NULL);
 
     self->wl_window = wl_egl_window_create(self->wl_surface, width, height);
     if (!self->wl_window) {
