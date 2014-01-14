@@ -1,0 +1,57 @@
+Source: waffle
+Priority: optional
+Section: libs
+Maintainer: Jordan Justen <jordan.l.justen@intel.com>
+Build-Depends: binutils (>> 2.18),
+               cmake,
+               debhelper (>= 9),
+               docbook-xls,
+               libegl1-mesa-dev | libegl-dev,
+               libgl1-mesa-dev | libgl-dev,
+               libglu1-mesa-dev | libglu-dev,
+               libgbm-dev,
+               libwayland-dev,
+               libx11-dev,
+               pkg-config,
+               xsltproc
+Standards-Version: 3.9.5
+Homepage: http://people.freedesktop.org/~chadversary/waffle
+Vcs-Git: git://people.freedesktop.org/~chadversary/waffle.git
+Vcs-Browser: http://cgit.freedesktop.org/~chadversary/waffle
+
+Package: libwaffle-1
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Pre-Depends}, ${misc:Depends}
+Description: Waffle library utilities
+ A library for selecting GL API and window system at runtime
+
+Package: libwaffle-dev
+Architecture: any
+Section: libdevel
+Depends: libwaffle-1 (= ${binary:Version})
+Suggests: libwaffle-doc
+Description: Waffle library utilities
+ A library for selecting GL API and window system at runtime
+ .
+ This package provides the development environment for compiling
+ programs against the waffle library.
+
+Package: libwaffle-doc
+Architecture: all
+Section: doc
+Description: Waffle library utilities
+ A library for selecting GL API and window system at runtime
+ .
+ This package provides the documentation files for the waffle
+ library.
+
+Package: waffle-utils
+Architecture: any
+Section: utils
+Depends: libwaffle-1 (= ${binary:Version})
+Description: Waffle library utilities
+ A library for selecting GL API and window system at runtime
+ .
+ This package contains waffle utilities.
+ * wflinfo: Creates a GL context and prints information about
+            the created context.
