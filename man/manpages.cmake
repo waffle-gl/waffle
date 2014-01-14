@@ -25,10 +25,12 @@
 
 set(man_out_dir ${CMAKE_CURRENT_BINARY_DIR})
 
+file(MAKE_DIRECTORY ${man_out_dir}/man1)
 file(MAKE_DIRECTORY ${man_out_dir}/man3)
 file(MAKE_DIRECTORY ${man_out_dir}/man7)
 
 set(man_outputs
+    ${man_out_dir}/man1/wflinfo.1
     ${man_out_dir}/man3/waffle_attrib_list.3
     ${man_out_dir}/man3/waffle_config.3
     ${man_out_dir}/man3/waffle_context.3
@@ -64,6 +66,7 @@ function(waffle_add_manpage vol title)
         )
 endfunction()
 
+waffle_add_manpage(1 wflinfo)
 waffle_add_manpage(3 waffle_attrib_list)
 waffle_add_manpage(3 waffle_config)
 waffle_add_manpage(3 waffle_context)
@@ -89,6 +92,8 @@ add_custom_target(man
     DEPENDS ${man_outputs}
     )
 
+install(DIRECTORY ${man_out_dir}/man1
+        DESTINATION ${CMAKE_INSTALL_FULL_MANDIR})
 install(DIRECTORY ${man_out_dir}/man3
         DESTINATION ${CMAKE_INSTALL_FULL_MANDIR})
 install(DIRECTORY ${man_out_dir}/man7

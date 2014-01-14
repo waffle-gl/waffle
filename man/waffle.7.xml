@@ -115,6 +115,7 @@ Link with -lwaffle-1.
         <member><citerefentry><refentrytitle>waffle_wayland</refentrytitle><manvolnum>3</manvolnum></citerefentry>,</member>
         <member><citerefentry><refentrytitle>waffle_window</refentrytitle><manvolnum>3</manvolnum></citerefentry>,</member>
         <member><citerefentry><refentrytitle>waffle_x11_egl</refentrytitle><manvolnum>3</manvolnum></citerefentry></member>
+        <member><citerefentry><refentrytitle>wflinfo</refentrytitle><manvolnum>1</manvolnum></citerefentry>,</member>
       </simplelist>
     </para>
   </refsect1>

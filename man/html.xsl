@@ -89,6 +89,14 @@
       </xsl:when>
 
       <!--
+       ! If a citation's title begins with "wflinfo", then link it with
+       ! href="wflinfo.$manvolnum.html".
+       !-->
+      <xsl:when test="starts-with(refentrytitle, 'wflinfo')">
+        <xsl:text>wflinfo.1.html</xsl:text>
+      </xsl:when>
+
+      <!--
        ! For citations that begin with "waffle" but were not matched above,
        ! we assume that the citation title is the refentrytitle of a
        ! manpage. Link with href="$refentrytitle.$manvolnum.html".

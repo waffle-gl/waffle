@@ -1,0 +1,182 @@
+<?xml version='1.0'?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+  "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+
+<!--
+  Copyright Intel 2012 - 2013
+
+  This manual page is licensed under the Creative Commons Attribution-ShareAlike 3.0 United States License (CC BY-SA 3.0
+  US). To view a copy of this license, visit http://creativecommons.org.license/by-sa/3.0/us.
+-->
+
+<refentry
+    id="wflinfo"
+    xmlns:xi="http://www.w3.org/2001/XInclude">
+
+  <!-- See http://www.docbook.org/tdg/en/html/refentry.html. -->
+
+  <refmeta>
+    <refentrytitle>wflinfo</refentrytitle>
+    <manvolnum>1</manvolnum>
+  </refmeta>
+
+  <refnamediv>
+    <refname>wflinfo</refname>
+    <refpurpose>a utility for printing OpenGL or OpenGL ES driver information</refpurpose>
+  </refnamediv>
+
+  <refentryinfo>
+    <title>wflinfo Manual</title>
+    <productname>waffle</productname>
+    <xi:include href="common/author-chad.versace.xml"/>
+    <xi:include href="common/author-jordan.l.justen.xml"/>
+    <xi:include href="common/copyright.xml"/>
+    <xi:include href="common/legalnotice.xml"/>
+  </refentryinfo>
+
+  <refsynopsisdiv>
+    <cmdsynopsis>
+      <command>wflinfo</command>
+      <arg choice="plain">
+        <option>--platform=<replaceable class="parameter">platform</replaceable></option>
+      </arg>
+      <arg choice="plain">
+        <option>--api=<replaceable class="parameter">api</replaceable></option>
+      </arg>
+      <arg choice="opt">
+        <option><replaceable class="parameter">OPTIONS</replaceable></option>
+      </arg>
+    </cmdsynopsis>
+  </refsynopsisdiv>
+
+  <refsect1>
+    <title>Description</title>
+
+    <para>
+      wflinfo is utility which creates an OpenGL or OpenGL ES context using the waffle library and
+      prints information about the context.
+    </para>
+
+  </refsect1>
+
+  <refsect1>
+    <title>Required Parameters</title>
+
+    <variablelist>
+      <varlistentry>
+        <term><option>--platform=<replaceable class="parameter">platform</replaceable></option></term>
+        <listitem>
+          <para>
+            Where platform is
+            <simplelist type="inline">
+              <?dbchoice choice="or"?>
+              <member>android</member>
+              <member>cgl</member>
+              <member>gbm</member>
+              <member>glx</member>
+              <member>wayland</member>
+              <member>x11_egl</member>
+            </simplelist>
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--api=<replaceable class="parameter">api</replaceable></option></term>
+        <listitem>
+          <para>
+            Where api is
+            <simplelist type="inline">
+              <?dbchoice choice="or"?>
+              <member>gl</member>
+              <member>gles1</member>
+              <member>gles2</member>
+              <member>gles3</member>
+            </simplelist>
+
+          </para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </refsect1>
+
+  <refsect1>
+    <title>Options</title>
+    <variablelist>
+      <varlistentry>
+        <term><option>--version=<replaceable class="parameter">MAJOR.MINOR</replaceable></option></term>
+        <listitem>
+          <para>
+            For example --api=gl --version=3.2 would request OpenGL 3.2
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--profile=<replaceable class="parameter">profile</replaceable></option></term>
+        <listitem>
+          <para>
+            Where profile is core, compat or none
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--verbose</option></term>
+        <listitem>
+          <para>
+            Print more information
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--forward-compatible</option></term>
+        <listitem>
+          <para>
+            Request a forward compatible context be created
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--debug-context</option></term>
+        <listitem>
+          <para>
+            Request a debug context be created
+          </para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </refsect1>
+
+  <refsect1>
+    <title>Examples</title>
+
+    <para>
+      <simplelist>
+        <member>wflinfo --platform=glx --api=gl</member>
+        <member>wflinfo --platform=x11_egl --api=gl --version=3.2 --profile=core</member>
+        <member>wflinfo --platform=wayland --api=gles3</member>
+      </simplelist>
+    </para>
+
+  </refsect1>
+
+  <refsect1>
+    <title>See Also</title>
+
+    <para>
+      <simplelist>
+        <member>Website: http://people.freedesktop.org/~chadversary/waffle</member>
+        <member>Source: git://people.freedesktop.org/~chadversary/waffle.git</member>
+      </simplelist>
+    </para>
+
+    <para>
+      <simplelist>
+        <member><citerefentry><refentrytitle>waffle</refentrytitle><manvolnum>7</manvolnum></citerefentry>,</member>
+      </simplelist>
+    </para>
+  </refsect1>
+
+</refentry>
+
+<!--
+vim:tw=120 et ts=2 sw=2:
+-->

@@ -28,6 +28,7 @@ set(html_out_dir ${CMAKE_BINARY_DIR}/doc/html/man)
 file(MAKE_DIRECTORY ${html_out_dir})
 
 set(html_outputs
+    ${html_out_dir}/wflinfo.1.html
     ${html_out_dir}/waffle_attrib_list.3.html
     ${html_out_dir}/waffle_config.3.html
     ${html_out_dir}/waffle_context.3.html
@@ -65,6 +66,7 @@ function(waffle_add_html vol title)
         )
 endfunction()
 
+waffle_add_html(1 wflinfo)
 waffle_add_html(3 waffle_attrib_list)
 waffle_add_html(3 waffle_config)
 waffle_add_html(3 waffle_context)

@@ -49,6 +49,7 @@ Makefile
 /doc/html/man/waffle_wayland.3.html
 /doc/html/man/waffle_window.3.html
 /doc/html/man/waffle_x11_egl.3.html
+/doc/html/man/wflinfo.1.html
 /examples/gl_basic
 /examples/simple-x11-egl
 /lib/
