@@ -29,6 +29,7 @@ Makefile
 
 *.so
 
+/bin/wflinfo
 /doc/html/man/waffle.7.html
 /doc/html/man/waffle_attrib_list.3.html
 /doc/html/man/waffle_config.3.html
