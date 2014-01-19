@@ -148,11 +148,13 @@ cgl_make_current(struct wcore_platform *wc_self,
 }
 
 static void*
-cgl_get_proc_address(struct wcore_platform *wc_self,
-                              const char *name)
+cgl_get_proc_address(struct wcore_platform *wc_self, const char *name)
 {
-    // There is no CGLGetProcAddress.
-    return NULL;
+    // There is no CGLGetProcAddress. However, Waffle follows the principle of
+    // least surprise here. The only supported API on CGL is OpenGL, so assume
+    // the user called waffle_get_proc_address() to obtain an OpenGL function
+    // pointer.
+    return cgl_dl_sym(wc_self, WAFFLE_DL_OPENGL, name);
 }
 
 static const struct wcore_platform_vtbl cgl_platform_vtbl = {
