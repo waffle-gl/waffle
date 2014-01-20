@@ -394,7 +394,10 @@ parse_args(int argc, char *argv[], struct options *opts)
     return true;
 
 error_unrecognized_arg:
-    usage_error_printf("unrecognized option '%s'", optarg);
+    if (optarg)
+        usage_error_printf("unrecognized option '%s'", optarg);
+    else
+        usage_error_printf("parameter error");
 }
 
 /// @}
