@@ -67,7 +67,7 @@
         <term><option>--platform=<replaceable class="parameter">platform</replaceable></option></term>
         <listitem>
           <para>
-            Where platform is
+            Where <replaceable class="parameter">platform</replaceable> is
             <simplelist type="inline">
               <?dbchoice choice="or"?>
               <member>android</member>
@@ -84,7 +84,7 @@
         <term><option>--api=<replaceable class="parameter">api</replaceable></option></term>
         <listitem>
           <para>
-            Where api is
+            Where <replaceable class="parameter">api</replaceable> is
             <simplelist type="inline">
               <?dbchoice choice="or"?>
               <member>gl</member>
@@ -114,7 +114,7 @@
         <term><option>--profile=<replaceable class="parameter">profile</replaceable></option></term>
         <listitem>
           <para>
-            Where profile is core, compat or none
+            Where <replaceable class="parameter">profile</replaceable> is core, compat or none
           </para>
         </listitem>
       </varlistentry>
