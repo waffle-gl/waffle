@@ -61,20 +61,20 @@ static const char *usage_message =
     "    Create an OpenGL or OpenGL ES context and print information about it.\n"
     "\n"
     "Required Parameters:\n"
-    "    --platform\n"
+    "    -p, --platform\n"
     "        One of: android, cgl, gbm, glx, wayland or x11_egl\n"
     "\n"
-    "    --api\n"
+    "    -a, --api\n"
     "        One of: gl, gles1, gles2 or gles3\n"
     "\n"
     "Options:\n"
-    "    --version\n"
+    "    -V, --version\n"
     "        For example --api=gl --version=3.2 would request OpenGL 3.2.\n"
     "\n"
     "    --profile\n"
     "        One of: core, compat or none\n"
     "\n"
-    "    --verbose\n"
+    "    -v, --verbose\n"
     "        Print more information.\n"
     "\n"
     "    --forward-compatible\n"
@@ -87,14 +87,16 @@ static const char *usage_message =
     "    wflinfo --platform=glx --api=gl\n"
     "    wflinfo --platform=x11_egl --api=gl --version=3.2 --profile=core\n"
     "    wflinfo --platform=wayland --api=gles3\n"
+    "    wflinfo --platform=gbm --api=gl --version=3.2 --verbose\n"
+    "    wflinfo -p gbm -a gl -V 3.2 -v\n"
     ;
 
 enum {
-    OPT_PLATFORM = 1,
-    OPT_API,
-    OPT_VERSION,
+    OPT_PLATFORM = 'p',
+    OPT_API = 'a',
+    OPT_VERSION = 'V',
     OPT_PROFILE,
-    OPT_VERBOSE,
+    OPT_VERBOSE = 'v',
     OPT_DEBUG_CONTEXT,
     OPT_FORWARD_COMPATIBLE,
 };
@@ -304,7 +306,7 @@ parse_args(int argc, char *argv[], struct options *opts)
     opts->context_version = -1;
 
     while (loop_get_opt) {
-        int opt = getopt_long(argc, argv, "", get_opts, NULL);
+        int opt = getopt_long(argc, argv, "a:p:vV:", get_opts, NULL);
         switch (opt) {
             case -1:
                 loop_get_opt = false;
