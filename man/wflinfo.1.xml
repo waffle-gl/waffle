@@ -64,10 +64,11 @@
 
     <variablelist>
       <varlistentry>
+        <term><option>-p</option> <replaceable class="parameter">platform</replaceable></term>
         <term><option>--platform=<replaceable class="parameter">platform</replaceable></option></term>
         <listitem>
           <para>
-            Where platform is
+            Where <replaceable class="parameter">platform</replaceable> is
             <simplelist type="inline">
               <?dbchoice choice="or"?>
               <member>android</member>
@@ -81,10 +82,11 @@
         </listitem>
       </varlistentry>
       <varlistentry>
+        <term><option>-a</option> <replaceable class="parameter">api</replaceable></term>
         <term><option>--api=<replaceable class="parameter">api</replaceable></option></term>
         <listitem>
           <para>
-            Where api is
+            Where <replaceable class="parameter">api</replaceable> is
             <simplelist type="inline">
               <?dbchoice choice="or"?>
               <member>gl</member>
@@ -103,6 +105,7 @@
     <title>Options</title>
     <variablelist>
       <varlistentry>
+        <term><option>-V</option> <replaceable class="parameter">MAJOR.MINOR</replaceable></term>
         <term><option>--version=<replaceable class="parameter">MAJOR.MINOR</replaceable></option></term>
         <listitem>
           <para>
@@ -114,11 +117,12 @@
         <term><option>--profile=<replaceable class="parameter">profile</replaceable></option></term>
         <listitem>
           <para>
-            Where profile is core, compat or none
+            Where <replaceable class="parameter">profile</replaceable> is core, compat or none
           </para>
         </listitem>
       </varlistentry>
       <varlistentry>
+        <term><option>-v</option></term>
         <term><option>--verbose</option></term>
         <listitem>
           <para>
@@ -153,6 +157,8 @@
         <member>wflinfo --platform=glx --api=gl</member>
         <member>wflinfo --platform=x11_egl --api=gl --version=3.2 --profile=core</member>
         <member>wflinfo --platform=wayland --api=gles3</member>
+        <member>wflinfo --platform=gbm --api=gl --version=3.2 --verbose</member>
+        <member>wflinfo -p gbm -a gl -V 3.2 -v</member>
       </simplelist>
     </para>
 
