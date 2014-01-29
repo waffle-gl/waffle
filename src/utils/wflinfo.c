@@ -124,16 +124,16 @@ static const struct option get_opts[] = {
 ///
 
 static void __attribute__((noreturn))
-error_printf(const char *fmt, ...)
+error_printf(const char *module, const char *fmt, ...)
 {
     va_list ap;
 
     fflush(stdout);
 
     va_start(ap, fmt);
-    fprintf(stderr, "wflinfo: error: ");
-    vfprintf(stderr, fmt, ap);
-    fprintf(stderr, "\n");
+    printf("%s error: ", module);
+    vprintf(fmt, ap);
+    printf("\n");
     va_end(ap);
 
     exit(EXIT_FAILURE);
@@ -150,19 +150,18 @@ static void __attribute__((noreturn))
 usage_error_printf(const char *fmt, ...)
 {
     fflush(stdout);
-    fprintf(stderr, "wflinfo: usage error");
+    printf("Wflinfo usage error: ");
 
     if (fmt) {
         va_list ap;
         va_start(ap, fmt);
-        fprintf(stderr, ": ");
-        vfprintf(stderr, fmt, ap);
+        vprintf(fmt, ap);
         va_end(ap);
+        printf(" ");
     }
 
-    fprintf(stderr, "\n");
-    fprintf(stderr, "\n");
-    write_usage_and_exit(stderr, EXIT_FAILURE);
+    printf("(see wflinfo --help)\n");
+    exit(EXIT_FAILURE);
 }
 
 static void
@@ -172,15 +171,15 @@ error_waffle(void)
     const char *code = waffle_error_to_string(info->code);
 
     if (info->message_length > 0)
-        error_printf("%s: %s", code, info->message);
+        error_printf("Waffle", "0x%x %s: %s", info->code, code, info->message);
     else
-        error_printf("%s", code);
+        error_printf("Waffle", "0x%x %s", info->code, code);
 }
 
 static void
 error_get_gl_symbol(const char *name)
 {
-    error_printf("failed to get function pointer for %s", name);
+    error_printf("Wflinfo", "failed to get function pointer for %s", name);
 }
 
 /// @}
@@ -316,6 +315,9 @@ parse_args(int argc, char *argv[], struct options *opts)
     opts->context_profile = -1;
     opts->context_version = -1;
 
+    // prevent getopt_long from printing an error message
+    opterr = 0;
+
     while (loop_get_opt) {
         int opt = getopt_long(argc, argv, "a:p:vV:", get_opts, NULL);
         switch (opt) {
@@ -412,8 +414,10 @@ parse_args(int argc, char *argv[], struct options *opts)
 error_unrecognized_arg:
     if (optarg)
         usage_error_printf("unrecognized option '%s'", optarg);
+    else if (optopt)
+        usage_error_printf("unrecognized option '-%c'", optopt);
     else
-        usage_error_printf("parameter error");
+        usage_error_printf("unrecognized option");
 }
 
 /// @}
@@ -653,7 +657,7 @@ main(int argc, char **argv)
         error_waffle();
 
     if (!waffle_display_supports_context_api(dpy, opts.context_api)) {
-        error_printf("Display does not support %s",
+        error_printf("Wflinfo", "Display does not support %s",
                      waffle_enum_to_string(opts.context_api));
     }
 
