@@ -83,6 +83,9 @@ static const char *usage_message =
     "    --debug-context\n"
     "        Create a debug context.\n"
     "\n"
+    "    --help\n"
+    "        Print wflinfo usage information.\n"
+    "\n"
     "Examples:\n"
     "    wflinfo --platform=glx --api=gl\n"
     "    wflinfo --platform=x11_egl --api=gl --version=3.2 --profile=core\n"
@@ -99,6 +102,7 @@ enum {
     OPT_VERBOSE = 'v',
     OPT_DEBUG_CONTEXT,
     OPT_FORWARD_COMPATIBLE,
+    OPT_HELP,
 };
 
 static const struct option get_opts[] = {
@@ -109,6 +113,7 @@ static const struct option get_opts[] = {
     { .name = "verbose",        .has_arg = no_argument,           .val = OPT_VERBOSE },
     { .name = "debug-context",  .has_arg = no_argument,           .val = OPT_DEBUG_CONTEXT },
     { .name = "forward-compatible", .has_arg = no_argument,       .val = OPT_FORWARD_COMPATIBLE },
+    { .name = "help",           .has_arg = no_argument,           .val = OPT_HELP },
     { 0 },
 };
 
@@ -133,6 +138,14 @@ error_printf(const char *fmt, ...)
 
     exit(EXIT_FAILURE);
 }
+
+static void __attribute__((noreturn))
+write_usage_and_exit(FILE *f, int exit_code)
+{
+    fprintf(f, "%s", usage_message);
+    exit(exit_code);
+}
+
 static void __attribute__((noreturn))
 usage_error_printf(const char *fmt, ...)
 {
@@ -149,9 +162,7 @@ usage_error_printf(const char *fmt, ...)
 
     fprintf(stderr, "\n");
     fprintf(stderr, "\n");
-    fprintf(stderr, "%s", usage_message);
-
-    exit(EXIT_FAILURE);
+    write_usage_and_exit(stderr, EXIT_FAILURE);
 }
 
 static void
@@ -362,6 +373,9 @@ parse_args(int argc, char *argv[], struct options *opts)
                 break;
             case OPT_DEBUG_CONTEXT:
                 opts->context_debug = true;
+                break;
+            case OPT_HELP:
+                write_usage_and_exit(stdout, EXIT_SUCCESS);
                 break;
             default:
                 abort();

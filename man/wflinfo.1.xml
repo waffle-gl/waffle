@@ -146,6 +146,14 @@
           </para>
         </listitem>
       </varlistentry>
+      <varlistentry>
+        <term><option>--help</option></term>
+        <listitem>
+          <para>
+            Print wflinfo usage information
+          </para>
+        </listitem>
+      </varlistentry>
     </variablelist>
   </refsect1>
 
