@@ -38,6 +38,7 @@ Makefile
 /doc/html/man/waffle_dl.3.html
 /doc/html/man/waffle_enum.3.html
 /doc/html/man/waffle_error.3.html
+/doc/html/man/waffle_feature_test_macros.7.html
 /doc/html/man/waffle_gbm.3.html
 /doc/html/man/waffle_get_proc_address.3.html
 /doc/html/man/waffle_glx.3.html
