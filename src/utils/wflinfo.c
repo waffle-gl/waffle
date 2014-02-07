@@ -83,7 +83,7 @@ static const char *usage_message =
     "    --debug-context\n"
     "        Create a debug context.\n"
     "\n"
-    "    --help\n"
+    "    -h, --help\n"
     "        Print wflinfo usage information.\n"
     "\n"
     "Examples:\n"
@@ -102,7 +102,7 @@ enum {
     OPT_VERBOSE = 'v',
     OPT_DEBUG_CONTEXT,
     OPT_FORWARD_COMPATIBLE,
-    OPT_HELP,
+    OPT_HELP = 'h',
 };
 
 static const struct option get_opts[] = {
@@ -319,7 +319,7 @@ parse_args(int argc, char *argv[], struct options *opts)
     opterr = 0;
 
     while (loop_get_opt) {
-        int opt = getopt_long(argc, argv, "a:p:vV:", get_opts, NULL);
+        int opt = getopt_long(argc, argv, "a:hp:vV:", get_opts, NULL);
         switch (opt) {
             case -1:
                 loop_get_opt = false;

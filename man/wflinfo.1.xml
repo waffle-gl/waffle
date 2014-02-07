@@ -147,6 +147,7 @@
         </listitem>
       </varlistentry>
       <varlistentry>
+        <term><option>-h</option></term>
         <term><option>--help</option></term>
         <listitem>
           <para>
