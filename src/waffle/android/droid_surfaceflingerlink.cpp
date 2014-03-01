@@ -105,11 +105,22 @@ droid_setup_surface(
     if (pANWContainer == NULL)
         goto error;
 
+    // The signature of SurfaceComposerClient::createSurface() differs across
+    // Android versions.
+#if WAFFLE_ANDROID_MAJOR_VERSION >= 4 &&        \
+    WAFFLE_ANDROID_MINOR_VERSION >= 2
     pANWContainer->surface_control =
             pSFContainer->composer_client->createSurface(
             String8("Waffle Surface"),
             droid_magic_surface_width, droid_magic_surface_height,
             PIXEL_FORMAT_RGB_888, 0);
+#else
+    pANWContainer->surface_control =
+            pSFContainer->composer_client->createSurface(
+            String8("Waffle Surface"), 0,
+            droid_magic_surface_width, droid_magic_surface_height,
+            PIXEL_FORMAT_RGB_888, 0);
+#endif
 
     if (pANWContainer->surface_control == NULL) {
         wcore_errorf(WAFFLE_ERROR_UNKNOWN,
