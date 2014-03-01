@@ -52,7 +52,7 @@ droid_window_create(struct wcore_platform *wc_plat,
     self->pANWContainer = droid_create_surface(width, height,
                                                dpy->pSFContainer);
     if (!self->pANWContainer)
-        goto error;
+        goto error_droid_create_surface;
 
     ok = wegl_window_init(&self->wegl, wc_config,
                           (intptr_t) *((intptr_t*)(self->pANWContainer)));
@@ -63,6 +63,7 @@ droid_window_create(struct wcore_platform *wc_plat,
 
 error:
     droid_window_destroy(&self->wegl.wcore);
+error_droid_create_surface:
     return NULL;
 }
 
