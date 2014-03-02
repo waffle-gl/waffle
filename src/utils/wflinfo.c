@@ -695,19 +695,19 @@ wflinfo_create_context(struct options *opts,
 {
     struct waffle_context *ctx;
 
-    if (opts->context_profile == WAFFLE_CONTEXT_CORE_PROFILE &&
+    if (opts->context_profile != WAFFLE_NONE &&
         opts->context_api == WAFFLE_CONTEXT_OPENGL &&
         opts->context_version == -1) {
 
-        // If the user requested OpenGL and a CORE profile, but
-        // they didn't specify a version, then we'll try a set
+        // If the user requested OpenGL and a CORE or COMPAT profile,
+        // but they didn't specify a version, then we'll try a set
         // of known versions from highest to lowest.
 
-        static int known_gl_core_versions[] =
+        static int known_gl_profile_versions[] =
             { 32, 33, 40, 41, 42, 43, 44 };
 
-        for (int i = ARRAY_SIZE(known_gl_core_versions) - 1; i >= 0; i--) {
-            opts->context_version = known_gl_core_versions[i];
+        for (int i = ARRAY_SIZE(known_gl_profile_versions) - 1; i >= 0; i--) {
+            opts->context_version = known_gl_profile_versions[i];
             ctx = wflinfo_try_create_context(opts, config, dpy);
             opts->context_version = -1;
             if (ctx)
