@@ -619,6 +619,107 @@ removeXcodeArgs(int *argc, char **argv)
 
 #endif // __APPLE__
 
+static struct waffle_context *
+wflinfo_try_create_context(struct options *opts,
+                           struct waffle_config **config,
+                           struct waffle_display *dpy)
+{
+    int i;
+    int32_t config_attrib_list[64];
+    struct waffle_context *ctx;
+
+    i = 0;
+    config_attrib_list[i++] = WAFFLE_CONTEXT_API;
+    config_attrib_list[i++] = opts->context_api;
+
+    if (opts->context_profile != -1) {
+        config_attrib_list[i++] = WAFFLE_CONTEXT_PROFILE;
+        config_attrib_list[i++] = opts->context_profile;
+    }
+
+    if (opts->context_version != -1) {
+        config_attrib_list[i++] = WAFFLE_CONTEXT_MAJOR_VERSION;
+        config_attrib_list[i++] = opts->context_version / 10;
+        config_attrib_list[i++] = WAFFLE_CONTEXT_MINOR_VERSION;
+        config_attrib_list[i++] = opts->context_version % 10;
+    }
+
+    if (opts->context_forward_compatible) {
+        config_attrib_list[i++] = WAFFLE_CONTEXT_FORWARD_COMPATIBLE;
+        config_attrib_list[i++] = true;
+    }
+
+    if (opts->context_debug) {
+        config_attrib_list[i++] = WAFFLE_CONTEXT_DEBUG;
+        config_attrib_list[i++] = true;
+    }
+
+    static int32_t dont_care_attribs[] = {
+        WAFFLE_RED_SIZE,
+        WAFFLE_GREEN_SIZE,
+        WAFFLE_BLUE_SIZE,
+        WAFFLE_ALPHA_SIZE,
+        WAFFLE_DEPTH_SIZE,
+        WAFFLE_STENCIL_SIZE,
+        WAFFLE_DOUBLE_BUFFERED,
+    };
+    int dont_care_attribs_count =
+        sizeof(dont_care_attribs) / sizeof(dont_care_attribs[0]);
+
+    for (int j = 0; j < dont_care_attribs_count; j++) {
+        config_attrib_list[i++] = dont_care_attribs[j];
+        config_attrib_list[i++] = WAFFLE_DONT_CARE;
+    }
+
+    config_attrib_list[i++] = 0;
+
+    *config = waffle_config_choose(dpy, config_attrib_list);
+    if (!*config)
+        return NULL;
+
+    ctx = waffle_context_create(*config, NULL);
+    if (!ctx) {
+        waffle_config_destroy(*config);
+        return NULL;
+    }
+
+    return ctx;
+}
+
+#define ARRAY_SIZE(a) (sizeof(a) / sizeof(a[0]))
+
+static struct waffle_context *
+wflinfo_create_context(struct options *opts,
+                       struct waffle_config **config,
+                       struct waffle_display *dpy)
+{
+    struct waffle_context *ctx;
+
+    if (opts->context_profile == WAFFLE_CONTEXT_CORE_PROFILE &&
+        opts->context_api == WAFFLE_CONTEXT_OPENGL &&
+        opts->context_version == -1) {
+
+        // If the user requested OpenGL and a CORE profile, but
+        // they didn't specify a version, then we'll try a set
+        // of known versions from highest to lowest.
+
+        static int known_gl_core_versions[] =
+            { 32, 33, 40, 41, 42, 43, 44 };
+
+        for (int i = ARRAY_SIZE(known_gl_core_versions) - 1; i >= 0; i--) {
+            opts->context_version = known_gl_core_versions[i];
+            ctx = wflinfo_try_create_context(opts, config, dpy);
+            opts->context_version = -1;
+            if (ctx)
+                break;
+        }
+    } else {
+        ctx = wflinfo_try_create_context(opts, config, dpy);
+    }
+
+    return ctx;
+}
+
 int
 main(int argc, char **argv)
 {
@@ -628,7 +729,6 @@ main(int argc, char **argv)
     struct options opts = {0};
 
     int32_t init_attrib_list[3];
-    int32_t config_attrib_list[64];
 
     struct waffle_display *dpy;
     struct waffle_config *config;
@@ -675,56 +775,7 @@ main(int argc, char **argv)
 
     glGetStringi = waffle_get_proc_address("glGetStringi");
 
-    i = 0;
-    config_attrib_list[i++] = WAFFLE_CONTEXT_API;
-    config_attrib_list[i++] = opts.context_api;
-
-    if (opts.context_profile != -1) {
-        config_attrib_list[i++] = WAFFLE_CONTEXT_PROFILE;
-        config_attrib_list[i++] = opts.context_profile;
-    }
-
-    if (opts.context_version != -1) {
-        config_attrib_list[i++] = WAFFLE_CONTEXT_MAJOR_VERSION;
-        config_attrib_list[i++] = opts.context_version / 10;
-        config_attrib_list[i++] = WAFFLE_CONTEXT_MINOR_VERSION;
-        config_attrib_list[i++] = opts.context_version % 10;
-    }
-
-    if (opts.context_forward_compatible) {
-        config_attrib_list[i++] = WAFFLE_CONTEXT_FORWARD_COMPATIBLE;
-        config_attrib_list[i++] = true;
-    }
-
-    if (opts.context_debug) {
-        config_attrib_list[i++] = WAFFLE_CONTEXT_DEBUG;
-        config_attrib_list[i++] = true;
-    }
-
-    static int32_t dont_care_attribs[] = {
-        WAFFLE_RED_SIZE,
-        WAFFLE_GREEN_SIZE,
-        WAFFLE_BLUE_SIZE,
-        WAFFLE_ALPHA_SIZE,
-        WAFFLE_DEPTH_SIZE,
-        WAFFLE_STENCIL_SIZE,
-        WAFFLE_DOUBLE_BUFFERED,
-    };
-    int dont_care_attribs_count =
-        sizeof(dont_care_attribs) / sizeof(dont_care_attribs[0]);
-
-    for (int j = 0; j < dont_care_attribs_count; j++) {
-        config_attrib_list[i++] = dont_care_attribs[j];
-        config_attrib_list[i++] = WAFFLE_DONT_CARE;
-    }
-
-    config_attrib_list[i++] = 0;
-
-    config = waffle_config_choose(dpy, config_attrib_list);
-    if (!config)
-        error_waffle();
-
-    ctx = waffle_context_create(config, NULL);
+    ctx = wflinfo_create_context(&opts, &config, dpy);
     if (!ctx)
         error_waffle();
 
