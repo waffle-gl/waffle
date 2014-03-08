@@ -622,11 +622,16 @@ removeXcodeArgs(int *argc, char **argv)
 static struct waffle_context *
 wflinfo_try_create_context(struct options *opts,
                            struct waffle_config **config,
-                           struct waffle_display *dpy)
+                           struct waffle_display *dpy,
+                           bool exit_on_fail)
 {
     int i;
     int32_t config_attrib_list[64];
     struct waffle_context *ctx;
+
+    // Initialize outputs.
+    ctx = NULL;
+    *config = NULL;
 
     i = 0;
     config_attrib_list[i++] = WAFFLE_CONTEXT_API;
@@ -674,16 +679,29 @@ wflinfo_try_create_context(struct options *opts,
     config_attrib_list[i++] = 0;
 
     *config = waffle_config_choose(dpy, config_attrib_list);
-    if (!*config)
-        return NULL;
+    if (!*config) {
+        goto fail;
+    }
 
     ctx = waffle_context_create(*config, NULL);
     if (!ctx) {
-        waffle_config_destroy(*config);
-        return NULL;
+        goto fail;
     }
 
     return ctx;
+
+fail:
+    if (exit_on_fail) {
+        error_waffle();
+    }
+    if (ctx) {
+        waffle_context_destroy(ctx);
+    }
+    if (*config) {
+        waffle_config_destroy(*config);
+    }
+
+    return NULL;
 }
 
 #define ARRAY_SIZE(a) (sizeof(a) / sizeof(a[0]))
@@ -708,13 +726,14 @@ wflinfo_create_context(struct options *opts,
 
         for (int i = ARRAY_SIZE(known_gl_profile_versions) - 1; i >= 0; i--) {
             opts->context_version = known_gl_profile_versions[i];
-            ctx = wflinfo_try_create_context(opts, config, dpy);
+            ctx = wflinfo_try_create_context(opts, config, dpy, false);
             opts->context_version = -1;
             if (ctx)
                 break;
         }
     } else {
-        ctx = wflinfo_try_create_context(opts, config, dpy);
+        ctx = wflinfo_try_create_context(opts, config, dpy, true);
+
     }
 
     return ctx;
@@ -776,8 +795,10 @@ main(int argc, char **argv)
     glGetStringi = waffle_get_proc_address("glGetStringi");
 
     ctx = wflinfo_create_context(&opts, &config, dpy);
-    if (!ctx)
-        error_waffle();
+    if (!ctx) {
+        error_printf("Wflinfo", "Failed to create context; Try choosing a "
+                     "specific context with --version and/or --profile");
+    }
 
     window = waffle_window_create(config, WINDOW_WIDTH, WINDOW_HEIGHT);
     if (!window)
