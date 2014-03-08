@@ -94,6 +94,23 @@ create_real_context(struct wegl_config *config,
                 context_flags |= EGL_CONTEXT_OPENGL_FORWARD_COMPATIBLE_BIT_KHR;
             }
 
+            if (attrs->context_full_version >= 32)  {
+                assert(dpy->KHR_create_context);
+                switch (attrs->context_profile) {
+                    case WAFFLE_CONTEXT_CORE_PROFILE:
+                        attrib_list[i++] = EGL_CONTEXT_OPENGL_PROFILE_MASK_KHR;
+                        attrib_list[i++] = EGL_CONTEXT_OPENGL_CORE_PROFILE_BIT_KHR;
+                        break;
+                    case WAFFLE_CONTEXT_COMPATIBILITY_PROFILE:
+                        attrib_list[i++] = EGL_CONTEXT_OPENGL_PROFILE_MASK_KHR;
+                        attrib_list[i++] = EGL_CONTEXT_OPENGL_COMPATIBILITY_PROFILE_BIT_KHR;
+                        break;
+                    default:
+                        wcore_error_internal("attrs->context_profile has bad value %#x",
+                                             attrs->context_profile);
+                        return EGL_NO_CONTEXT;
+                }
+            }
             break;
 
         case WAFFLE_CONTEXT_OPENGL_ES1:
