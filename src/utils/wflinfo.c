@@ -311,8 +311,8 @@ parse_args(int argc, char *argv[], struct options *opts)
     removeXcodeArgs(&argc, argv);
 #endif
 
-    // Set some context attrs to invalid values.
-    opts->context_profile = -1;
+    // Set options to default values.
+    opts->context_profile = WAFFLE_NONE;
     opts->context_version = -1;
 
     // prevent getopt_long from printing an error message
