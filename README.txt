@@ -40,14 +40,11 @@ Examples
 For example code and makefiles that demonstrate how to use and build with
 Waffle, see the following:
 
-    - Online examples at
-      http://people.freedesktop.org/~chadversary/waffle/examples .
+    - The 'examples' directory in the source repository:
+      http://cgit.freedesktop.org/~chadversary/waffle/tree/examples
 
     - Installed examples at $PREFIX/share/doc/waffle-VERSION/examples, if
       Waffle is installed on your system.
-
-    - The 'examples' directory in the source repository:
-      http://cgit.freedesktop.org/~chadversary/waffle/tree/examples
 
 
 Build Requirements
