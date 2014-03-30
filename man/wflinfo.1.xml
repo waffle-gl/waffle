@@ -175,14 +175,6 @@
 
   <refsect1>
     <title>See Also</title>
-
-    <para>
-      <simplelist>
-        <member>Website: http://people.freedesktop.org/~chadversary/waffle</member>
-        <member>Source: git://people.freedesktop.org/~chadversary/waffle.git</member>
-      </simplelist>
-    </para>
-
     <para>
       <simplelist>
         <member><citerefentry><refentrytitle>waffle</refentrytitle><manvolnum>7</manvolnum></citerefentry></member>
