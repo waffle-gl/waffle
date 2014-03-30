@@ -25,13 +25,13 @@ For more information, visit to Waffle's website.
 Links
 =====
 
-website:        http://people.freedesktop.org/~chadversary/waffle
-issue-tracker:  https://github.com/waffle-gl/waffle/issues
-mailing-list:   waffle@lists.freedesktop.org
-maintainer:     Chad Versace <chad.versace@linux.intel.com>
 source:         git://github.com/waffle-gl/waffle
 gitweb:         https://github.com/waffle-gl/waffle
+issue-tracker:  https://github.com/waffle-gl/waffle/issues
+website:        http://people.freedesktop.org/~chadversary/waffle
+mailing-list:   waffle@lists.freedesktop.org
 license:        BSD [http://www.opensource.org/licenses/bsd-license.php]
+maintainer:     Chad Versace <chad.versace@linux.intel.com>
 
 
 Examples
