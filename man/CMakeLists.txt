@@ -26,6 +26,7 @@
 set(common_sources
     common/author-chad.versace.xml
     common/copyright.xml
+    common/issues.xml
     common/error-codes.xml
     common/legalnotice.xml
     common/return-value.xml

@@ -63,6 +63,8 @@ struct waffle_glx_window {
     </synopsis>
   </refsynopsisdiv>
 
+  <xi:include href="common/issues.xml"/>
+
   <refsect1>
     <title>See Also</title>
     <para>

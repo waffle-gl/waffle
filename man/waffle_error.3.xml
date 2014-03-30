@@ -293,6 +293,8 @@ struct waffle_error_info {
 
   </refsect1>
 
+  <xi:include href="common/issues.xml"/>
+
   <refsect1>
     <title>See Also</title>
     <para>

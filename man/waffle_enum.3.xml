@@ -151,6 +151,8 @@ enum waffle_enum {
 
   </refsect1>
 
+  <xi:include href="common/issues.xml"/>
+
   <refsect1>
     <title>See Also</title>
     <para>
