@@ -1,7 +1,7 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: waffle
 Upstream-Contact: Chad Versace <chad.versace@linux.intel.com>
-Source: http://cgit.freedesktop.org/~chadversary/waffle
+Source: https://github.com/waffle-gl/waffle
 
 Files: *
 Copyright: Intel Corproation
