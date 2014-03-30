@@ -29,8 +29,8 @@ website:        http://people.freedesktop.org/~chadversary/waffle
 issue-tracker:  https://github.com/waffle-gl/waffle/issues
 mailing-list:   waffle@lists.freedesktop.org
 maintainer:     Chad Versace <chad.versace@linux.intel.com>
-source:         git://people.freedesktop.org/~chadversary/waffle.git
-gitweb:         http://cgit.freedesktop.org/~chadversary/waffle
+source:         git://github.com/waffle-gl/waffle
+gitweb:         https://github.com/waffle-gl/waffle
 license:        BSD [http://www.opensource.org/licenses/bsd-license.php]
 
 
@@ -101,7 +101,7 @@ For full details on configuring, building, and installing Waffle, see
 0. Be in the correct directory
 ------------------------------
 
-    git clone git://people.freedesktop.org/~chadversary/waffle
+    git clone git://github.com/waffle-gl/waffle
     cd waffle
 
 or
