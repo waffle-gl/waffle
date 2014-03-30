@@ -16,8 +16,8 @@ Build-Depends: binutils (>> 2.18),
                xsltproc
 Standards-Version: 3.9.5
 Homepage: http://people.freedesktop.org/~chadversary/waffle
-Vcs-Git: git://people.freedesktop.org/~chadversary/waffle.git
-Vcs-Browser: http://cgit.freedesktop.org/~chadversary/waffle
+Vcs-Git: git://github.com/waffle-gl/waffle
+Vcs-Browser: https://github.com/waffle-gl/waffle
 
 Package: libwaffle-1
 Architecture: any

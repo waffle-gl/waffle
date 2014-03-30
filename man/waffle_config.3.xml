@@ -651,6 +651,8 @@ const int32_t attrib_list[] = {
     </refsect2>
   </refsect1>
 
+  <xi:include href="common/issues.xml"/>
+
   <refsect1>
     <title>See Also</title>
     <para>

@@ -74,11 +74,14 @@ Link with -lwaffle-1.
       Your distribution should have installed
       example source code that demonstrates how to use waffle at
       <filename>/usr/share/doc/waffle-${version}/examples</filename>.
-      You can also find example code on
-      <ulink url="http://people.freedesktop.org/~chadversary/waffle">waffle</ulink>'s website.
+      You can also find
+      <ulink url="https://github.com/waffle-gl/waffle/tree/master/examples">examples</ulink>
+      in Waffle's source repository.
     </para>
 
   </refsect1>
+
+  <xi:include href="common/issues.xml"/>
 
   <refsect1>
     <title>See Also</title>
@@ -86,7 +89,7 @@ Link with -lwaffle-1.
     <para>
       <simplelist>
         <member>Website: http://people.freedesktop.org/~chadversary/waffle</member>
-        <member>Source: git://people.freedesktop.org/~chadversary/waffle.git</member>
+        <member>Source: git://github.com/waffle-gl/waffle</member>
       </simplelist>
     </para>
 

@@ -25,12 +25,13 @@ For more information, visit to Waffle's website.
 Links
 =====
 
+source:         git://github.com/waffle-gl/waffle
+gitweb:         https://github.com/waffle-gl/waffle
+issue-tracker:  https://github.com/waffle-gl/waffle/issues
 website:        http://people.freedesktop.org/~chadversary/waffle
 mailing-list:   waffle@lists.freedesktop.org
-maintainer:     Chad Versace <chad.versace@linux.intel.com>
-source:         git://people.freedesktop.org/~chadversary/waffle.git
-gitweb:         http://cgit.freedesktop.org/~chadversary/waffle
 license:        BSD [http://www.opensource.org/licenses/bsd-license.php]
+maintainer:     Chad Versace <chad.versace@linux.intel.com>
 
 
 Examples
@@ -39,14 +40,11 @@ Examples
 For example code and makefiles that demonstrate how to use and build with
 Waffle, see the following:
 
-    - Online examples at
-      http://people.freedesktop.org/~chadversary/waffle/examples .
+    - The 'examples' directory in the source repository:
+      http://cgit.freedesktop.org/~chadversary/waffle/tree/examples
 
     - Installed examples at $PREFIX/share/doc/waffle-VERSION/examples, if
       Waffle is installed on your system.
-
-    - The 'examples' directory in the source repository:
-      http://cgit.freedesktop.org/~chadversary/waffle/tree/examples
 
 
 Build Requirements
@@ -103,7 +101,7 @@ For full details on configuring, building, and installing Waffle, see
 0. Be in the correct directory
 ------------------------------
 
-    git clone git://people.freedesktop.org/~chadversary/waffle
+    git clone git://github.com/waffle-gl/waffle
     cd waffle
 
 or

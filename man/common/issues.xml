@@ -1,0 +1,15 @@
+<?xml version='1.0'?>
+<!DOCTYPE copyright PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+  "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+
+<refsect1>
+  <title>Issues</title>
+  <para>
+    Please report bugs or and feature requests to
+    <ulink url="https://github.com/waffle-gl/waffle/issues"/>.
+  </para>
+</refsect1>
+
+<!--
+vim:tw=120 et ts=2 sw=2:
+-->

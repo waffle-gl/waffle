@@ -167,6 +167,8 @@ struct waffle_display;
     </para>
   </refsect1>
 
+  <xi:include href="common/issues.xml"/>
+
   <refsect1>
     <title>See Also</title>
     <para>
