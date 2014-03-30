@@ -497,7 +497,7 @@ print_context_flags(void)
 
 /// @brief Print out information about the context that was created.
 static bool
-print_wflinfo(struct options *opts)
+print_wflinfo(const struct options *opts)
 {
     while(glGetError() != GL_NO_ERROR) {
         /* Clear all errors */
@@ -601,7 +601,7 @@ removeXcodeArgs(int *argc, char **argv)
 #endif // __APPLE__
 
 static struct waffle_context *
-wflinfo_try_create_context(struct options *opts,
+wflinfo_try_create_context(const struct options *opts,
                            struct waffle_config **config,
                            struct waffle_display *dpy,
                            bool exit_on_fail)
@@ -688,7 +688,7 @@ fail:
 #define ARRAY_SIZE(a) (sizeof(a) / sizeof(a[0]))
 
 static struct waffle_context *
-wflinfo_create_context(struct options *opts,
+wflinfo_create_context(const struct options *opts,
                        struct waffle_config **config,
                        struct waffle_display *dpy)
 {
@@ -705,10 +705,11 @@ wflinfo_create_context(struct options *opts,
         static int known_gl_profile_versions[] =
             { 32, 33, 40, 41, 42, 43, 44 };
 
+        struct options tmp_opts = *opts;
+
         for (int i = ARRAY_SIZE(known_gl_profile_versions) - 1; i >= 0; i--) {
-            opts->context_version = known_gl_profile_versions[i];
-            ctx = wflinfo_try_create_context(opts, config, dpy, false);
-            opts->context_version = -1;
+            tmp_opts.context_version = known_gl_profile_versions[i];
+            ctx = wflinfo_try_create_context(&tmp_opts, config, dpy, false);
             if (ctx)
                 break;
         }
