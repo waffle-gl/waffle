@@ -26,6 +26,7 @@ Links
 =====
 
 website:        http://people.freedesktop.org/~chadversary/waffle
+issue-tracker:  https://github.com/waffle-gl/waffle/issues
 mailing-list:   waffle@lists.freedesktop.org
 maintainer:     Chad Versace <chad.versace@linux.intel.com>
 source:         git://people.freedesktop.org/~chadversary/waffle.git
