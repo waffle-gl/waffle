@@ -600,9 +600,29 @@ removeXcodeArgs(int *argc, char **argv)
 
 #endif // __APPLE__
 
+/// @brief Attributes for waffle_choose_config().
+struct wflinfo_config_attrs {
+    /// @brief One of `WAFFLE_CONTEXT_OPENGL_*`.
+    enum waffle_enum api;
+
+    /// @brief One of `WAFFLE_CONTEXT_PROFILE_*` or `WAFFLE_NONE`.
+    enum waffle_enum profile;
+
+    /// @brief The context version times 10.
+    ///
+    /// For example, set this to 32 if you want a 3.2 context.
+    int32_t version;
+
+    /// @brief Create a forward-compatible context.
+    bool forward_compat;
+
+    /// @brief Create a debug context.
+    bool debug;
+};
+
 static bool
-wflinfo_try_create_context(const struct options *opts,
-                           struct waffle_display *dpy,
+wflinfo_try_create_context(struct waffle_display *dpy,
+                           struct wflinfo_config_attrs attrs,
                            struct waffle_context **out_ctx,
                            struct waffle_config **out_config,
                            bool exit_on_fail)
@@ -614,26 +634,26 @@ wflinfo_try_create_context(const struct options *opts,
 
     i = 0;
     config_attrib_list[i++] = WAFFLE_CONTEXT_API;
-    config_attrib_list[i++] = opts->context_api;
+    config_attrib_list[i++] = attrs.api;
 
-    if (opts->context_profile != WAFFLE_DONT_CARE) {
+    if (attrs.profile != WAFFLE_DONT_CARE) {
         config_attrib_list[i++] = WAFFLE_CONTEXT_PROFILE;
-        config_attrib_list[i++] = opts->context_profile;
+        config_attrib_list[i++] = attrs.profile;
     }
 
-    if (opts->context_version != WAFFLE_DONT_CARE) {
+    if (attrs.version != WAFFLE_DONT_CARE) {
         config_attrib_list[i++] = WAFFLE_CONTEXT_MAJOR_VERSION;
-        config_attrib_list[i++] = opts->context_version / 10;
+        config_attrib_list[i++] = attrs.version / 10;
         config_attrib_list[i++] = WAFFLE_CONTEXT_MINOR_VERSION;
-        config_attrib_list[i++] = opts->context_version % 10;
+        config_attrib_list[i++] = attrs.version % 10;
     }
 
-    if (opts->context_forward_compatible) {
+    if (attrs.forward_compat) {
         config_attrib_list[i++] = WAFFLE_CONTEXT_FORWARD_COMPATIBLE;
         config_attrib_list[i++] = true;
     }
 
-    if (opts->context_debug) {
+    if (attrs.debug) {
         config_attrib_list[i++] = WAFFLE_CONTEXT_DEBUG;
         config_attrib_list[i++] = true;
     }
@@ -688,14 +708,14 @@ fail:
 #define ARRAY_SIZE(a) (sizeof(a) / sizeof(a[0]))
 
 static bool
-wflinfo_create_context(const struct options *opts,
-                       struct waffle_display *dpy,
+wflinfo_create_context(struct waffle_display *dpy,
+                       struct wflinfo_config_attrs attrs,
                        struct waffle_context **out_ctx,
                        struct waffle_config **out_config)
 {
-    if (opts->context_profile != WAFFLE_NONE &&
-        opts->context_api == WAFFLE_CONTEXT_OPENGL &&
-        opts->context_version == WAFFLE_DONT_CARE) {
+    if (attrs.api == WAFFLE_CONTEXT_OPENGL &&
+        attrs.profile != WAFFLE_NONE &&
+        attrs.version == WAFFLE_DONT_CARE) {
 
         // If the user requested OpenGL and a CORE or COMPAT profile,
         // but they didn't specify a version, then we'll try a set
@@ -705,11 +725,10 @@ wflinfo_create_context(const struct options *opts,
             { 32, 33, 40, 41, 42, 43, 44 };
 
         bool ok;
-        struct options tmp_opts = *opts;
 
         for (int i = ARRAY_SIZE(known_gl_profile_versions) - 1; i >= 0; i--) {
-            tmp_opts.context_version = known_gl_profile_versions[i];
-            ok = wflinfo_try_create_context(&tmp_opts, dpy,
+            attrs.version = known_gl_profile_versions[i];
+            ok = wflinfo_try_create_context(dpy, attrs,
                                             out_ctx, out_config, false);
             if (ok) {
                 return true;
@@ -718,7 +737,8 @@ wflinfo_create_context(const struct options *opts,
 
         return false;
     } else {
-        return wflinfo_try_create_context(opts, dpy, out_ctx, out_config, true);
+        return wflinfo_try_create_context(dpy, attrs,
+                                          out_ctx, out_config, true);
     }
 }
 
@@ -777,7 +797,14 @@ main(int argc, char **argv)
 
     glGetStringi = waffle_get_proc_address("glGetStringi");
 
-    ok = wflinfo_create_context(&opts, dpy, &ctx, &config);
+    const struct wflinfo_config_attrs config_attrs = {
+        .api = opts.context_api,
+        .profile = opts.context_profile,
+        .version = opts.context_version,
+        .forward_compat = opts.context_forward_compatible,
+        .debug = opts.context_debug,
+    };
+    ok = wflinfo_create_context(dpy, config_attrs, &ctx, &config);
     if (!ok) {
         error_printf("Wflinfo", "Failed to create context; Try choosing a "
                      "specific context with --version and/or --profile");
