@@ -600,19 +600,17 @@ removeXcodeArgs(int *argc, char **argv)
 
 #endif // __APPLE__
 
-static struct waffle_context *
+static bool
 wflinfo_try_create_context(const struct options *opts,
-                           struct waffle_config **config,
                            struct waffle_display *dpy,
+                           struct waffle_context **out_ctx,
+                           struct waffle_config **out_config,
                            bool exit_on_fail)
 {
     int i;
     int32_t config_attrib_list[64];
-    struct waffle_context *ctx;
-
-    // Initialize outputs.
-    ctx = NULL;
-    *config = NULL;
+    struct waffle_context *ctx = NULL;
+    struct waffle_config *config = NULL;
 
     i = 0;
     config_attrib_list[i++] = WAFFLE_CONTEXT_API;
@@ -659,17 +657,19 @@ wflinfo_try_create_context(const struct options *opts,
 
     config_attrib_list[i++] = 0;
 
-    *config = waffle_config_choose(dpy, config_attrib_list);
-    if (!*config) {
+    config = waffle_config_choose(dpy, config_attrib_list);
+    if (!config) {
         goto fail;
     }
 
-    ctx = waffle_context_create(*config, NULL);
+    ctx = waffle_context_create(config, NULL);
     if (!ctx) {
         goto fail;
     }
 
-    return ctx;
+    *out_ctx = ctx;
+    *out_config = config;
+    return true;
 
 fail:
     if (exit_on_fail) {
@@ -678,11 +678,11 @@ fail:
     if (ctx) {
         waffle_context_destroy(ctx);
     }
-    if (*config) {
-        waffle_config_destroy(*config);
+    if (config) {
+        waffle_config_destroy(config);
     }
 
-    return NULL;
+    return false;
 }
 
 #define ARRAY_SIZE(a) (sizeof(a) / sizeof(a[0]))
@@ -692,7 +692,8 @@ wflinfo_create_context(const struct options *opts,
                        struct waffle_config **config,
                        struct waffle_display *dpy)
 {
-    struct waffle_context *ctx;
+    struct waffle_context *ctx = NULL;
+    bool ok = true;
 
     if (opts->context_profile != WAFFLE_NONE &&
         opts->context_api == WAFFLE_CONTEXT_OPENGL &&
@@ -709,13 +710,13 @@ wflinfo_create_context(const struct options *opts,
 
         for (int i = ARRAY_SIZE(known_gl_profile_versions) - 1; i >= 0; i--) {
             tmp_opts.context_version = known_gl_profile_versions[i];
-            ctx = wflinfo_try_create_context(&tmp_opts, config, dpy, false);
-            if (ctx)
+            ok = wflinfo_try_create_context(&tmp_opts, dpy, &ctx, config, false);
+            if (!ok) {
                 break;
+            }
         }
     } else {
-        ctx = wflinfo_try_create_context(opts, config, dpy, true);
-
+        wflinfo_try_create_context(opts, dpy, &ctx, config, true);
     }
 
     return ctx;
