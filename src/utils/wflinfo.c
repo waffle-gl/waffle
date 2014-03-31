@@ -687,14 +687,12 @@ fail:
 
 #define ARRAY_SIZE(a) (sizeof(a) / sizeof(a[0]))
 
-static struct waffle_context *
+static bool
 wflinfo_create_context(const struct options *opts,
-                       struct waffle_config **config,
-                       struct waffle_display *dpy)
+                       struct waffle_display *dpy,
+                       struct waffle_context **out_ctx,
+                       struct waffle_config **out_config)
 {
-    struct waffle_context *ctx = NULL;
-    bool ok = true;
-
     if (opts->context_profile != WAFFLE_NONE &&
         opts->context_api == WAFFLE_CONTEXT_OPENGL &&
         opts->context_version == -1) {
@@ -706,20 +704,22 @@ wflinfo_create_context(const struct options *opts,
         static int known_gl_profile_versions[] =
             { 32, 33, 40, 41, 42, 43, 44 };
 
+        bool ok;
         struct options tmp_opts = *opts;
 
         for (int i = ARRAY_SIZE(known_gl_profile_versions) - 1; i >= 0; i--) {
             tmp_opts.context_version = known_gl_profile_versions[i];
-            ok = wflinfo_try_create_context(&tmp_opts, dpy, &ctx, config, false);
-            if (!ok) {
-                break;
+            ok = wflinfo_try_create_context(&tmp_opts, dpy,
+                                            out_ctx, out_config, false);
+            if (ok) {
+                return true;
             }
         }
-    } else {
-        wflinfo_try_create_context(opts, dpy, &ctx, config, true);
-    }
 
-    return ctx;
+        return false;
+    } else {
+        return wflinfo_try_create_context(opts, dpy, out_ctx, out_config, true);
+    }
 }
 
 int
@@ -777,8 +777,8 @@ main(int argc, char **argv)
 
     glGetStringi = waffle_get_proc_address("glGetStringi");
 
-    ctx = wflinfo_create_context(&opts, &config, dpy);
-    if (!ctx) {
+    ok = wflinfo_create_context(&opts, dpy, &ctx, &config);
+    if (!ok) {
         error_printf("Wflinfo", "Failed to create context; Try choosing a "
                      "specific context with --version and/or --profile");
     }
