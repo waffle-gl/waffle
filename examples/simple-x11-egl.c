@@ -108,7 +108,6 @@ main()
     sleep(1); // Sleep so that user can see window.
     
     // Draw green.
-    glClearColor(1.0, 0.0, 0.0, 1.0);
     glClearColor(0.0, 1.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
     waffle_window_swap_buffers(window);
