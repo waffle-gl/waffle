@@ -128,12 +128,10 @@ error_printf(const char *module, const char *fmt, ...)
 {
     va_list ap;
 
-    fflush(stdout);
-
     va_start(ap, fmt);
-    printf("%s error: ", module);
-    vprintf(fmt, ap);
-    printf("\n");
+    fprintf(stderr, "%s error: ", module);
+    vfprintf(stderr, fmt, ap);
+    fprintf(stderr, "\n");
     va_end(ap);
 
     exit(EXIT_FAILURE);
@@ -149,18 +147,17 @@ write_usage_and_exit(FILE *f, int exit_code)
 static void __attribute__((noreturn))
 usage_error_printf(const char *fmt, ...)
 {
-    fflush(stdout);
-    printf("Wflinfo usage error: ");
+    fprintf(stderr, "Wflinfo usage error: ");
 
     if (fmt) {
         va_list ap;
         va_start(ap, fmt);
-        vprintf(fmt, ap);
+        vfprintf(stderr, fmt, ap);
         va_end(ap);
-        printf(" ");
+        fprintf(stderr, " ");
     }
 
-    printf("(see wflinfo --help)\n");
+    fprintf(stderr, "(see wflinfo --help)\n");
     exit(EXIT_FAILURE);
 }
 
