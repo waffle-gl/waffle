@@ -62,7 +62,7 @@ function(waffle_add_manpage vol title)
         OUTPUT man${vol}/${title}.${vol}
         DEPENDS ${title}.${vol}.xml ${man_common_sources}
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        COMMAND ${waffle_xsltproc} --xinclude -o ${man_out_dir}/man${vol}/ manpage.xsl ${title}.${vol}.xml
+        COMMAND ${waffle_xsltproc} -nonet --xinclude -o ${man_out_dir}/man${vol}/ manpage.xsl ${title}.${vol}.xml
         )
 endfunction()
 

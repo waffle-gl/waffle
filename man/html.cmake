@@ -62,7 +62,7 @@ function(waffle_add_html vol title)
         OUTPUT ${output}
         DEPENDS ${main_input} ${html_common_sources}
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        COMMAND ${waffle_xsltproc} --xinclude -o ${output} html.xsl ${main_input}
+        COMMAND ${waffle_xsltproc} -nonet --xinclude -o ${output} html.xsl ${main_input}
         )
 endfunction()
 
