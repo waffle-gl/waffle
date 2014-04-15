@@ -5,7 +5,7 @@ Maintainer: Jordan Justen <jordan.l.justen@intel.com>
 Build-Depends: binutils (>> 2.18),
                cmake,
                debhelper (>= 9),
-               docbook-xls,
+               docbook-xsl,
                libegl1-mesa-dev | libegl-dev,
                libgl1-mesa-dev | libgl-dev,
                libglu1-mesa-dev | libglu-dev,
