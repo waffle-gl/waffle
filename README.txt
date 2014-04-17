@@ -1,19 +1,19 @@
-Waffle - a library for selecting GL API and window system at runtime
+Waffle - a library for selecting an OpenGL API and window system at runtime
 
 Summary
 =======
 
-Waffle is a cross-platform library that allows one to defer selection of GL
-API and of window system until runtime. For example, on Linux, Waffle enables
-an application to select X11/EGL with an OpenGL 3.3 core profile, Wayland
-with OpenGL ES2, and other window system / API combinations.
+Waffle is a cross-platform library that allows one to defer selection of an
+OpenGL API and of window system until runtime. For example, on Linux, Waffle
+enables an application to select X11/EGL with an OpenGL 3.3 core profile,
+Wayland with OpenGL ES2, and other window system / API combinations.
 
-Waffle's immediate goal is to enable Piglit [1] to test multiple GL flavors in
-a cross-platform way, and to allow each Piglit test to choose its GL API and
-window system at runtime. A future goal is to enable the ability to record
-(with another tool such APITrace [2]) an application's GL calls on one
-operating system or window system, and then replay that trace on a different
-system.
+Waffle's immediate goal is to enable Piglit [1] to test multiple OpenGL
+flavors in a cross-platform way, and to allow each Piglit test to choose its
+OpenGL API and window system at runtime. A future goal is to enable the
+ability to record (with another tool such APITrace [2]) an application's
+OpenGL calls on one operating system or window system, and then replay
+that trace on a different system.
 
 For more information, visit to Waffle's website.
 
@@ -160,6 +160,6 @@ install libwaffle into $HOME/lib, use the following cmake invocation:
     make check
     make install
 
-Calling `make check` only runs unittests that do not access the native GL
-platform. To run additional functional tests, which do access the native GL
-platform, call `make check-func`.
+Calling `make check` only runs unittests that do not access the native OpenGL
+platform. To run additional functional tests, which do access the native
+OpenGL platform, call `make check-func`.

@@ -3,7 +3,7 @@
   "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
 
 <!--
-  Copyright Intel 2012
+  Copyright Intel 2012 - 2014
 
   This manual page is licensed under the Creative Commons Attribution-ShareAlike 3.0 United States License (CC BY-SA 3.0
   US). To view a copy of this license, visit http://creativecommons.org.license/by-sa/3.0/us.
@@ -22,7 +22,7 @@
 
   <refnamediv>
     <refname>waffle</refname>
-    <refpurpose>a library for selecting GL API and window system at runtime</refpurpose>
+    <refpurpose>a library for selecting an OpenGL API and window system at runtime</refpurpose>
   </refnamediv>
 
   <refentryinfo>
@@ -45,7 +45,7 @@ Link with -lwaffle-1.
     <title>Description</title>
 
     <para>
-      Waffle is a cross-platform library that allows one to defer selection of GL API and of window system until
+      Waffle is a cross-platform library that allows one to defer selection of an OpenGL API and of window system until
       runtime. For example, on Linux, Waffle enables an application to select X11/EGL with an OpenGL 3.3 core profile,
       Wayland with OpenGL ES2, and other window system / API combinations.
     </para>
@@ -54,11 +54,11 @@ Link with -lwaffle-1.
       Waffle's immediate goal is to enable
       <ulink url="http://cgit.freedesktop.org/piglit/tree/README">Piglit</ulink>,
       <ulink url="http://mesa3d.org">Mesa</ulink>'s OpenGL test suite,
-      to test multiple GL flavors in a cross-platform way, and to allow each Piglit test to choose its GL API and window
-      system at runtime. A future goal is to enable the ability to record,
+      to test multiple OpenGL flavors in a cross-platform way, and to allow each Piglit test to choose its OpenGL API
+      and window system at runtime. A future goal is to enable the ability to record,
       with another tool such as <ulink url="http://github.com/apitrace/apitrace#readme">APITrace</ulink>,
-      an application's GL calls on one operating system or window system, and then replay that trace on a different
-      system.
+      an application's OpenGL calls on one operating system or window system, and then replay that trace on a
+      different system.
     </para>
 
     <para>

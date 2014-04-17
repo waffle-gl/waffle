@@ -24,12 +24,12 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /// @file wflinfo.c
-/// @brief Print GL info using Waffle.
+/// @brief Print OpenGL info using Waffle.
 ///
 /// This program does the following:
-///     1. Dynamically choose the platform and GL API according to command
-///        line arguments.
-///     2. Create a GL context.
+///     1. Dynamically choose the platform and OpenGL API according to
+///        command line arguments.
+///     2. Create an OpenGL context.
 ///     3. Print information about the context.
 
 #define WAFFLE_API_VERSION 0x0103
@@ -180,7 +180,7 @@ error_get_gl_symbol(const char *name)
 }
 
 /// @}
-/// @defgroup GL decalrations
+/// @defgroup OpenGL decalrations
 /// @{
 
 typedef float GLclampf;
@@ -335,7 +335,7 @@ parse_args(int argc, char *argv[], struct options *opts)
                 ok = enum_map_translate_str(context_api_map, optarg,
                                             &opts->context_api);
                 if (!ok) {
-                    usage_error_printf("'%s' is not a valid API for a GL "
+                    usage_error_printf("'%s' is not a valid API for an OpenGL "
                                        "context", optarg);
                 }
                 break;
@@ -346,7 +346,7 @@ parse_args(int argc, char *argv[], struct options *opts)
 
                 match_count = sscanf(optarg, "%d.%d", &major, &minor);
                 if (match_count != 2) {
-                    usage_error_printf("'%s' is not a valid GL version",
+                    usage_error_printf("'%s' is not a valid OpenGL version",
                                        optarg);
                 }
                 opts->context_version = 10 * major + minor;
@@ -360,7 +360,7 @@ parse_args(int argc, char *argv[], struct options *opts)
                 } else if (strcmp(optarg, "compat") == 0) {
                     opts->context_profile = WAFFLE_CONTEXT_COMPATIBILITY_PROFILE;
                 } else {
-                    usage_error_printf("'%s' is not a valid GL profile",
+                    usage_error_printf("'%s' is not a valid OpenGL profile",
                                        optarg);
                 }
                 break;

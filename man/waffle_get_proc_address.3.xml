@@ -22,7 +22,7 @@
 
   <refnamediv>
     <refname>waffle_get_proc_address</refname>
-    <refpurpose>Query address of GL functions</refpurpose>
+    <refpurpose>Query address of OpenGL functions</refpurpose>
   </refnamediv>
 
   <refentryinfo>

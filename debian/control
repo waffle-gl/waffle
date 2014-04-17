@@ -23,7 +23,7 @@ Package: libwaffle-1
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Pre-Depends}, ${misc:Depends}
 Description: Waffle library utilities
- A library for selecting GL API and window system at runtime
+ A library for selecting an OpenGL API and window system at runtime
 
 Package: libwaffle-dev
 Architecture: any
@@ -31,7 +31,7 @@ Section: libdevel
 Depends: libwaffle-1 (= ${binary:Version})
 Suggests: libwaffle-doc
 Description: Waffle library utilities
- A library for selecting GL API and window system at runtime
+ A library for selecting an OpenGL API and window system at runtime
  .
  This package provides the development environment for compiling
  programs against the waffle library.
@@ -40,7 +40,7 @@ Package: libwaffle-doc
 Architecture: all
 Section: doc
 Description: Waffle library utilities
- A library for selecting GL API and window system at runtime
+ A library for selecting an OpenGL API and window system at runtime
  .
  This package provides the documentation files for the waffle
  library.
@@ -50,8 +50,8 @@ Architecture: any
 Section: utils
 Depends: libwaffle-1 (= ${binary:Version})
 Description: Waffle library utilities
- A library for selecting GL API and window system at runtime
+ A library for selecting an OpenGL API and window system at runtime
  .
  This package contains waffle utilities.
- * wflinfo: Creates a GL context and prints information about
+ * wflinfo: Creates an OpenGL context and prints information about
             the created context.

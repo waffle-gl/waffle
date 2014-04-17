@@ -4,7 +4,7 @@ libdir=@CMAKE_INSTALL_FULL_LIBDIR@
 includedir=@CMAKE_INSTALL_FULL_INCLUDEDIR@
 
 Name: @waffle_libname@
-Description: a library for selecting GL API and window system at runtime
+Description: a library for selecting an OpenGL API and window system at runtime
 Version: @waffle_version@
 Libs: -L${libdir} -l@waffle_libname@
 Cflags: -I${includedir}/@waffle_libname@

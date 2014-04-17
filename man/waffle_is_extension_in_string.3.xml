@@ -67,7 +67,7 @@
 
             in the format returned by <code>glGetString(GL_EXTENSIONS)</code>.
 
-            Note that this function is not restricted to the GL extension string;
+            Note that this function is not restricted to the OpenGL extension string;
 
             it can also be used on the GLX and EGL extension strings.
           </para>

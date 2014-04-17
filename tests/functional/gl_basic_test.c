@@ -24,7 +24,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /// @file
-/// @brief Test basic GL rendering with all platform/gl_api combinations.
+/// @brief Test basic OpenGL rendering with all platform/gl_api combinations.
 ///
 /// Each test does the following:
 ///     1. Initialize waffle with a platform and gl_api.
@@ -82,7 +82,7 @@ static uint8_t pixels[4 * WINDOW_WIDTH * WINDOW_HEIGHT];
     } while (0)
 
 /// @}
-/// @defgroup GL declarations
+/// @defgroup OpenGL declarations
 /// @{
 
 typedef unsigned int        GLenum;
@@ -291,7 +291,7 @@ gl_basic_draw__(struct gl_basic_draw_args__ args)
         }
     }
 
-    // Get GL functions.
+    // Get OpenGL functions.
     ASSERT_TRUE(glClear         = waffle_dl_sym(libgl, "glClear"));
     ASSERT_TRUE(glClearColor    = waffle_dl_sym(libgl, "glClearColor"));
     ASSERT_TRUE(glGetError      = waffle_dl_sym(libgl, "glGetError"));

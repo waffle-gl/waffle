@@ -1,4 +1,4 @@
-// Copyright 2012 Intel Corporation
+// Copyright 2012, 2014 Intel Corporation
 //
 // All rights reserved.
 //
@@ -26,9 +26,9 @@
 /// @file simple-x11-egl.c
 ///
 /// This little example program renders to an X11 window with EGL and an OpenGL
-/// ES2 context.  The program does not include any GL headers and does not need
-/// to link to libGL. It declares the needed GL symbols itself and obtains the
-/// GL functions with waffle_dl_sym().
+/// ES2 context.  The program does not include any OpenGL headers and does not
+/// need to link to libGL. It declares the needed OpenGL symbols itself and
+/// obtains the OpenGL functions with waffle_dl_sym().
 ///
 /// This example is too simple; it does not perform proper error checking. For
 /// a complete example with error checking, see gl_basic.c.
@@ -90,7 +90,7 @@ main()
         exit(EXIT_FAILURE);
     }
 
-    // Get GL functions.
+    // Get OpenGL functions.
     glClearColor = waffle_dl_sym(WAFFLE_DL_OPENGL_ES2, "glClearColor");
     glClear = waffle_dl_sym(WAFFLE_DL_OPENGL_ES2, "glClear");
 

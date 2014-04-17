@@ -73,7 +73,7 @@ glx_config_check_context_attrs(struct glx_display *dpy,
             if (attrs->context_full_version != 10 && !dpy->ARB_create_context) {
                 wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
                              "GLX_ARB_create_context is required in order to "
-                             "request a GL version not equal to the default "
+                             "request an OpenGL version not equal to the default "
                              "value 1.0");
                 return false;
             }
