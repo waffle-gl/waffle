@@ -280,7 +280,7 @@ parse_context_profile(struct wcore_config_attrs *attrs,
                 && attrs->context_profile != WAFFLE_CONTEXT_CORE_PROFILE
                 && attrs->context_profile != WAFFLE_CONTEXT_COMPATIBILITY_PROFILE) {
                 wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
-                             "for OpenGL >= 3.2,"
+                             "for OpenGL >= 3.2, "
                              "WAFFLE_CONTEXT_PROFILE must be either "
                              "WAFFLE_CONTEXT_CORE_PROFILE or "
                              "WAFFLE_CONTEXT_COMPATIBILITY_PROFILE");
