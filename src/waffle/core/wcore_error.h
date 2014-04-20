@@ -23,17 +23,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @defgroup wcore_error wcore_error
-/// @ingroup wcore
-///
-/// @brief Error handling and reporting
-///
-/// All functions operate on thread-local storage.
-///
-/// @{
-
-/// @file
-
 #pragma once
 
 #include <stdbool.h>
@@ -99,5 +88,3 @@ _wcore_error_internal(const char *file, int line, const char *format, ...);
 
 void _wcore_error_enable(void);
 void _wcore_error_disable(void);
-
-/// @}

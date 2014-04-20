@@ -23,14 +23,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @defgroup api_priv api_priv
-/// @ingroup waffle_api
-///
-/// @brief Private bits for implementing Waffle's API.
-/// @{
-
-/// @file
-
 #pragma once
 
 #include <stdbool.h>
@@ -58,5 +50,3 @@ extern struct wcore_platform *api_platform;
 ///     - two objects belong to different displays
 bool
 api_check_entry(const struct api_object *obj_list[], int length);
-
-/// @}

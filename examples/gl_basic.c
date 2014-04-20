@@ -105,12 +105,6 @@ static const struct option get_opts[] = {
     { 0 },
 };
 
-/// @defgroup Error handlers
-/// @{
-///
-/// All error handlers exit.
-///
-
 static void __attribute__((noreturn))
 error_printf(const char *fmt, ...)
 {
@@ -165,10 +159,6 @@ error_get_gl_symbol(const char *name)
     error_printf("failed to get function pointer for %s", name);
 }
 
-/// @}
-/// @defgroup OpenGL decalrations
-/// @{
-
 typedef float GLclampf;
 typedef unsigned int GLbitfield;
 typedef unsigned int GLint;
@@ -197,10 +187,7 @@ static void (*glReadPixels)(GLint x, GLint y, GLsizei width, GLsizei height,
                             GLenum format, GLenum type, GLvoid* data);
 static void (*glViewport)(GLint x, GLint y, GLsizei width, GLsizei height);
 
-/// @}
-/// @defgroup Parsing Options
-/// @{
-
+/// @brief Command line options.
 struct options {
     /// @brief One of `WAFFLE_PLATFORM_*`.
     int platform;
@@ -374,8 +361,6 @@ parse_args(int argc, char *argv[], struct options *opts)
 error_unrecognized_arg:
     usage_error_printf("unrecognized option '%s'", optarg);
 }
-
-/// @}
 
 static bool
 draw(struct waffle_window *window, bool resize)

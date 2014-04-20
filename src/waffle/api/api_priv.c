@@ -23,11 +23,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @addtogroup api_priv
-/// @{
-
-/// @file
-
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -63,5 +58,3 @@ api_check_entry(const struct api_object *obj_list[], int length)
 
     return true;
 }
-
-/// @}

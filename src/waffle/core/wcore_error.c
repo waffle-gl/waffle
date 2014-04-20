@@ -23,11 +23,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @addtogroup wcore_error
-/// @{
-
-/// @file
-
 #define _XOPEN_SOURCE 600 // for strerror_r
 
 #include <errno.h>
@@ -230,5 +225,3 @@ wcore_error_get_info(void)
 
     return &info->user_info;
 }
-
-/// @}

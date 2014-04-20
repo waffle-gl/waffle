@@ -28,9 +28,6 @@
 #include "priv/wt_test.h"
 #include "priv/wt_runner.h"
 
-/// @defgroup Defining Tests
-/// @{
-
 #define TEST(group, name) \
     static void test_##group##_##name(void)
 
@@ -41,10 +38,6 @@
 #define TESTGROUP_SIMPLE(group) \
     static void testgroup_##group##_setup(void) {} \
     static void testgroup_##group##_teardown(void) {}
-
-/// @}
-/// @defgroup Running Tests
-/// @{
 
 /// This must be called only from test suite s passed to wt_main().
 #define TEST_RUN(group, name) \
@@ -59,10 +52,6 @@
 /// @return number of failed tests.
 int wt_main(int *argc, char **argv, void (*test_suites[])(void));
 
-/// @}
-/// @defgroup Test Commands
-/// @{
-
 #define TEST_PASS()                           wt_test_pass()
 #define TEST_SKIP()                           wt_test_skip()
 #define TEST_FAIL()                           wt_test_fail( __FILE__, __LINE__)
@@ -73,5 +62,3 @@ int wt_main(int *argc, char **argv, void (*test_suites[])(void));
 
 #define EXPECT_TRUE(cond)                     wt_test_expect( __FILE__, __LINE__, (cond), #cond)
 #define ASSERT_TRUE(cond)                     wt_test_assert( __FILE__, __LINE__, (cond), #cond)
-
-/// @}

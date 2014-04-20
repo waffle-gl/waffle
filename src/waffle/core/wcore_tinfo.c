@@ -23,11 +23,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @addtogroup wcore_tinfo
-/// @{
-
-/// @file
-
 #include <assert.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -146,5 +141,3 @@ wcore_tinfo_get(void)
     return tinfo;
 #endif
 }
-
-/// @}

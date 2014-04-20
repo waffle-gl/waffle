@@ -23,11 +23,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @addtogroup waffle_dl
-/// @{
-
-/// @file
-
 #include "api_priv.h"
 
 #include "wcore_error.h"
@@ -71,5 +66,3 @@ waffle_dl_sym(int32_t dl, const char *name)
 
     return api_platform->vtbl->dl_sym(api_platform, dl, name);
 }
-
-/// @}

@@ -23,11 +23,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @addtogroup waffle_init
-/// @{
-
-/// @file
-
 #include "api_priv.h"
 
 #include "wcore_error.h"
@@ -187,5 +182,3 @@ waffle_init(const int32_t *attrib_list)
 
     return true;
 }
-
-/// @}

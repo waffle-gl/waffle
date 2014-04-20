@@ -23,17 +23,8 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @defgroup linux_dl linux_dl
-/// @ingroup linux
-///
-/// @brief Linux dynamic library.
-///
-/// This module handles dynamic libraries on Linux, with error handling.
-///
-/// The @a waffle_dl enum parameters must be one of `WAFFLE_DL_*`.
-/// @{
-
 /// @file
+/// @brief Handlers for dynamic libraries on Linux, with error handling.
 
 #pragma once
 
@@ -42,6 +33,8 @@
 
 struct linux_dl;
 
+/// @brief Dynamically open an OpenGL library.
+/// @a waffle_dl must be one of `WAFFLE_DL_*`.
 struct linux_dl*
 linux_dl_open(int32_t waffle_dl);
 
@@ -50,5 +43,3 @@ linux_dl_close(struct linux_dl *self);
 
 void*
 linux_dl_sym(struct linux_dl *self, const char *symbol);
-
-/// @}

@@ -81,10 +81,6 @@ static uint8_t pixels[4 * WINDOW_WIDTH * WINDOW_HEIGHT];
         } \
     } while (0)
 
-/// @}
-/// @defgroup OpenGL declarations
-/// @{
-
 typedef unsigned int        GLenum;
 typedef unsigned char       GLboolean;
 typedef unsigned int        GLbitfield;
@@ -123,8 +119,6 @@ static void (*glReadPixels)(GLint x, GLint y,
                             GLsizei width, GLsizei height,
                             GLenum format, GLenum type,
                             GLvoid *pixels );
-
-/// @}
 
 static void
 testgroup_gl_basic_setup(void)

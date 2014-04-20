@@ -23,11 +23,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @addtogroup waffle_error
-/// @{
-
-/// @file
-
 #include <string.h>
 
 #include "wcore_error.h"
@@ -65,5 +60,3 @@ waffle_error_to_string(enum waffle_error e)
 #undef CASE
     }
 }
-
-/// @}

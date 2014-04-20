@@ -23,12 +23,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @defgroup cgl_error cgl_error
-/// @ingroup cgl
-/// @{
-
-/// @file
-
 #pragma once
 
 const char*
@@ -36,5 +30,3 @@ cgl_error_to_string(int error_code);
 
 void
 cgl_error_failed_func(const char *func_name, int error_code);
-
-/// @}

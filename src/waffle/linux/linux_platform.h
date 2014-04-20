@@ -23,12 +23,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @defgroup linux_platform linux_platform
-/// @ingroup linux
-/// @{
-
-/// @file
-
 #pragma once
 
 #include <stdbool.h>
@@ -53,5 +47,3 @@ linux_platform_dl_sym(
         struct linux_platform *self,
         int32_t waffle_dl,
         const char *name);
-
-/// @}

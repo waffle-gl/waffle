@@ -23,11 +23,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @addtogroup waffle_context
-/// @{
-
-/// @file
-
 #include "api_priv.h"
 
 #include "wcore_context.h"
@@ -97,5 +92,3 @@ waffle_context_get_native(struct waffle_context *self)
         return NULL;
     }
 }
-
-/// @}

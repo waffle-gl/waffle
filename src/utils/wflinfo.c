@@ -117,12 +117,6 @@ static const struct option get_opts[] = {
     { 0 },
 };
 
-/// @defgroup Error handlers
-/// @{
-///
-/// All error handlers exit.
-///
-
 static void __attribute__((noreturn))
 error_printf(const char *module, const char *fmt, ...)
 {
@@ -179,10 +173,6 @@ error_get_gl_symbol(const char *name)
     error_printf("Wflinfo", "failed to get function pointer for %s", name);
 }
 
-/// @}
-/// @defgroup OpenGL decalrations
-/// @{
-
 typedef float GLclampf;
 typedef unsigned int GLbitfield;
 typedef unsigned int GLint;
@@ -215,10 +205,7 @@ static void (*glGetIntegerv)(GLenum pname, GLint *params);
 static const GLubyte * (*glGetString)(GLenum name);
 static const GLubyte * (*glGetStringi)(GLenum name, GLint i);
 
-/// @}
-/// @defgroup Parsing Options
-/// @{
-
+/// @brief Command line options.
 struct options {
     /// @brief One of `WAFFLE_PLATFORM_*`.
     int platform;
@@ -416,8 +403,6 @@ error_unrecognized_arg:
     else
         usage_error_printf("unrecognized option");
 }
-
-/// @}
 
 static int
 parse_version(const char *version)

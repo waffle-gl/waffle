@@ -23,11 +23,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @addtogroup linux_platform
-/// @{
-
-/// @file
-
 #include <stdlib.h>
 
 #include "wcore_error.h"
@@ -111,5 +106,3 @@ linux_platform_dl_sym(
 
     return linux_dl_sym(dl, name);
 }
-
-/// @}

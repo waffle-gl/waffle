@@ -23,11 +23,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @addtogroup cgl_error
-/// @{
-
-/// @file
-
 #include <assert.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -79,5 +74,3 @@ cgl_error_failed_func(const char *func_name, int error_code)
                  cgl_error_to_string(error_code),
                  CGLErrorString(error_code));
 }
-
-/// @}

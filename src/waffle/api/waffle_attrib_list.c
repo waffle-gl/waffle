@@ -23,12 +23,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @addtogroup waffle_attrib_list
-/// @{
-
-/// @file
-/// @ingroup api
-
 #include "wcore_attrib_list.h"
 #include "wcore_error.h"
 
@@ -71,5 +65,3 @@ waffle_attrib_list_update(
     wcore_error_reset();
     return wcore_attrib_list_update(attrib_list, key, value);
 }
-
-/// @}

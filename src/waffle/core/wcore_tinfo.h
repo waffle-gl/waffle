@@ -23,14 +23,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @defgroup wcore_tinfo wcore_tinfo
-/// @ingroup wcore
-///
-/// @brief Thread-local info.
-/// @{
-
-/// @file
-
 #pragma once
 
 struct wcore_error_tinfo;
@@ -45,5 +37,3 @@ struct wcore_tinfo {
 
 /// @brief Get the thread-local info for the current thread.
 struct wcore_tinfo* wcore_tinfo_get(void);
-
-/// @}

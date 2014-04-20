@@ -23,11 +23,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @addtogroup waffle_gl_misc
-/// @{
-
-/// @file
-
 #include <stddef.h>
 #include <string.h>
 
@@ -112,5 +107,3 @@ waffle_get_proc_address(const char *name)
 
     return api_platform->vtbl->get_proc_address(api_platform, name);
 }
-
-/// @}

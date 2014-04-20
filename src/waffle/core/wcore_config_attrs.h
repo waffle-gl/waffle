@@ -23,14 +23,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @defgroup wcore_config_attrs wcore_config_attrs
-/// @ingroup wcore
-///
-/// @brief Process the attribute list given to waffle_config_choose().
-/// @{
-
-/// @file
-
 #pragma once
 
 #include <stdbool.h>
@@ -68,5 +60,3 @@ bool
 wcore_config_attrs_parse(
       const int32_t waffle_attrib_list[],
       struct wcore_config_attrs *attrs);
-
-/// @}
