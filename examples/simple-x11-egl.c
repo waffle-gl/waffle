@@ -23,7 +23,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @file simple-x11-egl.c
+/// @file
 ///
 /// This little example program renders to an X11 window with EGL and an OpenGL
 /// ES2 context.  The program does not include any OpenGL headers and does not

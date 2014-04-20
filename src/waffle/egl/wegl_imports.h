@@ -23,7 +23,8 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @file Imports from EGL headers.
+/// @file
+/// @brief Imports from EGL headers.
 ///
 /// Waffle uses some EGL extensions that are fairly recent, so recent that some
 /// systems' EGL headers lack the extensions. This header imports the needed

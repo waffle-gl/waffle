@@ -23,7 +23,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @file gl_basic.c
+/// @file
 /// @brief Do some basic OpenGL rendering using Waffle.
 ///
 /// This example does the following:
