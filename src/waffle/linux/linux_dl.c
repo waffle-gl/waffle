@@ -58,13 +58,13 @@ linux_dl_get_name(int32_t waffle_dl)
             return "libGLESv1_CM.so";
         case WAFFLE_DL_OPENGL_ES2:
         case WAFFLE_DL_OPENGL_ES3:
-            // TODO(chadv): Update the libGLESv2 soversion number to match
-            // shipping OpenGL ES 3.0 libraries.
-            //
-            // Currently (2012-11-11), no vendor ships OpenGL ES 3.0. I
-            // expect that vendors will increment the minor soversion of
-            // libGLESv2 if it supports OpenGL ES 3.0, which would aid
-            // Waffle in detecting the platform's OpenGL ES 3.0 support.
+            // As of 2014-04-20, Mesa statically provides the ES2 and ES3
+            // symbols symbols in libGLESv2.so and provides no ES3-only library
+            // 
+            // Even though Waffle does not use the library's soname, note that
+            // Mesa did not change the library's soname when it added the ES3
+            // symbols. The soname was and is libGLESv2.so.2 before and after
+            // ES3.
             return "libGLESv2.so";
         default:
             wcore_error_internal("waffle_dl has bad value %#x", waffle_dl);
