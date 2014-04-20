@@ -533,15 +533,14 @@ print_wflinfo(struct options *opts)
         print_context_flags();
     }
 
-    bool need_getstringi =
-            opts->context_api == WAFFLE_CONTEXT_OPENGL &&
-            version >= 30;
+    // OpenGL and OpenGL ES >= 3.0 support glGetStringi(GL_EXTENSION, i).
+    const bool use_getstringi = version >= 30;
 
-    if (!glGetStringi && need_getstringi)
+    if (!glGetStringi && use_getstringi)
         error_get_gl_symbol("glGetStringi");
 
     if (opts->verbose)
-        print_extensions(need_getstringi);
+        print_extensions(use_getstringi);
 
     return true;
 }
