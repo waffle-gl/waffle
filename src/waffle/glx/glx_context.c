@@ -69,7 +69,6 @@ static bool
 glx_context_fill_attrib_list(struct glx_config *config,
                              int attrib_list[])
 {
-    struct glx_display *dpy = glx_display(config->wcore.display);
     struct wcore_config_attrs *attrs = &config->wcore.attrs;
     int i = 0;
     int context_flags = 0;
