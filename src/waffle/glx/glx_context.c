@@ -109,8 +109,6 @@ glx_context_fill_attrib_list(struct glx_config *config,
     switch (attrs->context_api) {
         case WAFFLE_CONTEXT_OPENGL:
             if (attrs->context_full_version >= 32) {
-                assert(dpy->ARB_create_context_profile);
-
                 switch (attrs->context_profile) {
                     case WAFFLE_CONTEXT_CORE_PROFILE:
                         attrib_list[i++] = GLX_CONTEXT_PROFILE_MASK_ARB;
