@@ -19,7 +19,7 @@ Homepage: http://people.freedesktop.org/~chadversary/waffle
 Vcs-Git: git://github.com/waffle-gl/waffle
 Vcs-Browser: https://github.com/waffle-gl/waffle
 
-Package: libwaffle-1
+Package: libwaffle-1-0
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Pre-Depends}, ${misc:Depends}
 Description: Waffle library utilities
@@ -28,7 +28,7 @@ Description: Waffle library utilities
 Package: libwaffle-dev
 Architecture: any
 Section: libdevel
-Depends: libwaffle-1 (= ${binary:Version}), ${misc:Depends}
+Depends: libwaffle-1-0 (= ${binary:Version}), ${misc:Depends}
 Suggests: libwaffle-doc
 Description: Waffle library utilities
  A library for selecting an OpenGL API and window system at runtime
@@ -49,7 +49,7 @@ Description: Waffle library utilities
 Package: waffle-utils
 Architecture: any
 Section: utils
-Depends: libwaffle-1 (= ${binary:Version}), ${misc:Depends}
+Depends: libwaffle-1-0 (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
 Description: Waffle library utilities
  A library for selecting an OpenGL API and window system at runtime
  .
