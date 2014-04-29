@@ -332,7 +332,7 @@ parse_args(int argc, char *argv[], struct options *opts)
                 int match_count;
 
                 match_count = sscanf(optarg, "%d.%d", &major, &minor);
-                if (match_count != 2) {
+                if (match_count != 2 || major < 0 || minor < 0) {
                     usage_error_printf("'%s' is not a valid OpenGL version",
                                        optarg);
                 }
