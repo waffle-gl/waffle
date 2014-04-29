@@ -297,7 +297,7 @@ parse_args(int argc, char *argv[], struct options *opts)
 
     // Set options to default values.
     opts->context_profile = WAFFLE_NONE;
-    opts->context_version = -1;
+    opts->context_version = WAFFLE_DONT_CARE;
 
     // prevent getopt_long from printing an error message
     opterr = 0;
@@ -616,12 +616,12 @@ wflinfo_try_create_context(const struct options *opts,
     config_attrib_list[i++] = WAFFLE_CONTEXT_API;
     config_attrib_list[i++] = opts->context_api;
 
-    if (opts->context_profile != -1) {
+    if (opts->context_profile != WAFFLE_DONT_CARE) {
         config_attrib_list[i++] = WAFFLE_CONTEXT_PROFILE;
         config_attrib_list[i++] = opts->context_profile;
     }
 
-    if (opts->context_version != -1) {
+    if (opts->context_version != WAFFLE_DONT_CARE) {
         config_attrib_list[i++] = WAFFLE_CONTEXT_MAJOR_VERSION;
         config_attrib_list[i++] = opts->context_version / 10;
         config_attrib_list[i++] = WAFFLE_CONTEXT_MINOR_VERSION;
@@ -695,7 +695,7 @@ wflinfo_create_context(const struct options *opts,
 {
     if (opts->context_profile != WAFFLE_NONE &&
         opts->context_api == WAFFLE_CONTEXT_OPENGL &&
-        opts->context_version == -1) {
+        opts->context_version == WAFFLE_DONT_CARE) {
 
         // If the user requested OpenGL and a CORE or COMPAT profile,
         // but they didn't specify a version, then we'll try a set
