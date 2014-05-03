@@ -41,7 +41,7 @@ For example code and makefiles that demonstrate how to use and build with
 Waffle, see the following:
 
     - The 'examples' directory in the source repository:
-      http://cgit.freedesktop.org/~chadversary/waffle/tree/examples
+      https://github.com/waffle-gl/waffle/tree/master/examples
 
     - Installed examples at $PREFIX/share/doc/waffle-VERSION/examples, if
       Waffle is installed on your system.
