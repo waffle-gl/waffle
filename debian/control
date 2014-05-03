@@ -15,7 +15,7 @@ Build-Depends: binutils (>> 2.18),
                pkg-config,
                xsltproc
 Standards-Version: 3.9.5
-Homepage: http://people.freedesktop.org/~chadversary/waffle
+Homepage: http://waffle-gl.github.io
 Vcs-Git: git://github.com/waffle-gl/waffle
 Vcs-Browser: https://github.com/waffle-gl/waffle
 

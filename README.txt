@@ -28,7 +28,7 @@ Links
 source:         git://github.com/waffle-gl/waffle
 gitweb:         https://github.com/waffle-gl/waffle
 issue-tracker:  https://github.com/waffle-gl/waffle/issues
-website:        http://people.freedesktop.org/~chadversary/waffle
+website:        http://waffle-gl.github.io
 mailing-list:   waffle@lists.freedesktop.org
 license:        BSD [http://www.opensource.org/licenses/bsd-license.php]
 maintainer:     Chad Versace <chad.versace@linux.intel.com>
