@@ -511,3 +511,51 @@ wcore_config_attrs_parse(
 
     return true;
 }
+
+bool
+wcore_config_attrs_version_eq(
+      const struct wcore_config_attrs *attrs,
+      int merged_version)
+{
+    return
+        attrs->context_major_version == (merged_version / 10) &&
+        attrs->context_minor_version == (merged_version % 10);
+}
+
+bool
+wcore_config_attrs_version_gt(
+      const struct wcore_config_attrs *attrs,
+      int merged_version)
+{
+    return
+        attrs->context_major_version > (merged_version / 10) ||
+        (attrs->context_major_version == (merged_version / 10) &&
+         attrs->context_minor_version > (merged_version % 10));
+}
+
+bool
+wcore_config_attrs_version_ge(
+      const struct wcore_config_attrs *attrs,
+      int merged_version)
+{
+    return
+        attrs->context_major_version > (merged_version / 10) ||
+        (attrs->context_major_version == (merged_version / 10) &&
+         attrs->context_minor_version >= (merged_version % 10));
+}
+
+bool
+wcore_config_attrs_version_lt(
+      const struct wcore_config_attrs *attrs,
+      int merged_version)
+{
+    return !wcore_config_attrs_version_ge(attrs, merged_version);
+}
+
+bool
+wcore_config_attrs_version_le(
+      const struct wcore_config_attrs *attrs,
+      int merged_version)
+{
+    return !wcore_config_attrs_version_gt(attrs, merged_version);
+}

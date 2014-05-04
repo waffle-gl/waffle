@@ -60,3 +60,28 @@ bool
 wcore_config_attrs_parse(
       const int32_t waffle_attrib_list[],
       struct wcore_config_attrs *attrs);
+
+bool
+wcore_config_attrs_version_eq(
+      const struct wcore_config_attrs *attrs,
+      int merged_version);
+
+bool
+wcore_config_attrs_version_gt(
+      const struct wcore_config_attrs *attrs,
+      int merged_version);
+
+bool
+wcore_config_attrs_version_ge(
+      const struct wcore_config_attrs *attrs,
+      int merged_version);
+
+bool
+wcore_config_attrs_version_lt(
+      const struct wcore_config_attrs *attrs,
+      int merged_version);
+
+bool
+wcore_config_attrs_version_le(
+      const struct wcore_config_attrs *attrs,
+      int merged_version);
