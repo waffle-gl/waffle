@@ -94,7 +94,7 @@ create_real_context(struct wegl_config *config,
                 context_flags |= EGL_CONTEXT_OPENGL_FORWARD_COMPATIBLE_BIT_KHR;
             }
 
-            if (attrs->context_full_version >= 32)  {
+            if (wcore_config_attrs_version_ge(attrs, 32))  {
                 assert(dpy->KHR_create_context);
                 switch (attrs->context_profile) {
                     case WAFFLE_CONTEXT_CORE_PROFILE:

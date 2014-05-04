@@ -190,7 +190,7 @@ parse_context_version(struct wcore_config_attrs *attrs,
 
     switch (attrs->context_api) {
         case WAFFLE_CONTEXT_OPENGL:
-            if (attrs->context_full_version < 10) {
+            if (wcore_config_attrs_version_lt(attrs, 10)) {
                 wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
                              "for OpenGL, the requested context version "
                              "must be >= 1.0");
@@ -199,8 +199,8 @@ parse_context_version(struct wcore_config_attrs *attrs,
             break;
 
         case WAFFLE_CONTEXT_OPENGL_ES1:
-            if (attrs->context_full_version != 10 &&
-                attrs->context_full_version != 11) {
+            if (!wcore_config_attrs_version_eq(attrs, 10) &&
+                !wcore_config_attrs_version_eq(attrs, 11)) {
                 wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
                              "for OpenGL ES1, the requested context version "
                              "must be 1.0 or 1.1");
@@ -240,7 +240,7 @@ set_context_profile_default(struct wcore_config_attrs *attrs)
 {
     switch (attrs->context_api) {
         case WAFFLE_CONTEXT_OPENGL:
-            if (attrs->context_full_version >= 32) {
+            if (wcore_config_attrs_version_ge(attrs, 32)) {
                 attrs->context_profile = WAFFLE_CONTEXT_CORE_PROFILE;
             }
             else {
@@ -271,7 +271,7 @@ parse_context_profile(struct wcore_config_attrs *attrs,
 
     switch (attrs->context_api) {
         case WAFFLE_CONTEXT_OPENGL:
-            if (attrs->context_full_version >= 32
+            if (wcore_config_attrs_version_ge(attrs, 32)
                 && attrs->context_profile != WAFFLE_CONTEXT_CORE_PROFILE
                 && attrs->context_profile != WAFFLE_CONTEXT_COMPATIBILITY_PROFILE) {
                 wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
@@ -281,7 +281,7 @@ parse_context_profile(struct wcore_config_attrs *attrs,
                              "WAFFLE_CONTEXT_COMPATIBILITY_PROFILE");
                 return false;
             }
-            else if (attrs->context_full_version < 32
+            else if (wcore_config_attrs_version_lt(attrs, 32)
                      && attrs->context_profile != WAFFLE_NONE) {
                 wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
                              "for OpenGL < 3.2, WAFFLE_CONTEXT_PROFILE must be "
@@ -329,7 +329,7 @@ parse_context_forward_compatible(struct wcore_config_attrs *attrs,
 
     }
 
-    if (attrs->context_full_version < 30) {
+    if (wcore_config_attrs_version_lt(attrs, 30)) {
         wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
                      "To request a forward-compatible context, the context "
                      "version must be at least 3.0");
@@ -461,7 +461,7 @@ check_final(struct wcore_config_attrs *attrs)
 {
     if (attrs->context_api == WAFFLE_CONTEXT_OPENGL
         && attrs->context_profile == WAFFLE_CONTEXT_CORE_PROFILE
-        && attrs->context_full_version >= 32
+        && wcore_config_attrs_version_ge(attrs, 32)
         && attrs->accum_buffer) {
         wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
                      "%s", "WAFFLE_ACCUM_BUFFER must be false for"

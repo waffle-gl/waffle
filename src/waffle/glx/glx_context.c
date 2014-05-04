@@ -96,7 +96,7 @@ glx_context_fill_attrib_list(struct glx_config *config,
     // glXCreateContextAttribsARB with MAJOR=1 and MINOR=0 returns an OpenGL
     // 2.1 context. Calling it with MAJOR and MINOR unspecified returns
     // a context of the latest supported OpenGL version.
-    if (!(attrs->context_full_version == 10 &&
+    if (!(wcore_config_attrs_version_eq(attrs, 10) &&
           attrs->context_api == WAFFLE_CONTEXT_OPENGL))
     {
         attrib_list[i++] = GLX_CONTEXT_MAJOR_VERSION_ARB;
@@ -108,7 +108,7 @@ glx_context_fill_attrib_list(struct glx_config *config,
 
     switch (attrs->context_api) {
         case WAFFLE_CONTEXT_OPENGL:
-            if (attrs->context_full_version >= 32) {
+            if (wcore_config_attrs_version_ge(attrs, 32)) {
                 switch (attrs->context_profile) {
                     case WAFFLE_CONTEXT_CORE_PROFILE:
                         attrib_list[i++] = GLX_CONTEXT_PROFILE_MASK_ARB;

@@ -48,7 +48,6 @@ setup(void **state) {
         .context_api            = WAFFLE_CONTEXT_OPENGL,
         .context_major_version  = 1,
         .context_minor_version  = 0,
-        .context_full_version   = 10,
         .context_profile        = WAFFLE_NONE,
         .context_debug          = false,
         .context_forward_compatible = false,
@@ -117,7 +116,6 @@ test_wcore_config_attrs_gl_defaults(void **state) {
 
     assert_int_equal(ts->actual_attrs.context_major_version, 1);
     assert_int_equal(ts->actual_attrs.context_minor_version, 0);
-    assert_int_equal(ts->actual_attrs.context_full_version, 10);
     assert_int_equal(ts->actual_attrs.context_profile, WAFFLE_NONE);
     assert_int_equal(ts->actual_attrs.red_size, 0);
     assert_int_equal(ts->actual_attrs.green_size, 0);
@@ -145,7 +143,6 @@ test_wcore_config_attrs_gles1_defaults(void **state) {
 
     assert_int_equal(ts->actual_attrs.context_major_version, 1);
     assert_int_equal(ts->actual_attrs.context_minor_version, 0);
-    assert_int_equal(ts->actual_attrs.context_full_version, 10);
     assert_int_equal(ts->actual_attrs.context_profile, WAFFLE_NONE);
 
     assert_int_equal(ts->actual_attrs.red_size, 0);
@@ -173,7 +170,6 @@ test_wcore_config_attrs_gles2_defaults(void **state) {
 
     assert_int_equal(ts->actual_attrs.context_major_version, 2);
     assert_int_equal(ts->actual_attrs.context_minor_version, 0);
-    assert_int_equal(ts->actual_attrs.context_full_version, 20);
     assert_int_equal(ts->actual_attrs.context_profile, WAFFLE_NONE);
 
     assert_int_equal(ts->actual_attrs.red_size, 0);
@@ -201,7 +197,6 @@ test_wcore_config_attrs_gles3_defaults(void **state) {
 
     assert_int_equal(ts->actual_attrs.context_major_version, 3);
     assert_int_equal(ts->actual_attrs.context_minor_version, 0);
-    assert_int_equal(ts->actual_attrs.context_full_version, 30);
     assert_int_equal(ts->actual_attrs.context_profile, WAFFLE_NONE);
 
     assert_int_equal(ts->actual_attrs.red_size, 0);
@@ -431,7 +426,6 @@ test_wcore_config_attrs_gles10(void **state) {
     assert_true(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
     assert_int_equal(ts->actual_attrs.context_major_version, 1);
     assert_int_equal(ts->actual_attrs.context_minor_version, 0);
-    assert_int_equal(ts->actual_attrs.context_full_version, 10);
 }
 
 static void
@@ -448,7 +442,6 @@ test_wcore_config_attrs_gles11(void **state) {
     assert_true(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
     assert_int_equal(ts->actual_attrs.context_major_version, 1);
     assert_int_equal(ts->actual_attrs.context_minor_version, 1);
-    assert_int_equal(ts->actual_attrs.context_full_version, 11);
 }
 
 static void
@@ -480,7 +473,6 @@ test_wcore_config_attrs_gles20(void **state) {
     assert_true(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
     assert_int_equal(ts->actual_attrs.context_major_version, 2);
     assert_int_equal(ts->actual_attrs.context_minor_version, 0);
-    assert_int_equal(ts->actual_attrs.context_full_version, 20);
 }
 
 static void
@@ -497,7 +489,6 @@ test_wcore_config_attrs_gles21(void **state) {
     assert_true(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
     assert_int_equal(ts->actual_attrs.context_major_version, 2);
     assert_int_equal(ts->actual_attrs.context_minor_version, 1);
-    assert_int_equal(ts->actual_attrs.context_full_version, 21);
 }
 
 static void
@@ -529,7 +520,6 @@ test_wcore_config_attrs_gles30(void **state) {
     assert_true(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
     assert_int_equal(ts->actual_attrs.context_major_version, 3);
     assert_int_equal(ts->actual_attrs.context_minor_version, 0);
-    assert_int_equal(ts->actual_attrs.context_full_version, 30);
 }
 
 static void
@@ -546,7 +536,6 @@ test_wcore_config_attrs_gles31(void **state) {
     assert_true(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
     assert_int_equal(ts->actual_attrs.context_major_version, 3);
     assert_int_equal(ts->actual_attrs.context_minor_version, 1);
-    assert_int_equal(ts->actual_attrs.context_full_version, 31);
 }
 
 static void
@@ -918,7 +907,6 @@ test_wcore_config_attrs_forward_compat_gl30(void **state) {
         0,
     };
 
-    ts->expect_attrs.context_full_version = 30;
     ts->expect_attrs.context_major_version = 3;
     ts->expect_attrs.context_minor_version = 0;
     ts->expect_attrs.context_forward_compatible = true;
@@ -940,7 +928,6 @@ test_wcore_config_attrs_forward_compat_gl32(void **state) {
         0,
     };
 
-    ts->expect_attrs.context_full_version = 32;
     ts->expect_attrs.context_major_version = 3;
     ts->expect_attrs.context_minor_version = 2;
     ts->expect_attrs.context_profile = WAFFLE_CONTEXT_CORE_PROFILE;
@@ -963,7 +950,6 @@ test_wcore_config_attrs_forward_compat_gl41(void **state) {
         0,
     };
 
-    ts->expect_attrs.context_full_version = 41;
     ts->expect_attrs.context_major_version = 4;
     ts->expect_attrs.context_minor_version = 1;
     ts->expect_attrs.context_profile = WAFFLE_CONTEXT_CORE_PROFILE;
@@ -986,7 +972,6 @@ test_wcore_config_attrs_forward_compat_gl30_dont_care(void **state) {
         0,
     };
 
-    ts->expect_attrs.context_full_version = 30;
     ts->expect_attrs.context_major_version = 3;
     ts->expect_attrs.context_minor_version = 0;
     ts->expect_attrs.context_forward_compatible = false;
@@ -1044,7 +1029,6 @@ test_wcore_config_attrs_debug_gl21(void **state) {
     };
 
     ts->expect_attrs.context_api = WAFFLE_CONTEXT_OPENGL;
-    ts->expect_attrs.context_full_version = 21;
     ts->expect_attrs.context_major_version = 2;
     ts->expect_attrs.context_minor_version = 1;
     ts->expect_attrs.context_debug = true;
@@ -1069,7 +1053,6 @@ test_wcore_config_attrs_debug_gl32_core(void **state) {
 
     ts->expect_attrs.context_api = WAFFLE_CONTEXT_OPENGL;
     ts->expect_attrs.context_profile = WAFFLE_CONTEXT_CORE_PROFILE;
-    ts->expect_attrs.context_full_version = 32;
     ts->expect_attrs.context_major_version = 3;
     ts->expect_attrs.context_minor_version = 2;
     ts->expect_attrs.context_debug = true;
@@ -1094,7 +1077,6 @@ test_wcore_config_attrs_debug_gl32_compat(void **state) {
 
     ts->expect_attrs.context_api = WAFFLE_CONTEXT_OPENGL;
     ts->expect_attrs.context_profile = WAFFLE_CONTEXT_COMPATIBILITY_PROFILE;
-    ts->expect_attrs.context_full_version = 32;
     ts->expect_attrs.context_major_version = 3;
     ts->expect_attrs.context_minor_version = 2;
     ts->expect_attrs.context_debug = true;
@@ -1115,7 +1097,6 @@ test_wcore_config_attrs_debug_gles1(void **state) {
     };
 
     ts->expect_attrs.context_api = WAFFLE_CONTEXT_OPENGL_ES1;
-    ts->expect_attrs.context_full_version = 10;
     ts->expect_attrs.context_major_version = 1;
     ts->expect_attrs.context_debug = true;
 
@@ -1135,7 +1116,6 @@ test_wcore_config_attrs_debug_gles2(void **state) {
     };
 
     ts->expect_attrs.context_api = WAFFLE_CONTEXT_OPENGL_ES2;
-    ts->expect_attrs.context_full_version = 20;
     ts->expect_attrs.context_major_version = 2;
     ts->expect_attrs.context_debug = true;
 
@@ -1155,7 +1135,6 @@ test_wcore_config_attrs_debug_gles3(void **state) {
     };
 
     ts->expect_attrs.context_api = WAFFLE_CONTEXT_OPENGL_ES3;
-    ts->expect_attrs.context_full_version = 30;
     ts->expect_attrs.context_major_version = 3;
     ts->expect_attrs.context_debug = true;
 

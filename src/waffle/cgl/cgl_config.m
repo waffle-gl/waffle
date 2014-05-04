@@ -88,7 +88,7 @@ cgl_config_check_attrs(const struct cgl_platform *plat,
                 return false;
             }
 
-            if (attrs->context_full_version > 32) {
+            if (wcore_config_attrs_version_gt(attrs, 32)) {
                 if (plat->system_version_full >= 0x0a09) {
                     wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
                                  "Waffle CGL was built only with Mac OS 10.8 "
@@ -103,7 +103,7 @@ cgl_config_check_attrs(const struct cgl_platform *plat,
                     return false;
                 }
             }
-            else if (attrs->context_full_version == 32) {
+            else if (wcore_config_attrs_version_eq(attrs, 32)) {
                 assert(attrs->context_profile == WAFFLE_CONTEXT_CORE_PROFILE);
 
                 if (plat->system_version_full < 0x0a07)
@@ -111,7 +111,7 @@ cgl_config_check_attrs(const struct cgl_platform *plat,
 
                 return true;
             }
-            else if (attrs->context_full_version == 31) {
+            else if (wcore_config_attrs_version_eq(attrs, 31)) {
                 // Emulate EGL_KHR_create_context, which allows
                 // implementations to promote OpenGL 3.1 to
                 // OpenGL 3.2 Core Profile.
@@ -122,7 +122,7 @@ cgl_config_check_attrs(const struct cgl_platform *plat,
 
                 return true;
             }
-            else if (attrs->context_full_version > 21) {
+            else if (wcore_config_attrs_version_gt(attrs, 21)) {
                 wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
                              "CGL does not support OpenGL %d.%d contexts",
                              attrs->context_major_version,
@@ -130,7 +130,7 @@ cgl_config_check_attrs(const struct cgl_platform *plat,
                 return false;
             }
             else {
-                assert(attrs->context_full_version >= 10);
+                assert(wcore_config_attrs_version_ge(attrs, 10));
                 return true;
             }
         case WAFFLE_CONTEXT_OPENGL_ES1:
@@ -179,25 +179,26 @@ cgl_config_fill_pixel_format_attrs(
     // return a context of the latest supported flavor that is
     // backwards-compatibile with the requested flavor.
     if (plat->system_version_full >= 0x0a07) {
-        if (attrs->context_full_version == 32) {
+        if (wcore_config_attrs_version_eq(attrs, 32)) {
             ADD_ATTR(kCGLPFAOpenGLProfile, (int) kCGLOGLPVersion_3_2_Core);
         }
-        else if (attrs->context_full_version == 31) {
+        else if (wcore_config_attrs_version_eq(attrs, 31)) {
             ADD_ATTR(kCGLPFAOpenGLProfile, (int) kCGLOGLPVersion_3_2_Core);
         }
-        else if (attrs->context_full_version <= 21) {
+        else if (wcore_config_attrs_version_le(attrs, 21)) {
             ADD_ATTR(kCGLPFAOpenGLProfile, (int) kCGLOGLPVersion_Legacy);
         }
         else {
-            wcore_error_internal("version=%d profile=%#x",
-                                 attrs->context_full_version,
+            wcore_error_internal("version=%d.%d profile=%#x",
+                                 attrs->context_version_major,
+                                 attrs->context_version_minor,
                                  attrs->context_profile);
             return false;
         }
     }
     else {
         // The OS doesn't recognize attribute kCGLPFAOpenGLProfile.
-        assert(attrs->context_full_version <= 21);
+        assert(wcore_config_attrs_version_le(attrs, 21));
     }
 
     ADD_ATTR(kCGLPFAColorSize,          attrs->rgb_size);
@@ -207,7 +208,7 @@ cgl_config_fill_pixel_format_attrs(
     ADD_ATTR(kCGLPFASampleBuffers,      attrs->sample_buffers);
     ADD_ATTR(kCGLPFASamples,            attrs->samples);
 
-    if (attrs->context_full_version == 10)
+    if (wcore_config_attrs_version_eq(attrs, 10))
         ADD_ATTR(kCGLPFAAccumSize,      attrs->accum_buffer);
 
     if (attrs->double_buffered)

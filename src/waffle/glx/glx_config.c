@@ -58,7 +58,7 @@ glx_config_check_context_attrs(struct glx_display *dpy,
 
     if (attrs->context_forward_compatible) {
         assert(attrs->context_api == WAFFLE_CONTEXT_OPENGL);
-        assert(attrs->context_full_version >= 30);
+        assert(wcore_config_attrs_version_ge(attrs, 30));
     }
 
     if (attrs->context_debug && !dpy->ARB_create_context) {
@@ -70,20 +70,20 @@ glx_config_check_context_attrs(struct glx_display *dpy,
 
     switch (attrs->context_api) {
         case WAFFLE_CONTEXT_OPENGL:
-            if (attrs->context_full_version != 10 && !dpy->ARB_create_context) {
+            if (!wcore_config_attrs_version_eq(attrs, 10) && !dpy->ARB_create_context) {
                 wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
                              "GLX_ARB_create_context is required in order to "
                              "request an OpenGL version not equal to the default "
                              "value 1.0");
                 return false;
             }
-            else if (attrs->context_full_version >= 32 && !dpy->ARB_create_context_profile) {
+            else if (wcore_config_attrs_version_ge(attrs, 32) && !dpy->ARB_create_context_profile) {
                 wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
                              "GLX_ARB_create_context_profile is required "
                              "to create a context with version >= 3.2");
                 return false;
             }
-            else if (attrs->context_full_version >= 32) {
+            else if (wcore_config_attrs_version_ge(attrs, 32)) {
                 assert(attrs->context_profile == WAFFLE_CONTEXT_CORE_PROFILE ||
                        attrs->context_profile == WAFFLE_CONTEXT_COMPATIBILITY_PROFILE);
             }
@@ -98,8 +98,8 @@ glx_config_check_context_attrs(struct glx_display *dpy,
             return true;
 
         case WAFFLE_CONTEXT_OPENGL_ES1:
-            assert(attrs->context_full_version == 10 ||
-                   attrs->context_full_version == 11);
+            assert(wcore_config_attrs_version_eq(attrs, 10) ||
+                   wcore_config_attrs_version_eq(attrs, 11));
             assert(!attrs->context_forward_compatible);
 
             if (!dpy->EXT_create_context_es_profile) {
