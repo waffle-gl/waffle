@@ -184,10 +184,6 @@ parse_context_version(struct wcore_config_attrs *attrs,
         return false;
     }
 
-    attrs->context_full_version =
-            10 * attrs->context_major_version
-            + attrs->context_minor_version;
-
     switch (attrs->context_api) {
         case WAFFLE_CONTEXT_OPENGL:
             if (wcore_config_attrs_version_lt(attrs, 10)) {

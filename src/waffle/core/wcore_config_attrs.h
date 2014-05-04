@@ -33,7 +33,6 @@ struct wcore_config_attrs {
     int32_t context_api;
     int32_t context_major_version;
     int32_t context_minor_version;
-    int32_t context_full_version;
     int32_t context_profile;
 
     int32_t rgb_size;
