@@ -89,9 +89,17 @@ glx_platform_make_current(struct wcore_platform *wc_self,
                           struct wcore_window *wc_window,
                           struct wcore_context *wc_ctx)
 {
-    return wrapped_glXMakeCurrent(glx_display(wc_dpy)->x11.xlib,
-                                  wc_window ? glx_window(wc_window)->x11.xcb : 0,
-                                  wc_ctx ? glx_context(wc_ctx)->glx : NULL);
+    bool ok;
+    Display *dpy = glx_display(wc_dpy)->x11.xlib;
+    GLXDrawable win = wc_window ? glx_window(wc_window)->x11.xcb : 0;
+    GLXContext ctx = wc_ctx ? glx_context(wc_ctx)->glx : NULL;
+    
+    ok = wrapped_glXMakeCurrent(dpy, win, ctx);
+    if (!ok) {
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN, "glXMakeCurrent failed");
+    }
+
+    return ok;
 }
 
 static void*
