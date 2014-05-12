@@ -14,7 +14,7 @@ waffle_api_version := 0x0104
 waffle_android_major_version := $(word 1, $(subst ., , $(PLATFORM_VERSION)))
 waffle_android_minor_version := $(word 2, $(subst ., , $(PLATFORM_VERSION)))
 
-$(waffle_top)/include/waffle_version.h: \
+$(waffle_top)/include/waffle/waffle_version.h: \
     $(waffle_top)/Android.mk \
     $(waffle_top)/include/waffle/waffle_version.h.in
 	@echo "target  Gen: libwaffle <= $(waffle_top)/include/waffle/waffle_version.h"
@@ -85,7 +85,7 @@ LOCAL_SHARED_LIBRARIES := \
     libgui \
 
 LOCAL_GENERATED_SOURCES := \
-    $(LOCAL_PATH)/include/waffle_version.h
+    $(LOCAL_PATH)/include/waffle/waffle_version.h
 
 LOCAL_COPY_HEADERS := \
     include/waffle/waffle.h \
