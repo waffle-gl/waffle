@@ -20,7 +20,8 @@ Or as tag 'waffle-NEXT' in the git repository
 If you're using Archlinux, it's in the AUR as 'waffle'.
 
 If you're using Debian, it should be available in the unstable sid release in
-in packages with names starting with 'libwaffle' and in the 'wflinfo' package.
+in packages with names starting with 'libwaffle' and in the 'waffle-utils'
+package.
 
 New Features
 ------------
