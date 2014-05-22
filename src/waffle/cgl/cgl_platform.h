@@ -28,8 +28,6 @@
 #include "wcore_platform.h"
 #include "wcore_util.h"
 
-struct linux_platform;
-
 struct cgl_platform {
     struct wcore_platform wcore;
 
