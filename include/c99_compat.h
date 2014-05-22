@@ -98,3 +98,16 @@ c99_snprintf(char* str, size_t size, const char* format, ...)
 #include <strings.h>
 
 #endif
+
+/*
+ * strerror_r - strictly speaking not C99 function, but it's been around of
+ * ages in one shape or another.
+ *
+ * Under *NIX there are three flavours - XSI-compliant (POSIX.1-2001)
+ * or not, vs GNU-specific one. The POSIX one is available only under *NIX
+ * and is guaranteed to be thread-safe (as used in waffle).
+ * Under Windows the function is not thread-safe and thus it's depreciated.
+ */
+#if defined(_WIN32)
+#define strerror_r(errno,buf,len) strerror_s(buf,len,errno)
+#endif
