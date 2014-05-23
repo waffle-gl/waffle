@@ -38,7 +38,9 @@
 //
 // TODO: Implement WAFFLE_API for Apple.
 //
-#if defined(__GNUC__) && __GNUC__ >= 4
+#if defined(_WIN32)
+#   define WAFFLE_API __declspec(dllexport)
+#elif defined(__GNUC__) && __GNUC__ >= 4
 #   define WAFFLE_API __attribute__ ((visibility("default")))
 #else
 #   define WAFFLE_API
