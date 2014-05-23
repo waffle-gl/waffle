@@ -93,8 +93,8 @@ add_custom_target(man
     )
 
 install(DIRECTORY ${man_out_dir}/man1
-        DESTINATION ${CMAKE_INSTALL_FULL_MANDIR})
+        DESTINATION ${CMAKE_INSTALL_MANDIR})
 install(DIRECTORY ${man_out_dir}/man3
-        DESTINATION ${CMAKE_INSTALL_FULL_MANDIR})
+        DESTINATION ${CMAKE_INSTALL_MANDIR})
 install(DIRECTORY ${man_out_dir}/man7
-        DESTINATION ${CMAKE_INSTALL_FULL_MANDIR})
+        DESTINATION ${CMAKE_INSTALL_MANDIR})

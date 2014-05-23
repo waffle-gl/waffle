@@ -8,4 +8,4 @@ install(FILES waffle/waffle.h
               waffle/waffle_version.h
               waffle/waffle_wayland.h
               waffle/waffle_x11_egl.h
-        DESTINATION ${CMAKE_INSTALL_FULL_INCLUDEDIR}/${waffle_libname})
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${waffle_libname})

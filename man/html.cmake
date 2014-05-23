@@ -93,4 +93,4 @@ add_custom_target(html
     )
 
 install(DIRECTORY ${html_out_dir}
-        DESTINATION ${CMAKE_INSTALL_FULL_DOCDIR}/html)
+        DESTINATION ${CMAKE_INSTALL_DOCDIR}/html)
