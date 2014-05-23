@@ -30,6 +30,20 @@
 
 #include "waffle.h"
 
+// WAFFLE_API - Declare that a symbol is in Waffle's public API.
+//
+// See "GCC Wiki - Visibility". (http://gcc.gnu.org/wiki/Visibility).
+// See "How to Write Shared Libraries. Ulrich Drepper.
+//       (http://www.akkadia.org/drepper/dsohowto.pdf).
+//
+// TODO: Implement WAFFLE_API for Apple.
+//
+#if defined(__GNUC__) && __GNUC__ >= 4
+#   define WAFFLE_API __attribute__ ((visibility("default")))
+#else
+#   define WAFFLE_API
+#endif
+
 struct api_object;
 struct wcore_platform;
 

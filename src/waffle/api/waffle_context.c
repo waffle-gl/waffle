@@ -29,7 +29,7 @@
 #include "wcore_error.h"
 #include "wcore_platform.h"
 
-struct waffle_context*
+WAFFLE_API struct waffle_context*
 waffle_context_create(
         struct waffle_config *config,
         struct waffle_context *shared_ctx)
@@ -57,7 +57,7 @@ waffle_context_create(
     return &wc_self->wfl;
 }
 
-bool
+WAFFLE_API bool
 waffle_context_destroy(struct waffle_context *self)
 {
     struct wcore_context *wc_self = wcore_context(self);
@@ -72,7 +72,7 @@ waffle_context_destroy(struct waffle_context *self)
     return api_platform->vtbl->context.destroy(wc_self);
 }
 
-union waffle_native_context*
+WAFFLE_API union waffle_native_context*
 waffle_context_get_native(struct waffle_context *self)
 {
     struct wcore_context *wc_self = wcore_context(self);

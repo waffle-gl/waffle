@@ -23,10 +23,12 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#include "api_priv.h"
+
 #include "wcore_error.h"
 #include "wcore_util.h"
 
-const char*
+WAFFLE_API const char*
 waffle_enum_to_string(int32_t e)
 {
     wcore_error_reset();

@@ -36,20 +36,6 @@
 extern "C" {
 #endif
 
-// WAFFLE_API - Declare that a symbol is in Waffle's public API.
-//
-// See "GCC Wiki - Visibility". (http://gcc.gnu.org/wiki/Visibility).
-// See "How to Write Shared Libraries. Ulrich Drepper.
-//       (http://www.akkadia.org/drepper/dsohowto.pdf).
-//
-// TODO: Implement WAFFLE_API for Apple.
-//
-#if defined(__GNUC__) && __GNUC__ >= 4
-#   define WAFFLE_API __attribute__ ((visibility("default")))
-#else
-#   define WAFFLE_API
-#endif
-
 #if __STDC_VERSION__ < 199901L
 #       define restrict
 #endif
@@ -89,13 +75,13 @@ struct waffle_error_info {
     size_t message_length;
 };
 
-WAFFLE_API enum waffle_error
+enum waffle_error
 waffle_error_get_code(void);
 
-WAFFLE_API const struct waffle_error_info*
+const struct waffle_error_info*
 waffle_error_get_info(void);
 
-WAFFLE_API const char*
+const char*
 waffle_error_to_string(enum waffle_error e);
 
 // ---------------------------------------------------------------------------
@@ -169,23 +155,23 @@ enum waffle_enum {
     WAFFLE_DL_OPENGL_ES3                                        = 0x0304,
 };
 
-WAFFLE_API const char*
+const char*
 waffle_enum_to_string(int32_t e);
 
 // ---------------------------------------------------------------------------
 
-WAFFLE_API bool
+bool
 waffle_init(const int32_t *attrib_list);
 
-WAFFLE_API bool
+bool
 waffle_make_current(struct waffle_display *dpy,
                     struct waffle_window *window,
                     struct waffle_context *ctx);
 
-WAFFLE_API void*
+void*
 waffle_get_proc_address(const char *name);
 
-WAFFLE_API bool
+bool
 waffle_is_extension_in_string(const char *restrict extension_string,
                               const char *restrict extension_name);
 
@@ -193,71 +179,71 @@ waffle_is_extension_in_string(const char *restrict extension_string,
 // waffle_display
 // ---------------------------------------------------------------------------
 
-WAFFLE_API struct waffle_display*
+struct waffle_display*
 waffle_display_connect(const char *name);
 
-WAFFLE_API bool
+bool
 waffle_display_disconnect(struct waffle_display *self);
 
-WAFFLE_API bool
+bool
 waffle_display_supports_context_api(struct waffle_display *self,
                                     int32_t context_api);
 
-WAFFLE_API union waffle_native_display*
+union waffle_native_display*
 waffle_display_get_native(struct waffle_display *self);
 
 // ---------------------------------------------------------------------------
 // waffle_config
 // ---------------------------------------------------------------------------
 
-WAFFLE_API struct waffle_config*
+struct waffle_config*
 waffle_config_choose(struct waffle_display *dpy,
                      const int32_t attrib_list[]);
 
-WAFFLE_API bool
+bool
 waffle_config_destroy(struct waffle_config *self);
 
-WAFFLE_API union waffle_native_config*
+union waffle_native_config*
 waffle_config_get_native(struct waffle_config *self);
 
 // ---------------------------------------------------------------------------
 // waffle_context
 // ---------------------------------------------------------------------------
 
-WAFFLE_API struct waffle_context*
+struct waffle_context*
 waffle_context_create(struct waffle_config *config,
                       struct waffle_context *shared_ctx);
 
-WAFFLE_API bool
+bool
 waffle_context_destroy(struct waffle_context *self);
 
-WAFFLE_API union waffle_native_context*
+union waffle_native_context*
 waffle_context_get_native(struct waffle_context *self);
 
 // ---------------------------------------------------------------------------
 // waffle_window
 // ---------------------------------------------------------------------------
 
-WAFFLE_API struct waffle_window*
+struct waffle_window*
 waffle_window_create(
         struct waffle_config *config,
         int32_t width,
         int32_t height);
 
-WAFFLE_API bool
+bool
 waffle_window_destroy(struct waffle_window *self);
 
-WAFFLE_API bool
+bool
 waffle_window_show(struct waffle_window *self);
 
-WAFFLE_API bool
+bool
 waffle_window_swap_buffers(struct waffle_window *self);
 
-WAFFLE_API union waffle_native_window*
+union waffle_native_window*
 waffle_window_get_native(struct waffle_window *self);
 
 #if defined(WAFFLE_API_EXPERIMENTAL) && WAFFLE_API_VERSION >= 0x0103
-WAFFLE_API bool
+bool
 waffle_window_resize(
         struct waffle_window *self,
         int32_t width,
@@ -268,10 +254,10 @@ waffle_window_resize(
 // waffle_dl
 // ---------------------------------------------------------------------------
 
-WAFFLE_API bool
+bool
 waffle_dl_can_open(int32_t dl);
 
-WAFFLE_API void*
+void*
 waffle_dl_sym(int32_t dl, const char *name);
 
 // ---------------------------------------------------------------------------
@@ -327,23 +313,23 @@ union waffle_native_window {
 // waffle_attrib_list
 // ---------------------------------------------------------------------------
 
-WAFFLE_API int32_t
+int32_t
 waffle_attrib_list_length(const int32_t attrib_list[]);
 
-WAFFLE_API bool
+bool
 waffle_attrib_list_get(
         const int32_t attrib_list[],
         int32_t key,
         int32_t *value);
 
-WAFFLE_API bool
+bool
 waffle_attrib_list_get_with_default(
         const int32_t attrib_list[],
         int32_t key,
         int32_t *value,
         int32_t default_value);
 
-WAFFLE_API bool
+bool
 waffle_attrib_list_update(
         int32_t *attrib_list,
         int32_t key,

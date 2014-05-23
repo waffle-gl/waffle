@@ -30,7 +30,7 @@
 #include "wcore_platform.h"
 #include "wcore_util.h"
 
-struct waffle_display*
+WAFFLE_API struct waffle_display*
 waffle_display_connect(const char *name)
 {
     struct wcore_display *wc_self;
@@ -45,7 +45,7 @@ waffle_display_connect(const char *name)
     return &wc_self->wfl;
 }
 
-bool
+WAFFLE_API bool
 waffle_display_disconnect(struct waffle_display *self)
 {
     struct wcore_display *wc_self = wcore_display(self);
@@ -60,7 +60,7 @@ waffle_display_disconnect(struct waffle_display *self)
     return api_platform->vtbl->display.destroy(wc_self);
 }
 
-bool
+WAFFLE_API bool
 waffle_display_supports_context_api(
         struct waffle_display *self,
         int32_t context_api)
@@ -90,7 +90,7 @@ waffle_display_supports_context_api(
                                                             context_api);
 }
 
-union waffle_native_display*
+WAFFLE_API union waffle_native_display*
 waffle_display_get_native(struct waffle_display *self)
 {
     struct wcore_display *wc_self = wcore_display(self);

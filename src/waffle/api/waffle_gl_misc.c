@@ -34,7 +34,7 @@
 #include "wcore_platform.h"
 #include "wcore_window.h"
 
-bool
+WAFFLE_API bool
 waffle_is_extension_in_string(
         const char *restrict extension_string,
         const char *restrict extension_name)
@@ -71,7 +71,7 @@ waffle_is_extension_in_string(
     }
 }
 
-bool
+WAFFLE_API bool
 waffle_make_current(
         struct waffle_display *dpy,
         struct waffle_window *window,
@@ -99,7 +99,7 @@ waffle_make_current(
                                             wc_ctx);
 }
 
-void*
+WAFFLE_API void*
 waffle_get_proc_address(const char *name)
 {
     if (!api_check_entry(NULL, 0))

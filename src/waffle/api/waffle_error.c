@@ -25,21 +25,23 @@
 
 #include <string.h>
 
+#include "api_priv.h"
+
 #include "wcore_error.h"
 
-enum waffle_error
+WAFFLE_API enum waffle_error
 waffle_error_get_code(void)
 {
     return wcore_error_get_code();
 }
 
-const struct waffle_error_info*
+WAFFLE_API const struct waffle_error_info*
 waffle_error_get_info(void)
 {
     return wcore_error_get_info();
 }
 
-const char*
+WAFFLE_API const char*
 waffle_error_to_string(enum waffle_error e)
 {
     switch (e) {

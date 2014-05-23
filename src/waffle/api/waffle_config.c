@@ -31,7 +31,7 @@
 #include "wcore_error.h"
 #include "wcore_platform.h"
 
-struct waffle_config*
+WAFFLE_API struct waffle_config*
 waffle_config_choose(
         struct waffle_display *dpy,
         const int32_t attrib_list[])
@@ -59,7 +59,7 @@ waffle_config_choose(
     return &wc_self->wfl;
 }
 
-bool
+WAFFLE_API bool
 waffle_config_destroy(struct waffle_config *self)
 {
     struct wcore_config *wc_self = wcore_config(self);
@@ -74,7 +74,7 @@ waffle_config_destroy(struct waffle_config *self)
     return api_platform->vtbl->config.destroy(wc_self);
 }
 
-union waffle_native_config*
+WAFFLE_API union waffle_native_config*
 waffle_config_get_native(struct waffle_config *self)
 {
     struct wcore_config *wc_self = wcore_config(self);

@@ -43,7 +43,7 @@ waffle_dl_check_enum(int32_t dl)
     }
 }
 
-bool
+WAFFLE_API bool
 waffle_dl_can_open(int32_t dl)
 {
     if (!api_check_entry(NULL, 0))
@@ -55,7 +55,7 @@ waffle_dl_can_open(int32_t dl)
      return api_platform->vtbl->dl_can_open(api_platform, dl);
 }
 
-void*
+WAFFLE_API void*
 waffle_dl_sym(int32_t dl, const char *name)
 {
     if (!api_check_entry(NULL, 0))

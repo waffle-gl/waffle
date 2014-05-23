@@ -159,7 +159,7 @@ waffle_init_create_platform(int32_t waffle_platform)
     }
 }
 
-bool
+WAFFLE_API bool
 waffle_init(const int32_t *attrib_list)
 {
     bool ok = true;

@@ -23,10 +23,12 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#include "api_priv.h"
+
 #include "wcore_attrib_list.h"
 #include "wcore_error.h"
 
-int32_t
+WAFFLE_API int32_t
 waffle_attrib_list_length(const int32_t attrib_list[])
 {
 
@@ -34,7 +36,7 @@ waffle_attrib_list_length(const int32_t attrib_list[])
     return wcore_attrib_list_length(attrib_list);
 }
 
-bool
+WAFFLE_API bool
 waffle_attrib_list_get(
         const int32_t *attrib_list,
         int32_t key,
@@ -44,7 +46,7 @@ waffle_attrib_list_get(
     return wcore_attrib_list_get(attrib_list, key, value);
 }
 
-bool
+WAFFLE_API bool
 waffle_attrib_list_get_with_default(
         const int32_t attrib_list[],
         int32_t key,
@@ -56,7 +58,7 @@ waffle_attrib_list_get_with_default(
                                                default_value);
 }
 
-bool
+WAFFLE_API bool
 waffle_attrib_list_update(
         int32_t *attrib_list,
         int32_t key,

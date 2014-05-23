@@ -32,7 +32,7 @@
 #include "wcore_platform.h"
 #include "wcore_window.h"
 
-struct waffle_window*
+WAFFLE_API struct waffle_window*
 waffle_window_create(
         struct waffle_config *config,
         int width, int height)
@@ -57,7 +57,7 @@ waffle_window_create(
     return &wc_self->wfl;
 }
 
-bool
+WAFFLE_API bool
 waffle_window_destroy(struct waffle_window *self)
 {
     struct wcore_window *wc_self = wcore_window(self);
@@ -72,7 +72,7 @@ waffle_window_destroy(struct waffle_window *self)
     return api_platform->vtbl->window.destroy(wc_self);
 }
 
-bool
+WAFFLE_API bool
 waffle_window_show(struct waffle_window *self)
 {
     struct wcore_window *wc_self = wcore_window(self);
@@ -87,7 +87,7 @@ waffle_window_show(struct waffle_window *self)
     return api_platform->vtbl->window.show(wc_self);
 }
 
-bool
+WAFFLE_API bool
 waffle_window_resize(
 		struct waffle_window *self,
 		int32_t width,
@@ -111,7 +111,7 @@ waffle_window_resize(
     }
 }
 
-bool
+WAFFLE_API bool
 waffle_window_swap_buffers(struct waffle_window *self)
 {
     struct wcore_window *wc_self = wcore_window(self);
@@ -126,7 +126,7 @@ waffle_window_swap_buffers(struct waffle_window *self)
     return api_platform->vtbl->window.swap_buffers(wc_self);
 }
 
-union waffle_native_window*
+WAFFLE_API union waffle_native_window*
 waffle_window_get_native(struct waffle_window *self)
 {
     struct wcore_window *wc_self = wcore_window(self);
