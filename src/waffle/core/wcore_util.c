@@ -60,6 +60,7 @@ wcore_enum_to_string(int32_t e)
         CASE(WAFFLE_PLATFORM_GLX);
         CASE(WAFFLE_PLATFORM_WAYLAND);
         CASE(WAFFLE_PLATFORM_X11_EGL);
+        CASE(WAFFLE_PLATFORM_GBM);
         CASE(WAFFLE_CONTEXT_API);
         CASE(WAFFLE_CONTEXT_OPENGL);
         CASE(WAFFLE_CONTEXT_OPENGL_ES1);
@@ -85,6 +86,7 @@ wcore_enum_to_string(int32_t e)
         CASE(WAFFLE_DL_OPENGL);
         CASE(WAFFLE_DL_OPENGL_ES1);
         CASE(WAFFLE_DL_OPENGL_ES2);
+        CASE(WAFFLE_DL_OPENGL_ES3);
 
         default: return NULL;
 
