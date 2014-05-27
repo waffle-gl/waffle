@@ -18,7 +18,7 @@ that trace on a different system.
 For more information, visit to Waffle's website.
 
 
-[1] http://cgit.freedesktop.org/piglit/tree/README
+[1] http://piglit.freedesktop.org
 [2] http://github.com/apitrace/apitrace#readme
 
 

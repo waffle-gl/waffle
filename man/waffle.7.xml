@@ -52,7 +52,7 @@ Link with -lwaffle-1.
 
     <para>
       Waffle's immediate goal is to enable
-      <ulink url="http://cgit.freedesktop.org/piglit/tree/README">Piglit</ulink>,
+      <ulink url="http://piglit.freedesktop.org">Piglit</ulink>,
       <ulink url="http://mesa3d.org">Mesa</ulink>'s OpenGL test suite,
       to test multiple OpenGL flavors in a cross-platform way, and to allow each Piglit test to choose its OpenGL API
       and window system at runtime. A future goal is to enable the ability to record,
