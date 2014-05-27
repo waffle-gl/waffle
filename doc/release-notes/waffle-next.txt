@@ -10,8 +10,8 @@ context. Waffle is now also packaged for Debian. Details below.
 
 As usual, the release is available as a tarball
 
-    https://github.com/waffle-gl/waffle/releases/download/waffle-NEXT/waffle-NEXT.tar.xz
-    https://github.com/waffle-gl/waffle/releases/download/waffle-NEXT/waffle-NEXT.tar.xz.sig
+    http://www.waffle-gl.org/files/release/waffle-NEXT/waffle-NEXT.tar.xz
+    http://www.waffle-gl.org/files/release/waffle-NEXT/waffle-NEXT.tar.xz.sig
 
 Or as tag 'waffle-NEXT' in the git repository
 
