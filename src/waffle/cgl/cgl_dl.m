@@ -147,11 +147,12 @@ cgl_dl_close(struct wcore_platform *wc_plat)
     if (error_msg) {
         wcore_errorf(WAFFLE_ERROR_UNKNOWN,
                      "dlclose(libname=\"%s\") failed: %s",
-                     error_msg);
+                     cgl_dl_gl_path, error_msg);
     }
     else {
         wcore_errorf(WAFFLE_ERROR_UNKNOWN,
-                     "dlclose(libname=\"%s\") failed");
+                     "dlclose(libname=\"%s\") failed",
+                     cgl_dl_gl_path);
     }
 
     return false;
