@@ -16,4 +16,8 @@ if(waffle_on_mac)
         )
 endif()
 
-install(TARGETS wflinfo DESTINATION bin)
+install(
+    TARGETS wflinfo
+    DESTINATION ${CMAKE_INSTALL_BINDIR}
+    COMPONENT utils
+    )

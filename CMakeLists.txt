@@ -92,11 +92,17 @@ endif()
 
 configure_file(waffle.pc.in ${waffle_libname}.pc @ONLY)
 
-install(FILES ${CMAKE_BINARY_DIR}/${waffle_libname}.pc
-        DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
+install(
+    FILES ${CMAKE_BINARY_DIR}/${waffle_libname}.pc
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
+    COMPONENT pkgconfig
+    )
 
-install(FILES cmake/Modules/FindWaffle.cmake
-        DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/cmake/Modules")
+install(
+    FILES cmake/Modules/FindWaffle.cmake
+    DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/cmake/Modules"
+    COMPONENT cmakefind
+    )
 
 # ------------------------------------------------------------------------------
 

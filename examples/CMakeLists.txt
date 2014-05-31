@@ -1,7 +1,11 @@
-install(FILES Makefile.example
-              gl_basic.c
-              simple-x11-egl.c
-        DESTINATION "${CMAKE_INSTALL_DOCDIR}/examples")
+install(
+    FILES
+        Makefile.example
+        gl_basic.c
+        simple-x11-egl.c
+    DESTINATION "${CMAKE_INSTALL_DOCDIR}/examples"
+    COMPONENT examples
+    )
 
 # ----------------------------------------------------------------------------
 # Target: simple-x11-egl (executable)

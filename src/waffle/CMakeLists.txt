@@ -175,8 +175,11 @@ set_target_properties(${waffle_libname}
     LINK_INTERFACE_LIBRARIES ""
     )
 
-install(TARGETS ${waffle_libname}
-        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+install(
+    TARGETS ${waffle_libname}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    COMPONENT libraries
+    )
 
 # ----------------------------------------------------------------------------
 # Target: waffle_static

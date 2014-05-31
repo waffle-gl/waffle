@@ -92,5 +92,8 @@ add_custom_target(html
     DEPENDS ${html_outputs}
     )
 
-install(DIRECTORY ${html_out_dir}
-        DESTINATION ${CMAKE_INSTALL_DOCDIR}/html)
+install(
+    DIRECTORY ${html_out_dir}
+    DESTINATION ${CMAKE_INSTALL_DOCDIR}/html
+    COMPONENT htmldocs
+    )
