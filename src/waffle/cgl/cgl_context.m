@@ -61,11 +61,9 @@ cgl_context_create(struct wcore_platform *wc_plat,
 
     int error = 0;
 
-    self = calloc(1, sizeof(*self));
-    if (!self) {
-        wcore_error(WAFFLE_ERROR_BAD_ALLOC);
+    self = wcore_calloc(sizeof(*self));
+    if (!self)
         return NULL;
-    }
 
     error = !wcore_context_init(&self->wcore, wc_config);
     if (error)

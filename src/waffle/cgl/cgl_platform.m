@@ -96,11 +96,9 @@ cgl_platform_create(void)
     struct cgl_platform *self;
     bool ok = true;
 
-    self= calloc(1, sizeof(*self));
-    if (!self) {
-        wcore_error(WAFFLE_ERROR_BAD_ALLOC);
+    self = wcore_calloc(sizeof(*self));
+    if (!self)
         return NULL;
-    }
 
     ok = wcore_platform_init(&self->wcore);
     if (!ok)

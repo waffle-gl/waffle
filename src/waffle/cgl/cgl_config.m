@@ -236,11 +236,9 @@ cgl_config_choose(struct wcore_platform *wc_plat,
     if (!cgl_config_check_attrs(plat, attrs))
         return NULL;
 
-    self = calloc(1, sizeof(*self));
-    if (!self) {
-        wcore_error(WAFFLE_ERROR_BAD_ALLOC);
+    self = wcore_calloc(sizeof(*self));
+    if (!self)
         return NULL;
-    }
 
     ok = wcore_config_init(&self->wcore, wc_dpy, attrs);
     if (!ok)

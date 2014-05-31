@@ -52,11 +52,9 @@ cgl_display_connect(struct wcore_platform *wc_plat,
     struct cgl_display *self;
     bool ok = true;
 
-    self = calloc(1, sizeof(*self));
-    if (!self) {
-        wcore_error(WAFFLE_ERROR_BAD_ALLOC);
+    self = wcore_calloc(sizeof(*self));
+    if (!self)
         return NULL;
-    }
 
     ok = wcore_display_init(&self->wcore, wc_plat);
     if (!ok)

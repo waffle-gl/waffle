@@ -100,11 +100,9 @@ cgl_window_create(struct wcore_platform *wc_plat,
     struct cgl_window *self;
     bool ok = true;
 
-    self = calloc(1, sizeof(*self));
-    if (!self) {
-        wcore_error(WAFFLE_ERROR_BAD_ALLOC);
+    self = wcore_calloc(sizeof(*self));
+    if (!self)
         return NULL;
-    }
 
     ok = wcore_window_init(&self->wcore, wc_config);
     if (!ok)
