@@ -48,8 +48,7 @@ x11_display_init(struct x11_display *self, const char *name)
         return false;
     }
 
-    // FIXME: Don't assume screen is 0.
-    self->screen = 0;
+    self->screen = DefaultScreen(self->xlib);
 
     return true;
 }
