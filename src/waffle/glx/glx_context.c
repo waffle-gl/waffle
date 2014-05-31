@@ -167,7 +167,7 @@ glx_context_create_native(struct glx_config *config,
 
         ok = glx_context_fill_attrib_list(config, attrib_list);
         if (!ok)
-            return false;
+            return NULL;
 
         ctx = wrapped_glXCreateContextAttribsARB(platform,
                                                  dpy->x11.xlib,
