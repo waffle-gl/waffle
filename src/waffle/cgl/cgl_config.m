@@ -45,13 +45,19 @@
 bool
 cgl_config_destroy(struct wcore_config *wc_self)
 {
+    struct cgl_config *self;
     bool ok = true;
 
     if (wc_self == NULL)
         return ok;
 
+    self = cgl_config(wc_self);
+
+    if (self->pixel_format)
+        CGLReleasePixelFormat(self->pixel_format);
+
     ok &= wcore_config_teardown(wc_self);
-    free(cgl_config(wc_self));
+    free(self);
     return ok;
 }
 
@@ -248,6 +254,7 @@ cgl_config_choose(struct wcore_platform *wc_plat,
     if (!ok)
         goto error;
 
+    // Starting with OS X v10.5, pixel format objects are reference counted.
     error = CGLChoosePixelFormat(pixel_attrs, &self->pixel_format, &ignore);
     if (error) {
         cgl_error_failed_func("CGLChoosePixelFormat", error);
