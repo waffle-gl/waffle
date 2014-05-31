@@ -43,8 +43,8 @@
 
       <funcprototype>
         <funcdef>bool <function>waffle_is_extension_in_string</function></funcdef>
-        <paramdef>const char *restrict <parameter>extension_string</parameter></paramdef>
-        <paramdef>const char *restrict <parameter>extension_name</parameter></paramdef>
+        <paramdef>const char * <parameter>extension_string</parameter></paramdef>
+        <paramdef>const char * <parameter>extension_name</parameter></paramdef>
       </funcprototype>
 
     </funcsynopsis>

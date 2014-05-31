@@ -36,10 +36,6 @@
 extern "C" {
 #endif
 
-#if __STDC_VERSION__ < 199901L
-#       define restrict
-#endif
-
 struct waffle_display;
 struct waffle_config;
 struct waffle_context;
@@ -172,8 +168,8 @@ void*
 waffle_get_proc_address(const char *name);
 
 bool
-waffle_is_extension_in_string(const char *restrict extension_string,
-                              const char *restrict extension_name);
+waffle_is_extension_in_string(const char *extension_string,
+                              const char *extension_name);
 
 // ---------------------------------------------------------------------------
 // waffle_display

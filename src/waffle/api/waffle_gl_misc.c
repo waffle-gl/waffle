@@ -34,6 +34,10 @@
 #include "wcore_platform.h"
 #include "wcore_window.h"
 
+#if __STDC_VERSION__ < 199901L
+#       define restrict
+#endif
+
 WAFFLE_API bool
 waffle_is_extension_in_string(
         const char *restrict extension_string,
