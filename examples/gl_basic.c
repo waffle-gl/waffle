@@ -613,6 +613,10 @@ main(int argc, char **argv)
     if (!ok)
         error_waffle();
 
+    ok = waffle_make_current(dpy, NULL, NULL);
+    if (!ok)
+        error_waffle();
+
     ok = waffle_window_destroy(window);
     if (!ok)
         error_waffle();
