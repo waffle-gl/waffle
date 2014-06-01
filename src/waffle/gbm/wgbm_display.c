@@ -69,7 +69,7 @@ wgbm_get_default_fd_for_pattern(const char *pattern)
 {
     struct udev *ud;
     struct udev_enumerate *en;
-    struct udev_list_entry *entry;
+    struct udev_list_entry *devices, *entry;
     const char *path, *filename;
     struct udev_device *device;
     int fd;
@@ -79,18 +79,23 @@ wgbm_get_default_fd_for_pattern(const char *pattern)
     udev_enumerate_add_match_subsystem(en, "drm");
     udev_enumerate_add_match_sysname(en, pattern);
     udev_enumerate_scan_devices(en);
+    devices = udev_enumerate_get_list_entry(en);
 
-    udev_list_entry_foreach(entry, udev_enumerate_get_list_entry(en)) {
+    udev_list_entry_foreach(entry, devices) {
         path = udev_list_entry_get_name(entry);
         device = udev_device_new_from_syspath(ud, path);
         filename = udev_device_get_devnode(device);
         fd = open(filename, O_RDWR | O_CLOEXEC);
         udev_device_unref(device);
         if (fd >= 0) {
+            udev_enumerate_unref(en);
+            udev_unref(ud);
             return fd;
         }
     }
 
+    udev_enumerate_unref(en);
+    udev_unref(ud);
     return -1;
 }
 
