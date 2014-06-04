@@ -129,6 +129,14 @@
                 </listitem>
               </varlistentry>
               <varlistentry>
+                <term><constant>WAFFLE_PLATFORM_WGL</constant></term>
+                <listitem>
+                  <para>
+                    [Windows] Use WGL on Windows.
+                  </para>
+                </listitem>
+              </varlistentry>
+              <varlistentry>
                 <term><constant>WAFFLE_PLATFORM_X11_EGL</constant></term>
                 <listitem>
                   <para>

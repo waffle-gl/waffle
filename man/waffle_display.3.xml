@@ -93,7 +93,7 @@ struct waffle_display;
             given to <citerefentry><refentrytitle><function>waffle_init</function></refentrytitle><manvolnum>3</manvolnum></citerefentry>.
           </para>
           <para>
-            On Android and CGL, <parameter>name</parameter> is ignored.
+            On Android, CGL and WGL <parameter>name</parameter> is ignored.
           </para>
           <para>
             On the X11 platforms, GLX and X11/EGL, the function connects to the X11 display with the given

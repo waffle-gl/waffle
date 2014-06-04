@@ -16,6 +16,7 @@ include_directories(
     glx
     linux
     wayland
+    wgl
     x11
     xegl
 
@@ -165,6 +166,22 @@ if(waffle_has_gbm)
     )
 endif()
 
+if(waffle_on_windows)
+    list(APPEND waffle_sources
+        wgl/wgl_config.c
+        wgl/wgl_context.c
+        wgl/wgl_display.c
+        wgl/wgl_dl.c
+        wgl/wgl_error.c
+        wgl/wgl_platform.c
+        wgl/wgl_window.c
+        )
+
+    list(APPEND waffle_libdeps
+        opengl32.lib
+        )
+endif()
+
 # CMake will pass to the C compiler only C sources. CMake does not recognize the
 # .m extension and ignores any such files in the source lists. To coerce CMake
 # to pass .m files to the compiler, we must lie and claim that they are
@@ -195,7 +212,9 @@ set_target_properties(${waffle_libname}
 
 install(
     TARGETS ${waffle_libname}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     COMPONENT libraries
     )
 

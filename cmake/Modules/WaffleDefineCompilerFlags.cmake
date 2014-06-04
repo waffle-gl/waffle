@@ -79,3 +79,7 @@ endif()
 if(waffle_has_gbm)
     add_definitions(-DWAFFLE_HAS_GBM)
 endif()
+
+if(waffle_on_windows)
+    add_definitions(-DWAFFLE_HAS_WGL)
+endif()
