@@ -35,6 +35,7 @@ struct wcore_platform;
 
 struct wgl_context {
     struct wcore_context wcore;
+    HGLRC hglrc;
 };
 
 DEFINE_CONTAINER_CAST_FUNC(wgl_context,

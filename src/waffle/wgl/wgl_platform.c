@@ -123,7 +123,10 @@ wgl_make_current(struct wcore_platform *wc_self,
                  struct wcore_window *wc_window,
                  struct wcore_context *wc_ctx)
 {
-    return false;
+    HDC hDC = wc_window ? wgl_window(wc_window)->hDC : NULL;
+    HGLRC hglrc = wc_ctx ? wgl_context(wc_ctx)->hglrc : NULL;
+
+    return wglMakeCurrent(hDC, hglrc);
 }
 
 static void*

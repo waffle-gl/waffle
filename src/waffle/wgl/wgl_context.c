@@ -25,23 +25,28 @@
 
 #include <assert.h>
 #include <stdlib.h>
+#include <windows.h>
 
 #include "wcore_error.h"
 
 #include "wgl_config.h"
 #include "wgl_context.h"
 #include "wgl_error.h"
+#include "wgl_window.h"
 
 bool
 wgl_context_destroy(struct wcore_context *wc_self)
 {
     struct wgl_context *self = wgl_context(wc_self);
-    bool ok;
+    bool ok = true;
 
     if (!self)
         return true;
 
-    ok = wcore_context_teardown(wc_self);
+    if (self->hglrc)
+        ok &= wglDeleteContext(self->hglrc);
+
+    ok &= wcore_context_teardown(wc_self);
     free(self);
     return ok;
 }
@@ -51,6 +56,7 @@ wgl_context_create(struct wcore_platform *wc_plat,
                    struct wcore_config *wc_config,
                    struct wcore_context *wc_share_ctx)
 {
+    struct wgl_config *config = wgl_config(wc_config);
     struct wgl_context *self;
     int error;
 
@@ -60,6 +66,10 @@ wgl_context_create(struct wcore_platform *wc_plat,
 
     error = !wcore_context_init(&self->wcore, wc_config);
     if (error)
+        goto fail;
+
+    self->hglrc = wglCreateContext(config->window->hDC);
+    if (!self->hglrc)
         goto fail;
 
     return &self->wcore;
