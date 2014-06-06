@@ -61,24 +61,22 @@ if(waffle_on_mac)
     find_library(CORE_FOUNDATION_FRAMEWORK CoreFoundation REQUIRED)
 endif()
 
-if(waffle_has_egl)
-    waffle_pkg_config(egl REQUIRED egl)
-endif()
 
-if(waffle_has_glx)
-    waffle_pkg_config(gl REQUIRED gl)
-endif()
+if(waffle_on_linux)
+    # waffle_has_egl
+    waffle_pkg_config(egl egl)
 
-if(waffle_has_wayland)
-    waffle_pkg_config(wayland-client REQUIRED wayland-client>=1)
-    waffle_pkg_config(wayland-egl REQUIRED wayland-egl>=9.1)
-endif()
+    # waffle_has_glx
+    waffle_pkg_config(gl gl)
 
-if(waffle_has_x11)
-    waffle_pkg_config(x11-xcb REQUIRED x11-xcb)
-endif()
+    # waffle_has_wayland
+    waffle_pkg_config(wayland-client wayland-client>=1)
+    waffle_pkg_config(wayland-egl wayland-egl>=9.1)
 
-if(waffle_has_gbm)
-    waffle_pkg_config(gbm REQUIRED gbm)
-    waffle_pkg_config(libudev REQUIRED libudev)
+    # waffle_has_x11
+    waffle_pkg_config(x11-xcb x11-xcb)
+
+    # waffle_has_gbm
+    waffle_pkg_config(gbm gbm)
+    waffle_pkg_config(libudev libudev)
 endif()

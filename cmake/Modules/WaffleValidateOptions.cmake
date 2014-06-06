@@ -52,6 +52,76 @@ if(waffle_on_linux)
                 "waffle_has_glx, waffle_has_wayland, "
                 "waffle_has_x11_egl, waffle_has_gbm.")
     endif()
+    if(waffle_has_gbm)
+        if(NOT gbm_FOUND)
+            set(gbm_missing_deps
+                "${gbm_missing_deps} gbm"
+                )
+        endif()
+        if(NOT libudev_FOUND)
+            set(gbm_missing_deps
+                "${gbm_missing_deps} libudev"
+                )
+        endif()
+        if(NOT egl_FOUND)
+            set(gbm_missing_deps
+                "${gbm_missing_deps} egl"
+                )
+        endif()
+        if(gbm_missing_deps)
+            message(FATAL_ERROR "gbm dependency is missing: ${gbm_missing_deps}")
+        endif()
+    endif()
+    if(waffle_has_glx)
+        if(NOT gl_FOUND)
+            set(glx_missing_deps
+                "${glx_missing_deps} gl"
+                )
+        endif()
+        if(NOT x11-xcb_FOUND)
+            set(glx_missing_deps
+                "${glx_missing_deps} x11-xcb"
+                )
+        endif()
+        if(glx_missing_deps)
+            message(FATAL_ERROR "glx dependency is missing: ${glx_missing_deps}")
+        endif()
+    endif()
+    if(waffle_has_wayland)
+        if(NOT wayland-client_FOUND)
+            set(wayland_missing_deps
+                "${wayland_missing_deps} wayland-client>=1"
+                )
+        endif()
+        if(NOT wayland-egl_FOUND)
+            set(wayland_missing_deps
+                "${wayland_missing_deps} wayland-egl>=9.1"
+                )
+        endif()
+        if(NOT egl_FOUND)
+            set(wayland_missing_deps
+                "${wayland_missing_deps} egl"
+                )
+        endif()
+        if(wayland_missing_deps)
+            message(FATAL_ERROR "wayland dependency is missing: ${wayland_missing_deps}")
+        endif()
+    endif()
+    if(waffle_has_x11_egl)
+        if(NOT x11-xcb_FOUND)
+            set(x11_egl_missing_deps
+                "${x11_egl_missing_deps} x11-xcb"
+                )
+        endif()
+        if(NOT egl_FOUND)
+            set(x11_egl_missing_deps
+                "${x11_egl_missing_deps} egl"
+                )
+        endif()
+        if(x11_egl_missing_deps)
+            message(FATAL_ERROR "x11_egl dependency is missing: ${x11_egl_missing_deps}")
+        endif()
+    endif()
 elseif(waffle_on_mac)
     if(waffle_has_gbm)
         message(FATAL_ERROR "Option is not supported on Darwin: waffle_has_gbm.")

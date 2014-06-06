@@ -30,12 +30,12 @@ cmake_minimum_required(VERSION 2.8)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules")
 
 include(WaffleDefineOS)
+include(WaffleFindDependencies)
 include(Options.cmake)
 include(WaffleDefineInternalOptions)
 include(WaffleValidateOptions)
 include(WaffleDefineVersion)
 include(WaffleDefineCompilerFlags)
-include(WaffleFindDependencies)
 include(GNUInstallDirs)
 
 if(waffle_build_tests)
