@@ -26,27 +26,91 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
+#include <windows.h>
 
 #include "wcore_config_attrs.h"
 #include "wcore_error.h"
 
 #include "wgl_config.h"
+#include "wgl_display.h"
 #include "wgl_error.h"
 #include "wgl_platform.h"
+#include "wgl_window.h"
 
 bool
 wgl_config_destroy(struct wcore_config *wc_self)
 {
     struct wgl_config *self = wgl_config(wc_self);
-    bool ok;
+    bool ok = true;
 
     if (!self)
         return true;
 
-    ok = wcore_config_teardown(wc_self);
+    if (self->window)
+        ok &= wgl_window_priv_destroy(&self->window->wcore);
+
+    ok &= wcore_config_teardown(wc_self);
     free(self);
     return ok;
 }
+
+static void
+wgl_config_set_pixeldescriptor(struct wgl_config *config,
+                               const struct wcore_config_attrs *attrs)
+{
+    PIXELFORMATDESCRIPTOR *pfd = &config->pfd;
+
+    pfd->nSize = sizeof(PIXELFORMATDESCRIPTOR);
+    pfd->nVersion = 1;
+
+    pfd->dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL;
+    if (attrs->double_buffered)
+        pfd->dwFlags |= PFD_DOUBLEBUFFER;
+
+    pfd->iPixelType = PFD_TYPE_RGBA;
+
+    pfd->cColorBits        = attrs->rgba_size;
+    pfd->cRedBits          = attrs->red_size;
+    pfd->cGreenBits        = attrs->green_size;
+    pfd->cBlueBits         = attrs->blue_size;
+    pfd->cAlphaBits        = attrs->alpha_size;
+
+    pfd->cDepthBits        = attrs->depth_size;
+    pfd->cStencilBits      = attrs->stencil_size;
+
+    // XXX: Double check these
+    pfd->cAccumRedBits     = attrs->accum_buffer;
+    pfd->cAccumGreenBits   = attrs->accum_buffer;
+    pfd->cAccumBlueBits    = attrs->accum_buffer;
+    pfd->cAccumAlphaBits   = attrs->accum_buffer;
+    pfd->cAccumBits        = pfd->cAccumRedBits +
+                             pfd->cAccumGreenBits +
+                             pfd->cAccumBlueBits +
+                             pfd->cAccumAlphaBits;
+
+    pfd->iLayerType = PFD_MAIN_PLANE;
+}
+
+static bool
+wgl_config_choose_native(struct wgl_config *config,
+                         struct wgl_display *dpy,
+                         const struct wcore_config_attrs *attrs)
+{
+    if (0 /* dpy->ARB_pixel_format */) {
+        // XXX: FINISHME
+    }
+    else {
+        config->pixel_format = ChoosePixelFormat(dpy->hDC, &config->pfd);
+        if (!config->pixel_format) {
+            wcore_errorf(WAFFLE_ERROR_UNKNOWN,
+                         "ChoosePixelFormat failed to find a matching format");
+            return false;
+        }
+    }
+
+    return true;
+}
+
 
 struct wcore_config*
 wgl_config_choose(struct wcore_platform *wc_plat,
@@ -54,6 +118,8 @@ wgl_config_choose(struct wcore_platform *wc_plat,
                   const struct wcore_config_attrs *attrs)
 {
     struct wgl_config *self;
+    struct wgl_display *dpy = wgl_display(wc_dpy);
+    struct wcore_window *wc_window;
     bool ok;
 
     self = wcore_calloc(sizeof(*self));
@@ -61,6 +127,26 @@ wgl_config_choose(struct wcore_platform *wc_plat,
         return NULL;
 
     ok = wcore_config_init(&self->wcore, wc_dpy, attrs);
+    if (!ok)
+        goto error;
+
+    wgl_config_set_pixeldescriptor(self, attrs);
+
+    ok = wgl_config_choose_native(self, dpy, attrs);
+    if (!ok)
+        goto error;
+
+    // Hurray, we've got the pixel format.
+
+    wc_window = wgl_window_priv_create(wc_plat, &self->wcore, 10, 10);
+    if (!wc_window)
+        goto error;
+
+    self->window = wgl_window(wc_window);
+
+    // Now let's pray that the root window's hDC is compatible with the
+    // new window hDC.
+    ok = SetPixelFormat(self->window->hDC, self->pixel_format, &self->pfd);
     if (!ok)
         goto error;
 

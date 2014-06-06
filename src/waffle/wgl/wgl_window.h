@@ -34,12 +34,24 @@ struct wcore_platform;
 
 struct wgl_window {
     struct wcore_window wcore;
+    HWND hWnd;
+    HDC hDC;
+    bool created;
 };
 
 DEFINE_CONTAINER_CAST_FUNC(wgl_window,
                            struct wgl_window,
                            struct wcore_window,
                            wcore)
+struct wcore_window*
+wgl_window_priv_create(struct wcore_platform *wc_plat,
+                       struct wcore_config *wc_config,
+                       int width,
+                       int height);
+
+bool
+wgl_window_priv_destroy(struct wcore_window *wc_self);
+
 struct wcore_window*
 wgl_window_create(struct wcore_platform *wc_plat,
                   struct wcore_config *wc_config,

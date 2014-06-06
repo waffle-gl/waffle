@@ -33,9 +33,15 @@
 
 struct wcore_config_attrs;
 struct wcore_platform;
+struct wgl_window;
 
 struct wgl_config {
     struct wcore_config wcore;
+    PIXELFORMATDESCRIPTOR pfd;
+    int pixel_format;
+
+    // XXX: Currently we manage only one window per config.
+    struct wgl_window *window;
 };
 
 DEFINE_CONTAINER_CAST_FUNC(wgl_config,
