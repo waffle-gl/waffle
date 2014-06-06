@@ -1,0 +1,63 @@
+# Maintainer: Chad Versace <chad.versace@linux.intel.com>
+
+pkgbase='waffle'
+pkgname="lib32-$pkgbase"
+pkgver='1.3.0'
+pkgrel=1
+pkgdesc='a library for choosing window system and OpenGL API at runtime (32 bits)'
+arch=('x86_64')
+url='http://www.waffle-gl.org'
+license=('BSD')
+
+depends=(
+  'lib32-libgl' # for GLX
+  'lib32-libegl'
+  'lib32-libgbm'
+  'lib32-libx11'
+  'lib32-libxcb'
+  'lib32-wayland'
+
+  "$pkgbase=$pkgver"
+  )
+makedepends=(
+  'gcc-multilib'
+  'cmake'
+  'xcb-proto'
+  )
+
+source=("http://www.waffle-gl.org/files/release/$pkgbase-$pkgver/$pkgbase-$pkgver.tar.xz")
+sha256sums=('340ee04172dba878249469018cd7ec9d1ecd41af26b612c741b8b52e713bca8e')
+
+build() {
+  cd "$srcdir/$pkgbase-$pkgver"
+
+  export CC='gcc -m32'
+  export CXX='g++ -m32'
+  export PKG_CONFIG_PATH='/usr/lib32/pkgconfig'
+
+  cmake  \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_INSTALL_LIBDIR=/usr/lib32 \
+    -DCMAKE_BUILD_TYPE=Release \
+    -Dwaffle_has_gbm=1 \
+    -Dwaffle_has_glx=1 \
+    -Dwaffle_has_x11_egl=1 \
+    -Dwaffle_has_wayland=1 \
+    -Dwaffle_build_manpages=0 \
+    -Dwaffle_build_htmldocs=0 \
+    -Dwaffle_build_examples=0
+  make
+}
+
+package() {
+  cd "$srcdir/$pkgbase-$pkgver"
+  make DESTDIR="$pkgdir/" install
+
+  rm -rf "$pkgdir/usr/include"
+  rm -rf "$pkgdir/usr/share"
+
+  install -m755 -d "$pkgdir/usr/share/licenses"
+  ln -s $pkgbase "$pkgdir/usr/share/licenses/$pkgname"
+}
+
+# vim:set ts=2 sw=2 et:
