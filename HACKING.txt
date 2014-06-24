@@ -46,23 +46,41 @@ method you feel most comfortable with.
   request that updates this file with instructions ;) .
 
 
-Commit messages
----------------
+How to write commit messages
+----------------------------
+The commit message is no less important than the code. So write it well.
+
+The commit message should first convey the patch's *intent* or *motivation*,
+and secondly describe its *content*.  Usually the message should describe *why*
+the patch is needed, *how* it accomplishes its goal.
+
+Example of a good commit message:
+
+    commit 7b2be42a92899ff6f857758e57656285168ba791
+    Author: Emil Velikov <emil.l.velikov@gmail.com>
+    Date:   Sat May 31 03:22:06 2014 +0100
+
+        cgl: avoid leaking the PixelFormat
+
+        According to apple developer page, starting with OS X v10.
+        pixelformat is reference counted. The object is created at
+        CGLChoosePixelFormat and should be unrefeferenced via
+        CGLReleasePixelFormat/CGLDestroyPixelFormat.
+
+        The latter two are identical accoring to the documentation
+
+        Signed-off-by: Emil Velikov <emil.l.velikov@gmail.com>
+        Reviewed-by: Chad Versace <chad.versace@linux.intel.com>
+
+The commit's subject line should begin with the name of the component it
+touches. Examples:
+
+    (commit 7b2be42) cgl: avoid leaking the PixelFormat
+    (commit a643da0) wflinfo: silence signed/unsiged comparison warning
+    (commit d78bd29) glx: glx_context_create_native returns GLXContext not bool
 
 Try to keep the textwidth of your patch's commit message within 80 columns.
-
-Prefix the patch's subject with the directory that it touches. For example:
-    include: Fix comment for waffle_init()
-If the patch touches multiple directories, then consider breaking it into
-multiple patches; but don't take that advice too strictly.
-
-The commit message should fully describe *why* the patch is needed, *how* it
-accomplishes its goal, and *what* code it changes. Consider that most people
-who will read your commit message will encounter it while exploring the git
-log, and hence may not see the diff. The commit message should fully convey to
-such a reader the patch's intent and content. Exceptions to this rule are 1)
-trivial patches and 2) patches that add a large number of new files without
-touching existing files.
+Exceptions are unavoidable, however, so use common sense.
 
 
 Copyright
