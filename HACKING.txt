@@ -1,9 +1,49 @@
-How to submit
--------------
+How to hack on Waffle
+=====================
 
-Submit patches to waffle@lists.freedesktop.org.
+How to submit patches
+---------------------
+Do not send patches as email attachments.
 
-Use `git send-email`. Don't send patches as attachments.
+Choose one of the below methods to submit patches to Waffle. Choose whichever
+method you feel most comfortable with.
+
+- Sending invidual patches to the mailing list.
+
+  Suppose you want to submit the patches for your branch 'fix-sprocket' to the
+  upstream branch 'master'.
+
+  > # Create temporary directory for your patches.
+  > mkdir $tmp_patch_dir
+  >
+  > # Fill that temporary directory with patch emails.
+  > git format-patch \
+        -o $tmp_patch_dir \
+        --subject-prefix="PATCH (master)" \
+        --notes \
+        --cover-letter \
+        --thread=shallow \
+        --to="waffle@lists.freedesktop.org" \
+        origin/master..fix-sprocket
+  >
+  > # Edit the cover letter email and send to the mailing list.
+  > $EDITOR $tmp_patch_dir/0000-cover-letter.patch
+  > git send-email --cc-cover $tmp_patch_dir/*.patch
+
+- Sending a pull request to the mailing list.
+
+  Create your pull request with 'git request-pull' and send to
+  <waffle@lists.freedesktop.org>. Please format the email's subject line as:
+
+    Subject: [PULL ($upstream_branch)] $description_of_pull_request
+
+  where '$upstream_branch' is the destination upstream branch, such as 'master'
+  or 'next'.
+
+- Sending a pull request through GitHub.
+
+  TODO: If you know how to send GitHub pull requests , then please send a pull
+  request that updates this file with instructions ;) .
 
 
 Commit messages
