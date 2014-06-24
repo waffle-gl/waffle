@@ -85,14 +85,14 @@ Exceptions are unavoidable, however, so use common sense.
 
 Copyright
 ---------
+When making substantial changes to existing files, you may add yourself or your
+organization to that file's copyright header.
 
-If the patch adds a new file, the file must contain the BSD copyright
-header.  Just copy the same header block used throughout Waffle. You may
-assign the copyright to yourself, your organization, or Intel, Waffle's
-dominant copyright holder.
-
-If the patch substantially alters an existing file, you may add yourself or
-your organization to that file's copyright holders.
+If adding new files, do not use a copyleft license (such as the GPL). All
+Waffle source code must be licensed under a liberal opensource license (such as
+BSD).  To reduce license proliferation, Waffle prefers (but does not require)
+that new code be licensed under one of the following licenses: BSD, MIT, Apache
+2.0.
 
 
 Sign your work
