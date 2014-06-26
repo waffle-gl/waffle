@@ -27,6 +27,8 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <GL/gl.h>
+#include <GL/wglext.h>
 
 #include "wcore_config.h"
 #include "wcore_util.h"

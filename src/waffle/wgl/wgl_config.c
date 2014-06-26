@@ -27,9 +27,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <windows.h>
-// XXX: Do we want to include these two, or should we redefine the WGL* consts ?
-#include <GL/gl.h>
-#include <GL/wglext.h>
 
 #include "wcore_config_attrs.h"
 #include "wcore_error.h"
@@ -55,6 +52,98 @@ wgl_config_destroy(struct wcore_config *wc_self)
     ok &= wcore_config_teardown(wc_self);
     free(self);
     return ok;
+}
+
+/// @brief Check the values of `attrs->context_*`.
+static bool
+wgl_config_check_context_attrs(struct wgl_display *dpy,
+                               const struct wcore_config_attrs *attrs)
+{
+    if (attrs->context_forward_compatible) {
+        assert(attrs->context_api == WAFFLE_CONTEXT_OPENGL);
+        assert(wcore_config_attrs_version_ge(attrs, 30));
+    }
+
+    if (attrs->context_debug && !dpy->ARB_create_context) {
+        wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
+                     "WGL_ARB_create_context is required in order to "
+                     "request a debug context");
+        return false;
+    }
+
+    switch (attrs->context_api) {
+        case WAFFLE_CONTEXT_OPENGL:
+            if (!wcore_config_attrs_version_eq(attrs, 10) && !dpy->ARB_create_context) {
+                wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
+                             "WGL_ARB_create_context is required in order to "
+                             "request an OpenGL version not equal to the default "
+                             "value 1.0");
+                return false;
+            }
+            else if (wcore_config_attrs_version_ge(attrs, 32) && !dpy->ARB_create_context_profile) {
+                wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
+                             "WGL_ARB_create_context_profile is required "
+                             "to create a context with version >= 3.2");
+                return false;
+            }
+            else if (wcore_config_attrs_version_ge(attrs, 32)) {
+                assert(attrs->context_profile == WAFFLE_CONTEXT_CORE_PROFILE ||
+                       attrs->context_profile == WAFFLE_CONTEXT_COMPATIBILITY_PROFILE);
+            }
+
+            if (attrs->context_forward_compatible && !dpy->ARB_create_context) {
+                wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
+                             "WGL_ARB_create_context is required in order to "
+                             "request a forward-compatible context");
+                return false;
+            }
+
+            return true;
+
+        case WAFFLE_CONTEXT_OPENGL_ES1:
+            assert(wcore_config_attrs_version_eq(attrs, 10) ||
+                   wcore_config_attrs_version_eq(attrs, 11));
+            assert(!attrs->context_forward_compatible);
+
+            if (!dpy->EXT_create_context_es_profile) {
+                wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
+                             "WGL_EXT_create_context_es_profile is required "
+                             "to create an OpenGL ES1 context");
+                return false;
+            }
+
+            return true;
+
+        case WAFFLE_CONTEXT_OPENGL_ES2:
+            assert(attrs->context_major_version == 2);
+            assert(!attrs->context_forward_compatible);
+
+            if (!dpy->EXT_create_context_es2_profile) {
+                wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
+                             "WGL_EXT_create_context_es2_profile is required "
+                             "to create an OpenGL ES2 context");
+                return false;
+            }
+
+            return true;
+
+        case WAFFLE_CONTEXT_OPENGL_ES3:
+            assert(attrs->context_major_version == 3);
+
+            if (!dpy->EXT_create_context_es_profile) {
+                wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
+                             "WGL_EXT_create_context_es_profile is required "
+                             "to create an OpenGL ES3 context");
+                return false;
+            }
+
+            return true;
+
+        default:
+            wcore_error_internal("context_api has bad value %#x",
+                                 attrs->context_api);
+            return false;
+    }
 }
 
 static void
@@ -170,6 +259,10 @@ wgl_config_choose(struct wcore_platform *wc_plat,
     struct wgl_display *dpy = wgl_display(wc_dpy);
     struct wcore_window *wc_window;
     bool ok;
+
+    ok = wgl_config_check_context_attrs(dpy, attrs);
+    if (!ok)
+        return NULL;
 
     self = wcore_calloc(sizeof(*self));
     if (!self)
