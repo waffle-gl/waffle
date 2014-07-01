@@ -67,6 +67,13 @@ add_custom_target(check-func
 # Add subdirectories
 # ------------------------------------------------------------------------------
 
+if(waffle_on_mac)
+    link_libraries(
+        ${COCOA_FRAMEWORK}
+        ${CORE_FOUNDATION_FRAMEWORK}
+        )
+endif()
+
 include_directories(
     include
     include/waffle

@@ -73,13 +73,10 @@ if(waffle_on_mac)
         cgl/cgl_error.m
         cgl/cgl_platform.m
         cgl/cgl_window.m
-
         cgl/WaffleGLView.m
         )
     list(APPEND waffle_libdeps
         ${OPENGL_gl_LIBRARY}
-        ${COCOA_FRAMEWORK}
-        ${CORE_FOUNDATION_FRAMEWORK}
         )
 endif()
 
@@ -172,8 +169,14 @@ set_target_properties(${waffle_libname}
     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib
     SOVERSION ${waffle_soversion}
     VERSION ${waffle_soversion}.${waffle_minor_version}.${waffle_patch_version}
-    LINK_INTERFACE_LIBRARIES ""
     )
+
+if(NOT waffle_on_mac)
+    set_target_properties(${waffle_libname}
+        PROPERTIES
+        LINK_INTERFACE_LIBRARIES ""
+        )
+endif()
 
 install(
     TARGETS ${waffle_libname}
