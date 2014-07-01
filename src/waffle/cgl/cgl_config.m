@@ -190,8 +190,8 @@ cgl_config_fill_pixel_format_attrs(
         }
         else {
             wcore_error_internal("version=%d.%d profile=%#x",
-                                 attrs->context_version_major,
-                                 attrs->context_version_minor,
+                                 attrs->context_major_version,
+                                 attrs->context_minor_version,
                                  attrs->context_profile);
             return false;
         }
