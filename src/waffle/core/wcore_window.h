@@ -32,17 +32,19 @@ struct wcore_window;
 union waffle_native_window;
 
 struct wcore_window {
-    struct waffle_window {} wfl;
     struct api_object api;
-
     struct wcore_display *display;
 };
 
-DEFINE_CONTAINER_CAST_FUNC(wcore_window,
-                           struct wcore_window,
-                           struct waffle_window,
-                           wfl)
+static inline struct waffle_window*
+waffle_window(struct wcore_window *win) {
+    return (struct waffle_window*) win;
+}
 
+static inline struct wcore_window*
+wcore_window(struct waffle_window *win) {
+    return (struct wcore_window*) win;
+}
 
 static inline bool
 wcore_window_init(struct wcore_window *self,

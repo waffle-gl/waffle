@@ -42,7 +42,7 @@ waffle_display_connect(const char *name)
     if (!wc_self)
         return NULL;
 
-    return &wc_self->wfl;
+    return waffle_display(wc_self);
 }
 
 WAFFLE_API bool

@@ -34,16 +34,19 @@ struct wcore_platform;
 union waffle_native_display;
 
 struct wcore_display {
-    struct waffle_display {} wfl;
     struct api_object api;
-
     struct wcore_platform *platform;
 };
 
-DEFINE_CONTAINER_CAST_FUNC(wcore_display,
-                           struct wcore_display,
-                           struct waffle_display,
-                           wfl)
+static inline struct waffle_display*
+waffle_display(struct wcore_display *dpy) {
+    return (struct waffle_display*) dpy;
+}
+
+static inline struct wcore_display*
+wcore_display(struct waffle_display *dpy) {
+    return (struct wcore_display*) dpy;
+}
 
 bool
 wcore_display_init(struct wcore_display *self,

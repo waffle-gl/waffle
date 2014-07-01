@@ -40,17 +40,20 @@ struct wcore_config;
 union waffle_native_config;
 
 struct wcore_config {
-    struct waffle_config {} wfl;
     struct api_object api;
     struct wcore_config_attrs attrs;
-
     struct wcore_display *display;
 };
 
-DEFINE_CONTAINER_CAST_FUNC(wcore_config,
-                           struct wcore_config,
-                           struct waffle_config,
-                           wfl)
+static inline struct waffle_config*
+waffle_config(struct wcore_config *cfg) {
+    return (struct waffle_config*) cfg;
+}
+
+static inline struct wcore_config*
+wcore_config(struct waffle_config *cfg) {
+    return (struct wcore_config*) cfg;
+}
 
 static inline bool
 wcore_config_init(struct wcore_config *self,

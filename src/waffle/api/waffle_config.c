@@ -56,7 +56,7 @@ waffle_config_choose(
     if (!wc_self)
         return NULL;
 
-    return &wc_self->wfl;
+    return waffle_config(wc_self);
 }
 
 WAFFLE_API bool

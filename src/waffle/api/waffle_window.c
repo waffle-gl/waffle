@@ -54,7 +54,7 @@ waffle_window_create(
     if (!wc_self)
         return NULL;
 
-    return &wc_self->wfl;
+    return waffle_window(wc_self);
 }
 
 WAFFLE_API bool

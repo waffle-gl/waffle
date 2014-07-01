@@ -39,16 +39,19 @@ struct wcore_display;
 union waffle_native_context;
 
 struct wcore_context {
-    struct waffle_context {} wfl;
     struct api_object api;
-
     struct wcore_display *display;
 };
 
-DEFINE_CONTAINER_CAST_FUNC(wcore_context,
-                           struct wcore_context,
-                           struct waffle_context,
-                           wfl)
+static inline struct waffle_context*
+waffle_context(struct wcore_context *ctx) {
+    return (struct waffle_context*) ctx;
+}
+
+static inline struct wcore_context*
+wcore_context(struct waffle_context *ctx) {
+    return (struct wcore_context*) ctx;
+}
 
 static inline bool
 wcore_context_init(struct wcore_context *self,
