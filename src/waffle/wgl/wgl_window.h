@@ -39,10 +39,12 @@ struct wgl_window {
     bool created;
 };
 
-DEFINE_CONTAINER_CAST_FUNC(wgl_window,
-                           struct wgl_window,
-                           struct wcore_window,
-                           wcore)
+static inline struct wgl_window*
+wgl_window(struct wcore_window *wcore)
+{
+	return (struct wgl_window*)wcore;
+}
+
 struct wcore_window*
 wgl_window_priv_create(struct wcore_platform *wc_plat,
                        struct wcore_config *wc_config,

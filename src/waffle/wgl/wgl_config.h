@@ -46,10 +46,11 @@ struct wgl_config {
     struct wgl_window *window;
 };
 
-DEFINE_CONTAINER_CAST_FUNC(wgl_config,
-                           struct wgl_config,
-                           struct wcore_config,
-                           wcore)
+static inline struct wgl_config*
+wgl_config(struct wcore_config *wcore)
+{
+	return (struct wgl_config *)wcore;
+}
 
 struct wcore_config*
 wgl_config_choose(struct wcore_platform *wc_plat,

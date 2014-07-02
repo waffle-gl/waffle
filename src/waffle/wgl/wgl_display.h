@@ -63,10 +63,11 @@ struct wgl_display {
     PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormatARB;
 };
 
-DEFINE_CONTAINER_CAST_FUNC(wgl_display,
-                           struct wgl_display,
-                           struct wcore_display,
-                           wcore)
+static inline struct wgl_display*
+wgl_display(struct wcore_display *wcore)
+{
+	return (struct wgl_display*)wcore;
+}
 
 struct wcore_display*
 wgl_display_connect(struct wcore_platform *wc_plat,

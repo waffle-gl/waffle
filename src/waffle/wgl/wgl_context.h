@@ -38,10 +38,11 @@ struct wgl_context {
     HGLRC hglrc;
 };
 
-DEFINE_CONTAINER_CAST_FUNC(wgl_context,
-                           struct wgl_context,
-                           struct wcore_context,
-                           wcore)
+static inline struct wgl_context*
+wgl_context(struct wcore_context *wcore)
+{
+	return (struct wgl_context *)wcore;
+}
 
 struct wcore_context*
 wgl_context_create(struct wcore_platform *wc_plat,

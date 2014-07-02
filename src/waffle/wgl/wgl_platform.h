@@ -43,10 +43,11 @@ struct wgl_platform {
     const char *class_name;
 };
 
-DEFINE_CONTAINER_CAST_FUNC(wgl_platform,
-                           struct wgl_platform,
-                           struct wcore_platform,
-                           wcore)
+static inline struct wgl_platform*
+wgl_platform(struct wcore_platform *wcore)
+{
+	return (struct wgl_platform*)wcore;
+}
 
 struct wcore_platform*
 wgl_platform_create(void);
