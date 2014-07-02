@@ -39,7 +39,8 @@
 // TODO: Implement WAFFLE_API for Apple.
 //
 #if defined(_WIN32)
-#   define WAFFLE_API __declspec(dllexport)
+// Use module-definition file to restrict the exported symbols under windows.
+#   define WAFFLE_API
 #elif defined(__GNUC__) && __GNUC__ >= 4
 #   define WAFFLE_API __attribute__ ((visibility("default")))
 #else

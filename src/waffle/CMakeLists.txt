@@ -192,6 +192,18 @@ set_source_files_properties(
     LANGUAGE C
     )
 
+if(waffle_on_windows)
+    configure_file(
+        waffle.def.in
+        ${CMAKE_CURRENT_SOURCE_DIR}/${waffle_libname}.def
+        @ONLY
+        )
+
+    list(APPEND waffle_sources
+        ${waffle_libname}.def
+        )
+endif()
+
 include_directories(
     ${GLX_INLCLUDE_DIRS}
     ${X11_INCLUDE_DIRS}
