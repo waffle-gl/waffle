@@ -56,6 +56,7 @@ linux_platform_destroy(struct linux_platform *self)
     ok &= linux_dl_close(self->libgles1);
     ok &= linux_dl_close(self->libgles2);
 
+    free(self);
     return ok;
 }
 
