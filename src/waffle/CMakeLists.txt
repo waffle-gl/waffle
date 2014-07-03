@@ -42,6 +42,7 @@ set(waffle_libdeps
     ${x11_LDFLAGS}
     ${x11-xcb_LDFLAGS}
     ${xcb_LDFLAGS}
+    ${THREADS_LIBRARIES}
     )
 
 set(waffle_sources
