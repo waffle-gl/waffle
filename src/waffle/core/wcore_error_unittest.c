@@ -33,7 +33,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <pthread.h>
+#include "threads.h"
 
 #include <cmocka.h>
 
@@ -131,7 +131,7 @@ enum {
     NUM_THREADS = 3,
 };
 
-/// Given to pthread_create() in test wcore_error.thread_local.
+/// Given to thrd_create() in test wcore_error.thread_local.
 ///
 /// A sub-thread, after calling wcore_error(), locks the mutex, increments
 /// `num_threads_waiting`, and waits on `cond`. When all sub-threads are
@@ -142,10 +142,10 @@ struct thread_arg {
     int thread_id;
 
     /// Protects `num_threads_waiting` and `cond`.
-    pthread_mutex_t *mutex;
+    mtx_t *mutex;
 
     /// Satisfied when `num_threads_waiting == TOTAL_THREADS`.
-    pthread_cond_t *cond;
+    cnd_t *cond;
 
     /// Number of threads waiting on `cond`.
     volatile int *num_threads_waiting;
@@ -172,10 +172,10 @@ thread_start(struct thread_arg *a)
 
     // Wait for all threads to set their error codes, thus giving
     // the threads opportunity to clobber each other's codes.
-    pthread_mutex_lock(a->mutex); {
+    mtx_lock(a->mutex); {
         *a->num_threads_waiting += 1;
-        pthread_cond_wait(a->cond, a->mutex);
-        pthread_mutex_unlock(a->mutex);
+        cnd_wait(a->cond, a->mutex);
+        mtx_unlock(a->mutex);
     }
 
     // Verify that the threads did not clobber each other's
@@ -188,16 +188,16 @@ thread_start(struct thread_arg *a)
 // Test that threads do not clobber each other's error codes.
 static void
 test_wcore_error_thread_local(void **state) {
-    pthread_mutex_t mutex;
-    pthread_cond_t cond;
+    mtx_t mutex;
+    cnd_t cond;
     volatile int num_threads_waiting = 0;
 
-    pthread_t threads[NUM_THREADS];
+    thrd_t threads[NUM_THREADS];
     struct thread_arg thread_args[NUM_THREADS];
     bool exit_codes[NUM_THREADS];
 
-    pthread_mutex_init(&mutex, NULL);
-    pthread_cond_init(&cond, NULL);
+    mtx_init(&mutex, mtx_plain);
+    cnd_init(&cond);
 
     for (intptr_t i = 0; i < NUM_THREADS; ++i) {
         struct thread_arg *a = &thread_args[i];
@@ -206,8 +206,8 @@ test_wcore_error_thread_local(void **state) {
         a->cond = &cond;
         a->num_threads_waiting = &num_threads_waiting;
 
-        pthread_create(&threads[i], NULL,
-                      (void* (*)(void*)) thread_start,
+        thrd_create(&threads[i],
+                      (thrd_start_t) thread_start,
                       (void*) a);
     }
 
@@ -215,18 +215,18 @@ test_wcore_error_thread_local(void **state) {
     // the threads opportunity to clobber each other's codes.
     while (num_threads_waiting < NUM_THREADS)
         ;;
-    pthread_mutex_lock(&mutex); {
-        pthread_cond_broadcast(&cond);
-        pthread_mutex_unlock(&mutex);
+    mtx_lock(&mutex); {
+        cnd_broadcast(&cond);
+        mtx_unlock(&mutex);
     }
 
     for (int i = 0; i < NUM_THREADS; ++i) {
-        pthread_join(threads[i], (void**) &exit_codes[i]);
+        thrd_join(threads[i], (int *) &exit_codes[i]);
         assert_true(exit_codes[i]);
     }
 
-    pthread_cond_destroy(&cond);
-    pthread_mutex_destroy(&mutex);
+    cnd_destroy(&cond);
+    mtx_destroy(&mutex);
 }
 
 int
