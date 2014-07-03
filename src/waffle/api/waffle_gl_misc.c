@@ -25,6 +25,7 @@
 
 #include <stddef.h>
 #include <string.h>
+#include "c99_compat.h"
 
 #include "api_priv.h"
 
@@ -33,10 +34,6 @@
 #include "wcore_error.h"
 #include "wcore_platform.h"
 #include "wcore_window.h"
-
-#if __STDC_VERSION__ < 199901L
-#       define restrict
-#endif
 
 WAFFLE_API bool
 waffle_is_extension_in_string(
