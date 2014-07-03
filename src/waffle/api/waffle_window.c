@@ -107,7 +107,7 @@ waffle_window_resize(
     }
     else {
         wcore_error(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM);
-        return NULL;
+        return false;
     }
 }
 
