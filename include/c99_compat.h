@@ -38,3 +38,18 @@
 #    define restrict
 #  endif
 #endif
+
+/*
+ * C99 inline keyword
+ */
+#ifndef inline
+#  if defined(__GNUC__)
+#    define inline __inline__
+#  elif defined(_MSC_VER)
+#    define inline __inline
+#  elif defined(__ICL)
+#    define inline __inline
+#  else
+#    define inline
+#  endif
+#endif

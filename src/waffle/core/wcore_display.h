@@ -25,6 +25,8 @@
 
 #pragma once
 
+#include "c99_compat.h"
+
 #include "api_object.h"
 
 #include "wcore_util.h"
