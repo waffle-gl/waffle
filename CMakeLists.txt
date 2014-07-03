@@ -80,6 +80,12 @@ include_directories(
     src
     )
 
+add_subdirectory(third_party/threads)
+include_directories(
+    third_party/threads
+    )
+set(THREADS_LIBRARIES threads_bundled)
+
 add_subdirectory(doc)
 add_subdirectory(src)
 add_subdirectory(include)
