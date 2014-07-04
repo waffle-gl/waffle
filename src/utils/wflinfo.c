@@ -778,7 +778,7 @@ gl_has_extension_GetStringi(const char *name)
         error_printf("Wflinfo", "glGetIntegerv(GL_NUM_EXTENSIONS) failed");
     }
 
-    for (int i = 0; i < num_exts; i++) {
+    for (uint32_t i = 0; i < num_exts; i++) {
         const uint8_t *ext = glGetStringi(GL_EXTENSIONS, i);
         if (!ext || glGetError()) {
             error_printf("Wflinfo", "glGetStringi(GL_EXTENSIONS) failed");
