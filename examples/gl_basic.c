@@ -43,7 +43,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#if !defined(_WIN32)
 #include <time.h>
+#else
+#include <windows.h>
+#endif
 
 #ifdef __APPLE__
 #    import <Foundation/NSAutoreleasePool.h>
@@ -371,11 +375,13 @@ draw(struct waffle_window *window, bool resize)
     int width = WINDOW_WIDTH;
     int height = WINDOW_HEIGHT;
 
+#if !defined(_WIN32)
     static const struct timespec sleep_time = {
          // 0.5 sec
         .tv_sec = 0,
         .tv_nsec = 500000000,
     };
+#endif
 
     for (int i = 0; i < 3; ++i) {
         switch (i) {
@@ -420,7 +426,11 @@ draw(struct waffle_window *window, bool resize)
         if (!ok)
             return false;
 
+#if !defined(_WIN32)
         nanosleep(&sleep_time, NULL);
+#else
+        Sleep(500);
+#endif
     }
 
     return true;
