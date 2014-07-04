@@ -1,7 +1,5 @@
 include_directories (${CMAKE_CURRENT_SOURCE_DIR})
 
-add_definitions(-D_XOPEN_SOURCE=600)
-
 if(WIN32)
     set(threads_sources threads_win32.c)
 else()

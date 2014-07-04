@@ -190,7 +190,6 @@ set_source_files_properties(
     ${waffle_sources}
     PROPERTIES
     LANGUAGE C
-    COMPILE_FLAGS "-fvisibility=hidden"
     )
 
 include_directories(
