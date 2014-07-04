@@ -123,7 +123,15 @@ strneq(const char *a, const char *b, size_t n)
     return strncmp(a, b, n) == 0;
 }
 
-static void __attribute__((noreturn))
+#if defined(__GNUC__)
+#define NORETURN __attribute__((noreturn))
+#elif defined(_MSC_VER)
+#define NORETURN __declspec(noreturn)
+#else
+#define NORETURN
+#endif
+
+static void NORETURN
 error_printf(const char *module, const char *fmt, ...)
 {
     va_list ap;
@@ -137,14 +145,14 @@ error_printf(const char *module, const char *fmt, ...)
     exit(EXIT_FAILURE);
 }
 
-static void __attribute__((noreturn))
+static void NORETURN
 write_usage_and_exit(FILE *f, int exit_code)
 {
     fprintf(f, "%s", usage_message);
     exit(exit_code);
 }
 
-static void __attribute__((noreturn))
+static void NORETURN
 usage_error_printf(const char *fmt, ...)
 {
     fprintf(stderr, "Wflinfo usage error: ");
