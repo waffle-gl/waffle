@@ -3,7 +3,7 @@
 # ----------------------------------------------------------------------------
 
 add_executable(wflinfo wflinfo.c)
-target_link_libraries(wflinfo ${waffle_libname})
+target_link_libraries(wflinfo ${waffle_libname} ${GETOPT_LIBRARIES})
 set_target_properties(wflinfo
     PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
