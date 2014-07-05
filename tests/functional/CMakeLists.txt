@@ -13,11 +13,13 @@ if(waffle_on_mac)
         )
 endif()
 
-set_source_files_properties(
-    ${gl_basic_test_sources}
-    PROPERTIES
-        COMPILE_FLAGS "-Wno-initializer-overrides"
-)
+if(NOT MSVC)
+    set_source_files_properties(
+        ${gl_basic_test_sources}
+        PROPERTIES
+            COMPILE_FLAGS "-Wno-initializer-overrides"
+    )
+endif()
 
 # CMake will pass to the C compiler only C sources. CMake does not recognize the
 # .m extension and ignores any such files in the source lists. To coerce CMake
