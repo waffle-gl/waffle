@@ -220,10 +220,18 @@ enum {
 #define GL_CONTEXT_CORE_PROFILE_BIT       0x00000001
 #define GL_CONTEXT_COMPATIBILITY_PROFILE_BIT 0x00000002
 
-static GLenum (*glGetError)(void);
-static void (*glGetIntegerv)(GLenum pname, GLint *params);
-static const GLubyte * (*glGetString)(GLenum name);
-static const GLubyte * (*glGetStringi)(GLenum name, GLint i);
+#ifndef _WIN32
+#define APIENTRY
+#else
+#ifndef APIENTRY
+#define APIENTRY __stdcall
+#endif
+#endif
+
+static GLenum (APIENTRY *glGetError)(void);
+static void (APIENTRY *glGetIntegerv)(GLenum pname, GLint *params);
+static const GLubyte * (APIENTRY *glGetString)(GLenum name);
+static const GLubyte * (APIENTRY *glGetStringi)(GLenum name, GLint i);
 
 /// @brief Command line options.
 struct options {
