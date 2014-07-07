@@ -1025,15 +1025,15 @@ main(int argc, char **argv)
                      waffle_enum_to_string(opts.context_api));
     }
 
-    glGetError = waffle_get_proc_address("glGetError");
+    glGetError = waffle_dl_sym(opts.dl, "glGetError");
     if (!glGetError)
         error_get_gl_symbol("glGetError");
 
-    glGetIntegerv = waffle_get_proc_address("glGetIntegerv");
+    glGetIntegerv = waffle_dl_sym(opts.dl, "glGetIntegerv");
     if (!glGetIntegerv)
         error_get_gl_symbol("glGetIntegerv");
 
-    glGetString = waffle_get_proc_address("glGetString");
+    glGetString = waffle_dl_sym(opts.dl, "glGetString");
     if (!glGetString)
         error_get_gl_symbol("glGetString");
 
