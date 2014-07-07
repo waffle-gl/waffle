@@ -112,17 +112,25 @@ typedef double              GLclampd;   /* double precision float in [0,1] */
 #define GL_CONTEXT_FLAG_FORWARD_COMPATIBLE_BIT 0x00000001
 #define GL_CONTEXT_FLAG_DEBUG_BIT              0x00000002
 
-static GLenum (*glGetError)(void);
-static void (*glGetIntegerv)(GLenum pname, GLint *params);
-static void (*glClearColor)(GLclampf red,
-                            GLclampf green,
-                            GLclampf blue,
-                            GLclampf alpha);
-static void (*glClear)(GLbitfield mask);
-static void (*glReadPixels)(GLint x, GLint y,
-                            GLsizei width, GLsizei height,
-                            GLenum format, GLenum type,
-                            GLvoid *pixels );
+#ifndef _WIN32
+#define APIENTRY
+#else
+#ifndef APIENTRY
+#define APIENTRY __stdcall
+#endif
+#endif
+
+static GLenum (APIENTRY *glGetError)(void);
+static void (APIENTRY *glGetIntegerv)(GLenum pname, GLint *params);
+static void (APIENTRY *glClearColor)(GLclampf red,
+                                     GLclampf green,
+                                     GLclampf blue,
+                                     GLclampf alpha);
+static void (APIENTRY *glClear)(GLbitfield mask);
+static void (APIENTRY *glReadPixels)(GLint x, GLint y,
+                                     GLsizei width, GLsizei height,
+                                     GLenum format, GLenum type,
+                                     GLvoid *pixels );
 
 static void
 testgroup_gl_basic_setup(void)
