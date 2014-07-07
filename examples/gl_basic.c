@@ -524,6 +524,8 @@ main(int argc, char **argv)
     struct waffle_context *ctx;
     struct waffle_window *window;
 
+    GLint context_flags = 0;
+
     #ifdef __APPLE__
         cocoa_init();
     #endif
@@ -622,7 +624,6 @@ main(int argc, char **argv)
     if (!ok)
         error_waffle();
 
-    GLint context_flags = 0;
     if (opts.context_forward_compatible || opts.context_debug) {
         glGetIntegerv(GL_CONTEXT_FLAGS, &context_flags);
     }
