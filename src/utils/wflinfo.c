@@ -536,16 +536,19 @@ print_wflinfo(const struct options *opts)
     }
 
     const char *vendor = (const char *) glGetString(GL_VENDOR);
-    if (glGetError() != GL_NO_ERROR || vendor == NULL)
+    if (glGetError() != GL_NO_ERROR || vendor == NULL) {
         vendor = "WFLINFO_GL_ERROR";
+    }
 
     const char *renderer = (const char *) glGetString(GL_RENDERER);
-    if (glGetError() != GL_NO_ERROR || renderer == NULL)
+    if (glGetError() != GL_NO_ERROR || renderer == NULL) {
         renderer = "WFLINFO_GL_ERROR";
+    }
 
     const char *version_str = (const char *) glGetString(GL_VERSION);
-    if (glGetError() != GL_NO_ERROR || version_str == NULL)
+    if (glGetError() != GL_NO_ERROR || version_str == NULL) {
         version_str = "WFLINFO_GL_ERROR";
+    }
 
     const char *platform = enum_map_to_str(platform_map, opts->platform);
     assert(platform != NULL);
