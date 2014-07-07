@@ -761,26 +761,27 @@ gl_get_version(void)
 static bool
 gl_has_extension_GetString(const char *name)
 {
-    const size_t buf_len = 4096;
-    char exts[buf_len];
+#define BUF_LEN 4096
+    char exts[BUF_LEN];
 
     const uint8_t *exts_orig = glGetString(GL_EXTENSIONS);
     if (glGetError()) {
         error_printf("Wflinfo", "glGetInteger(GL_EXTENSIONS) failed");
     }
 
-    memcpy(exts, exts_orig, buf_len);
-    exts[buf_len - 1] = 0;
+    memcpy(exts, exts_orig, BUF_LEN);
+    exts[BUF_LEN - 1] = 0;
 
     char *ext = strtok(exts, " ");
     do {
-        if (strneq(ext, name, buf_len)) {
+        if (strneq(ext, name, BUF_LEN)) {
             return true;
         }
         ext = strtok(NULL, " ");
     } while (ext);
 
     return false;
+#undef BUF_LEN
 }
 
 /// @brief Check if current context has an extension using glGetStringi().
