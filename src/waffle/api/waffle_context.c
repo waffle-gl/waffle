@@ -43,7 +43,7 @@ waffle_context_create(
 
     obj_list[len++] = wc_config ? &wc_config->api : NULL;
     if (wc_shared_ctx)
-        obj_list[len++] = wc_shared_ctx ? &wc_shared_ctx->api : NULL;
+        obj_list[len++] = &wc_shared_ctx->api;
 
     if (!api_check_entry(obj_list, len))
         return NULL;

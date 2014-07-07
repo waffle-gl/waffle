@@ -90,9 +90,9 @@ waffle_make_current(
 
     obj_list[len++] = wc_dpy ? &wc_dpy->api : NULL;
     if (wc_window)
-        obj_list[len++] = wc_window ? &wc_window->api : NULL;
+        obj_list[len++] = &wc_window->api;
     if (wc_ctx)
-        obj_list[len++] = wc_ctx ? &wc_ctx->api : NULL;
+        obj_list[len++] = &wc_ctx->api;
 
     if (!api_check_entry(obj_list, len))
         return false;
