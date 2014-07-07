@@ -193,12 +193,20 @@ enum {
 #define WINDOW_WIDTH  320
 #define WINDOW_HEIGHT 240
 
-static void (*glClearColor)(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha);
-static void (*glClear)(GLbitfield mask);
-static void (*glGetIntegerv)(GLenum pname, GLint *params);
-static void (*glReadPixels)(GLint x, GLint y, GLsizei width, GLsizei height,
-                            GLenum format, GLenum type, GLvoid* data);
-static void (*glViewport)(GLint x, GLint y, GLsizei width, GLsizei height);
+#ifndef _WIN32
+#define APIENTRY
+#else
+#ifndef APIENTRY
+#define APIENTRY __stdcall
+#endif
+#endif
+
+static void (APIENTRY *glClearColor)(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha);
+static void (APIENTRY *glClear)(GLbitfield mask);
+static void (APIENTRY *glGetIntegerv)(GLenum pname, GLint *params);
+static void (APIENTRY *glReadPixels)(GLint x, GLint y, GLsizei width, GLsizei height,
+                                     GLenum format, GLenum type, GLvoid* data);
+static void (APIENTRY *glViewport)(GLint x, GLint y, GLsizei width, GLsizei height);
 
 /// @brief Command line options.
 struct options {
