@@ -109,7 +109,15 @@ static const struct option get_opts[] = {
     { 0 },
 };
 
-static void __attribute__((noreturn))
+#if defined(__GNUC__)
+#define NORETURN __attribute__((noreturn))
+#elif defined(_MSC_VER)
+#define NORETURN __declspec(noreturn)
+#else
+#define NORETURN
+#endif
+
+static void NORETURN
 error_printf(const char *fmt, ...)
 {
     va_list ap;
@@ -124,7 +132,8 @@ error_printf(const char *fmt, ...)
 
     exit(EXIT_FAILURE);
 }
-static void __attribute__((noreturn))
+
+static void NORETURN
 usage_error_printf(const char *fmt, ...)
 {
     fflush(stdout);
