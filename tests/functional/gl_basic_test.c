@@ -340,6 +340,21 @@ gl_basic_draw__(struct gl_basic_draw_args__ args)
     ASSERT_TRUE(waffle_display_disconnect(dpy));
 }
 
+//
+// List of tests common to all platforms.
+//
+
+TEST(gl_basic, all_gl_rgb)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL);
+}
+
+TEST(gl_basic, all_gl_rgba)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .alpha=true);
+}
+
 #ifdef WAFFLE_HAS_CGL
 TEST(gl_basic, cgl_init)
 {
@@ -356,17 +371,6 @@ TEST(gl_basic, cgl_gles2_unsupported)
 {
     gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL_ES2,
                   .expect_error=WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM);
-}
-
-TEST(gl_basic, cgl_gl_rgb)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL);
-}
-
-TEST(gl_basic, cgl_gl_rgba)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .alpha=true);
 }
 
 TEST(gl_basic, cgl_gl_debug_is_unsupported)
@@ -547,8 +551,8 @@ testsuite_cgl(void)
     TEST_RUN(gl_basic, cgl_gles1_unsupported);
     TEST_RUN(gl_basic, cgl_gles2_unsupported);
 
-    TEST_RUN(gl_basic, cgl_gl_rgb);
-    TEST_RUN(gl_basic, cgl_gl_rgba);
+    TEST_RUN2(gl_basic, cgl_gl_rgb, all_gl_rgb);
+    TEST_RUN2(gl_basic, cgl_gl_rgba, all_gl_rgba);
 
     TEST_RUN(gl_basic, cgl_gl_debug_is_unsupported);
     TEST_RUN(gl_basic, cgl_gl_fwdcompat_bad_attribute);
@@ -584,17 +588,6 @@ testsuite_cgl(void)
 TEST(gl_basic, glx_init)
 {
     gl_basic_init(WAFFLE_PLATFORM_GLX);
-}
-
-TEST(gl_basic, glx_gl_rgb)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL);
-}
-
-TEST(gl_basic, glx_gl_rgba)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .alpha=true);
 }
 
 TEST(gl_basic, glx_gl_debug)
@@ -869,8 +862,8 @@ testsuite_glx(void)
 {
     TEST_RUN(gl_basic, glx_init);
 
-    TEST_RUN(gl_basic, glx_gl_rgb);
-    TEST_RUN(gl_basic, glx_gl_rgba);
+    TEST_RUN2(gl_basic, glx_gl_rgb, all_gl_rgb);
+    TEST_RUN2(gl_basic, glx_gl_rgba, all_gl_rgb);
     TEST_RUN(gl_basic, glx_gl_debug);
     TEST_RUN(gl_basic, glx_gl_fwdcompat_bad_attribute);
 
@@ -928,17 +921,6 @@ testsuite_glx(void)
 TEST(gl_basic, wayland_init)
 {
     gl_basic_init(WAFFLE_PLATFORM_WAYLAND);
-}
-
-TEST(gl_basic, wayland_gl_rgb)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL);
-}
-
-TEST(gl_basic, wayland_gl_rgba)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .alpha=true);
 }
 
 TEST(gl_basic, wayland_gl_debug)
@@ -1213,8 +1195,9 @@ testsuite_wayland(void)
 {
     TEST_RUN(gl_basic, wayland_init);
 
-    TEST_RUN(gl_basic, wayland_gl_rgb);
-    TEST_RUN(gl_basic, wayland_gl_rgba);
+    TEST_RUN2(gl_basic, wayland_gl_rgb, all_gl_rgb);
+    TEST_RUN2(gl_basic, wayland_gl_rgba, all_gl_rgba);
+
     TEST_RUN(gl_basic, wayland_gl_debug);
     TEST_RUN(gl_basic, wayland_gl_fwdcompat_bad_attribute);
 
@@ -1272,17 +1255,6 @@ testsuite_wayland(void)
 TEST(gl_basic, x11_egl_init)
 {
     gl_basic_init(WAFFLE_PLATFORM_X11_EGL);
-}
-
-TEST(gl_basic, x11_egl_gl_rgb)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL);
-}
-
-TEST(gl_basic, x11_egl_gl_rgba)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .alpha=true);
 }
 
 TEST(gl_basic, x11_egl_gl_debug)
@@ -1557,8 +1529,8 @@ testsuite_x11_egl(void)
 {
     TEST_RUN(gl_basic, x11_egl_init);
 
-    TEST_RUN(gl_basic, x11_egl_gl_rgb);
-    TEST_RUN(gl_basic, x11_egl_gl_rgba);
+    TEST_RUN2(gl_basic, x11_egl_gl_rgb, all_gl_rgb);
+    TEST_RUN2(gl_basic, x11_egl_gl_rgba, all_gl_rgba);
     TEST_RUN(gl_basic, x11_egl_gl_debug);
     TEST_RUN(gl_basic, x11_egl_gl_fwdcompat_bad_attribute);
 
