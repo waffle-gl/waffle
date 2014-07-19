@@ -66,7 +66,7 @@ static void *impl_thrd_routine(void *p)
 {
     struct impl_thrd_param pack = *((struct impl_thrd_param *)p);
     free(p);
-    return (void*)pack.func(pack.arg);
+    return (void*)(intptr_t)pack.func(pack.arg);
 }
 
 
@@ -253,7 +253,7 @@ int thrd_equal(thrd_t thr0, thrd_t thr1)
 // 7.25.5.5
 void thrd_exit(int res)
 {
-    pthread_exit((void*)res);
+    pthread_exit((void*)(intptr_t)res);
 }
 
 // 7.25.5.6
@@ -263,7 +263,7 @@ int thrd_join(thrd_t thr, int *res)
     if (pthread_join(thr, &code) != 0)
         return thrd_error;
     if (res)
-        *res = (int)code;
+        *res = (int)(intptr_t)code;
     return thrd_success;
 }
 
