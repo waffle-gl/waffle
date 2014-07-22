@@ -27,6 +27,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <windows.h>
+// XXX: Do we want to include these two, or should we redefine the WGL* consts ?
+#include <GL/gl.h>
+#include <GL/wglext.h>
 
 #include "wcore_config_attrs.h"
 #include "wcore_error.h"
@@ -96,8 +99,54 @@ wgl_config_choose_native(struct wgl_config *config,
                          struct wgl_display *dpy,
                          const struct wcore_config_attrs *attrs)
 {
-    if (0 /* dpy->ARB_pixel_format */) {
-        // XXX: FINISHME
+
+    // Use wglChoosePixelFormatARB if available.
+    if (dpy->ARB_pixel_format) {
+        float fAttribs[1] = { 0 };
+        int iAttribs[] = {
+            WGL_COLOR_BITS_ARB,         attrs->rgba_size,
+            WGL_RED_BITS_ARB,           attrs->red_size,
+            WGL_GREEN_BITS_ARB,         attrs->green_size,
+            WGL_BLUE_BITS_ARB,          attrs->blue_size,
+            WGL_ALPHA_BITS_ARB,         attrs->alpha_size,
+
+            WGL_DEPTH_BITS_ARB,         attrs->depth_size,
+            WGL_STENCIL_BITS_ARB,       attrs->stencil_size,
+
+            WGL_SAMPLE_BUFFERS_ARB,     attrs->sample_buffers,
+            WGL_STEREO_ARB,             attrs->samples,
+
+            WGL_DOUBLE_BUFFER_ARB,      attrs->double_buffered,
+
+            WGL_ACCUM_RED_BITS_ARB,     attrs->accum_buffer,
+            WGL_ACCUM_GREEN_BITS_ARB,   attrs->accum_buffer,
+            WGL_ACCUM_BLUE_BITS_ARB,    attrs->accum_buffer,
+            WGL_ACCUM_ALPHA_BITS_ARB,   attrs->accum_buffer,
+
+            WGL_DRAW_TO_WINDOW_ARB,     GL_TRUE,
+            WGL_ACCELERATION_ARB,       WGL_FULL_ACCELERATION_ARB,
+
+            0,
+        };
+        unsigned int num_formats;
+        bool ok;
+
+        // But first we need a current context to use it...
+        ok = wglMakeCurrent(dpy->hDC, dpy->hglrc);
+        if (!ok)
+            return false;
+
+        ok = dpy->wglChoosePixelFormatARB(dpy->hDC, iAttribs, fAttribs, 1,
+                                          &config->pixel_format, &num_formats);
+
+        wglMakeCurrent(NULL, NULL);
+
+        if (!ok || !num_formats) {
+            wcore_errorf(WAFFLE_ERROR_UNKNOWN,
+                         "wglChoosePixelFormatARB failed");
+            return false;
+        }
+
     }
     else {
         config->pixel_format = ChoosePixelFormat(dpy->hDC, &config->pfd);
