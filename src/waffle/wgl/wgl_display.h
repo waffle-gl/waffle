@@ -33,6 +33,18 @@
 
 struct wcore_platform;
 
+// XXX: Move the typedefs ?
+typedef HGLRC (__stdcall *PFNWGLCREATECONTEXTATTRIBSARBPROC)(HDC hDC,
+                                                             HGLRC hShareContext,
+                                                             const int *attribList);
+
+typedef BOOL (__stdcall *PFNWGLCHOOSEPIXELFORMATARBPROC )(HDC hdc,
+                                                          const int * piAttribIList,
+                                                          const float * pfAttribFList,
+                                                          unsigned int nMaxFormats,
+                                                          int * piFormats,
+                                                          unsigned int * nNumFormats);
+
 struct wgl_display {
     struct wcore_display wcore;
 
@@ -40,6 +52,15 @@ struct wgl_display {
     HDC hDC;
     int pixel_format;
     HGLRC hglrc;
+
+    bool ARB_create_context;
+    bool ARB_create_context_profile;
+    bool EXT_create_context_es_profile;
+    bool EXT_create_context_es2_profile;
+    bool ARB_pixel_format;
+
+    PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB;
+    PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormatARB;
 };
 
 DEFINE_CONTAINER_CAST_FUNC(wgl_display,
