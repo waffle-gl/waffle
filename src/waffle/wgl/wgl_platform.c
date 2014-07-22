@@ -24,6 +24,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <stdlib.h>
+#include <windows.h>
 
 #include "wcore_error.h"
 
@@ -128,7 +129,7 @@ wgl_make_current(struct wcore_platform *wc_self,
 static void*
 wgl_get_proc_address(struct wcore_platform *wc_self, const char *name)
 {
-    return NULL;
+    return wglGetProcAddress(name);
 }
 
 static const struct wcore_platform_vtbl wgl_platform_vtbl = {
