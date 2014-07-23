@@ -32,17 +32,25 @@
 #include "wgl_dl.h"
 #include "wgl_platform.h"
 
+static const char *wgl_gl_path = "OPENGL32";
+
 static bool
 wgl_dl_check_enum(int32_t waffle_dl)
 {
     switch (waffle_dl) {
         case WAFFLE_DL_OPENGL:
-            return false;
+            return true;
         case WAFFLE_DL_OPENGL_ES1:
+            wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
+                         "WGL does not support OpenGL ES1");
             return false;
         case WAFFLE_DL_OPENGL_ES2:
+            wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
+                         "WGL does not support OpenGL ES2");
             return false;
         case WAFFLE_DL_OPENGL_ES3:
+            wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
+                         "WGL does not support OpenGL ES3");
             return false;
         default:
             assert(false);
@@ -53,6 +61,19 @@ wgl_dl_check_enum(int32_t waffle_dl)
 static bool
 wgl_dl_open(struct wgl_platform *plat)
 {
+    plat->dl_gl = LoadLibraryA(wgl_gl_path);
+
+    if (plat->dl_gl)
+        return true;
+
+    int error = GetLastError();
+
+    if (error) {
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN,
+                     "LoadLibraryA(\"%s\") failed: %d",
+                     wgl_gl_path, error);
+    }
+
     return false;
 }
 
@@ -60,7 +81,19 @@ bool
 wgl_dl_can_open(struct wcore_platform *wc_plat,
                 int32_t waffle_dl)
 {
-    return false;
+    struct wgl_platform *plat = wgl_platform(wc_plat);
+
+    if (!wgl_dl_check_enum(waffle_dl))
+        return false;
+
+    if (plat->dl_gl)
+        return true;
+
+    WCORE_ERROR_DISABLED({
+        wgl_dl_open(plat);
+    });
+
+    return plat->dl_gl != NULL;
 }
 
 void*
@@ -68,11 +101,51 @@ wgl_dl_sym(struct wcore_platform *wc_plat,
           int32_t waffle_dl,
           const char *name)
 {
+    struct wgl_platform *plat = wgl_platform(wc_plat);
+
+    if (!wgl_dl_check_enum(waffle_dl))
+        return NULL;
+
+    if (!plat->dl_gl)
+        wgl_dl_open(plat);
+
+    if (!plat->dl_gl)
+        return NULL;
+
+    void *sym = GetProcAddress(plat->dl_gl, name);
+
+    if (sym)
+        return sym;
+
+    int error = GetLastError();
+
+    if (error) {
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN,
+                     "GetProcAddress(libname=\"%s\", symbol=\"%s\") failed: %d",
+                     wgl_gl_path, name, error);
+    }
+
     return NULL;
 }
 
 bool
 wgl_dl_close(struct wcore_platform *wc_plat)
 {
+    struct wgl_platform *plat = wgl_platform(wc_plat);
+
+    if (!plat->dl_gl)
+        return true;
+
+    if (FreeLibrary(plat->dl_gl))
+        return true;
+
+    int error = GetLastError();
+
+    if (error) {
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN,
+                     "FreeLibrary(libname=\"%s\") failed: %d",
+                     wgl_gl_path, error);
+    }
+
     return false;
 }
