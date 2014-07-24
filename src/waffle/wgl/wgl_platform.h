@@ -38,6 +38,9 @@ struct wgl_platform {
 
     /// @brief The OpenGL library obtained with LoadLibraryA().
     void *dl_gl;
+
+    /// @brief The class name of the waffle windows.
+    const char *class_name;
 };
 
 DEFINE_CONTAINER_CAST_FUNC(wgl_platform,

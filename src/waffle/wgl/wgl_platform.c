@@ -36,6 +36,8 @@
 
 static const struct wcore_platform_vtbl wgl_platform_vtbl;
 
+const char* wfl_class_name = "waffle";
+
 static bool
 wgl_platform_destroy(struct wcore_platform *wc_self)
 {
@@ -48,8 +50,42 @@ wgl_platform_destroy(struct wcore_platform *wc_self)
     if (self->dl_gl)
         ok &= wgl_dl_close(wc_self);
 
+    if (self->class_name)
+        ok &= UnregisterClass(self->class_name, GetModuleHandle(NULL));
+
     ok &= wcore_platform_teardown(wc_self);
     free(self);
+    return ok;
+}
+
+static bool
+wgl_platform_register_class(const char* class_name)
+{
+    WNDCLASS wc;
+    bool ok;
+
+    memset(&wc, 0, sizeof(wc));
+    wc.style = CS_OWNDC | CS_HREDRAW | CS_VREDRAW;
+    // XXX: Use a non-default window_proc ?
+    wc.lpfnWndProc = DefWindowProc;
+    wc.hIcon = LoadIcon(NULL, IDI_APPLICATION);
+    wc.hInstance = GetModuleHandle(NULL);
+    wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+    wc.hbrBackground = (HBRUSH) (COLOR_BTNFACE + 1);;
+    wc.lpszClassName = class_name;
+
+    ok = !!RegisterClass(&wc);
+
+    if (!ok) {
+        int error = GetLastError();
+
+        if (error) {
+            wcore_errorf(WAFFLE_ERROR_UNKNOWN,
+                         "RegisterClass() failed: %d",
+                         error);
+        }
+    }
+
     return ok;
 }
 
@@ -66,6 +102,11 @@ wgl_platform_create(void)
     ok = wcore_platform_init(&self->wcore);
     if (!ok)
         goto error;
+
+    ok = wgl_platform_register_class(wfl_class_name);
+    if (!ok)
+        goto error;
+    self->class_name = wfl_class_name;
 
     self->wcore.vtbl = &wgl_platform_vtbl;
     return &self->wcore;

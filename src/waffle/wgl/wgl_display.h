@@ -35,6 +35,11 @@ struct wcore_platform;
 
 struct wgl_display {
     struct wcore_display wcore;
+
+    HWND hWnd;
+    HDC hDC;
+    int pixel_format;
+    HGLRC hglrc;
 };
 
 DEFINE_CONTAINER_CAST_FUNC(wgl_display,

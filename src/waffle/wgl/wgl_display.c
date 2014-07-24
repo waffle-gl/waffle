@@ -25,25 +25,117 @@
 
 
 #include <stdlib.h>
+#include <strings.h>
+#include <windows.h>
 
 #include "wcore_error.h"
 
 #include "wgl_display.h"
+#include "wgl_dl.h"
+#include "wgl_platform.h"
 
 bool
 wgl_display_destroy(struct wcore_display *wc_self)
 {
     struct wgl_display *self = wgl_display(wc_self);
-    bool ok;
+    bool ok = true;
 
     if (!self)
         return true;
 
-    ok = wcore_display_teardown(wc_self);
+    if (self->hWnd) {
+        if (self->hglrc) {
+            ok &= wglDeleteContext(self->hglrc);
+        }
+
+        if (self->hDC)
+            ok &= ReleaseDC(self->hWnd, self->hDC);
+
+        ok &= DestroyWindow(self->hWnd);
+    }
+
+    ok &= wcore_display_teardown(wc_self);
     free(self);
     return ok;
 }
 
+static bool
+wgl_display_create_window(struct wgl_platform *plat, struct wgl_display *dpy)
+{
+    dpy->hWnd = CreateWindow(plat->class_name, NULL,
+                             WS_POPUPWINDOW|WS_DISABLED,
+                             0, 0, 0, 0, NULL, NULL, NULL, NULL);
+    if (!dpy->hWnd)
+        return false;
+
+    dpy->hDC = GetDC(dpy->hWnd);
+    if (!dpy->hDC)
+        return false;
+
+    return true;
+}
+
+static bool
+wgl_display_choose_config(struct wgl_display *dpy)
+{
+    // XXX: Is there a move common/appropriate pixelformat ?
+    PIXELFORMATDESCRIPTOR pfd = {0};
+    bool ok;
+
+    pfd.nSize = sizeof(PIXELFORMATDESCRIPTOR);
+    pfd.nVersion = 1;
+
+    pfd.dwFlags = PFD_SUPPORT_OPENGL | PFD_DRAW_TO_WINDOW | PFD_DOUBLEBUFFER;
+
+    pfd.iPixelType = PFD_TYPE_RGBA;
+    pfd.iLayerType = PFD_MAIN_PLANE;
+    pfd.cColorBits = 32;
+    pfd.cDepthBits = 16;
+
+    dpy->pixel_format = ChoosePixelFormat(dpy->hDC, &pfd);
+    if (!dpy->pixel_format)
+        return false;
+
+    ok = SetPixelFormat(dpy->hDC, dpy->pixel_format, &pfd);
+    if (!ok)
+        return false;
+
+    return true;
+}
+
+static bool
+wgl_display_hardware_render(struct wgl_display *dpy)
+{
+#ifndef GL_RENDERER
+#define GL_RENDERER 0x1F01
+#endif
+    typedef unsigned int GLenum;
+    typedef unsigned char GLubyte;
+    typedef const GLubyte * (__stdcall *PFNGLGETSTRINGPROC)(GLenum name);
+
+    PFNGLGETSTRINGPROC glGetString_func;
+    const GLubyte *gl_renderer;
+    bool ok;
+
+    glGetString_func = wgl_dl_sym(dpy->wcore.platform, WAFFLE_DL_OPENGL, "glGetString");
+    if (!glGetString_func)
+        return false;
+
+    ok = wglMakeCurrent(dpy->hDC, dpy->hglrc);
+    if (!ok)
+        return false;
+
+    gl_renderer = glGetString_func(GL_RENDERER);
+    ok = wglMakeCurrent(NULL, NULL);
+    if (!ok)
+        return false;
+
+    // Bail out if we cannot retrieve the renderer string or if we're using GDI
+    if (!gl_renderer || strcasecmp((const char *)gl_renderer, "GDI Generic") == 0)
+        return false;
+
+    return true;
+}
 
 struct wcore_display*
 wgl_display_connect(struct wcore_platform *wc_plat,
@@ -57,6 +149,22 @@ wgl_display_connect(struct wcore_platform *wc_plat,
         return NULL;
 
     ok = wcore_display_init(&self->wcore, wc_plat);
+    if (!ok)
+        goto error;
+
+    ok = wgl_display_create_window(wgl_platform(wc_plat), self);
+    if (!ok)
+        goto error;
+
+    ok = wgl_display_choose_config(self);
+    if (!ok)
+        goto error;
+
+    self->hglrc = wglCreateContext(self->hDC);
+    if (!self->hglrc)
+        goto error;
+
+    ok = wgl_display_hardware_render(self);
     if (!ok)
         goto error;
 
