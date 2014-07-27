@@ -83,18 +83,6 @@ Try to keep the textwidth of your patch's commit message within 80 columns.
 Exceptions are unavoidable, however, so use common sense.
 
 
-Copyright
----------
-When making substantial changes to existing files, you may add yourself or your
-organization to that file's copyright header.
-
-If adding new files, do not use a copyleft license (such as the GPL). All
-Waffle source code must be licensed under a liberal opensource license (such as
-BSD).  To reduce license proliferation, Waffle prefers (but does not require)
-that new code be licensed under one of the following licenses: BSD, MIT, Apache
-2.0.
-
-
 Sign your work
 --------------
 Waffle follows the sign-off process of the Linux kernel.  This gives a clear
@@ -144,6 +132,19 @@ origin [DCO-1.1], as found in the Linux kernel v3.15.
         personal information I submit with it, including my sign-off) is
         maintained indefinitely and may be redistributed consistent with
         this project or the open source license(s) involved.
+
+
+Copyright
+---------
+When making substantial changes to existing files, you may add yourself or your
+organization to that file's copyright header.
+
+If adding new files, do not use a copyleft license (such as the GPL). All
+Waffle source code must be licensed under a liberal opensource license (such as
+BSD).  To reduce license proliferation, Waffle prefers (but does not require)
+that new code be licensed under one of the following licenses: BSD, MIT, Apache
+2.0.
+
 
 References
 ----------
