@@ -39,6 +39,8 @@
 #include <string.h>
 #if !defined(_WIN32)
 #include <unistd.h>
+#else
+#include <windows.h>
 #endif
 
 #include <sys/types.h>
@@ -1086,6 +1088,64 @@ usage_error(void)
     exit(1);
 }
 
+#ifdef _WIN32
+static DWORD __stdcall
+worker_thread(LPVOID lpParam)
+{
+    void (__stdcall *testsuite)(void) = lpParam;
+    void (__stdcall *testsuites[])(void) = {testsuite, 0};
+    int argc = 0;
+    DWORD num_failures = wt_main(&argc, NULL, testsuites);
+
+    return num_failures;
+}
+
+/// Run the testsuite in a separate thread. If the testsuite fails, then exit
+/// immediately.
+static void
+run_testsuite(void (*testsuite)(void))
+{
+    HANDLE hThread;
+    DWORD dwThreadId;
+
+    hThread = CreateThread(NULL, 0, worker_thread, testsuite, 0, &dwThreadId);
+    if (hThread != NULL) {
+        // XXX: Add a decent timeout interval
+        if (WaitForSingleObject(hThread, INFINITE) == WAIT_OBJECT_0) {
+            DWORD exit_status;
+
+            if (GetExitCodeThread(hThread, &exit_status)) {
+                // exit_status is number of failures.
+                if (exit_status == 0) {
+                    // All tests passed.
+                    CloseHandle(hThread);
+                    return;
+                }
+                else {
+                    // Some tests failed. Don't run any more tests.
+                    exit(exit_status);
+                    // or exit process ?
+                }
+            }
+            else {
+                fprintf(stderr, "gl_basic_test: error: get thread exit status"
+                                " failed (%d)\n", GetLastError());
+                abort();
+            }
+        }
+        else {
+            fprintf(stderr, "gl_basic_test: error: wait for thread failed\n");
+            abort();
+        }
+    }
+    else {
+        fprintf(stderr, "gl_basic_test: error: CreateThread failed\n");
+        abort();
+    }
+}
+
+#else
+
 /// Run the testsuite in a separate process. If the testsuite fails, then exit
 /// immediately.
 static void
@@ -1131,6 +1191,8 @@ run_testsuite(void (*testsuite)(void))
         abort();
     }
 }
+
+#endif // _WIN32
 
 int
 main(int argc, char *argv[])

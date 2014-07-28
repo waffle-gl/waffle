@@ -27,7 +27,11 @@
 #include "priv/wt_runner.h"
 
 int
+#ifdef _WIN32
+wt_main(int *argc, char **argv, void (__stdcall *test_suites[])(void))
+#else
 wt_main(int *argc, char **argv, void (*test_suites[])(void))
+#endif // _WIN32
 {
     int num_fail;
 
