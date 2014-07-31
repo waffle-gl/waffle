@@ -97,12 +97,8 @@ a comman-separated list of any combination of "x11", "wayland", and "drm".
         - Debian: apt-get install libgbm-dev libudev-dev
 
 
-Installing
-==========
-
-For full details on configuring, building, and installing Waffle, see
-/doc/building.txt. What follows is a quick how-to.
-
+Build and Installation
+======================
 
 0. Be in the correct directory
 ------------------------------
@@ -127,31 +123,33 @@ a dependeny into /usr/local, then:
 
 2. Configure CMake
 ------------------
-On Linux, you likely want to call cmake with the following
-arguments.  It configures Waffle in debug mode and with support for only GLX.
+On Linux and Mac, running CMake with no arguments as below will configure
+Waffle for a release build (optimized compiler flags and basic debug symbols)
+and will auto-enable support for features whose dependencies are installed:
 
-    cmake \
-        -DCMAKE_BUILD_TYPE=debug \
-        -Dwaffle_has_glx=1 \
-        .
+    cmake .
 
-If in addition to GLX you want support for X11/EGL, then add
--Dwaffle_has_x11_egl=1 to the cmake arguments. Likewise for Wayland, add
--Dwaffle_has_wayland=1; and for GBM, add -Dwaffle_has_gbm=1.
+To manually control the configuration process, or to later modify the an already-configured source tree,
+run one of the following:
 
-For the full list of Waffle's custom CMake options, see file `Options.cmake`.
+    # An ncurses interface to CMake configuration.
+    ccamke $BUILD_DIR
 
-To install into a custom location, autoconf-esque variables such
-as CMAKE_INSTALL_LIBDIR are supported. See
-$waffle_top/cmake/Modules/GNUInstallDirs.cmake for details. For example, to
-install libwaffle into $HOME/lib, use the following cmake invocation:
+    # A graphical Qt interface to CMake configuration.
+    cmake-gui $BUILD_DIR
 
-    cmake \
-        -DCMAKE_INSTALL_PREFIX=$HOME \
-        -DCMAKE_INSTALL_LIBDIR=lib \
-        -Dwaffle_has_glx=1 \
-        .
+    # Edit the raw configuration file.
+    vim $BUILD_DIR/CMakeCache.txt
 
+All configuration options can also be set on the command line during the
+*initial* invocation of cmake. For example, to configure Waffle for a debug
+build, require support for Wayland, and install into '/usr' instead of
+'/usr/local', run the following:
+
+    cmake -DCMAKE_BUILD_TYPE=Debug \
+          -DCMAKE_INSTALL_PREFIX=/usr/local \
+          -Dwaffle_has_wayland=1 \
+          .
 
 3. Build and Install
 --------------------
