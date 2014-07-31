@@ -42,7 +42,7 @@ Configuration macro:
     Use pthread_mutex_timedlock() for `mtx_timedlock()'
     Otherwise use mtx_trylock() + *busy loop* emulation.
 */
-#if !defined(__CYGWIN__)
+#if !defined(__CYGWIN__) && !defined(ANDROID)
 #define EMULATED_THREADS_USE_NATIVE_TIMEDLOCK
 #endif
 

@@ -39,6 +39,7 @@ LOCAL_CFLAGS := \
     -Wno-pointer-arith
 
 LOCAL_C_INCLUDES := \
+    $(LOCAL_PATH)/include \
     $(LOCAL_PATH)/include/waffle \
     $(LOCAL_PATH)/src/ \
     $(LOCAL_PATH)/src/waffle/api/ \
@@ -47,6 +48,7 @@ LOCAL_C_INCLUDES := \
     $(LOCAL_PATH)/src/waffle/linux/ \
     $(LOCAL_PATH)/src/waffle/droid/ \
     $(LOCAL_PATH)/third_party/khronos/ \
+    $(LOCAL_PATH)/third_party/threads/
 
 LOCAL_SRC_FILES := \
     src/waffle/core/wcore_tinfo.c \
@@ -77,12 +79,13 @@ LOCAL_SRC_FILES := \
     src/waffle/android/droid_display.c \
     src/waffle/android/droid_window.c \
     src/waffle/android/droid_surfaceflingerlink.cpp \
+    third_party/threads/threads_posix.c
 
 LOCAL_SHARED_LIBRARIES := \
     libEGL \
     libdl \
     libutils \
-    libgui \
+    libgui
 
 LOCAL_GENERATED_SOURCES := \
     $(LOCAL_PATH)/include/waffle/waffle_version.h
@@ -93,7 +96,7 @@ LOCAL_COPY_HEADERS := \
     include/waffle/waffle_glx.h \
     include/waffle/waffle_version.h \
     include/waffle/waffle_wayland.h \
-    include/waffle/waffle_x11_egl.h \
+    include/waffle/waffle_x11_egl.h
 
 LOCAL_COPY_HEADERS_TO := waffle-$(waffle_major_version)
 
