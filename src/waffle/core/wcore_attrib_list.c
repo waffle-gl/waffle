@@ -40,7 +40,7 @@ wcore_attrib_list_length(const int32_t attrib_list[])
     while (*i != 0)
         i += 2;
 
-    return (i - attrib_list) / 2;
+    return (int32_t) (i - attrib_list) / 2;
 }
 
 bool
