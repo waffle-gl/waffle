@@ -216,7 +216,8 @@ target_link_libraries(${waffle_libname} PRIVATE ${waffle_libdeps})
 
 set_target_properties(${waffle_libname}
     PROPERTIES
-    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib
+    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
     SOVERSION ${waffle_soversion}
     VERSION ${waffle_soversion}.${waffle_minor_version}.${waffle_patch_version}
     )
@@ -279,8 +280,7 @@ function(add_unittest unittest_name)
         waffle_static
     )
     add_custom_target(${unittest_name}_run
-        DEPENDS ${unittest_name}
-        COMMAND "${CMAKE_BINARY_DIR}/tests/${unittest_name}"
+        COMMAND "${unittest_name}"
     )
     add_dependencies(check ${unittest_name}_run)
 

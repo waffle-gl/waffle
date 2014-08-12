@@ -1,8 +1,3 @@
-link_libraries(
-    ${waffle_libname}
-    waffle_test
-    )
-
 set(gl_basic_test_sources
     gl_basic_test.c
     )
@@ -34,9 +29,20 @@ add_executable(gl_basic_test
     ${gl_basic_test_sources}
     )
 
+# Ensure that the executable is in the same folder as the library it's linked
+# against. Otherwise Windows will fail to load the DLL, and the test will fail.
+set_target_properties(gl_basic_test
+    PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
+)
+
+target_link_libraries(gl_basic_test
+    ${waffle_libname}
+    waffle_test
+    )
+
 add_custom_target(gl_basic_test_run
-    DEPENDS gl_basic_test
-    COMMAND ${CMAKE_BINARY_DIR}/tests/functional/gl_basic_test
+    COMMAND gl_basic_test
     )
 
 add_dependencies(check-func gl_basic_test_run)
