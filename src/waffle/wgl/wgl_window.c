@@ -134,7 +134,7 @@ wgl_window_priv_create(struct wcore_platform *wc_plat,
     return &self->wcore;
 
 error:
-    wgl_window_destroy(&self->wcore);
+    wgl_window_priv_destroy(&self->wcore);
     return NULL;
 }
 
