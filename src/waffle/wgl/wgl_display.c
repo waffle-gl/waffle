@@ -25,8 +25,8 @@
 
 
 #include <stdlib.h>
-#include <strings.h>
 #include <windows.h>
+#include "c99_compat.h"
 
 #include "wcore_error.h"
 
