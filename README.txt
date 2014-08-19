@@ -257,7 +257,7 @@ The following commands build Waffle, run its tests, installs the project and
 creates a binary archive in a platform agnostic way.
 
 Note that not all steps may be required in your case and the configuration
-settings (cache) are localed in the current directory as indicated by ".".
+settings (cache) are located in the current directory as indicated by ".".
 
     cmake --build .
     cmake --build . --target check
@@ -295,7 +295,7 @@ can use an alternative version of the above commands:
     done
 
 Note: Running the tests (`make check` and/or `make check-func`) is not tested
-but may work if the approapriate environment is setup via wine.
+but may work if the appropriate environment is setup via wine.
 
 
 3.3 Windows - native builds
