@@ -53,6 +53,19 @@ x11_winddow_get_depth(xcb_connection_t *conn,
     return 0;
 }
 
+static xcb_screen_t *
+get_xcb_screen(const xcb_setup_t *setup, int screen)
+{
+    xcb_screen_iterator_t iter;
+
+    iter = xcb_setup_roots_iterator(setup);
+    for (; iter.rem; --screen, xcb_screen_next(&iter))
+        if (screen == 0)
+            return iter.data;
+
+    return NULL;
+}
+
 bool
 x11_window_init(struct x11_window *self,
                 struct x11_display *dpy,
@@ -75,7 +88,7 @@ x11_window_init(struct x11_window *self,
         goto error;
     }
 
-    const xcb_screen_t *screen = xcb_setup_roots_iterator(setup).data;
+    const xcb_screen_t *screen = get_xcb_screen(setup, dpy->screen);
     if (!screen) {
         wcore_errorf(WAFFLE_ERROR_UNKNOWN, "failed to get xcb screen");
         goto error;
