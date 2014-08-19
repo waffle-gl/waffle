@@ -190,7 +190,7 @@ test_wcore_error_thread_local(void **state) {
 
     thrd_t threads[NUM_THREADS];
     struct thread_arg thread_args[NUM_THREADS];
-    bool exit_codes[NUM_THREADS];
+    int exit_codes[NUM_THREADS];
 
     mtx_init(&mutex, mtx_plain);
     cnd_init(&cond);
@@ -217,7 +217,7 @@ test_wcore_error_thread_local(void **state) {
     }
 
     for (int i = 0; i < NUM_THREADS; ++i) {
-        thrd_join(threads[i], (int *) &exit_codes[i]);
+        thrd_join(threads[i], &exit_codes[i]);
         assert_true(exit_codes[i]);
     }
 
