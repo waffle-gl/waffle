@@ -255,7 +255,7 @@ target_link_libraries(waffle_static ${waffle_libdeps})
 
 set_target_properties(waffle_static
     PROPERTIES
-    OUTPUT_NAME "waffle-${waffle_major_version}"
+    OUTPUT_NAME "waffle-static-${waffle_major_version}"
     )
 
 # ----------------------------------------------------------------------------
