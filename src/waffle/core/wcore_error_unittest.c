@@ -195,7 +195,7 @@ test_wcore_error_thread_local(void **state) {
     mtx_init(&mutex, mtx_plain);
     cnd_init(&cond);
 
-    for (intptr_t i = 0; i < NUM_THREADS; ++i) {
+    for (int i = 0; i < NUM_THREADS; ++i) {
         struct thread_arg *a = &thread_args[i];
         a->thread_id = i;
         a->mutex = &mutex;
