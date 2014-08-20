@@ -167,7 +167,7 @@ wgl_context_create_native(struct wgl_config *config,
                                                 attrib_list);
         if (!hglrc) {
             wcore_errorf(WAFFLE_ERROR_UNKNOWN,
-                         "glXCreateContextAttribsARB failed");
+                         "wglCreateContextAttribsARB failed");
             return NULL;
         }
     }
