@@ -39,19 +39,11 @@ wgl_dl_check_enum(int32_t waffle_dl)
 {
     switch (waffle_dl) {
         case WAFFLE_DL_OPENGL:
-            return true;
         case WAFFLE_DL_OPENGL_ES1:
-            wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
-                         "WGL does not support OpenGL ES1");
-            return false;
         case WAFFLE_DL_OPENGL_ES2:
-            wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
-                         "WGL does not support OpenGL ES2");
-            return false;
         case WAFFLE_DL_OPENGL_ES3:
-            wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
-                         "WGL does not support OpenGL ES3");
-            return false;
+        // OPENGL32.DLL provides GL and GLES* symbols.
+            return true;
         default:
             assert(false);
             return false;
