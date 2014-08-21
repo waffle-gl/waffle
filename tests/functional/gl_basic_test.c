@@ -416,6 +416,19 @@ TEST(gl_basic, all_gl21_fwdcompat_bad_attribute)
 // List of linux (glx, wayland and x11_egl) specific tests.
 //
 #if defined(WAFFLE_HAS_GLX) || defined(WAFFLE_HAS_WAYLAND) || defined(WAFFLE_HAS_X11_EGL)
+TEST(gl_basic, linux_gl_debug)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .debug=true);
+}
+
+TEST(gl_basic, linux_gl_fwdcompat_bad_attribute)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .forward_compatible=true,
+                  .expect_error=WAFFLE_ERROR_BAD_ATTRIBUTE);
+}
+
 TEST(gl_basic, linux_gl30)
 {
     gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
@@ -803,19 +816,6 @@ TEST(gl_basic, glx_init)
     gl_basic_init(WAFFLE_PLATFORM_GLX);
 }
 
-TEST(gl_basic, glx_gl_debug)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .debug=true);
-}
-
-TEST(gl_basic, glx_gl_fwdcompat_bad_attribute)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .forward_compatible=true,
-                  .expect_error=WAFFLE_ERROR_BAD_ATTRIBUTE);
-}
-
 static void
 testsuite_glx(void)
 {
@@ -823,8 +823,8 @@ testsuite_glx(void)
 
     TEST_RUN2(gl_basic, glx_gl_rgb, all_gl_rgb);
     TEST_RUN2(gl_basic, glx_gl_rgba, all_gl_rgb);
-    TEST_RUN(gl_basic, glx_gl_debug);
-    TEST_RUN(gl_basic, glx_gl_fwdcompat_bad_attribute);
+    TEST_RUN2(gl_basic, glx_gl_debug, linux_gl_debug);
+    TEST_RUN2(gl_basic, glx_gl_fwdcompat_bad_attribute, linux_gl_fwdcompat_bad_attribute);
 
     TEST_RUN2(gl_basic, glx_gl10, all_gl10);
     TEST_RUN2(gl_basic, glx_gl11, all_gl11);
@@ -883,19 +883,6 @@ TEST(gl_basic, wayland_init)
     gl_basic_init(WAFFLE_PLATFORM_WAYLAND);
 }
 
-TEST(gl_basic, wayland_gl_debug)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .debug=true);
-}
-
-TEST(gl_basic, wayland_gl_fwdcompat_bad_attribute)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .forward_compatible=true,
-                  .expect_error=WAFFLE_ERROR_BAD_ATTRIBUTE);
-}
-
 static void
 testsuite_wayland(void)
 {
@@ -904,8 +891,8 @@ testsuite_wayland(void)
     TEST_RUN2(gl_basic, wayland_gl_rgb, all_gl_rgb);
     TEST_RUN2(gl_basic, wayland_gl_rgba, all_gl_rgba);
 
-    TEST_RUN(gl_basic, wayland_gl_debug);
-    TEST_RUN(gl_basic, wayland_gl_fwdcompat_bad_attribute);
+    TEST_RUN2(gl_basic, wayland_gl_debug, linux_gl_debug);
+    TEST_RUN2(gl_basic, wayland_gl_fwdcompat_bad_attribute, linux_gl_fwdcompat_bad_attribute);
 
     TEST_RUN2(gl_basic, wayland_gl10, all_gl10);
     TEST_RUN2(gl_basic, wayland_gl11, all_gl11);
@@ -964,19 +951,6 @@ TEST(gl_basic, x11_egl_init)
     gl_basic_init(WAFFLE_PLATFORM_X11_EGL);
 }
 
-TEST(gl_basic, x11_egl_gl_debug)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .debug=true);
-}
-
-TEST(gl_basic, x11_egl_gl_fwdcompat_bad_attribute)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .forward_compatible=true,
-                  .expect_error=WAFFLE_ERROR_BAD_ATTRIBUTE);
-}
-
 static void
 testsuite_x11_egl(void)
 {
@@ -984,8 +958,8 @@ testsuite_x11_egl(void)
 
     TEST_RUN2(gl_basic, x11_egl_gl_rgb, all_gl_rgb);
     TEST_RUN2(gl_basic, x11_egl_gl_rgba, all_gl_rgba);
-    TEST_RUN(gl_basic, x11_egl_gl_debug);
-    TEST_RUN(gl_basic, x11_egl_gl_fwdcompat_bad_attribute);
+    TEST_RUN2(gl_basic, x11_egl_gl_debug, linux_gl_debug);
+    TEST_RUN2(gl_basic, x11_egl_gl_fwdcompat_bad_attribute, linux_gl_fwdcompat_bad_attribute);
 
     TEST_RUN2(gl_basic, x11_egl_gl10, all_gl10);
     TEST_RUN2(gl_basic, x11_egl_gl11, all_gl11);
