@@ -32,15 +32,35 @@ include_directories(
 # Target: waffle (shared library)
 # ----------------------------------------------------------------------------
 
-set(waffle_libdeps
-    ${egl_LDFLAGS}
-    ${gbm_LDFLAGS}
-    ${gl_LDFLAGS}
-    ${libudev_LDFLAGS}
-    ${wayland-client_LDFLAGS}
-    ${wayland-egl_LDFLAGS}
-    ${x11-xcb_LDFLAGS}
-    )
+if(waffle_on_linux)
+    if(waffle_has_egl)
+        list(APPEND waffle_libdeps
+            ${egl_LDFLAGS}
+            )
+    endif()
+    if(waffle_has_glx)
+        list(APPEND waffle_libdeps
+            ${gl_LDFLAGS}
+            )
+    endif()
+    if(waffle_has_wayland)
+        list(APPEND waffle_libdeps
+            ${wayland-client_LDFLAGS}
+            ${wayland-egl_LDFLAGS}
+            )
+    endif()
+    if(waffle_has_x11)
+        list(APPEND waffle_libdeps
+            ${x11-xcb_LDFLAGS}
+            )
+    endif()
+    if(waffle_has_gbm)
+        list(APPEND waffle_libdeps
+            ${gbm_LDFLAGS}
+            ${libudev_LDFLAGS}
+            )
+    endif()
+endif()
 
 set(waffle_sources
     api/api_priv.c
