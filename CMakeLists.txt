@@ -29,6 +29,13 @@ cmake_minimum_required(VERSION 2.8.11)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules")
 
+# Set the default location for all build artifacts to traditionally named
+# top-level directories.  CMake's default location for build artifacts varies
+# per artifact and is hard-to-guess.
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
+
 include(WaffleDefineOS)
 include(WaffleFindDependencies)
 include(Options.cmake)

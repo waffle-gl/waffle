@@ -216,8 +216,6 @@ target_link_libraries(${waffle_libname} PRIVATE ${waffle_libdeps})
 
 set_target_properties(${waffle_libname}
     PROPERTIES
-    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
-    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
     SOVERSION ${waffle_soversion}
     VERSION ${waffle_soversion}.${waffle_minor_version}.${waffle_patch_version}
     )
@@ -258,7 +256,6 @@ target_link_libraries(waffle_static ${waffle_libdeps})
 set_target_properties(waffle_static
     PROPERTIES
     OUTPUT_NAME "waffle-${waffle_major_version}"
-    ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
     )
 
 # ----------------------------------------------------------------------------
