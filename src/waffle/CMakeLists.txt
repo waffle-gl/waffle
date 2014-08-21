@@ -162,7 +162,7 @@ include_directories(
     )
 
 add_library(${waffle_libname} SHARED ${waffle_sources})
-target_link_libraries(${waffle_libname} ${waffle_libdeps})
+target_link_libraries(${waffle_libname} PRIVATE ${waffle_libdeps})
 
 set_target_properties(${waffle_libname}
     PROPERTIES
@@ -170,13 +170,6 @@ set_target_properties(${waffle_libname}
     SOVERSION ${waffle_soversion}
     VERSION ${waffle_soversion}.${waffle_minor_version}.${waffle_patch_version}
     )
-
-if(NOT waffle_on_mac)
-    set_target_properties(${waffle_libname}
-        PROPERTIES
-        LINK_INTERFACE_LIBRARIES ""
-        )
-endif()
 
 install(
     TARGETS ${waffle_libname}
