@@ -412,6 +412,129 @@ TEST(gl_basic, all_gl21_fwdcompat_bad_attribute)
 }
 
 
+//
+// List of linux (glx, wayland and x11_egl) specific tests.
+//
+#if defined(WAFFLE_HAS_GLX) || defined(WAFFLE_HAS_WAYLAND) || defined(WAFFLE_HAS_X11_EGL)
+TEST(gl_basic, linux_gl30)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .version=30);
+}
+
+TEST(gl_basic, linux_gl30_fwdcompat)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .version=30,
+                  .forward_compatible=true);
+}
+
+TEST(gl_basic, linux_gl31)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .version=31);
+}
+
+TEST(gl_basic, linux_gl31_fwdcompat)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .version=31,
+                  .forward_compatible=true);
+}
+
+TEST(gl_basic, linux_gl32_core)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .version=32,
+                  .profile=WAFFLE_CONTEXT_CORE_PROFILE);
+}
+
+TEST(gl_basic, linux_gl32_core_fwdcompat)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .version=32,
+                  .profile=WAFFLE_CONTEXT_CORE_PROFILE,
+                  .forward_compatible=true);
+}
+
+TEST(gl_basic, linux_gl33_core)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .version=33,
+                  .profile=WAFFLE_CONTEXT_CORE_PROFILE);
+}
+
+TEST(gl_basic, linux_gl40_core)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .version=40,
+                  .profile=WAFFLE_CONTEXT_CORE_PROFILE);
+}
+
+TEST(gl_basic, linux_gl41_core)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .version=41,
+                  .profile=WAFFLE_CONTEXT_CORE_PROFILE);
+}
+
+TEST(gl_basic, linux_gl42_core)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .version=42,
+                  .profile=WAFFLE_CONTEXT_CORE_PROFILE);
+}
+
+TEST(gl_basic, linux_gl43_core)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .version=43,
+                  .profile=WAFFLE_CONTEXT_CORE_PROFILE);
+}
+
+TEST(gl_basic, linux_gl32_compat)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .version=32,
+                  .profile=WAFFLE_CONTEXT_COMPATIBILITY_PROFILE);
+}
+
+TEST(gl_basic, linux_gl33_compat)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .version=33,
+                  .profile=WAFFLE_CONTEXT_COMPATIBILITY_PROFILE);
+}
+
+TEST(gl_basic, linux_gl40_compat)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .version=40,
+                  .profile=WAFFLE_CONTEXT_COMPATIBILITY_PROFILE);
+}
+
+TEST(gl_basic, linux_gl41_compat)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .version=41,
+                  .profile=WAFFLE_CONTEXT_COMPATIBILITY_PROFILE);
+}
+
+TEST(gl_basic, linux_gl42_compat)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .version=42,
+                  .profile=WAFFLE_CONTEXT_COMPATIBILITY_PROFILE);
+}
+
+TEST(gl_basic, linux_gl43_compat)
+{
+    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
+                  .version=43,
+                  .profile=WAFFLE_CONTEXT_COMPATIBILITY_PROFILE);
+}
+#endif
+
 #ifdef WAFFLE_HAS_CGL
 TEST(gl_basic, cgl_init)
 {
@@ -613,124 +736,6 @@ TEST(gl_basic, glx_gl_fwdcompat_bad_attribute)
                   .expect_error=WAFFLE_ERROR_BAD_ATTRIBUTE);
 }
 
-TEST(gl_basic, glx_gl30)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .version=30);
-}
-
-TEST(gl_basic, glx_gl30_fwdcompat)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .version=30,
-                  .forward_compatible=true);
-}
-
-TEST(gl_basic, glx_gl31)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .version=31);
-}
-
-TEST(gl_basic, glx_gl31_fwdcompat)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .version=31,
-                  .forward_compatible=true);
-}
-
-TEST(gl_basic, glx_gl32_core)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .version=32,
-                  .profile=WAFFLE_CONTEXT_CORE_PROFILE);
-}
-
-TEST(gl_basic, glx_gl32_core_fwdcompat)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .version=32,
-                  .profile=WAFFLE_CONTEXT_CORE_PROFILE,
-                  .forward_compatible=true);
-}
-
-TEST(gl_basic, glx_gl33_core)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .version=33,
-                  .profile=WAFFLE_CONTEXT_CORE_PROFILE);
-}
-
-TEST(gl_basic, glx_gl40_core)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .version=40,
-                  .profile=WAFFLE_CONTEXT_CORE_PROFILE);
-}
-
-TEST(gl_basic, glx_gl41_core)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .version=41,
-                  .profile=WAFFLE_CONTEXT_CORE_PROFILE);
-}
-
-TEST(gl_basic, glx_gl42_core)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .version=42,
-                  .profile=WAFFLE_CONTEXT_CORE_PROFILE);
-}
-
-TEST(gl_basic, glx_gl43_core)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .version=43,
-                  .profile=WAFFLE_CONTEXT_CORE_PROFILE);
-}
-
-TEST(gl_basic, glx_gl32_compat)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .version=32,
-                  .profile=WAFFLE_CONTEXT_COMPATIBILITY_PROFILE);
-}
-
-TEST(gl_basic, glx_gl33_compat)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .version=33,
-                  .profile=WAFFLE_CONTEXT_COMPATIBILITY_PROFILE);
-}
-
-TEST(gl_basic, glx_gl40_compat)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .version=40,
-                  .profile=WAFFLE_CONTEXT_COMPATIBILITY_PROFILE);
-}
-
-TEST(gl_basic, glx_gl41_compat)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .version=41,
-                  .profile=WAFFLE_CONTEXT_COMPATIBILITY_PROFILE);
-}
-
-TEST(gl_basic, glx_gl42_compat)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .version=42,
-                  .profile=WAFFLE_CONTEXT_COMPATIBILITY_PROFILE);
-}
-
-TEST(gl_basic, glx_gl43_compat)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .version=43,
-                  .profile=WAFFLE_CONTEXT_COMPATIBILITY_PROFILE);
-}
-
 TEST(gl_basic, glx_gles1_rgb)
 {
     gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL_ES1);
@@ -830,25 +835,26 @@ testsuite_glx(void)
     TEST_RUN2(gl_basic, glx_gl20, all_gl20);
     TEST_RUN2(gl_basic, glx_gl21, all_gl21);
     TEST_RUN2(gl_basic, glx_gl21_fwdcompat_bad_attribute, all_gl21_fwdcompat_bad_attribute);
-    TEST_RUN(gl_basic, glx_gl30);
-    TEST_RUN(gl_basic, glx_gl30_fwdcompat);
-    TEST_RUN(gl_basic, glx_gl31);
-    TEST_RUN(gl_basic, glx_gl31_fwdcompat);
 
-    TEST_RUN(gl_basic, glx_gl32_core);
-    TEST_RUN(gl_basic, glx_gl32_core_fwdcompat);
-    TEST_RUN(gl_basic, glx_gl33_core);
-    TEST_RUN(gl_basic, glx_gl40_core);
-    TEST_RUN(gl_basic, glx_gl41_core);
-    TEST_RUN(gl_basic, glx_gl42_core);
-    TEST_RUN(gl_basic, glx_gl43_core);
+    TEST_RUN2(gl_basic, glx_gl30, linux_gl30);
+    TEST_RUN2(gl_basic, glx_gl30_fwdcompat, linux_gl30_fwdcompat);
+    TEST_RUN2(gl_basic, glx_gl31, linux_gl31);
+    TEST_RUN2(gl_basic, glx_gl31_fwdcompat, linux_gl31_fwdcompat);
 
-    TEST_RUN(gl_basic, glx_gl32_compat);
-    TEST_RUN(gl_basic, glx_gl33_compat);
-    TEST_RUN(gl_basic, glx_gl40_compat);
-    TEST_RUN(gl_basic, glx_gl41_compat);
-    TEST_RUN(gl_basic, glx_gl42_compat);
-    TEST_RUN(gl_basic, glx_gl43_compat);
+    TEST_RUN2(gl_basic, glx_gl32_core, linux_gl32_core);
+    TEST_RUN2(gl_basic, glx_gl32_core_fwdcompat, linux_gl32_core_fwdcompat);
+    TEST_RUN2(gl_basic, glx_gl33_core, linux_gl33_core);
+    TEST_RUN2(gl_basic, glx_gl40_core, linux_gl40_core);
+    TEST_RUN2(gl_basic, glx_gl41_core, linux_gl41_core);
+    TEST_RUN2(gl_basic, glx_gl42_core, linux_gl42_core);
+    TEST_RUN2(gl_basic, glx_gl43_core, linux_gl43_core);
+
+    TEST_RUN2(gl_basic, glx_gl32_compat, linux_gl32_compat);
+    TEST_RUN2(gl_basic, glx_gl33_compat, linux_gl33_compat);
+    TEST_RUN2(gl_basic, glx_gl40_compat, linux_gl40_compat);
+    TEST_RUN2(gl_basic, glx_gl41_compat, linux_gl41_compat);
+    TEST_RUN2(gl_basic, glx_gl42_compat, linux_gl42_compat);
+    TEST_RUN2(gl_basic, glx_gl43_compat, linux_gl43_compat);
 
     TEST_RUN(gl_basic, glx_gles1_rgb);
     TEST_RUN(gl_basic, glx_gles1_rgba);
@@ -888,124 +894,6 @@ TEST(gl_basic, wayland_gl_fwdcompat_bad_attribute)
     gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
                   .forward_compatible=true,
                   .expect_error=WAFFLE_ERROR_BAD_ATTRIBUTE);
-}
-
-TEST(gl_basic, wayland_gl30)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .version=30);
-}
-
-TEST(gl_basic, wayland_gl30_fwdcompat)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .version=30,
-                  .forward_compatible=true);
-}
-
-TEST(gl_basic, wayland_gl31)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .version=31);
-}
-
-TEST(gl_basic, wayland_gl31_fwdcompat)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .version=31,
-                  .forward_compatible=true);
-}
-
-TEST(gl_basic, wayland_gl32_core)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .version=32,
-                  .profile=WAFFLE_CONTEXT_CORE_PROFILE);
-}
-
-TEST(gl_basic, wayland_gl32_core_fwdcompat)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .version=32,
-                  .profile=WAFFLE_CONTEXT_CORE_PROFILE,
-                  .forward_compatible=true);
-}
-
-TEST(gl_basic, wayland_gl33_core)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .version=33,
-                  .profile=WAFFLE_CONTEXT_CORE_PROFILE);
-}
-
-TEST(gl_basic, wayland_gl40_core)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .version=40,
-                  .profile=WAFFLE_CONTEXT_CORE_PROFILE);
-}
-
-TEST(gl_basic, wayland_gl41_core)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .version=41,
-                  .profile=WAFFLE_CONTEXT_CORE_PROFILE);
-}
-
-TEST(gl_basic, wayland_gl42_core)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .version=42,
-                  .profile=WAFFLE_CONTEXT_CORE_PROFILE);
-}
-
-TEST(gl_basic, wayland_gl43_core)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .version=43,
-                  .profile=WAFFLE_CONTEXT_CORE_PROFILE);
-}
-
-TEST(gl_basic, wayland_gl32_compat)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .version=32,
-                  .profile=WAFFLE_CONTEXT_COMPATIBILITY_PROFILE);
-}
-
-TEST(gl_basic, wayland_gl33_compat)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .version=33,
-                  .profile=WAFFLE_CONTEXT_COMPATIBILITY_PROFILE);
-}
-
-TEST(gl_basic, wayland_gl40_compat)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .version=40,
-                  .profile=WAFFLE_CONTEXT_COMPATIBILITY_PROFILE);
-}
-
-TEST(gl_basic, wayland_gl41_compat)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .version=41,
-                  .profile=WAFFLE_CONTEXT_COMPATIBILITY_PROFILE);
-}
-
-TEST(gl_basic, wayland_gl42_compat)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .version=42,
-                  .profile=WAFFLE_CONTEXT_COMPATIBILITY_PROFILE);
-}
-
-TEST(gl_basic, wayland_gl43_compat)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .version=43,
-                  .profile=WAFFLE_CONTEXT_COMPATIBILITY_PROFILE);
 }
 
 TEST(gl_basic, wayland_gles1_rgb)
@@ -1108,25 +996,26 @@ testsuite_wayland(void)
     TEST_RUN2(gl_basic, wayland_gl20, all_gl20);
     TEST_RUN2(gl_basic, wayland_gl21, all_gl21);
     TEST_RUN2(gl_basic, wayland_gl21_fwdcompat_bad_attribute, all_gl21_fwdcompat_bad_attribute);
-    TEST_RUN(gl_basic, wayland_gl30);
-    TEST_RUN(gl_basic, wayland_gl30_fwdcompat);
-    TEST_RUN(gl_basic, wayland_gl31);
-    TEST_RUN(gl_basic, wayland_gl31_fwdcompat);
 
-    TEST_RUN(gl_basic, wayland_gl32_core);
-    TEST_RUN(gl_basic, wayland_gl32_core_fwdcompat);
-    TEST_RUN(gl_basic, wayland_gl33_core);
-    TEST_RUN(gl_basic, wayland_gl40_core);
-    TEST_RUN(gl_basic, wayland_gl41_core);
-    TEST_RUN(gl_basic, wayland_gl42_core);
-    TEST_RUN(gl_basic, wayland_gl43_core);
+    TEST_RUN2(gl_basic, wayland_gl30, linux_gl30);
+    TEST_RUN2(gl_basic, wayland_gl30_fwdcompat, linux_gl30_fwdcompat);
+    TEST_RUN2(gl_basic, wayland_gl31, linux_gl31);
+    TEST_RUN2(gl_basic, wayland_gl31_fwdcompat, linux_gl31_fwdcompat);
 
-    TEST_RUN(gl_basic, wayland_gl32_compat);
-    TEST_RUN(gl_basic, wayland_gl33_compat);
-    TEST_RUN(gl_basic, wayland_gl40_compat);
-    TEST_RUN(gl_basic, wayland_gl41_compat);
-    TEST_RUN(gl_basic, wayland_gl42_compat);
-    TEST_RUN(gl_basic, wayland_gl43_compat);
+    TEST_RUN2(gl_basic, wayland_gl32_core, linux_gl32_core);
+    TEST_RUN2(gl_basic, wayland_gl32_core_fwdcompat, linux_gl32_core_fwdcompat);
+    TEST_RUN2(gl_basic, wayland_gl33_core, linux_gl33_core);
+    TEST_RUN2(gl_basic, wayland_gl40_core, linux_gl40_core);
+    TEST_RUN2(gl_basic, wayland_gl41_core, linux_gl41_core);
+    TEST_RUN2(gl_basic, wayland_gl42_core, linux_gl42_core);
+    TEST_RUN2(gl_basic, wayland_gl43_core, linux_gl43_core);
+
+    TEST_RUN2(gl_basic, wayland_gl32_compat, linux_gl32_compat);
+    TEST_RUN2(gl_basic, wayland_gl33_compat, linux_gl33_compat);
+    TEST_RUN2(gl_basic, wayland_gl40_compat, linux_gl40_compat);
+    TEST_RUN2(gl_basic, wayland_gl41_compat, linux_gl41_compat);
+    TEST_RUN2(gl_basic, wayland_gl42_compat, linux_gl42_compat);
+    TEST_RUN2(gl_basic, wayland_gl43_compat, linux_gl43_compat);
 
     TEST_RUN(gl_basic, wayland_gles1_rgb);
     TEST_RUN(gl_basic, wayland_gles1_rgba);
@@ -1166,124 +1055,6 @@ TEST(gl_basic, x11_egl_gl_fwdcompat_bad_attribute)
     gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
                   .forward_compatible=true,
                   .expect_error=WAFFLE_ERROR_BAD_ATTRIBUTE);
-}
-
-TEST(gl_basic, x11_egl_gl30)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .version=30);
-}
-
-TEST(gl_basic, x11_egl_gl30_fwdcompat)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .version=30,
-                  .forward_compatible=true);
-}
-
-TEST(gl_basic, x11_egl_gl31)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .version=31);
-}
-
-TEST(gl_basic, x11_egl_gl31_fwdcompat)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .version=31,
-                  .forward_compatible=true);
-}
-
-TEST(gl_basic, x11_egl_gl32_core)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .version=32,
-                  .profile=WAFFLE_CONTEXT_CORE_PROFILE);
-}
-
-TEST(gl_basic, x11_egl_gl32_core_fwdcompat)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .version=32,
-                  .profile=WAFFLE_CONTEXT_CORE_PROFILE,
-                  .forward_compatible=true);
-}
-
-TEST(gl_basic, x11_egl_gl33_core)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .version=33,
-                  .profile=WAFFLE_CONTEXT_CORE_PROFILE);
-}
-
-TEST(gl_basic, x11_egl_gl40_core)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .version=40,
-                  .profile=WAFFLE_CONTEXT_CORE_PROFILE);
-}
-
-TEST(gl_basic, x11_egl_gl41_core)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .version=41,
-                  .profile=WAFFLE_CONTEXT_CORE_PROFILE);
-}
-
-TEST(gl_basic, x11_egl_gl42_core)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .version=42,
-                  .profile=WAFFLE_CONTEXT_CORE_PROFILE);
-}
-
-TEST(gl_basic, x11_egl_gl43_core)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .version=43,
-                  .profile=WAFFLE_CONTEXT_CORE_PROFILE);
-}
-
-TEST(gl_basic, x11_egl_gl32_compat)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .version=32,
-                  .profile=WAFFLE_CONTEXT_COMPATIBILITY_PROFILE);
-}
-
-TEST(gl_basic, x11_egl_gl33_compat)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .version=33,
-                  .profile=WAFFLE_CONTEXT_COMPATIBILITY_PROFILE);
-}
-
-TEST(gl_basic, x11_egl_gl40_compat)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .version=40,
-                  .profile=WAFFLE_CONTEXT_COMPATIBILITY_PROFILE);
-}
-
-TEST(gl_basic, x11_egl_gl41_compat)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .version=41,
-                  .profile=WAFFLE_CONTEXT_COMPATIBILITY_PROFILE);
-}
-
-TEST(gl_basic, x11_egl_gl42_compat)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .version=42,
-                  .profile=WAFFLE_CONTEXT_COMPATIBILITY_PROFILE);
-}
-
-TEST(gl_basic, x11_egl_gl43_compat)
-{
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,
-                  .version=43,
-                  .profile=WAFFLE_CONTEXT_COMPATIBILITY_PROFILE);
 }
 
 TEST(gl_basic, x11_egl_gles1_rgb)
@@ -1385,25 +1156,26 @@ testsuite_x11_egl(void)
     TEST_RUN2(gl_basic, x11_egl_gl20, all_gl20);
     TEST_RUN2(gl_basic, x11_egl_gl21, all_gl21);
     TEST_RUN2(gl_basic, x11_egl_gl21_fwdcompat_bad_attribute, all_gl21_fwdcompat_bad_attribute);
-    TEST_RUN(gl_basic, x11_egl_gl30);
-    TEST_RUN(gl_basic, x11_egl_gl30_fwdcompat);
-    TEST_RUN(gl_basic, x11_egl_gl31);
-    TEST_RUN(gl_basic, x11_egl_gl31_fwdcompat);
 
-    TEST_RUN(gl_basic, x11_egl_gl32_core);
-    TEST_RUN(gl_basic, x11_egl_gl32_core_fwdcompat);
-    TEST_RUN(gl_basic, x11_egl_gl33_core);
-    TEST_RUN(gl_basic, x11_egl_gl40_core);
-    TEST_RUN(gl_basic, x11_egl_gl41_core);
-    TEST_RUN(gl_basic, x11_egl_gl42_core);
-    TEST_RUN(gl_basic, x11_egl_gl43_core);
+    TEST_RUN2(gl_basic, x11_egl_gl30, linux_gl30);
+    TEST_RUN2(gl_basic, x11_egl_gl30_fwdcompat, linux_gl30_fwdcompat);
+    TEST_RUN2(gl_basic, x11_egl_gl31, linux_gl31);
+    TEST_RUN2(gl_basic, x11_egl_gl31_fwdcompat, linux_gl31_fwdcompat);
 
-    TEST_RUN(gl_basic, x11_egl_gl32_compat);
-    TEST_RUN(gl_basic, x11_egl_gl33_compat);
-    TEST_RUN(gl_basic, x11_egl_gl40_compat);
-    TEST_RUN(gl_basic, x11_egl_gl41_compat);
-    TEST_RUN(gl_basic, x11_egl_gl42_compat);
-    TEST_RUN(gl_basic, x11_egl_gl43_compat);
+    TEST_RUN2(gl_basic, x11_egl_gl32_core, linux_gl32_core);
+    TEST_RUN2(gl_basic, x11_egl_gl32_core_fwdcompat, linux_gl32_core_fwdcompat);
+    TEST_RUN2(gl_basic, x11_egl_gl33_core, linux_gl33_core);
+    TEST_RUN2(gl_basic, x11_egl_gl40_core, linux_gl40_core);
+    TEST_RUN2(gl_basic, x11_egl_gl41_core, linux_gl41_core);
+    TEST_RUN2(gl_basic, x11_egl_gl42_core, linux_gl42_core);
+    TEST_RUN2(gl_basic, x11_egl_gl43_core, linux_gl43_core);
+
+    TEST_RUN2(gl_basic, x11_egl_gl32_compat, linux_gl32_compat);
+    TEST_RUN2(gl_basic, x11_egl_gl33_compat, linux_gl33_compat);
+    TEST_RUN2(gl_basic, x11_egl_gl40_compat, linux_gl40_compat);
+    TEST_RUN2(gl_basic, x11_egl_gl41_compat, linux_gl41_compat);
+    TEST_RUN2(gl_basic, x11_egl_gl42_compat, linux_gl42_compat);
+    TEST_RUN2(gl_basic, x11_egl_gl43_compat, linux_gl43_compat);
 
     TEST_RUN(gl_basic, x11_egl_gles1_rgb);
     TEST_RUN(gl_basic, x11_egl_gles1_rgba);
