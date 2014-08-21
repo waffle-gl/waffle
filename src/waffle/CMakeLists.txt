@@ -39,9 +39,7 @@ set(waffle_libdeps
     ${libudev_LDFLAGS}
     ${wayland-client_LDFLAGS}
     ${wayland-egl_LDFLAGS}
-    ${x11_LDFLAGS}
     ${x11-xcb_LDFLAGS}
-    ${xcb_LDFLAGS}
     )
 
 set(waffle_sources
