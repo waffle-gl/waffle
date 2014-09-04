@@ -5,7 +5,6 @@ When in doubt, follow the style of nearby code.
 
 Naming
 ======
-
 All symbols exposed in the public API must be prefixed with `waffle_` or
 `WAFFLE_`.
 
@@ -15,123 +14,18 @@ Function and variable names are lower_case_with_underscores.
 
 Enum and macro names are UPPER_CASE_WITH_UNDERSCORES.
 
-Don't use typedefs without a strong reason. They more often degrade code's
-readability than improve it.
-
-Balance abbreviation with readability. A variable named number_of_objects is
-too verbose; nobjs is too obscure; num_objects and num_objs are just right.
-
-
-Object orientated design
-========================
-
-Much of Waffle's code adheres to an object oriented design. Not only does this
-influence Waffle's architectural design, but also its naming conventions and code
-organization.
-
-For this discussion, we will use `struct wegl_window` as an example. It is
-implemented in the files
-
-    wegl_window.h
-    wegl_window.c
-
-A class's header and source file have the same name as the class. For example,
-wegl_window.h and wegl_window.c.
-
-Method names follow the convention of `typename_operation`. This makes it
-immediately obvious on what the function acts and in which file the function
-is defined.
-
-    good: waffle_window_create
-    good: waffle_window_swap_buffers
-
-    bad: waffle_create_window
-
-If a function is a plain ole procedure, it follow the naming convention
-`prefix_action_object`. The following example is taken from
-/src/waffle/egl/egl_no_template.c.
-
-    good: egl_create_config
-    bad:  egl_config_create // this looks like a method
-
-A method's first argument is the object on which it acts, and is named 'self'.
-Exceptions are "static" methods, such as creation methods. This makes it
-immediately obvious which argument is the object acted upon.
-
-    good:
-        struct waffle_window*
-        waffle_window_create(const char *name);
-
-        bool
-        waffle_window_swap_buffers(struct waffle_window *self);
-                                                         ^^^^
-
-    bad:
-        bool
-        waffle_window_swap_buffers(struct waffle_window *window);
-
 
 Comments
 ========
-
-Non-Doxygen comments begin with double '/'. Do not use '/*'-style comments.
+Non-Doxygen comments begin with '//'. Do not use '/*'-style comments.
 There are special exceptions, such as when commenting items in a table. Use
 your judgement.
 
-
-Doxygen
--------
-
-Waffle uses Doxygen as a documentation generator. Doxygen comments begin with
-triple '/' and use '@' as the Doxygen command prefix.
-
-    /// @brief Make fantastic coffee with rainbows and strawberries.
-    ///
-    /// Only drink one cup per day. Otherwise, you may become too happy.
-    void
-    make_fancy_coffee(
-        struct coffee_mug *mug,
-        struct french_press *press,
-        struct sugar_dish *sugar);
-
-Separate the brief and full description with a newline, as above. Otherwise,
-Doxygen becomes confused and coalesces the full into the brief.
-
-
-Commenting branches
--------------------
-
-If a comment only applies to one branch of an if-statement, place the comment
-in the branch. Otherwise, the code will repeats itself.
-
-    good:
-        if (dishes_need_washing && time >= 2300) {
-            // It's too late to wash dishes. Defer them until morning.
-            defer_washing_dishes();
-            sleep();
-        }
-        else {
-            // Even if the dishes need washing, it's too early to be worried
-            // by them. Go do something fun.
-            ride_a_bike();
-        }
-
-    bad:
-        // If the dishes need washing, but it's too late to wash them, then
-        // defer them until morning.  Otherwise, go do something fun. Even if
-        // the dishes need washing, it's too early to be worried by them.
-        if (dishes_need_washing && time >= 2300) {
-            defer_washing_dishes();
-            sleep();
-        }
-        else {
-            ride_a_bike();
-        }
+Doxygen comments begin with '///' or '//!'.
 
 
 Indentation
 ===========
-
 Indent 4 spaces. No tabs.
 
 Place a function's return type on its own line. This ensures that all function
@@ -149,19 +43,12 @@ If a function prototype has a longwinded parameter list, then indent it like thi
         struct french_press *press,
         struct sugar_dish *sugar);
 
-When calling a function with a longwinded argument list, indent it in either
-of two ways.
+or this:
 
-    do_amazing_incredible_thing_with_a_really_long_function(
-                                            rainbows,
-                                            unicorns,
-                                            strawberries,
-                                            unicycle);
-
-    do_boring_thing(rocks,
-                    toothbrush,
-                    dust_pan,
-                    traffic_jam);
+    void
+    make_fancy_coffee(struct coffee_mug *mug,
+                      struct french_press *press,
+                      struct sugar_dish *sugar);
 
 Indent cases in switch statements. The last case always requires a jump
 (break, return, goto).
@@ -182,53 +69,17 @@ Indent cases in switch statements. The last case always requires a jump
 
 Don't put multiple statements on a single line.
 
-    if (condition) do_something;
-    to_do_or_not_to_do;
+    BAD:
+        if (condition) do_something;
 
-
-Braces
-======
-
-For all statements that require braces, the opening brace is on the same line
-as the statement, except for function definitions, where the brace is on a
-line of its own.
-
-    if (condition) {
-        do_stuff();
-    }
-
-    void
-    make_fancy_coffee(
-        struct coffee_mug *mug,
-        struct french_press *press,
-        struct sugar_dish *sugar)
-    {
-        rush_or_be_late_to_work();
-    }
-
-The closing brace is always on a line of its own.
-
-    if (x) {
-        ...
-    }
-    else if (y) {
-        ...
-    }
-    else {
-        ...
-    }
-
-and
-
-    do {
-        ...
-    }
-    while (condition);
+    GOOD:
+        if (condition) {
+            do_something;
+        }
 
 
 Spaces
 ======
-
 Leave no trailing whitespace on end of lines. This can cause spurious commit
 conflicts.
 
