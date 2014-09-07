@@ -1,3 +1,0 @@
-- all: Basic input.
-- glx: Check errors on void-returning functions.
-- wayland: Check errors on void-returning functions.

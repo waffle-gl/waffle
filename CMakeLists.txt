@@ -112,5 +112,18 @@ install(
     )
 
 # ------------------------------------------------------------------------------
+# Install core documentation
+# ------------------------------------------------------------------------------
+
+install(
+    FILES
+        "README.txt"
+        "LICENSE.txt"
+        "HACKING.txt"
+    DESTINATION "${CMAKE_INSTALL_DOCDIR}"
+    COMPONENT coredocs
+    )
+
+# ------------------------------------------------------------------------------
 
 include(WafflePrintConfigurationSummary)

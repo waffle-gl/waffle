@@ -1,0 +1,152 @@
+How to hack on Waffle
+=====================
+
+How to submit patches
+---------------------
+Do not send patches as email attachments.
+
+Choose one of the below methods to submit patches to Waffle. Choose whichever
+method you feel most comfortable with.
+
+- Sending invidual patches to the mailing list.
+
+  Suppose you want to submit the patches for your branch 'fix-sprocket' to the
+  upstream branch 'master'.
+
+  > # Create temporary directory for your patches.
+  > mkdir $tmp_patch_dir
+  >
+  > # Fill that temporary directory with patch emails.
+  > git format-patch \
+        -o $tmp_patch_dir \
+        --subject-prefix="PATCH (master)" \
+        --notes \
+        --cover-letter \
+        --thread=shallow \
+        --to="waffle@lists.freedesktop.org" \
+        origin/master..fix-sprocket
+  >
+  > # Edit the cover letter email and send to the mailing list.
+  > $EDITOR $tmp_patch_dir/0000-cover-letter.patch
+  > git send-email --cc-cover $tmp_patch_dir/*.patch
+
+- Sending a pull request to the mailing list.
+
+  Create your pull request with 'git request-pull' and send to
+  <waffle@lists.freedesktop.org>. Please format the email's subject line as:
+
+    Subject: [PULL ($upstream_branch)] $description_of_pull_request
+
+  where '$upstream_branch' is the destination upstream branch, such as 'master'
+  or 'next'.
+
+- Sending a pull request through GitHub.
+
+  TODO: If you know how to send GitHub pull requests , then please send a pull
+  request that updates this file with instructions ;) .
+
+
+How to write commit messages
+----------------------------
+The commit message is no less important than the code. So write it well.
+
+The commit message should first convey the patch's *intent* or *motivation*,
+and secondly describe its *content*.  Usually the message should describe *why*
+the patch is needed, *how* it accomplishes its goal.
+
+Example of a good commit message:
+
+    commit 7b2be42a92899ff6f857758e57656285168ba791
+    Author: Emil Velikov <emil.l.velikov@gmail.com>
+    Date:   Sat May 31 03:22:06 2014 +0100
+
+        cgl: avoid leaking the PixelFormat
+
+        According to apple developer page, starting with OS X v10.
+        pixelformat is reference counted. The object is created at
+        CGLChoosePixelFormat and should be unrefeferenced via
+        CGLReleasePixelFormat/CGLDestroyPixelFormat.
+
+        The latter two are identical accoring to the documentation
+
+        Signed-off-by: Emil Velikov <emil.l.velikov@gmail.com>
+        Reviewed-by: Chad Versace <chad.versace@linux.intel.com>
+
+The commit's subject line should begin with the name of the component it
+touches. Examples:
+
+    (commit 7b2be42) cgl: avoid leaking the PixelFormat
+    (commit a643da0) wflinfo: silence signed/unsiged comparison warning
+    (commit d78bd29) glx: glx_context_create_native returns GLXContext not bool
+
+Try to keep the textwidth of your patch's commit message within 80 columns.
+Exceptions are unavoidable, however, so use common sense.
+
+
+Sign your work
+--------------
+Waffle follows the sign-off process of the Linux kernel.  This gives a clear
+chain of trust for every patch received.
+
+Each patch submitted to Waffle requires a 'Signed-off-by' tag in the commit
+message. For example, below is a commit submitted by Emil:
+
+    commit 3413e4f32ac63679d685b686eee48442459ec835
+    Author: Emil Velikov <emil.l.velikov@gmail.com>
+    Date:   Fri Jul 4 04:15:02 2014 +0100
+
+        third_party/getopt: include BSD licensed getopt implementation
+
+        This module has been ripped out of the apitrace project
+        https://github.com/apitrace/apitrace
+
+        Used by utils/wflinfo and examples/gl_basic.
+
+        Signed-off-by: Emil Velikov <emil.l.velikov@gmail.com>
+
+By placing your sign-off on a patch, you agree to the below certificate of
+origin [DCO-1.1], as found in the Linux kernel v3.15.
+
+    Developer's Certificate of Origin 1.1
+
+    By making a contribution to this project, I certify that:
+
+    (a) The contribution was created in whole or in part by me and I
+        have the right to submit it under the open source license
+        indicated in the file; or
+
+    (b) The contribution is based upon previous work that, to the best
+        of my knowledge, is covered under an appropriate open source
+        license and I have the right under that license to submit that
+        work with modifications, whether created in whole or in part
+        by me, under the same open source license (unless I am
+        permitted to submit under a different license), as indicated
+        in the file; or
+
+    (c) The contribution was provided directly to me by some other
+        person who certified (a), (b) or (c) and I have not modified
+        it.
+
+    (d) I understand and agree that this project and the contribution
+        are public and that a record of the contribution (including all
+        personal information I submit with it, including my sign-off) is
+        maintained indefinitely and may be redistributed consistent with
+        this project or the open source license(s) involved.
+
+
+Copyright
+---------
+When making substantial changes to existing files, you may add yourself or your
+organization to that file's copyright header.
+
+If adding new files, do not use a copyleft license (such as the GPL). All
+Waffle source code must be licensed under a liberal opensource license (such as
+BSD).  To reduce license proliferation, Waffle prefers (but does not require)
+that new code be licensed under one of the following licenses: BSD, MIT, Apache
+2.0.
+
+
+References
+----------
+[DCO-1.1] "Developer's Certificate of Origin 1.1".
+    (http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/Documentation/SubmittingPatches?id=v3.15#n332)
