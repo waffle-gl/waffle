@@ -1,0 +1,57 @@
+Waffle 1.4.0 Release Notes (draft)
+==================================
+
+Backwards compatibility notes
+-----------------------------
+Waffle 1.4.0 is backwards-compatible with Waffle 1.3.0, in ABI and API.
+
+
+New Features
+------------
+* All platforms
+
+    * wflinfo
+
+      The new 'wflinfo' utility reports information about the system's OpenGL
+      capabilities, similar to 'glxinfo'.  See the documentation at
+      [man:wflinfo.1] or [http://www.waffle-gl.org/man/wflinfo.1.html].
+
+      (Implemented by Jordan Justen. Chad Versace fixed some bugs and corner
+      cases).
+
+* Linux
+
+    * GBM backend gains support for DRM render nodes.
+
+      Waffle's GBM backend will now use render nodes (/dev/dri/render*) if
+      available. Otherwise, it falls back to 1.3.0 behavior and will use a DRI
+      card device (/dev/dri/card*). Render nodes require a recent kernel; you
+      may need to add drm.rnodes=1 to the kernel cmdline.
+
+      (Implemented by Jordan Justen).
+
+    * Debian packaging support.
+
+      Waffle now contains a toplevel 'debian' directory that supports creation
+      of Debian packages.  Waffle packages are already available in Debian
+      Unstable ("sid") as 'libwaffle-1.0', 'libwaffle-dev', 'libwaffle-doc',
+      and 'waffle-utils'.
+
+      (Debian packages are maintained by Jordan Justen).
+
+
+Contributors since Waffle 1.3.0
+-------------------------------
+Sorted by number of commits.
+
+    93	Chad Versace <chad.versace@linux.intel.com>
+    36	Jordan Justen <jordan.l.justen@intel.com>
+    24	Emil Velikov <emil.l.velikov@gmail.com>
+     2	Arun Sl <arun.sl@tcs.com>
+     2	Rob Bradford <rob@linux.intel.com>
+     1	Arthur She <arthur.she@linaro.org>
+     1	Brian Paul <brianp@vmware.com>
+     1	Juha-Pekka Heikkila <juha-pekka.heikkila@linux.intel.com>
+     1	Marek Olšák <marek.olsak@amd.com>
+     1	Matt Turner <mattst88@gmail.com>
+     1	Paul Berry <stereotype441@gmail.com>
