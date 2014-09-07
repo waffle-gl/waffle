@@ -1,0 +1,208 @@
+= How to make releases
+
+== Release Candidates (RC)
+
+Release candidates are tagged off the 'master' branch as 'vX.Y.0-rcN'.
+
+=== Checklist
+
+- Find Waffle's library version as defined by the CMake and Android files. Find
+  it with grep. This version defines (1) the library's SONAME and SOVERSION in
+  the ELF header and (2) the version advertised by pkg-config. This number is
+  *important*.
+
+  $ git grep -E 'waffle_(major|minor|patch)_version.*[[:digit:]]'
+
+- Set the library version to 'X.(Y-1).90' if this is the first RC.  For the
+  duration of Waffle's RC phase, keep the library version strictly less than
+  'X.Y.0'.  Bump it on each RC if you want, but don't bump it to 'X.Y.0' until
+  you're ready to publish the 'vX.Y.0' tag.
+
+- Commit release notes to 'doc/release-notes/waffle-X.Y.0.txt'.
+
+- Use this toplevel heading in the release notes:
+
+  Waffle X.Y.0 Release Notes (draft)
+  ==================================
+
+- If this is not the first RC, then consider inserting a git shortlog that
+  captures the changes since the previous RC.
+
+  Changes since X.Y.0-rc(N-1)
+  ---------------------------
+  `git shortlog`
+
+- Clone the website if you haven't already.
+
+  $ web_work_tree=/whatever
+  $ git clone ssh://git@github.com/waffle-gl/waffle-gl.github.io $web_work_tree
+
+- Setup the shell for business.
+
+  $ wfl_work_tree=`git rev-parse --show-toplevel`
+  $
+  $ X=...
+  $ Y=...
+  $ Z=0
+  $ RC=rc1
+  $
+  $ final_ver=$X.$Y.$Z
+  $ ver=${final_ver}-${RC}
+  $ tag=v${ver}
+  $
+  $ tmp_dir=$(mktemp -d)
+  $ src_dir=$tmp_dir/waffle-$ver
+  $ prefix=$tmp_dir/prefix
+  $
+  $ sums=waffle-$ver.sha256sums.asc
+  $ src_ball=waffle-$ver.tar.xz
+  $ src_sig=waffle-$ver.tar.asc
+
+- Create a test tarball of 'master'.
+
+  $ cd $wfl_work_tree
+  $ git archive --prefix="waffle-$ver/" master | xz > $tmp_dir/$src_ball
+
+- Inspect the tarball contents.
+
+  $ cd $tmp_dir
+  $ tar xf $src_ball
+  $ find $src_dir
+
+- Verify on Linux that the tarball can build everything (all platforms, the
+  docs, the examples, etc).
+
+  - You should test the build with the CMake generator that is most likely to
+    exhibit bugs and most likely to be chosen by the end user: that is,
+    the Makefile generator. Don't use CMake's Ninja generator; it works too
+    well, so you will be unaware of the Makefile bugs and thus unintentionally
+    inflict pain on users.
+
+    $ cd $src_dir
+    $ cmake \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_INSTALL_PREFIX=$prefix \
+        \
+        -Dwaffle_has_glx=1 \
+        -Dwaffle_has_x11_egl=1 \
+        -Dwaffle_has_wayland=1 \
+        -Dwaffle_has_gbm=1 \
+        \
+        -Dwaffle_build_manpages=1 \
+        -Dwaffle_build_htmldocs=1 \
+        -Dwaffle_build_examples=1 \
+        .
+    $ make -j4
+    $ make check && echo PASS
+
+- Run all functional tests for all Linux platforms.
+  .
+  My [chadv] preferred way to run the functional tests is to run them all in
+  one pass. To do that, I setup my machine like below.
+
+  - Enable render nodes by adding 'drm.rnodes=1' to the kernel cmdline. This
+    will allow the GBM tests to run even when another graphics client (such as
+    the X server) owns the DRI device.
+
+  - Boot and start X. This will allow the 'glx' and 'x11_egl' tests to run.
+
+  - Start Weston as a windowed X client. This will allow the 'wayland' tests to
+    run.
+
+    $ DISPLAY=:0 weston
+
+  - Finally run the tests.
+
+    $ export DISPLAY=:0
+    $ make check-func && echo PASS
+
+- Install Waffle. Quickly inspect the set of installed files.
+
+  $ make install
+  $ cd $prefix
+  $ find .
+
+- Inspect the installed man pages.
+
+  $ export MANPATH=$prefix/share/man
+  $ man waffle
+  $ man wflinfo
+  $ man waffle_config_choose
+
+- Inspect the install html docs too.
+
+  $ $BROWSER $prefix/share/doc/waffle*/html/index.html
+
+- Verify that the examples build and run.
+
+  $ cd $prefix/share/doc/waffle*/examples
+  $ make -f Makefile.example
+  $ ./simple-x11-egl
+  $ ./gl_basic --platform=glx --api=gl
+
+- If you're feeling generous, verify that Piglit works when built and ran
+  against the installed Waffle in '$prefix'.
+
+- If you have a Mac development environment, please test that too.  If you
+  don't, then ask someone on the mailing list to test a release candidate on
+  a Mac before the final release.
+
+- Same as previous bullet but s/Mac/Android/.
+
+- Does all look good? Great! Publish the release tag.
+
+  $ cd $wfl_work_tree
+  $ git tag -s $tag -m "Waffle $tag"
+  $ git push origin master $tag
+
+- Publish the new manpages to the website.
+
+  $ cd $web_work_tree
+  $ git checkout master
+  $ git status
+  $ rsync -va -delete $prefix/share/doc/waffle*/html/man/ $web_work_tree/man/
+  $ git add -A
+  $ git commit -s -m "man: Update for Waffle $tag"
+
+- Copy the template below to the appropriate location in 'releases.html'.
+
+  <li><a name="${ver}" href="#${ver}"><h3>${ver}</h3></a>
+    <ul>
+      <li>Date: YYYY-MM-DD</li>
+      <li><a href="files/release/waffle-$ver/waffle-$ver.txt">Release Notes</a></li>
+      <li><a href="files/release/waffle-$ver/$src_ball">$src_ball</a></li>
+      <li><a href="files/release/waffle-$ver/$src_sign" type="text/plain">$src_sign</a></li>
+      <li><a href="files/release/waffle-$ver/$sums" type="text/plain">$sums</a></li>
+    </ul>
+  </li>
+
+- Locally commit the release files to the website.
+
+  $ mkdir -p $web_work_tree/files/release/waffle-$ver
+  $ cd $web_work_tree/files/release/waffle-$ver
+  $ mv $tmp_dir/$src_ball .
+  $ xz --stdout --decompress $src_ball | gpg --armor --detach-sign -o $src_sign
+  $ cp $wfl_work_tree/doc/release-notes/waffle-$final_ver.txt waffle-$ver.txt
+  $ sha256sum * | gpg --armor --clearsign > $sums
+  $
+  $ cd $web_work_tree
+  $ git add -A
+  $ git commit -s -m "release: Publish Waffle $rel_version"
+
+- Inspect the local release page's appearance. Validate the links to the
+  release files.
+
+  $ cd $web_work_tree
+  $ $BROWSER releases.html
+
+- Does all look good? Great! Publish the release files.
+
+  $ git tag -s $tag -m "Waffle $tag"
+  $ git push origin master $rel_tag
+
+- Announce the release candidate.
+
+  $ cd $work_tree
+  $ dev-tools/wfl-make-release-announcement $tag > announce-$ver.eml
+  $ vim announce-$ver.eml
+  $ sendmail -t < announce-$ver.eml
