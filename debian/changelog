@@ -1,3 +1,9 @@
+waffle (1.4.0~rc1-1) unstable; urgency=low
+
+  * New upstream release candidate
+
+ -- Jordan Justen <jordan.l.justen@intel.com>  Mon, 08 Sep 2014 08:18:01 -0700
+
 waffle (1.3.90-1) unstable; urgency=low
 
   * Use "non-native" 1.3.90-1 debian version number
