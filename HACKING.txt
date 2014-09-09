@@ -142,8 +142,7 @@ organization to that file's copyright header.
 If adding new files, do not use a copyleft license (such as the GPL). All
 Waffle source code must be licensed under a liberal opensource license (such as
 BSD).  To reduce license proliferation, Waffle prefers (but does not require)
-that new code be licensed under one of the following licenses: BSD, MIT, Apache
-2.0.
+that new code be licensed under one of the following licenses: BSD, MIT.
 
 
 References
