@@ -31,6 +31,7 @@
 
 #include "wegl_config.h"
 #include "wegl_context.h"
+#include "wegl_platform.h"
 #include "wegl_util.h"
 
 #include "linux_platform.h"
@@ -44,7 +45,7 @@ static const struct wcore_platform_vtbl xegl_platform_vtbl;
 static bool
 xegl_platform_destroy(struct wcore_platform *wc_self)
 {
-    struct xegl_platform *self = xegl_platform(wc_self);
+    struct xegl_platform *self = xegl_platform(wegl_platform(wc_self));
     bool ok = true;
 
     if (!self)
@@ -55,7 +56,7 @@ xegl_platform_destroy(struct wcore_platform *wc_self)
     if (self->linux)
         ok &= linux_platform_destroy(self->linux);
 
-    ok &= wcore_platform_teardown(wc_self);
+    ok &= wegl_platform_teardown(&self->wegl);
     free(self);
     return ok;
 }
@@ -70,7 +71,7 @@ xegl_platform_create(void)
     if (self == NULL)
         return NULL;
 
-    ok = wcore_platform_init(&self->wcore);
+    ok = wegl_platform_init(&self->wegl);
     if (!ok)
         goto error;
 
@@ -80,11 +81,11 @@ xegl_platform_create(void)
 
     setenv("EGL_PLATFORM", "x11", true);
 
-    self->wcore.vtbl = &xegl_platform_vtbl;
-    return &self->wcore;
+    self->wegl.wcore.vtbl = &xegl_platform_vtbl;
+    return &self->wegl.wcore;
 
 error:
-    xegl_platform_destroy(&self->wcore);
+    xegl_platform_destroy(&self->wegl.wcore);
     return NULL;
 }
 
@@ -92,8 +93,8 @@ static bool
 xegl_dl_can_open(struct wcore_platform *wc_self,
                  int32_t waffle_dl)
 {
-    return linux_platform_dl_can_open(xegl_platform(wc_self)->linux,
-                                      waffle_dl);
+    struct xegl_platform *self = xegl_platform(wegl_platform(wc_self));
+    return linux_platform_dl_can_open(self->linux, waffle_dl);
 }
 
 static void*
@@ -101,9 +102,8 @@ xegl_dl_sym(struct wcore_platform *wc_self,
             int32_t waffle_dl,
             const char *name)
 {
-    return linux_platform_dl_sym(xegl_platform(wc_self)->linux,
-                                               waffle_dl,
-                                               name);
+    struct xegl_platform *self = xegl_platform(wegl_platform(wc_self));
+    return linux_platform_dl_sym(self->linux, waffle_dl, name);
 }
 
 static union waffle_native_config*

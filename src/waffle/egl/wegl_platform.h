@@ -1,4 +1,4 @@
-// Copyright 2012 Intel Corporation
+// Copyright 2014 Emil Velikov
 //
 // All rights reserved.
 //
@@ -25,26 +25,22 @@
 
 #pragma once
 
-#include <stdbool.h>
-#include <stdlib.h>
-#undef linux
-
-#include "waffle_x11_egl.h"
-
-#include "wegl_platform.h"
+#include "wcore_platform.h"
 #include "wcore_util.h"
 
-struct linux_platform;
+struct wegl_platform {
+    struct wcore_platform wcore;
 
-struct xegl_platform {
-    struct wegl_platform wegl;
-    struct linux_platform *linux;
+    // EGL function pointers
 };
 
-DEFINE_CONTAINER_CAST_FUNC(xegl_platform,
-                           struct xegl_platform,
+DEFINE_CONTAINER_CAST_FUNC(wegl_platform,
                            struct wegl_platform,
-                           wegl)
+                           struct wcore_platform,
+                           wcore)
 
-struct wcore_platform*
-xegl_platform_create(void);
+bool
+wegl_platform_teardown(struct wegl_platform *self);
+
+bool
+wegl_platform_init(struct wegl_platform *self);

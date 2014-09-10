@@ -36,6 +36,7 @@
 
 #include "wegl_config.h"
 #include "wegl_context.h"
+#include "wegl_platform.h"
 #include "wegl_util.h"
 
 #include "wayland_display.h"
@@ -47,7 +48,7 @@ static const struct wcore_platform_vtbl wayland_platform_vtbl;
 static bool
 wayland_platform_destroy(struct wcore_platform *wc_self)
 {
-    struct wayland_platform *self = wayland_platform(wc_self);
+    struct wayland_platform *self = wayland_platform(wegl_platform(wc_self));
     bool ok = true;
 
     if (!self)
@@ -58,7 +59,7 @@ wayland_platform_destroy(struct wcore_platform *wc_self)
     if (self->linux)
         ok &= linux_platform_destroy(self->linux);
 
-    ok &= wcore_platform_teardown(wc_self);
+    ok &= wegl_platform_teardown(&self->wegl);
     free(self);
     return ok;
 }
@@ -73,7 +74,7 @@ wayland_platform_create(void)
     if (self == NULL)
         return NULL;
 
-    ok = wcore_platform_init(&self->wcore);
+    ok = wegl_platform_init(&self->wegl);
     if (!ok)
         goto error;
 
@@ -83,11 +84,11 @@ wayland_platform_create(void)
 
     setenv("EGL_PLATFORM", "wayland", true);
 
-    self->wcore.vtbl = &wayland_platform_vtbl;
-    return &self->wcore;
+    self->wegl.wcore.vtbl = &wayland_platform_vtbl;
+    return &self->wegl.wcore;
 
 error:
-    wayland_platform_destroy(&self->wcore);
+    wayland_platform_destroy(&self->wegl.wcore);
     return NULL;
 }
 
@@ -95,8 +96,8 @@ static bool
 wayland_dl_can_open(struct wcore_platform *wc_self,
                              int32_t waffle_dl)
 {
-    return linux_platform_dl_can_open(wayland_platform(wc_self)->linux,
-                                      waffle_dl);
+    struct wayland_platform *self = wayland_platform(wegl_platform(wc_self));
+    return linux_platform_dl_can_open(self->linux, waffle_dl);
 }
 
 static void*
@@ -104,9 +105,8 @@ wayland_dl_sym(struct wcore_platform *wc_self,
                         int32_t waffle_dl,
                         const char *name)
 {
-    return linux_platform_dl_sym(wayland_platform(wc_self)->linux,
-                                                  waffle_dl,
-                                                  name);
+    struct wayland_platform *self = wayland_platform(wegl_platform(wc_self));
+    return linux_platform_dl_sym(self->linux, waffle_dl, name);
 }
 
 static union waffle_native_config*

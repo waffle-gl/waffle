@@ -107,6 +107,7 @@ if(waffle_has_egl)
         egl/wegl_config.c
         egl/wegl_context.c
         egl/wegl_display.c
+        egl/wegl_platform.c
         egl/wegl_util.c
         egl/wegl_window.c
         )
