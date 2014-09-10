@@ -83,7 +83,6 @@ LOCAL_SRC_FILES := \
     third_party/threads/threads_posix.c
 
 LOCAL_SHARED_LIBRARIES := \
-    libEGL \
     libdl \
     libutils \
     libgui

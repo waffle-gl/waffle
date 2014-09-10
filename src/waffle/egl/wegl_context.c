@@ -31,21 +31,22 @@
 #include "wegl_config.h"
 #include "wegl_context.h"
 #include "wegl_imports.h"
+#include "wegl_platform.h"
 #include "wegl_util.h"
 
 static bool
-bind_api(int32_t waffle_context_api)
+bind_api(struct wegl_platform *plat, int32_t waffle_context_api)
 {
     bool ok = true;
 
     switch (waffle_context_api) {
         case WAFFLE_CONTEXT_OPENGL:
-            ok &= eglBindAPI(EGL_OPENGL_API);
+            ok &= plat->eglBindAPI(EGL_OPENGL_API);
             break;
         case WAFFLE_CONTEXT_OPENGL_ES1:
         case WAFFLE_CONTEXT_OPENGL_ES2:
         case WAFFLE_CONTEXT_OPENGL_ES3:
-            ok &= eglBindAPI(EGL_OPENGL_ES_API);
+            ok &= plat->eglBindAPI(EGL_OPENGL_ES_API);
             break;
         default:
             wcore_error_internal("waffle_context_api has bad value #x%x",
@@ -54,7 +55,7 @@ bind_api(int32_t waffle_context_api)
     }
 
     if (!ok)
-        wegl_emit_error("eglBindAPI");
+        wegl_emit_error(plat, "eglBindAPI");
 
     return ok;
 }
@@ -65,6 +66,7 @@ create_real_context(struct wegl_config *config,
 
 {
     struct wegl_display *dpy = wegl_display(config->wcore.display);
+    struct wegl_platform *plat = wegl_platform(dpy->wcore.platform);
     struct wcore_config_attrs *attrs = &config->wcore.attrs;
     bool ok = true;
     int32_t waffle_context_api = attrs->context_api;
@@ -142,14 +144,14 @@ create_real_context(struct wegl_config *config,
 
     attrib_list[i++] = EGL_NONE;
 
-    ok = bind_api(waffle_context_api);
+    ok = bind_api(plat, waffle_context_api);
     if (!ok)
         return false;
 
-    EGLContext ctx = eglCreateContext(dpy->egl, config->egl,
-                                      share_ctx, attrib_list);
+    EGLContext ctx = plat->eglCreateContext(dpy->egl, config->egl,
+                                            share_ctx, attrib_list);
     if (!ctx)
-        wegl_emit_error("eglCreateContext");
+        wegl_emit_error(plat, "eglCreateContext");
 
     return ctx;
 }
@@ -189,6 +191,8 @@ fail:
 bool
 wegl_context_destroy(struct wcore_context *wc_ctx)
 {
+    struct wegl_display *dpy = wegl_display(wc_ctx->display);
+    struct wegl_platform *plat = wegl_platform(dpy->wcore.platform);
     struct wegl_context *ctx;
     bool result = true;
 
@@ -198,10 +202,10 @@ wegl_context_destroy(struct wcore_context *wc_ctx)
     ctx = wegl_context(wc_ctx);
 
     if (ctx->egl) {
-        bool ok = eglDestroyContext(wegl_display(wc_ctx->display)->egl,
-                                    ctx->egl);
+        bool ok = plat->eglDestroyContext(wegl_display(wc_ctx->display)->egl,
+                                          ctx->egl);
         if (!ok) {
-            wegl_emit_error("eglDestroyContext");
+            wegl_emit_error(plat, "eglDestroyContext");
             result = false;
         }
     }

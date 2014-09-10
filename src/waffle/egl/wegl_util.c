@@ -28,13 +28,14 @@
 #include "wegl_context.h"
 #include "wegl_display.h"
 #include "wegl_imports.h"
+#include "wegl_platform.h"
 #include "wegl_util.h"
 #include "wegl_window.h"
 
 void
-wegl_emit_error(const char *egl_func_call)
+wegl_emit_error(struct wegl_platform *plat, const char *egl_func_call)
 {
-    EGLint egl_error_code = eglGetError();
+    EGLint egl_error_code = plat->eglGetError();
     const char *egl_error_name;
 
     switch (egl_error_code) {
@@ -74,17 +75,18 @@ wegl_make_current(struct wcore_platform *wc_plat,
                   struct wcore_window *wc_window,
                   struct wcore_context *wc_ctx)
 {
-    bool ok;
+    struct wegl_platform *plat = wegl_platform(wc_plat);
     EGLSurface surface = wc_window ? wegl_window(wc_window)->egl : NULL;
+    bool ok;
 
-    ok = eglMakeCurrent(wegl_display(wc_dpy)->egl,
-                        surface,
-                        surface,
-                        wc_ctx
-                            ? wegl_context(wc_ctx)->egl
-                            : NULL);
+    ok = plat->eglMakeCurrent(wegl_display(wc_dpy)->egl,
+                              surface,
+                              surface,
+                              wc_ctx
+                                  ? wegl_context(wc_ctx)->egl
+                                  : NULL);
     if (!ok)
-        wegl_emit_error("eglMakeCurrent");
+        wegl_emit_error(plat, "eglMakeCurrent");
 
     return ok;
 }
@@ -92,5 +94,6 @@ wegl_make_current(struct wcore_platform *wc_plat,
 void*
 wegl_get_proc_address(struct wcore_platform *wc_self, const char *name)
 {
-    return eglGetProcAddress(name);
+    struct wegl_platform *self = wegl_platform(wc_self);
+    return self->eglGetProcAddress(name);
 }

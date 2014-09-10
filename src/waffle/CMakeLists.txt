@@ -37,11 +37,6 @@ list(APPEND waffle_libdeps
     )
 
 if(waffle_on_linux)
-    if(waffle_has_egl)
-        list(APPEND waffle_libdeps
-            ${egl_LDFLAGS}
-            )
-    endif()
     if(waffle_has_glx)
         list(APPEND waffle_libdeps
             ${gl_LDFLAGS}

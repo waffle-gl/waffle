@@ -31,15 +31,17 @@
 #include "wegl_display.h"
 #include "wegl_imports.h"
 #include "wegl_util.h"
+#include "wegl_platform.h"
 
 static bool
 get_extensions(struct wegl_display *dpy)
 {
-    const char *extensions = eglQueryString(dpy->egl, EGL_EXTENSIONS);
+    struct wegl_platform *plat = wegl_platform(dpy->wcore.platform);
+    const char *extensions = plat->eglQueryString(dpy->egl, EGL_EXTENSIONS);
 
     if (!extensions) {
-	wegl_emit_error("eglQueryString(EGL_EXTENSIONS");
-	return false;
+        wegl_emit_error(plat, "eglQueryString(EGL_EXTENSIONS");
+        return false;
     }
 
     // waffle_is_extension_in_string() resets the error state. That's ok,
@@ -59,6 +61,7 @@ wegl_display_init(struct wegl_display *dpy,
                   struct wcore_platform *wc_plat,
                   intptr_t native_display)
 {
+    struct wegl_platform *plat = wegl_platform(wc_plat);
     bool ok;
     EGLint major, minor;
 
@@ -66,21 +69,21 @@ wegl_display_init(struct wegl_display *dpy,
     if (!ok)
         goto fail;
 
-    dpy->egl = eglGetDisplay((EGLNativeDisplayType) native_display);
+    dpy->egl = plat->eglGetDisplay((EGLNativeDisplayType) native_display);
     if (!dpy->egl) {
-        wegl_emit_error("eglGetDisplay");
+        wegl_emit_error(plat, "eglGetDisplay");
         goto fail;
     }
 
-    ok = eglInitialize(dpy->egl, &major, &minor);
+    ok = plat->eglInitialize(dpy->egl, &major, &minor);
     if (!ok) {
-        wegl_emit_error("eglInitialize");
+        wegl_emit_error(plat, "eglInitialize");
         goto fail;
     }
 
     ok = get_extensions(dpy);
     if (!ok)
-	goto fail;
+        goto fail;
 
     return true;
 
@@ -92,12 +95,13 @@ fail:
 bool
 wegl_display_teardown(struct wegl_display *dpy)
 {
+    struct wegl_platform *plat = wegl_platform(dpy->wcore.platform);
     bool ok = true;
 
     if (dpy->egl) {
-        ok = eglTerminate(dpy->egl);
+        ok = plat->eglTerminate(dpy->egl);
         if (!ok)
-            wegl_emit_error("eglTerminate");
+            wegl_emit_error(plat, "eglTerminate");
     }
 
     return ok;
