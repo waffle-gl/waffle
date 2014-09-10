@@ -231,6 +231,14 @@ function(add_unittest unittest_name)
         COMMAND "${CMAKE_BINARY_DIR}/tests/${unittest_name}"
     )
     add_dependencies(check ${unittest_name}_run)
+
+    if(VALGRIND_EXECUTABLE)
+        add_custom_target(valgrind_${unittest_name}_run
+            DEPENDS ${unittest_name}
+            COMMAND ${VALGRIND_EXECUTABLE} $<TARGET_FILE:${unittest_name}>
+        )
+        add_dependencies(valgrind-check valgrind_${unittest_name}_run)
+    endif()
 endfunction()
 
 add_unittest(wcore_attrib_list_unittest

@@ -38,3 +38,12 @@ add_custom_target(gl_basic_test_run
     )
 
 add_dependencies(check-func gl_basic_test_run)
+
+if(VALGRIND_EXECUTABLE)
+    add_custom_target(valgrind_gl_basic_test_run
+        DEPENDS gl_basic_test
+        COMMAND ${VALGRIND_EXECUTABLE} $<TARGET_FILE:gl_basic_test>
+        )
+
+    add_dependencies(valgrind-check-func valgrind_gl_basic_test_run)
+endif()

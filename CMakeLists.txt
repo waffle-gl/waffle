@@ -45,7 +45,7 @@ endif()
 find_package(PkgConfig)
 
 # ------------------------------------------------------------------------------
-# Targets: check, check-func
+# Targets: check, check-func, valgrind-check, valgrind-check-func
 # ------------------------------------------------------------------------------
 
 #
@@ -62,6 +62,19 @@ add_custom_target(check)
 add_custom_target(check-func
     DEPENDS check
     )
+
+find_program(VALGRIND_EXECUTABLE valgrind)
+if(VALGRIND_EXECUTABLE)
+    # Runs the 'check' target under valgrind.
+    add_custom_target(valgrind-check
+        DEPENDS check
+        )
+
+    # Runs the 'check-func' target under valgrind.
+    add_custom_target(valgrind-check-func
+        DEPENDS valgrind-check check-func
+        )
+endif()
 
 # ------------------------------------------------------------------------------
 # Add subdirectories
