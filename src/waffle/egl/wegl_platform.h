@@ -25,6 +25,8 @@
 
 #pragma once
 
+#include <EGL/egl.h>
+
 #include "wcore_platform.h"
 #include "wcore_util.h"
 
@@ -32,6 +34,40 @@ struct wegl_platform {
     struct wcore_platform wcore;
 
     // EGL function pointers
+    void *eglHandle;
+
+    EGLBoolean (*eglMakeCurrent)(EGLDisplay dpy, EGLSurface draw,
+                                 EGLSurface read, EGLContext ctx);
+    __eglMustCastToProperFunctionPointerType
+       (*eglGetProcAddress)(const char *procname);
+
+    // display
+    EGLDisplay (*eglGetDisplay)(EGLNativeDisplayType display_id);
+    EGLBoolean (*eglInitialize)(EGLDisplay dpy, EGLint *major, EGLint *minor);
+    const char * (*eglQueryString)(EGLDisplay dpy, EGLint name);
+    EGLint (*eglGetError)(void);
+    EGLBoolean (*eglTerminate)(EGLDisplay dpy);
+
+    // config
+    EGLBoolean (*eglChooseConfig)(EGLDisplay dpy, const EGLint *attrib_list,
+                                  EGLConfig *configs, EGLint config_size,
+                                  EGLint *num_config);
+
+    // context
+    EGLBoolean (*eglBindAPI)(EGLenum api);
+    EGLContext (*eglCreateContext)(EGLDisplay dpy, EGLConfig config,
+                                   EGLContext share_context,
+                                   const EGLint *attrib_list);
+    EGLBoolean (*eglDestroyContext)(EGLDisplay dpy, EGLContext ctx);
+
+    // window
+    EGLBoolean (*eglGetConfigAttrib)(EGLDisplay dpy, EGLConfig config,
+                                     EGLint attribute, EGLint *value);
+    EGLSurface (*eglCreateWindowSurface)(EGLDisplay dpy, EGLConfig config,
+                                         EGLNativeWindowType win,
+                                         const EGLint *attrib_list);
+    EGLBoolean (*eglDestroySurface)(EGLDisplay dpy, EGLSurface surface);
+    EGLBoolean (*eglSwapBuffers)(EGLDisplay dpy, EGLSurface surface);
 };
 
 DEFINE_CONTAINER_CAST_FUNC(wegl_platform,

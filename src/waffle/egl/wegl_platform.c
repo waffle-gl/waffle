@@ -23,14 +23,35 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#include <dlfcn.h>
+
+#include "wcore_error.h"
 #include "wegl_platform.h"
+
+
+#ifdef WAFFLE_HAS_ANDROID
+static const char *libEGL_filename = "libEGL.so";
+#else
+static const char *libEGL_filename = "libEGL.so.1";
+#endif
 
 bool
 wegl_platform_teardown(struct wegl_platform *self)
 {
-    bool ok;
+    bool ok = true;
+    int error = 0;
 
-    ok = wcore_platform_teardown(&self->wcore);
+    if (self->eglHandle) {
+        error = dlclose(self->eglHandle);
+        if (error) {
+            ok = false;
+            wcore_errorf(WAFFLE_ERROR_UNKNOWN,
+                         "dlclose(\"%s\") failed: %s",
+                         libEGL_filename, dlerror());
+        }
+    }
+
+    ok &= wcore_platform_teardown(&self->wcore);
     return ok;
 }
 bool
@@ -39,6 +60,54 @@ wegl_platform_init(struct wegl_platform *self)
     bool ok;
 
     ok = wcore_platform_init(&self->wcore);
+    if (!ok)
+        goto error;
 
+    self->eglHandle = dlopen(libEGL_filename, RTLD_LAZY | RTLD_LOCAL);
+    if (!self->eglHandle) {
+        wcore_errorf(WAFFLE_ERROR_FATAL,
+                     "dlopen(\"%s\") failed: %s",
+                     libEGL_filename, dlerror());
+        goto error;
+    }
+
+#define RETRIEVE_EGL_SYMBOL(function)                                  \
+    self->function = dlsym(self->eglHandle, #function);                \
+    if (!self->function) {                                             \
+        wcore_errorf(WAFFLE_ERROR_FATAL,                             \
+                     "dlsym(\"%s\", \"" #function "\") failed: %s",    \
+                     libEGL_filename, dlerror());                      \
+        goto error;                                                    \
+    }
+
+    RETRIEVE_EGL_SYMBOL(eglMakeCurrent);
+    RETRIEVE_EGL_SYMBOL(eglGetProcAddress);
+
+    // display
+    RETRIEVE_EGL_SYMBOL(eglGetDisplay);
+    RETRIEVE_EGL_SYMBOL(eglInitialize);
+    RETRIEVE_EGL_SYMBOL(eglQueryString);
+    RETRIEVE_EGL_SYMBOL(eglGetError);
+    RETRIEVE_EGL_SYMBOL(eglTerminate);
+
+    // config
+    RETRIEVE_EGL_SYMBOL(eglChooseConfig);
+
+    // context
+    RETRIEVE_EGL_SYMBOL(eglBindAPI);
+    RETRIEVE_EGL_SYMBOL(eglCreateContext);
+    RETRIEVE_EGL_SYMBOL(eglDestroyContext);
+
+    // window
+    RETRIEVE_EGL_SYMBOL(eglGetConfigAttrib);
+    RETRIEVE_EGL_SYMBOL(eglCreateWindowSurface);
+    RETRIEVE_EGL_SYMBOL(eglDestroySurface);
+    RETRIEVE_EGL_SYMBOL(eglSwapBuffers);
+
+#undef RETRIEVE_EGL_SYMBOL
+
+error:
+    // On failure the caller of wegl_platform_init will trigger it's own
+    // destruction which will execute wegl_platform_teardown.
     return ok;
 }
