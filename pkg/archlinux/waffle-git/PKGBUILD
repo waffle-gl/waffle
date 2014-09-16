@@ -1,0 +1,64 @@
+# maintainer: chad versace <chad.versace@linux.intel.com>
+
+pkgname='waffle-git'
+pkgver=1.4.0.rc1.r3.ge7bbe42
+pkgrel=1
+pkgdesc='a library for choosing window system and OpenGL API at runtime'
+arch=('i686' 'x86_64')
+url='http://www.waffle-gl.org'
+license=('BSD')
+
+provides=(waffle)
+conflicts=(waffle)
+depends=(
+  'libgl' # for glx
+  'libegl'
+  'libgbm'
+  'libx11'
+  'libxcb'
+  'wayland'
+  )
+makedepends=(
+  'cmake'
+  'xcb-proto'
+
+  # for building the docs.
+  'libxslt'
+  'docbook-xsl'
+  )
+source=("git://github.com/waffle-gl/waffle")
+sha256sums=('SKIP')
+
+_unpackdir='waffle'
+
+pkgver() {
+  cd "$srcdir/$_unpackdir"
+  git describe --long --match 'v*' |
+  sed -r 's/^v//;s/([^-]*-g)/r\1/;s/-/./g;'
+}
+
+build() {
+  cd "$srcdir/$_unpackdir"
+  cmake \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_INSTALL_LIBDIR=/usr/lib \
+    -DCMAKE_BUILD_TYPE=Release \
+    -Dwaffle_has_glx=1 \
+    -Dwaffle_has_x11_egl=1 \
+    -Dwaffle_has_wayland=1 \
+    -Dwaffle_has_gbm=1 \
+    -Dwaffle_build_manpages=1 \
+    -Dwaffle_build_htmldocs=1 \
+    -Dwaffle_build_examples=0
+  make
+}
+
+package() {
+  cd "$srcdir/${_unpackdir}"
+  make DESTDIR="$pkgdir/" install
+  install -m755 -d "$pkgdir/usr/share/licenses/$pkgname"
+  install -m644 "$pkgdir/usr/share/doc/waffle1/LICENSE.txt" \
+                 "$pkgdir/usr/share/licenses/$pkgname/LICENSE.txt"
+}
+
+# vim:set ts=2 sw=2 et:

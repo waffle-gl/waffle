@@ -1,0 +1,6 @@
+src/
+pkg/
+waffle/
+
+*.xz
+*.sig
