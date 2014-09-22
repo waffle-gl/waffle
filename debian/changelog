@@ -1,3 +1,9 @@
+waffle (1.4.2-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Jordan Justen <jordan.l.justen@intel.com>  Fri, 05 Dec 2014 00:02:35 -0800
+
 waffle (1.4.1-1) unstable; urgency=low
 
   * New upstream release
