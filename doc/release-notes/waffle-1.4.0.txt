@@ -1,5 +1,5 @@
-Waffle 1.4.0 Release Notes (draft)
-==================================
+Waffle 1.4.0 Release Notes
+==========================
 
 Backwards compatibility notes
 -----------------------------
@@ -44,9 +44,9 @@ Contributors since Waffle 1.3.0
 -------------------------------
 Sorted by number of commits.
 
-    93	Chad Versace <chad.versace@linux.intel.com>
-    36	Jordan Justen <jordan.l.justen@intel.com>
-    24	Emil Velikov <emil.l.velikov@gmail.com>
+    97	Chad Versace <chad.versace@linux.intel.com>
+    38	Jordan Justen <jordan.l.justen@intel.com>
+    28	Emil Velikov <emil.l.velikov@gmail.com>
      2	Arun Sl <arun.sl@tcs.com>
      2	Rob Bradford <rob@linux.intel.com>
      1	Arthur She <arthur.she@linaro.org>
