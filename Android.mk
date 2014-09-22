@@ -7,7 +7,7 @@ waffle_top := $(LOCAL_PATH)
 # !!! The version must be updated in tandem with the CMakeLists !!!
 #
 waffle_major_version := 1
-waffle_minor_version := 3
+waffle_minor_version := 4
 waffle_patch_version := 90
 waffle_api_version := 0x0104
 
