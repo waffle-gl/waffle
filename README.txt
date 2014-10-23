@@ -300,7 +300,7 @@ but may work if the appropriate environment is setup via wine.
 
 3.3 Windows - native builds
 ---------------------------
-Once can manage the build/install/package process via Visual Studio's GUI
+One can manage the build/install/package process via Visual Studio's GUI
 or via the command line.
 
 When using the GUI open .\build\msvc*\waffle-VERSION.sln, where * can be
