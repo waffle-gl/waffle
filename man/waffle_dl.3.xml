@@ -74,7 +74,7 @@
       <filename>libGL.so.1</filename>,
       <filename>libGLESv1_CM.so</filename>,
       <filename>libGLESv2.so</filename>, and
-      <filename>libGLESv2.so</filename>, repectively.
+      <filename>libGLESv2.so</filename>, respectively.
     </para>
 
     <variablelist>
