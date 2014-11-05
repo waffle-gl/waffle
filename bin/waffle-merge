@@ -1,0 +1,136 @@
+#!/bin/zsh
+
+# Copyright 2014 Intel Corporation
+#
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# - Redistributions of source code must retain the above copyright notice, this
+#   list of conditions and the following disclaimer.
+#
+# - Redistributions in binary form must reproduce the above copyright notice,
+#   this list of conditions and the following disclaimer in the documentation
+#   and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+prog_name="${0:t}"
+
+arg_refname=
+arg_branch=0
+arg_tag=0
+
+function wfl_opt_spec {
+cat <<EOF
+$prog_name <refname>
+
+SUMMARY
+    $prog_name is a tool for merging refs into branches destined for upstream.
+
+EXAMPLE
+    $ git checkout master
+    $ waffle-merge maint-1.4
+    $ waffle-merge cooking/cleverdude/fix-all-the-bugs
+    $ git push master
+
+--
+h,help          show this help text
+EOF
+}
+
+function wfl_parse_args {
+    eval "$(wfl_opt_spec | git rev-parse --parseopt -- "$@" || echo exit 2)"
+
+    # discard the '--'
+    shift
+
+    if [[ $# -eq 0 ]]
+    then
+        wfl_usage_error "missing argument <refname>"
+    fi
+    arg_refname="$1"
+    shift
+
+    if [[ $# -ne 0 ]]
+    then
+        wfl_usage_error "trailing args: $@"
+    fi
+}
+
+function wfl_usage_error {
+    echo "$prog_name: usage error: $@"
+    exit 2
+}
+
+function wfl_die {
+    echo "$prog_name: error: $@"
+    exit 1
+}
+
+function wfl_cleanup_merge_msg {
+    local prefixes_to_trim
+    local sed_cmd
+    local p
+
+    prefixes_to_trim=(
+        "cooking"
+        "cook"
+        "up"
+        "stage"
+        "refs/heads"
+        "refs/remotes"
+        "refs/tags"
+    )
+
+    sed_cmd=(sed --regexp-extended --in-place)
+    sed_cmd+=(-e "s|^Merge remote-tracking|Merge|")
+
+    for p in "${prefixes_to_trim[@]}"; do
+        # Trim prefix off of incoming merge refname.
+        sed_cmd+=(-e "s|^(Merge\|\*) (branch \|tag \|)'$p/([^']+)'|\1\2'\3'|")
+
+        # Trim prefix off of HEAD's refname.
+        sed_cmd+=(-e "s|^(Merge .* into )$p/|\1|")
+    done
+
+    sed_cmd+=("$wfl_git_dir/MERGE_MSG")
+
+    "${sed_cmd[@]}"
+}
+
+function main {
+    local wfl_git_dir=
+    local merge_status=0
+
+    wfl_parse_args "$@"
+
+    wfl_git_dir=$(git rev-parse --git-dir)
+
+    git merge --no-ff --no-commit "$arg_refname" || merge_status=$?
+
+    wfl_cleanup_merge_msg
+
+    if [[ $merge_status -ne 0 ]]
+    then
+        exit $merge_status
+    fi
+
+    git commit --edit
+}
+
+main "$@"
