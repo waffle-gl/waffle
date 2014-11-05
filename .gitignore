@@ -27,6 +27,7 @@ Makefile
 # Build Artifacts
 # ----------------------------------------------
 
+*.a
 *.so
 
 /bin/wflinfo
