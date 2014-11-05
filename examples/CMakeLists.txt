@@ -21,7 +21,7 @@ endif()
 # ----------------------------------------------------------------------------
 
 add_executable(gl_basic gl_basic.c)
-target_link_libraries(gl_basic ${waffle_libname})
+target_link_libraries(gl_basic ${waffle_libname} ${GETOPT_LIBRARIES})
 
 if(waffle_on_mac)
     set_target_properties(gl_basic

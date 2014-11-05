@@ -32,6 +32,10 @@ include_directories(
 # Target: waffle (shared library)
 # ----------------------------------------------------------------------------
 
+list(APPEND waffle_libdeps
+    ${THREADS_LIBRARIES}
+    )
+
 if(waffle_on_linux)
     if(waffle_has_egl)
         list(APPEND waffle_libdeps

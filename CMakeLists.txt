@@ -93,6 +93,20 @@ include_directories(
     src
     )
 
+add_subdirectory(third_party/threads)
+include_directories(
+    third_party/threads
+    )
+set(THREADS_LIBRARIES threads_bundled)
+
+if(MSVC)
+    add_subdirectory(third_party/getopt)
+    include_directories(
+        third_party/getopt
+        )
+    set(GETOPT_LIBRARIES getopt_bundled)
+endif()
+
 add_subdirectory(doc)
 add_subdirectory(src)
 add_subdirectory(include)

@@ -24,8 +24,8 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <assert.h>
-#include <pthread.h>
 #include <stdio.h>
+#include "threads.h"
 
 #include "wcore_display.h"
 
@@ -34,14 +34,14 @@ wcore_display_init(struct wcore_display *self,
                    struct wcore_platform *platform)
 {
     static size_t id_counter = 0;
-    static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+    static mtx_t mutex = _MTX_INITIALIZER_NP;
 
     assert(self);
     assert(platform);
 
-    pthread_mutex_lock(&mutex);
+    mtx_lock(&mutex);
     self->api.display_id = ++id_counter;
-    pthread_mutex_unlock(&mutex);
+    mtx_unlock(&mutex);
 
     self->platform = platform;
 

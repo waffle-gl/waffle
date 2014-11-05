@@ -28,13 +28,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <pthread.h>
+#include "threads.h"
 
 #include "wcore_error.h"
 #include "wcore_tinfo.h"
 
-static pthread_once_t wcore_tinfo_once = PTHREAD_ONCE_INIT;
-static pthread_key_t wcore_tinfo_key;
+static once_flag wcore_tinfo_once = ONCE_FLAG_INIT;
+static tss_t wcore_tinfo_key;
 
 #ifdef WAFFLE_HAS_TLS
 /// @brief Thread-local storage for all of Waffle.
@@ -80,7 +80,7 @@ wcore_tinfo_key_create(void)
 {
     int err;
 
-    err = pthread_key_create(&wcore_tinfo_key, wcore_tinfo_key_dtor);
+    err = tss_create(&wcore_tinfo_key, wcore_tinfo_key_dtor);
     if (err)
         wcore_tinfo_abort_init();
 }
@@ -105,12 +105,13 @@ wcore_tinfo_init(struct wcore_tinfo *tinfo)
     // each instance of tinfo must be registered individually. The key's data
     // is never retrieved because use the key only to register tinfo for
     // destruction.
-    err = pthread_once(&wcore_tinfo_once, wcore_tinfo_key_create);
-    if (err)
-        wcore_tinfo_abort_init();
+
+    // With C11 threads call_once "can never fail"...
+    // http://open-std.org/twiki/pub/WG14/DefectReports/n1654.htm
+    call_once(&wcore_tinfo_once, wcore_tinfo_key_create);
 #endif
 
-    err = pthread_setspecific(wcore_tinfo_key, tinfo);
+    err = tss_set(wcore_tinfo_key, tinfo);
     if (err)
         wcore_tinfo_abort_init();
 }
@@ -122,14 +123,13 @@ wcore_tinfo_get(void)
     wcore_tinfo_init(&wcore_tinfo);
     return &wcore_tinfo;
 #else
-    int err;
     struct wcore_tinfo *tinfo;
 
-    err = pthread_once(&wcore_tinfo_once, wcore_tinfo_key_create);
-    if (err)
-        wcore_tinfo_abort_init();
+    // With C11 threads call_once "can never fail"...
+    // http://open-std.org/twiki/pub/WG14/DefectReports/n1654.htm
+    call_once(&wcore_tinfo_once, wcore_tinfo_key_create);
 
-    tinfo = pthread_getspecific(wcore_tinfo_key);
+    tinfo = tss_get(wcore_tinfo_key);
     if (tinfo)
         return tinfo;
 

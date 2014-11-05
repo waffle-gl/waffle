@@ -28,6 +28,7 @@
 #include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include "c99_compat.h"
 
 struct wcore_config;
 struct wcore_config_attrs;
