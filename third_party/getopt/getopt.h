@@ -78,5 +78,5 @@ extern   char *suboptarg;               /* getsubopt(3) external variable */
 #ifdef __cplusplus
 }
 #endif
- 
+
 #endif /* !_GETOPT_H_ */
