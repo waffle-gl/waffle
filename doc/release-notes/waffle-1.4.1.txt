@@ -1,0 +1,23 @@
+Waffle 1.4.1 Release Notes
+==========================
+
+Bugfixes
+--------
+* Update the CMake requirement to 2.8.11.
+
+
+Changes
+-------
+Chad Versace (3):
+      waffle: Bump version to 1.4.1
+      .gitignore: Ignore static libraries *.a
+      Android.mk: Fix version of 1.4.0
+
+Emil Velikov (1):
+      cmake: bump minimum cmake requirement to 2.8.11
+
+ .gitignore                              | 1 +
+ Android.mk                              | 2 +-
+ CMakeLists.txt                          | 2 +-
+ cmake/Modules/WaffleDefineVersion.cmake | 2 +-
+ 4 files changed, 4 insertions(+), 3 deletions(-)
