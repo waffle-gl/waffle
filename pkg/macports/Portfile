@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           cmake 1.0
 
 name                waffle
-version             1.3.0
+version             1.4.1
 categories          devel
 platforms           darwin
 license             BSD
@@ -25,7 +25,7 @@ variant doc description {Install manpages and HTML documentation} {
 
 use_xz              yes
 master_sites        http://www.waffle-gl.org/files/release/${name}-${version}/${name}-${version}.tar.xz
-checksums           sha256 340ee04172dba878249469018cd7ec9d1ecd41af26b612c741b8b52e713bca8e
+checksums           sha256 66b3240b94abc30cd18c644ffc145024ad60e5b8a8a7d1e718c265b4c24351c9
 
 livecheck.type      regex
 livecheck.url       ${homepage}/releases.html
