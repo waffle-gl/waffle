@@ -1058,8 +1058,6 @@ main(int argc, char **argv)
     if (!glGetString)
         error_get_gl_symbol("glGetString");
 
-    glGetStringi = waffle_get_proc_address("glGetStringi");
-
     const struct wflinfo_config_attrs config_attrs = {
         .api = opts.context_api,
         .profile = opts.context_profile,
@@ -1078,6 +1076,8 @@ main(int argc, char **argv)
     ok = waffle_make_current(dpy, window, ctx);
     if (!ok)
         error_waffle();
+
+    glGetStringi = waffle_get_proc_address("glGetStringi");
 
     ok = print_wflinfo(&opts);
     if (!ok)
