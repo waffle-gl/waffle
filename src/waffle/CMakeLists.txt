@@ -209,6 +209,13 @@ set_target_properties(${waffle_libname}
     VERSION ${waffle_soversion}.${waffle_minor_version}.${waffle_patch_version}
     )
 
+if(waffle_on_windows)
+    set_target_properties(${waffle_libname}
+        PROPERTIES
+        PREFIX ""
+    )
+endif()
+
 install(
     TARGETS ${waffle_libname}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
