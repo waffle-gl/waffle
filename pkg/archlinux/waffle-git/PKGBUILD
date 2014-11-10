@@ -12,7 +12,6 @@ provides=(waffle)
 conflicts=(waffle)
 depends=(
   'libgl' # for glx
-  'libgbm'
   'libx11'
   'libxcb'
   'wayland'
@@ -22,6 +21,7 @@ makedepends=(
   'xcb-proto'
 
   'libegl'
+  'libgbm'
 
   # for building the docs.
   'libxslt'
@@ -52,6 +52,7 @@ build() {
 
 package() {
   optdepends=('libegl: for x11_egl, gbm or wayland support')
+  optdepends=('libgbm: for gbm support')
 
   cd "$srcdir/${_unpackdir}"
   make DESTDIR="$pkgdir/" install
