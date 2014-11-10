@@ -102,7 +102,7 @@ function wfl_cleanup_merge_msg {
 
     for p in "${prefixes_to_trim[@]}"; do
         # Trim prefix off of incoming merge refname.
-        sed_cmd+=(-e "s|^(Merge\|\*) (branch \|tag \|)'$p/([^']+)'|\1\2'\3'|")
+        sed_cmd+=(-e "s|^(Merge \|\* )(branch \|tag \|)'$p/([^']+)'|\1\2'\3'|")
 
         # Trim prefix off of HEAD's refname.
         sed_cmd+=(-e "s|^(Merge .* into )$p/|\1|")
