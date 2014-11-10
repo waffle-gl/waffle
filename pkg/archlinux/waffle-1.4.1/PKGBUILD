@@ -2,7 +2,7 @@
 
 pkgname='waffle'
 pkgver='1.4.1'
-pkgrel=1
+pkgrel=2
 pkgdesc='a library for choosing window system and OpenGL API at runtime'
 arch=('i686' 'x86_64')
 url='http://www.waffle-gl.org'
@@ -34,10 +34,6 @@ build() {
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DCMAKE_INSTALL_LIBDIR=/usr/lib \
     -DCMAKE_BUILD_TYPE=Release \
-    -Dwaffle_has_gbm=1 \
-    -Dwaffle_has_glx=1 \
-    -Dwaffle_has_x11_egl=1 \
-    -Dwaffle_has_wayland=1 \
     -Dwaffle_build_manpages=1 \
     -Dwaffle_build_htmldocs=1 \
     -Dwaffle_build_examples=0
