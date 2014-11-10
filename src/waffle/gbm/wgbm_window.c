@@ -100,6 +100,23 @@ wgbm_window_show(struct wcore_window *wc_self)
     return true;
 }
 
+
+bool
+wgbm_window_swap_buffers(struct wcore_window *wc_self)
+{
+    if (!wegl_window_swap_buffers(wc_self))
+        return false;
+
+    struct wgbm_window *self = wgbm_window(wc_self);
+    struct gbm_bo *bo = gbm_surface_lock_front_buffer(self->gbm_surface);
+    if (!bo)
+        return false;
+
+    gbm_surface_release_buffer(self->gbm_surface, bo);
+    return true;
+}
+
+
 union waffle_native_window*
 wgbm_window_get_native(struct wcore_window *wc_self)
 {

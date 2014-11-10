@@ -156,7 +156,7 @@ static const struct wcore_platform_vtbl wgbm_platform_vtbl = {
         .create = wgbm_window_create,
         .destroy = wgbm_window_destroy,
         .show = wgbm_window_show,
-        .swap_buffers = wegl_window_swap_buffers,
+        .swap_buffers = wgbm_window_swap_buffers,
         .get_native = wgbm_window_get_native,
     },
 };
