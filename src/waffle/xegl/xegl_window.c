@@ -31,6 +31,7 @@
 #include "wcore_error.h"
 
 #include "wegl_config.h"
+#include "wegl_platform.h"
 #include "wegl_util.h"
 
 #include "xegl_display.h"
@@ -60,6 +61,7 @@ xegl_window_create(struct wcore_platform *wc_plat,
     struct xegl_window *self;
     struct xegl_display *dpy = xegl_display(wc_config->display);
     struct wegl_config *config = wegl_config(wc_config);
+    struct wegl_platform *plat = wegl_platform(wc_plat);
     xcb_visualid_t visual;
     bool ok = true;
 
@@ -67,12 +69,12 @@ xegl_window_create(struct wcore_platform *wc_plat,
     if (self == NULL)
         return NULL;
 
-    ok = eglGetConfigAttrib(dpy->wegl.egl,
-                            config->egl,
-                            EGL_NATIVE_VISUAL_ID,
-                            (EGLint*) &visual);
+    ok = plat->eglGetConfigAttrib(dpy->wegl.egl,
+                                  config->egl,
+                                  EGL_NATIVE_VISUAL_ID,
+                                  (EGLint*) &visual);
     if (!ok) {
-        wegl_emit_error("eglGetConfigAttrib(EGL_NATIVE_VISUAL_ID)");
+        wegl_emit_error(plat, "eglGetConfigAttrib(EGL_NATIVE_VISUAL_ID)");
         goto error;
     }
 

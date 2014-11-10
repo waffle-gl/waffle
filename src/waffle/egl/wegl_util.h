@@ -33,12 +33,13 @@
 struct wcore_context;
 struct wcore_display;
 struct wcore_window;
+struct wegl_platform;
 
 /// @brief Sets the waffle error with info from eglGetError().
 /// @param egl_func_call Examples are "eglMakeCurrent()" and
 ///     "eglBindAPI(EGL_OPENGL_API)".
 void
-wegl_emit_error(const char *egl_func_call);
+wegl_emit_error(struct wegl_platform *plat, const char *egl_func_call);
 
 bool
 wegl_make_current(struct wcore_platform *wc_plat,

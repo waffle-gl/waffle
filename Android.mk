@@ -73,6 +73,7 @@ LOCAL_SRC_FILES := \
     src/waffle/egl/wegl_config.c \
     src/waffle/egl/wegl_context.c \
     src/waffle/egl/wegl_display.c \
+    src/waffle/egl/wegl_platform.c \
     src/waffle/egl/wegl_util.c \
     src/waffle/egl/wegl_window.c \
     src/waffle/android/droid_platform.c \
@@ -82,7 +83,6 @@ LOCAL_SRC_FILES := \
     third_party/threads/threads_posix.c
 
 LOCAL_SHARED_LIBRARIES := \
-    libEGL \
     libdl \
     libutils \
     libgui

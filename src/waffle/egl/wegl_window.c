@@ -26,6 +26,7 @@
 #include "wegl_config.h"
 #include "wegl_display.h"
 #include "wegl_imports.h"
+#include "wegl_platform.h"
 #include "wegl_util.h"
 #include "wegl_window.h"
 
@@ -38,6 +39,7 @@ wegl_window_init(struct wegl_window *window,
 {
     struct wegl_config *config = wegl_config(wc_config);
     struct wegl_display *dpy = wegl_display(wc_config->display);
+    struct wegl_platform *plat = wegl_platform(dpy->wcore.platform);
     EGLint egl_render_buffer;
     bool ok;
 
@@ -55,12 +57,13 @@ wegl_window_init(struct wegl_window *window,
         EGL_NONE,
     };
 
-    window->egl = eglCreateWindowSurface(dpy->egl,
-                                         config->egl,
-                                         (EGLNativeWindowType) native_window,
-                                         attrib_list);
+    window->egl = plat->eglCreateWindowSurface(dpy->egl,
+                                               config->egl,
+                                               (EGLNativeWindowType)
+                                                   native_window,
+                                               attrib_list);
     if (!window->egl) {
-        wegl_emit_error("eglCreateWindowSurface");
+        wegl_emit_error(plat, "eglCreateWindowSurface");
         goto fail;
     }
 
@@ -75,12 +78,13 @@ bool
 wegl_window_teardown(struct wegl_window *window)
 {
     struct wegl_display *dpy = wegl_display(window->wcore.display);
+    struct wegl_platform *plat = wegl_platform(dpy->wcore.platform);
     bool result = true;
 
     if (window->egl) {
-        bool ok = eglDestroySurface(dpy->egl, window->egl);
+        bool ok = plat->eglDestroySurface(dpy->egl, window->egl);
         if (!ok) {
-            wegl_emit_error("eglDestroySurface");
+            wegl_emit_error(plat, "eglDestroySurface");
             result = false;
         }
     }
@@ -94,10 +98,11 @@ wegl_window_swap_buffers(struct wcore_window *wc_window)
 {
     struct wegl_window *window = wegl_window(wc_window);
     struct wegl_display *dpy = wegl_display(window->wcore.display);
+    struct wegl_platform *plat = wegl_platform(dpy->wcore.platform);
 
-    bool ok = eglSwapBuffers(dpy->egl, window->egl);
+    bool ok = plat->eglSwapBuffers(dpy->egl, window->egl);
     if (!ok)
-        wegl_emit_error("eglSwapBuffers");
+        wegl_emit_error(plat, "eglSwapBuffers");
 
     return ok;
 }

@@ -30,20 +30,20 @@
 
 #undef linux
 
-#include "wcore_platform.h"
+#include "wegl_platform.h"
 #include "wcore_util.h"
 
 struct linux_platform;
 
 struct wgbm_platform {
-    struct wcore_platform wcore;
+    struct wegl_platform wegl;
     struct linux_platform *linux;
 };
 
 DEFINE_CONTAINER_CAST_FUNC(wgbm_platform,
                            struct wgbm_platform,
-                           struct wcore_platform,
-                           wcore)
+                           struct wegl_platform,
+                           wegl)
 
 struct wcore_platform*
 wgbm_platform_create(void);

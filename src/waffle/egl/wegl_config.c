@@ -33,6 +33,7 @@
 #include "wegl_config.h"
 #include "wegl_display.h"
 #include "wegl_imports.h"
+#include "wegl_platform.h"
 #include "wegl_util.h"
 
 /// @brief Check the WAFFLE_CONTEXT_* attributes.
@@ -129,6 +130,7 @@ static EGLConfig
 choose_real_config(struct wegl_display *dpy,
                    const struct wcore_config_attrs *attrs)
 {
+    struct wegl_platform *plat = wegl_platform(dpy->wcore.platform);
     EGLConfig config = NULL;
     bool ok = true;
 
@@ -189,10 +191,10 @@ choose_real_config(struct wegl_display *dpy,
     }
 
     EGLint num_configs = 0;
-    ok &= eglChooseConfig(dpy->egl,
-                          attrib_list, &config, 1, &num_configs);
+    ok &= plat->eglChooseConfig(dpy->egl,
+                                attrib_list, &config, 1, &num_configs);
     if (!ok) {
-        wegl_emit_error("eglChooseConfig");
+        wegl_emit_error(plat, "eglChooseConfig");
         return NULL;
     }
     else if (num_configs == 0) {

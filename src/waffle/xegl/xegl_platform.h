@@ -31,20 +31,20 @@
 
 #include "waffle_x11_egl.h"
 
-#include "wcore_platform.h"
+#include "wegl_platform.h"
 #include "wcore_util.h"
 
 struct linux_platform;
 
 struct xegl_platform {
-    struct wcore_platform wcore;
+    struct wegl_platform wegl;
     struct linux_platform *linux;
 };
 
 DEFINE_CONTAINER_CAST_FUNC(xegl_platform,
                            struct xegl_platform,
-                           struct wcore_platform,
-                           wcore)
+                           struct wegl_platform,
+                           wegl)
 
 struct wcore_platform*
 xegl_platform_create(void);
