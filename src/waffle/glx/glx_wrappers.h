@@ -45,19 +45,22 @@
 #include "x11_wrappers.h"
 
 static inline GLXFBConfig*
-wrapped_glXChooseFBConfig(Display *dpy, int screen,
+wrapped_glXChooseFBConfig(struct glx_platform *platform,
+                          Display *dpy, int screen,
                           const int *attribList, int *nitems)
 {
     X11_SAVE_ERROR_HANDLER
-    GLXFBConfig *configs = glXChooseFBConfig(dpy, screen, attribList, nitems);
+    GLXFBConfig *configs = platform->glXChooseFBConfig(dpy, screen,
+                                                       attribList, nitems);
     X11_RESTORE_ERROR_HANDLER
     return configs;
 }
 
 static inline GLXContext
-wrapped_glXCreateContextAttribsARB(
-        struct glx_platform *platform, Display *dpy, GLXFBConfig config,
-        GLXContext share_context, Bool direct, const int *attrib_list)
+wrapped_glXCreateContextAttribsARB(struct glx_platform *platform,
+                                   Display *dpy, GLXFBConfig config,
+                                   GLXContext share_context, Bool direct,
+                                   const int *attrib_list)
 {
     X11_SAVE_ERROR_HANDLER
     GLXContext ctx = platform->glXCreateContextAttribsARB(
@@ -67,65 +70,72 @@ wrapped_glXCreateContextAttribsARB(
 }
 
 static inline GLXContext
-wrapped_glXCreateNewContext(Display *dpy, GLXFBConfig config, int renderType,
+wrapped_glXCreateNewContext(struct glx_platform *platform,
+                            Display *dpy, GLXFBConfig config, int renderType,
                             GLXContext shareList, Bool direct)
 {
     X11_SAVE_ERROR_HANDLER
-    GLXContext ctx = glXCreateNewContext(dpy, config, renderType, shareList,
-                                         direct);
+    GLXContext ctx = platform->glXCreateNewContext(dpy, config, renderType,
+                                                   shareList, direct);
     X11_RESTORE_ERROR_HANDLER
     return ctx;
 }
 
 static inline int
-wrapped_glXGetFBConfigAttrib(Display *dpy, GLXFBConfig config,
+wrapped_glXGetFBConfigAttrib(struct glx_platform *platform,
+                             Display *dpy, GLXFBConfig config,
                              int attribute, int *value)
 {
     X11_SAVE_ERROR_HANDLER
-    int error = glXGetFBConfigAttrib(dpy, config, attribute, value);
+    int error = platform->glXGetFBConfigAttrib(dpy, config, attribute, value);
     X11_RESTORE_ERROR_HANDLER
     return error;
 }
 
 static inline XVisualInfo*
-wrapped_glXGetVisualFromFBConfig(Display *dpy, GLXFBConfig config)
+wrapped_glXGetVisualFromFBConfig(struct glx_platform *platform,
+                                 Display *dpy, GLXFBConfig config)
 {
     X11_SAVE_ERROR_HANDLER
-    XVisualInfo *vi = glXGetVisualFromFBConfig(dpy, config);
+    XVisualInfo *vi = platform->glXGetVisualFromFBConfig(dpy, config);
     X11_RESTORE_ERROR_HANDLER
     return vi;
 }
 
 static inline void
-wrapped_glXDestroyContext(Display *dpy, GLXContext ctx)
+wrapped_glXDestroyContext(struct glx_platform *platform,
+                          Display *dpy, GLXContext ctx)
 {
     X11_SAVE_ERROR_HANDLER
-    glXDestroyContext(dpy, ctx);
+    platform->glXDestroyContext(dpy, ctx);
     X11_RESTORE_ERROR_HANDLER
 }
 
 static inline Bool
-wrapped_glXMakeCurrent(Display *dpy, GLXDrawable drawable, GLXContext ctx)
+wrapped_glXMakeCurrent(struct glx_platform *platform,
+                       Display *dpy, GLXDrawable drawable, GLXContext ctx)
 {
     X11_SAVE_ERROR_HANDLER
-    Bool ok = glXMakeCurrent(dpy, drawable, ctx);
+    Bool ok = platform->glXMakeCurrent(dpy, drawable, ctx);
     X11_RESTORE_ERROR_HANDLER
     return ok;
 }
 
 static inline const char*
-wrapped_glXQueryExtensionsString(Display *dpy, int screen)
+wrapped_glXQueryExtensionsString(struct glx_platform *platform,
+                                 Display *dpy, int screen)
 {
     X11_SAVE_ERROR_HANDLER
-    const char *s = glXQueryExtensionsString(dpy, screen);
+    const char *s = platform->glXQueryExtensionsString(dpy, screen);
     X11_RESTORE_ERROR_HANDLER
     return s;
 }
 
 static inline void
-wrapped_glXSwapBuffers(Display *dpy, GLXDrawable drawable)
+wrapped_glXSwapBuffers(struct glx_platform *platform,
+                       Display *dpy, GLXDrawable drawable)
 {
     X11_SAVE_ERROR_HANDLER
-    glXSwapBuffers(dpy, drawable);
+    platform->glXSwapBuffers(dpy, drawable);
     X11_RESTORE_ERROR_HANDLER
 }

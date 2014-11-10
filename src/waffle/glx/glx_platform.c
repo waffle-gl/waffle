@@ -118,7 +118,7 @@ glx_platform_create(void)
     if (!self->linux)
         goto error;
 
-    self->glXCreateContextAttribsARB = (PFNGLXCREATECONTEXTATTRIBSARBPROC) glXGetProcAddress((const uint8_t*) "glXCreateContextAttribsARB");
+    self->glXCreateContextAttribsARB = (PFNGLXCREATECONTEXTATTRIBSARBPROC) self->glXGetProcAddress((const uint8_t*) "glXCreateContextAttribsARB");
 
     self->wcore.vtbl = &glx_platform_vtbl;
     return &self->wcore;
@@ -134,12 +134,13 @@ glx_platform_make_current(struct wcore_platform *wc_self,
                           struct wcore_window *wc_window,
                           struct wcore_context *wc_ctx)
 {
-    bool ok;
+    struct glx_platform *self = glx_platform(wc_self);
     Display *dpy = glx_display(wc_dpy)->x11.xlib;
     GLXDrawable win = wc_window ? glx_window(wc_window)->x11.xcb : 0;
     GLXContext ctx = wc_ctx ? glx_context(wc_ctx)->glx : NULL;
-    
-    ok = wrapped_glXMakeCurrent(dpy, win, ctx);
+    bool ok;
+
+    ok = wrapped_glXMakeCurrent(self, dpy, win, ctx);
     if (!ok) {
         wcore_errorf(WAFFLE_ERROR_UNKNOWN, "glXMakeCurrent failed");
     }
@@ -151,7 +152,8 @@ static void*
 glx_platform_get_proc_address(struct wcore_platform *wc_self,
                               const char *name)
 {
-    return glXGetProcAddress((const GLubyte*) name);
+    struct glx_platform *self = glx_platform(wc_self);
+    return self->glXGetProcAddress((const GLubyte*) name);
 }
 
 static bool

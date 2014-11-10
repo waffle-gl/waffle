@@ -25,6 +25,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <xcb/xcb.h>
 
 #include "wcore_error.h"
 
@@ -100,8 +101,9 @@ glx_window_swap_buffers(struct wcore_window *wc_self)
 {
     struct glx_window *self = glx_window(wc_self);
     struct glx_display *dpy = glx_display(wc_self->display);
+    struct glx_platform *plat = glx_platform(wc_self->display->platform);
 
-    wrapped_glXSwapBuffers(dpy->x11.xlib, self->x11.xcb);
+    wrapped_glXSwapBuffers(plat, dpy->x11.xlib, self->x11.xcb);
 
     return true;
 }

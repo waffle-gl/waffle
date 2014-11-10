@@ -168,6 +168,7 @@ glx_config_choose(struct wcore_platform *wc_plat,
 {
     struct glx_config *self;
     struct glx_display *dpy = glx_display(wc_dpy);
+    struct glx_platform *plat = glx_platform(wc_plat);
 
     GLXFBConfig *configs = NULL;
     int num_configs = 0;
@@ -220,7 +221,7 @@ glx_config_choose(struct wcore_platform *wc_plat,
     };
 
     // Set glx_fbconfig.
-    configs = wrapped_glXChooseFBConfig(dpy->x11.xlib,
+    configs = wrapped_glXChooseFBConfig(plat, dpy->x11.xlib,
                                         dpy->x11.screen,
                                         attrib_list,
                                         &num_configs);
@@ -233,7 +234,7 @@ glx_config_choose(struct wcore_platform *wc_plat,
     self->glx_fbconfig = configs[0];
 
     // Set glx_fbconfig_id.
-    ok = !wrapped_glXGetFBConfigAttrib(dpy->x11.xlib,
+    ok = !wrapped_glXGetFBConfigAttrib(plat, dpy->x11.xlib,
                                        self->glx_fbconfig,
                                        GLX_FBCONFIG_ID,
                                        &self->glx_fbconfig_id);
@@ -243,7 +244,7 @@ glx_config_choose(struct wcore_platform *wc_plat,
     }
 
     // Set xcb_visual_id.
-    vi = wrapped_glXGetVisualFromFBConfig(dpy->x11.xlib,
+    vi = wrapped_glXGetVisualFromFBConfig(plat, dpy->x11.xlib,
                                           self->glx_fbconfig);
     if (!vi) {
         wcore_errorf(WAFFLE_ERROR_UNKNOWN,
