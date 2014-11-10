@@ -1037,7 +1037,7 @@ main(int argc, char **argv)
     if (!glGetString)
         error_get_gl_symbol("glGetString");
 
-    glGetStringi = waffle_get_proc_address("glGetStringi");
+    glGetStringi = waffle_dl_sym(opts.dl, "glGetStringi");
 
     const struct wflinfo_config_attrs config_attrs = {
         .api = opts.context_api,
