@@ -30,6 +30,7 @@
 #include "wegl_window.h"
 
 struct wcore_platform;
+struct gbm_surface;
 
 struct wgbm_window {
     struct gbm_surface *gbm_surface;

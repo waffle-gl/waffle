@@ -23,8 +23,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#define __GBM__ 1
-
 #include <stdlib.h>
 #include <string.h>
 
@@ -38,11 +36,14 @@
 
 #include "wgbm_config.h"
 #include "wgbm_display.h"
+#include "wgbm_platform.h"
 #include "wgbm_window.h"
 
 bool
 wgbm_window_destroy(struct wcore_window *wc_self)
 {
+    struct wcore_platform *wc_plat = wc_self->display->platform;
+    struct wgbm_platform *plat = wgbm_platform(wegl_platform(wc_plat));
     struct wgbm_window *self = wgbm_window(wc_self);
     bool ok = true;
 
@@ -50,7 +51,7 @@ wgbm_window_destroy(struct wcore_window *wc_self)
         return ok;
 
     ok &= wegl_window_teardown(&self->wegl);
-    gbm_surface_destroy(self->gbm_surface);
+    plat->gbm_surface_destroy(self->gbm_surface);
     free(self);
     return ok;
 }
@@ -61,8 +62,9 @@ wgbm_window_create(struct wcore_platform *wc_plat,
                    int width,
                    int height)
 {
-    struct wgbm_window *self;
     struct wgbm_display *dpy = wgbm_display(wc_config->display);
+    struct wgbm_platform *plat = wgbm_platform(wegl_platform(wc_plat));
+    struct wgbm_window *self;
     uint32_t gbm_format;
     bool ok = true;
 
@@ -72,9 +74,9 @@ wgbm_window_create(struct wcore_platform *wc_plat,
 
     gbm_format = wgbm_config_get_gbm_format(&wc_config->attrs);
     assert(gbm_format != 0);
-    self->gbm_surface = gbm_surface_create(dpy->gbm_device, width, height,
-                                           gbm_format,
-                                           GBM_BO_USE_RENDERING);
+    self->gbm_surface = plat->gbm_surface_create(dpy->gbm_device,
+                                                 width, height, gbm_format,
+                                                 GBM_BO_USE_RENDERING);
     if (!self->gbm_surface) {
         wcore_errorf(WAFFLE_ERROR_UNKNOWN,
                      "gbm_surface_create failed");
@@ -104,15 +106,18 @@ wgbm_window_show(struct wcore_window *wc_self)
 bool
 wgbm_window_swap_buffers(struct wcore_window *wc_self)
 {
+    struct wcore_platform *wc_plat = wc_self->display->platform;
+    struct wgbm_platform *plat = wgbm_platform(wegl_platform(wc_plat));
+
     if (!wegl_window_swap_buffers(wc_self))
         return false;
 
     struct wgbm_window *self = wgbm_window(wc_self);
-    struct gbm_bo *bo = gbm_surface_lock_front_buffer(self->gbm_surface);
+    struct gbm_bo *bo = plat->gbm_surface_lock_front_buffer(self->gbm_surface);
     if (!bo)
         return false;
 
-    gbm_surface_release_buffer(self->gbm_surface, bo);
+    plat->gbm_surface_release_buffer(self->gbm_surface, bo);
     return true;
 }
 

@@ -23,13 +23,11 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#define __GBM__ 1
 #define _GNU_SOURCE
 
 #include <stdlib.h>
 #include <unistd.h>
 
-#include <gbm.h>
 #include <libudev.h>
 #include <fcntl.h>
 #include <sys/types.h>
@@ -45,6 +43,8 @@ bool
 wgbm_display_destroy(struct wcore_display *wc_self)
 {
     struct wgbm_display *self = wgbm_display(wc_self);
+    struct wcore_platform *wc_plat = wc_self->platform;
+    struct wgbm_platform *plat = wgbm_platform(wegl_platform(wc_plat));
     bool ok = true;
     int fd;
 
@@ -55,8 +55,8 @@ wgbm_display_destroy(struct wcore_display *wc_self)
     ok &= wegl_display_teardown(&self->wegl);
 
     if (self->gbm_device) {
-        fd = gbm_device_get_fd(self->gbm_device);
-        gbm_device_destroy(self->gbm_device);
+        fd = plat->gbm_device_get_fd(self->gbm_device);
+        plat->gbm_device_destroy(self->gbm_device);
         close(fd);
     }
 
@@ -119,6 +119,7 @@ wgbm_display_connect(struct wcore_platform *wc_plat,
                      const char *name)
 {
     struct wgbm_display *self;
+    struct wgbm_platform *plat = wgbm_platform(wegl_platform(wc_plat));
     bool ok = true;
     int fd;
 
@@ -137,7 +138,7 @@ wgbm_display_connect(struct wcore_platform *wc_plat,
         goto error;
     }
 
-    self->gbm_device = gbm_create_device(fd);
+    self->gbm_device = plat->gbm_create_device(fd);
     if (!self->gbm_device) {
         wcore_errorf(WAFFLE_ERROR_UNKNOWN, "gbm_create_device failed");
         goto error;

@@ -55,7 +55,6 @@ if(waffle_on_linux)
     endif()
     if(waffle_has_gbm)
         list(APPEND waffle_libdeps
-            ${gbm_LDFLAGS}
             ${libudev_LDFLAGS}
             )
     endif()
