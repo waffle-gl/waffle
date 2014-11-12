@@ -62,7 +62,7 @@ static const char *usage_message =
     "\n"
     "Required Parameters:\n"
     "    -p, --platform\n"
-    "        One of: android, cgl, gbm, glx, wayland or x11_egl\n"
+    "        One of: android, cgl, gbm, glx, wayland, wgl or x11_egl\n"
     "\n"
     "    -a, --api\n"
     "        One of: gl, gles1, gles2 or gles3\n"
@@ -123,7 +123,15 @@ strneq(const char *a, const char *b, size_t n)
     return strncmp(a, b, n) == 0;
 }
 
-static void __attribute__((noreturn))
+#if defined(__GNUC__)
+#define NORETURN __attribute__((noreturn))
+#elif defined(_MSC_VER)
+#define NORETURN __declspec(noreturn)
+#else
+#define NORETURN
+#endif
+
+static void NORETURN
 error_printf(const char *module, const char *fmt, ...)
 {
     va_list ap;
@@ -137,14 +145,14 @@ error_printf(const char *module, const char *fmt, ...)
     exit(EXIT_FAILURE);
 }
 
-static void __attribute__((noreturn))
+static void NORETURN
 write_usage_and_exit(FILE *f, int exit_code)
 {
     fprintf(f, "%s", usage_message);
     exit(exit_code);
 }
 
-static void __attribute__((noreturn))
+static void NORETURN
 usage_error_printf(const char *fmt, ...)
 {
     fprintf(stderr, "Wflinfo usage error: ");
@@ -212,10 +220,18 @@ enum {
 #define GL_CONTEXT_CORE_PROFILE_BIT       0x00000001
 #define GL_CONTEXT_COMPATIBILITY_PROFILE_BIT 0x00000002
 
-static GLenum (*glGetError)(void);
-static void (*glGetIntegerv)(GLenum pname, GLint *params);
-static const GLubyte * (*glGetString)(GLenum name);
-static const GLubyte * (*glGetStringi)(GLenum name, GLint i);
+#ifndef _WIN32
+#define APIENTRY
+#else
+#ifndef APIENTRY
+#define APIENTRY __stdcall
+#endif
+#endif
+
+static GLenum (APIENTRY *glGetError)(void);
+static void (APIENTRY *glGetIntegerv)(GLenum pname, GLint *params);
+static const GLubyte * (APIENTRY *glGetString)(GLenum name);
+static const GLubyte * (APIENTRY *glGetStringi)(GLenum name, GLint i);
 
 /// @brief Command line options.
 struct options {
@@ -251,6 +267,7 @@ static const struct enum_map platform_map[] = {
     {WAFFLE_PLATFORM_GBM,       "gbm"           },
     {WAFFLE_PLATFORM_GLX,       "glx"           },
     {WAFFLE_PLATFORM_WAYLAND,   "wayland"       },
+    {WAFFLE_PLATFORM_WGL,       "wgl"           },
     {WAFFLE_PLATFORM_X11_EGL,   "x11_egl"       },
     {0,                         0               },
 };
@@ -519,16 +536,19 @@ print_wflinfo(const struct options *opts)
     }
 
     const char *vendor = (const char *) glGetString(GL_VENDOR);
-    if (glGetError() != GL_NO_ERROR || vendor == NULL)
+    if (glGetError() != GL_NO_ERROR || vendor == NULL) {
         vendor = "WFLINFO_GL_ERROR";
+    }
 
     const char *renderer = (const char *) glGetString(GL_RENDERER);
-    if (glGetError() != GL_NO_ERROR || renderer == NULL)
+    if (glGetError() != GL_NO_ERROR || renderer == NULL) {
         renderer = "WFLINFO_GL_ERROR";
+    }
 
     const char *version_str = (const char *) glGetString(GL_VERSION);
-    if (glGetError() != GL_NO_ERROR || version_str == NULL)
+    if (glGetError() != GL_NO_ERROR || version_str == NULL) {
         version_str = "WFLINFO_GL_ERROR";
+    }
 
     const char *platform = enum_map_to_str(platform_map, opts->platform);
     assert(platform != NULL);
@@ -744,26 +764,27 @@ gl_get_version(void)
 static bool
 gl_has_extension_GetString(const char *name)
 {
-    const size_t buf_len = 4096;
-    char exts[buf_len];
+#define BUF_LEN 4096
+    char exts[BUF_LEN];
 
     const uint8_t *exts_orig = glGetString(GL_EXTENSIONS);
     if (glGetError()) {
         error_printf("Wflinfo", "glGetInteger(GL_EXTENSIONS) failed");
     }
 
-    memcpy(exts, exts_orig, buf_len);
-    exts[buf_len - 1] = 0;
+    memcpy(exts, exts_orig, BUF_LEN);
+    exts[BUF_LEN - 1] = 0;
 
     char *ext = strtok(exts, " ");
     do {
-        if (strneq(ext, name, buf_len)) {
+        if (strneq(ext, name, BUF_LEN)) {
             return true;
         }
         ext = strtok(NULL, " ");
     } while (ext);
 
     return false;
+#undef BUF_LEN
 }
 
 /// @brief Check if current context has an extension using glGetStringi().
@@ -1037,8 +1058,6 @@ main(int argc, char **argv)
     if (!glGetString)
         error_get_gl_symbol("glGetString");
 
-    glGetStringi = waffle_get_proc_address("glGetStringi");
-
     const struct wflinfo_config_attrs config_attrs = {
         .api = opts.context_api,
         .profile = opts.context_profile,
@@ -1057,6 +1076,8 @@ main(int argc, char **argv)
     ok = waffle_make_current(dpy, window, ctx);
     if (!ok)
         error_waffle();
+
+    glGetStringi = waffle_get_proc_address("glGetStringi");
 
     ok = print_wflinfo(&opts);
     if (!ok)

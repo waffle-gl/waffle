@@ -54,7 +54,15 @@ static __thread struct wcore_tinfo wcore_tinfo
     ;
 #endif // WAFFLE_HAS_TLS
 
-static void __attribute__((noreturn))
+#if defined(__GNUC__)
+#define NORETURN __attribute__((noreturn))
+#elif defined(_MSC_VER)
+#define NORETURN __declspec(noreturn)
+#else
+#define NORETURN
+#endif
+
+static void NORETURN
 wcore_tinfo_abort_init(void)
 {
     printf("waffle: fatal-error: failed to initialize thread local info\n");

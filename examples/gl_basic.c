@@ -43,7 +43,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#if !defined(_WIN32)
 #include <time.h>
+#else
+#include <windows.h>
+#endif
 
 #ifdef __APPLE__
 #    import <Foundation/NSAutoreleasePool.h>
@@ -57,7 +61,7 @@ removeXcodeArgs(int *argc, char **argv);
 
 static const char *usage_message =
     "usage:\n"
-    "    gl_basic --platform=android|cgl|gbm|glx|wayland|x11_egl\n"
+    "    gl_basic --platform=android|cgl|gbm|glx|wayland|wgl|x11_egl\n"
     "             --api=gl|gles1|gles2|gles3\n"
     "             [--version=MAJOR.MINOR]\n"
     "             [--profile=core|compat|none]\n"
@@ -105,7 +109,15 @@ static const struct option get_opts[] = {
     { 0 },
 };
 
-static void __attribute__((noreturn))
+#if defined(__GNUC__)
+#define NORETURN __attribute__((noreturn))
+#elif defined(_MSC_VER)
+#define NORETURN __declspec(noreturn)
+#else
+#define NORETURN
+#endif
+
+static void NORETURN
 error_printf(const char *fmt, ...)
 {
     va_list ap;
@@ -120,7 +132,8 @@ error_printf(const char *fmt, ...)
 
     exit(EXIT_FAILURE);
 }
-static void __attribute__((noreturn))
+
+static void NORETURN
 usage_error_printf(const char *fmt, ...)
 {
     fflush(stdout);
@@ -180,12 +193,20 @@ enum {
 #define WINDOW_WIDTH  320
 #define WINDOW_HEIGHT 240
 
-static void (*glClearColor)(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha);
-static void (*glClear)(GLbitfield mask);
-static void (*glGetIntegerv)(GLenum pname, GLint *params);
-static void (*glReadPixels)(GLint x, GLint y, GLsizei width, GLsizei height,
-                            GLenum format, GLenum type, GLvoid* data);
-static void (*glViewport)(GLint x, GLint y, GLsizei width, GLsizei height);
+#ifndef _WIN32
+#define APIENTRY
+#else
+#ifndef APIENTRY
+#define APIENTRY __stdcall
+#endif
+#endif
+
+static void (APIENTRY *glClearColor)(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha);
+static void (APIENTRY *glClear)(GLbitfield mask);
+static void (APIENTRY *glGetIntegerv)(GLenum pname, GLint *params);
+static void (APIENTRY *glReadPixels)(GLint x, GLint y, GLsizei width, GLsizei height,
+                                     GLenum format, GLenum type, GLvoid* data);
+static void (APIENTRY *glViewport)(GLint x, GLint y, GLsizei width, GLsizei height);
 
 /// @brief Command line options.
 struct options {
@@ -220,6 +241,7 @@ static const struct enum_map platform_map[] = {
     {WAFFLE_PLATFORM_GBM,       "gbm"           },
     {WAFFLE_PLATFORM_GLX,       "glx"           },
     {WAFFLE_PLATFORM_WAYLAND,   "wayland"       },
+    {WAFFLE_PLATFORM_WGL,       "wgl"           },
     {WAFFLE_PLATFORM_X11_EGL,   "x11_egl"       },
     {0,                         0               },
 };
@@ -370,11 +392,13 @@ draw(struct waffle_window *window, bool resize)
     int width = WINDOW_WIDTH;
     int height = WINDOW_HEIGHT;
 
+#if !defined(_WIN32)
     static const struct timespec sleep_time = {
          // 0.5 sec
         .tv_sec = 0,
         .tv_nsec = 500000000,
     };
+#endif
 
     for (int i = 0; i < 3; ++i) {
         switch (i) {
@@ -419,7 +443,11 @@ draw(struct waffle_window *window, bool resize)
         if (!ok)
             return false;
 
+#if !defined(_WIN32)
         nanosleep(&sleep_time, NULL);
+#else
+        Sleep(500);
+#endif
     }
 
     return true;
@@ -495,6 +523,8 @@ main(int argc, char **argv)
     struct waffle_config *config;
     struct waffle_context *ctx;
     struct waffle_window *window;
+
+    GLint context_flags = 0;
 
     #ifdef __APPLE__
         cocoa_init();
@@ -594,7 +624,6 @@ main(int argc, char **argv)
     if (!ok)
         error_waffle();
 
-    GLint context_flags = 0;
     if (opts.context_forward_compatible || opts.context_debug) {
         glGetIntegerv(GL_CONTEXT_FLAGS, &context_flags);
     }

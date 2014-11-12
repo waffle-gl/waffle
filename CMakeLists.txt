@@ -29,6 +29,13 @@ cmake_minimum_required(VERSION 2.8.11)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules")
 
+# Set the default location for all build artifacts to traditionally named
+# top-level directories.  CMake's default location for build artifacts varies
+# per artifact and is hard-to-guess.
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
+
 include(WaffleDefineOS)
 include(WaffleFindDependencies)
 include(Options.cmake)
@@ -154,3 +161,25 @@ install(
 # ------------------------------------------------------------------------------
 
 include(WafflePrintConfigurationSummary)
+
+set (CPACK_SET_DESTDIR ON)
+set (CPACK_PACKAGE_VERSION_MAJOR ${waffle_major_version})
+set (CPACK_PACKAGE_VERSION_MINOR ${waffle_minor_version})
+set (CPACK_PACKAGE_VERSION_PATCH ${waffle_patch_version})
+
+# cpack detects win64 vs win32 only when msvc is available
+# reported upstream, fix (likely post cmake 3.0) pending
+if (MINGW)
+        if (CMAKE_SIZEOF_VOID_P EQUAL 8)
+                set (CPACK_SYSTEM_NAME win64)
+        endif ()
+endif ()
+
+# See http://www.vtk.org/Wiki/CMake:CPackPackageGenerators
+if (WIN32)
+        set (CPACK_GENERATOR "ZIP")
+else ()
+        set (CPACK_GENERATOR "TBZ2")
+endif ()
+
+include(CPack)

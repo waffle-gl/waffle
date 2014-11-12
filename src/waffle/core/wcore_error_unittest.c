@@ -23,16 +23,12 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifdef __linux__
-#   define _XOPEN_SOURCE 600
-#endif
-
 #include <setjmp.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include "c99_compat.h"
 #include "threads.h"
 
 #include <cmocka.h>
@@ -194,12 +190,12 @@ test_wcore_error_thread_local(void **state) {
 
     thrd_t threads[NUM_THREADS];
     struct thread_arg thread_args[NUM_THREADS];
-    bool exit_codes[NUM_THREADS];
+    int exit_codes[NUM_THREADS];
 
     mtx_init(&mutex, mtx_plain);
     cnd_init(&cond);
 
-    for (intptr_t i = 0; i < NUM_THREADS; ++i) {
+    for (int i = 0; i < NUM_THREADS; ++i) {
         struct thread_arg *a = &thread_args[i];
         a->thread_id = i;
         a->mutex = &mutex;
@@ -221,7 +217,7 @@ test_wcore_error_thread_local(void **state) {
     }
 
     for (int i = 0; i < NUM_THREADS; ++i) {
-        thrd_join(threads[i], (int *) &exit_codes[i]);
+        thrd_join(threads[i], &exit_codes[i]);
         assert_true(exit_codes[i]);
     }
 

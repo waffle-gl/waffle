@@ -23,10 +23,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifdef __linux__
-#   define _XOPEN_SOURCE 500 // for strdup()
-#endif
-
 #include "wt_runner.h"
 
 #include <stdbool.h>

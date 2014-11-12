@@ -1,8 +1,3 @@
-link_libraries(
-    ${waffle_libname}
-    waffle_test
-    )
-
 set(gl_basic_test_sources
     gl_basic_test.c
     )
@@ -13,11 +8,13 @@ if(waffle_on_mac)
         )
 endif()
 
-set_source_files_properties(
-    ${gl_basic_test_sources}
-    PROPERTIES
-        COMPILE_FLAGS "-Wno-initializer-overrides"
-)
+if(NOT MSVC)
+    set_source_files_properties(
+        ${gl_basic_test_sources}
+        PROPERTIES
+            COMPILE_FLAGS "-Wno-initializer-overrides"
+    )
+endif()
 
 # CMake will pass to the C compiler only C sources. CMake does not recognize the
 # .m extension and ignores any such files in the source lists. To coerce CMake
@@ -32,9 +29,13 @@ add_executable(gl_basic_test
     ${gl_basic_test_sources}
     )
 
+target_link_libraries(gl_basic_test
+    ${waffle_libname}
+    waffle_test
+    )
+
 add_custom_target(gl_basic_test_run
-    DEPENDS gl_basic_test
-    COMMAND ${CMAKE_BINARY_DIR}/tests/functional/gl_basic_test
+    COMMAND gl_basic_test
     )
 
 add_dependencies(check-func gl_basic_test_run)

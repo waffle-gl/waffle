@@ -1,4 +1,4 @@
-// Copyright 2013 Intel Corporation
+// Copyright 2014 Emil Velikov
 //
 // All rights reserved.
 //
@@ -23,81 +23,55 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "wcore_attrib_list.h"
+#pragma once
 
 #include <stdbool.h>
-#include <stdint.h>
-#include <stddef.h>
 
-int32_t
-wcore_attrib_list_length(const int32_t attrib_list[])
+#include "wcore_util.h"
+#include "wcore_window.h"
+
+struct wcore_platform;
+
+struct wgl_window {
+    struct wcore_window wcore;
+    HWND hWnd;
+    HDC hDC;
+    bool created;
+};
+
+static inline struct wgl_window*
+wgl_window(struct wcore_window *wcore)
 {
-    const int32_t *i = attrib_list;
-
-    if (attrib_list == NULL)
-        return 0;
-
-    while (*i != 0)
-        i += 2;
-
-    return (int32_t) (i - attrib_list) / 2;
+	return (struct wgl_window*)wcore;
 }
+
+struct wcore_window*
+wgl_window_priv_create(struct wcore_platform *wc_plat,
+                       struct wcore_config *wc_config,
+                       int width,
+                       int height);
 
 bool
-wcore_attrib_list_get(
-        const int32_t *attrib_list,
-        int32_t key,
-        int32_t *value)
-{
-    if (attrib_list == NULL)
-        return false;
+wgl_window_priv_destroy(struct wcore_window *wc_self);
 
-    for (int i = 0; attrib_list[i] != 0; i += 2) {
-        if (attrib_list[i] != key)
-            continue;
-
-        *value = attrib_list[i + 1];
-        return true;
-    }
-
-    return false;
-}
+struct wcore_window*
+wgl_window_create(struct wcore_platform *wc_plat,
+                  struct wcore_config *wc_config,
+                  int width,
+                  int height);
 
 bool
-wcore_attrib_list_get_with_default(
-        const int32_t attrib_list[],
-        int32_t key,
-        int32_t *value,
-        int32_t default_value)
-{
-    if (wcore_attrib_list_get(attrib_list, key, value)) {
-        return true;
-    }
-    else {
-        *value = default_value;
-        return false;
-    }
-}
+wgl_window_destroy(struct wcore_window *wc_self);
 
 bool
-wcore_attrib_list_update(
-        int32_t *attrib_list,
-        int32_t key,
-        int32_t value)
-{
-    int32_t *i = attrib_list;
+wgl_window_show(struct wcore_window *wc_self);
 
-    if (attrib_list == NULL)
-        return false;
+bool
+wgl_window_resize(struct wcore_window *wc_self,
+                  int32_t width, int32_t height);
 
-    while (*i != 0 && *i != key)
-        i += 2;
+bool
+wgl_window_swap_buffers(struct wcore_window *wc_self);
 
-    if (*i == key) {
-        i[1] = value;
-        return true;
-    }
-    else {
-        return false;
-    }
-}
+union waffle_native_window*
+wgl_window_get_native(struct wcore_window *wc_self);

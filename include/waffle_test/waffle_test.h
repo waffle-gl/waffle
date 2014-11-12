@@ -47,10 +47,22 @@
            testgroup_##group##_setup, \
            testgroup_##group##_teardown)
 
+/// This must be called only from test suite s passed to wt_main().
+#define TEST_RUN2(group, displayname, testname) \
+    wt_runner_run_test( \
+           #group, #displayname, \
+           test_##group##_##testname, \
+           testgroup_##group##_setup, \
+           testgroup_##group##_teardown)
+
 /// @param test_runners is a list of functions that call TEST_RUN(). The list
 ///     is a null-terminated.
 /// @return number of failed tests.
+#ifdef _WIN32
+int wt_main(int *argc, char **argv, void (__stdcall *test_suites[])(void));
+#else
 int wt_main(int *argc, char **argv, void (*test_suites[])(void));
+#endif // _WIN32
 
 #define TEST_PASS()                           wt_test_pass()
 #define TEST_SKIP()                           wt_test_skip()

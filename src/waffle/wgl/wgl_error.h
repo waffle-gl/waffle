@@ -1,4 +1,4 @@
-// Copyright 2012 Intel Corporation
+// Copyright 2014 Emil Velikov
 //
 // All rights reserved.
 //
@@ -25,45 +25,8 @@
 
 #pragma once
 
-#include <stdbool.h>
-#include <stddef.h>
+const char*
+wgl_error_to_string(int error_code);
 
-#include "waffle.h"
-
-// WAFFLE_API - Declare that a symbol is in Waffle's public API.
-//
-// See "GCC Wiki - Visibility". (http://gcc.gnu.org/wiki/Visibility).
-// See "How to Write Shared Libraries. Ulrich Drepper.
-//       (http://www.akkadia.org/drepper/dsohowto.pdf).
-//
-// TODO: Implement WAFFLE_API for Apple.
-//
-#if defined(_WIN32)
-// Use module-definition file to restrict the exported symbols under windows.
-#   define WAFFLE_API
-#elif defined(__GNUC__) && __GNUC__ >= 4
-#   define WAFFLE_API __attribute__ ((visibility("default")))
-#else
-#   define WAFFLE_API
-#endif
-
-struct api_object;
-struct wcore_platform;
-
-/// @brief Managed by waffle_init().
-///
-/// This is null if and only if waffle has not been initialized with
-/// waffle_init().
-extern struct wcore_platform *api_platform;
-
-/// @brief Used to validate most API entry points.
-///
-/// The objects that the user passed into the API entry point are listed in
-/// @a obj_list. If its @a length is 0, then the objects are not validated.
-///
-/// Emit an error and return false if any of the following:
-///     - waffle is not initialized
-///     - an object pointer is null
-///     - two objects belong to different displays
-bool
-api_check_entry(const struct api_object *obj_list[], int length);
+void
+wgl_error_failed_func(const char *func_name, int error_code);

@@ -50,10 +50,12 @@ Waffle, see the following:
 Build Requirements
 ==================
 
+Waffle uses CMake for its build system.
+
 Linux
 -----
-
-Waffle uses CMake for it build system.
+On Linux it's recommended to install the cmake package using your
+distribution package manager.
 
     Archlinux: pacman -S cmake
     Fedora 17: yum install cmake
@@ -97,6 +99,53 @@ a comman-separated list of any combination of "x11", "wayland", and "drm".
         - Debian: apt-get install libgbm-dev libudev-dev
 
 
+Windows - cross-building under Linux
+------------------------------------
+Make sure that CMake is installed on your system.
+
+    Archlinux: pacman -S cmake
+    Fedora 17: yum install cmake
+    Debian: apt-get install cmake
+
+The MinGW-W64 cross-build toolchain is recommended and its CMake wrapper.
+
+    Archlinux: pacman -S mingw-w64-gcc mingw-w64-cmake (latter is in AUR)
+    Fedora 17: yum install FINISHME
+    Debian: apt-get install FINISHME
+
+
+Windows - native builds
+-----------------------
+Download and install the latest version CMake from the official website:
+
+    http://cmake.org/
+
+Install Microsoft Visual Studio 2013* or later.
+Install 'Visual C++' feature.
+
+Download OpenGL Core API and Extension Header Files.
+
+    http://www.opengl.org/registry/#headers
+
+Copy the header files to MSVC.
+
+    C:\Program Files\Microsoft Visual Studio 12.0\VC\include\GL
+
+
+[*] Waffle heavily requires on features introduced by the C99 standard. As
+such only reasonable compiler (at the time of writing) from the Microsoft
+Visual Compiler series is MSVC 2013. Building with older versions is likely
+to be broken.
+
+Windows - CYGWIN
+----------------
+Waffle is not tested to build under CYGWIN and is likely to be broken.
+Patches addressing it are more than welcome.
+
+For build requirements, build and installation instructions, refer to the
+Linux notes in the relevant sections.
+
+
 Build and Installation
 ======================
 
@@ -114,6 +163,9 @@ or
 
 1. Configure pkg-config
 -----------------------
+Compiling for Windows does require any additional dependencies, as such
+this step can be omitted.
+
 If any of Waffle's dependencies are installed in custom locations, you must
 set the PKG_CONFIG_PATH environment variable. For example, if you installed
 a dependeny into /usr/local, then:
@@ -123,23 +175,26 @@ a dependeny into /usr/local, then:
 
 2. Configure CMake
 ------------------
+
+2.1 Linux and Mac
+-----------------
 On Linux and Mac, running CMake with no arguments as below will configure
 Waffle for a release build (optimized compiler flags and basic debug symbols)
 and will auto-enable support for features whose dependencies are installed:
 
     cmake .
 
-To manually control the configuration process, or to later modify the an already-configured source tree,
-run one of the following:
+To manually control the configuration process, or to later modify the an
+already-configured source tree, run one of the following:
 
     # An ncurses interface to CMake configuration.
-    ccamke $BUILD_DIR
+    ccmake .
 
     # A graphical Qt interface to CMake configuration.
-    cmake-gui $BUILD_DIR
+    cmake-gui .
 
     # Edit the raw configuration file.
-    vim $BUILD_DIR/CMakeCache.txt
+    vim CMakeCache.txt
 
 All configuration options can also be set on the command line during the
 *initial* invocation of cmake. For example, to configure Waffle for a debug
@@ -147,17 +202,117 @@ build, require support for Wayland, and install into '/usr' instead of
 '/usr/local', run the following:
 
     cmake -DCMAKE_BUILD_TYPE=Debug \
-          -DCMAKE_INSTALL_PREFIX=/usr/local \
+          -DCMAKE_INSTALL_PREFIX=/usr \
           -Dwaffle_has_wayland=1 \
           .
 
+2.2 Windows - cross-building under Linux
+----------------------------------------
+The following sh snippet can be used to ease the configuration process.
+
+    _architectures="i686-w64-mingw32 x86_64-w64-mingw32"
+    unset LDFLAGS
+    for _arch in ${_architectures}; do
+      _install_prefix=/usr/${_arch}
+      mkdir -p build-${_arch} && pushd build-${_arch}
+      ${_arch}-cmake .. \
+        -DCMAKE_INSTALL_PREFIX=${_install_prefix} \
+        -DCMAKE_INSTALL_LIBDIR=${_install_prefix}/lib \
+        \
+        -Dwaffle_build_tests=0 \
+        -Dwaffle_build_examples=1
+      make
+      popd
+    done
+
+Make sure to adjust _install_prefix to "" if the resulting library will
+not be used for further cross-building.
+
+
+2.3 Windows - native builds
+---------------------------
+
+For native Windows builds, one must provide a generator argument and
+optionally a toolset if the resulting library must be compatible with
+Windows XP. When the resulting library is to be 64bit "Win64" needs to be
+appended to the generator argument.
+
+    @echo Configuring Waffle as Windows Vista compatible 32bit library
+    cmake -G "Visual Studio 12" -H%CD% -B%CD%\build\msvc32 -DCMAKE_INSTALL_PREFIX=""
+
+    @echo Configuring Waffle as Windows Vista compatible 64bit library
+    cmake -G "Visual Studio 12 Win64" -H%CD% -B%CD%\build\msvc64 -DCMAKE_INSTALL_PREFIX=""
+
+    @echo Configuring Waffle as Windows XP compatible 32bit library
+    cmake -G "Visual Studio 12" -T "v120_xp" -H%CD% -B%CD%\build\msvc32 -DCMAKE_INSTALL_PREFIX=""
+
+For alternative control of the configuration process, or to later modify an
+already-configured source tree, run the graphical Qt interface via:
+
+    cmake-gui
+
 3. Build and Install
 --------------------
+The following commands build Waffle, run its tests, installs the project and
+creates a binary archive in a platform agnostic way.
+
+Note that not all steps may be required in your case and the configuration
+settings (cache) are located in the current directory as indicated by ".".
+
+    cmake --build .
+    cmake --build . --target check
+    cmake --build . --target check-func
+    cmake --build . --target install
+    cpack
+
+Calling `cmake ... check` only runs unittests that do not access the native
+OpenGL platform. To run additional functional tests, which do access the
+native OpenGL platform, call `cmake ... check-func`.
+
+3.1 Linux and Mac
+-----------------
+On Linux and Mac the default CMake generator is Unix Makefiles, as such we
+can use an alternative version of the above commands:
 
     make
     make check
+    make check-func
     make install
+    make package
 
-Calling `make check` only runs unittests that do not access the native OpenGL
-platform. To run additional functional tests, which do access the native
-OpenGL platform, call `make check-func`.
+
+3.2 Windows - cross-building under Linux
+----------------------------------------
+
+    _architectures="i686-w64-mingw32 x86_64-w64-mingw32"
+    unset LDFLAGS
+    for _arch in ${_architectures}; do
+      pushd build-${_arch}
+      make
+      make install
+      make package
+      popd
+    done
+
+Note: Running the tests (`make check` and/or `make check-func`) is not tested
+but may work if the appropriate environment is setup via wine.
+
+
+3.3 Windows - native builds
+---------------------------
+One can manage the build/install/package process via Visual Studio's GUI
+or via the command line.
+
+When using the GUI open .\build\msvc*\waffle-VERSION.sln, where * can be
+either 32 or 64 depending on your requirements.
+
+If building via the command line, navigate to the correct folder and invoke
+the desired command as outlined in `Section 3. Build and Install`
+
+For example the following will build 32bit Waffle and will package/archive
+it into a file called waffle1-VERSION-win32.zip.
+
+    @echo Preparing to build 32 bit version of waffle
+    cd .\build\msvc32
+    cmake --build .
+    cpack

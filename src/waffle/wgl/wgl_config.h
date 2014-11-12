@@ -1,4 +1,4 @@
-// Copyright 2013 Intel Corporation
+// Copyright 2014 Emil Velikov
 //
 // All rights reserved.
 //
@@ -23,81 +23,39 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "wcore_attrib_list.h"
+#pragma once
 
 #include <stdbool.h>
 #include <stdint.h>
-#include <stddef.h>
+#include <GL/gl.h>
+#include <GL/wglext.h>
 
-int32_t
-wcore_attrib_list_length(const int32_t attrib_list[])
+#include "wcore_config.h"
+#include "wcore_util.h"
+
+struct wcore_config_attrs;
+struct wcore_platform;
+struct wgl_window;
+
+struct wgl_config {
+    struct wcore_config wcore;
+    PIXELFORMATDESCRIPTOR pfd;
+    int pixel_format;
+
+    // XXX: Currently we manage only one window per config.
+    struct wgl_window *window;
+};
+
+static inline struct wgl_config*
+wgl_config(struct wcore_config *wcore)
 {
-    const int32_t *i = attrib_list;
-
-    if (attrib_list == NULL)
-        return 0;
-
-    while (*i != 0)
-        i += 2;
-
-    return (int32_t) (i - attrib_list) / 2;
+	return (struct wgl_config *)wcore;
 }
+
+struct wcore_config*
+wgl_config_choose(struct wcore_platform *wc_plat,
+                  struct wcore_display *wc_dpy,
+                  const struct wcore_config_attrs *attrs);
 
 bool
-wcore_attrib_list_get(
-        const int32_t *attrib_list,
-        int32_t key,
-        int32_t *value)
-{
-    if (attrib_list == NULL)
-        return false;
-
-    for (int i = 0; attrib_list[i] != 0; i += 2) {
-        if (attrib_list[i] != key)
-            continue;
-
-        *value = attrib_list[i + 1];
-        return true;
-    }
-
-    return false;
-}
-
-bool
-wcore_attrib_list_get_with_default(
-        const int32_t attrib_list[],
-        int32_t key,
-        int32_t *value,
-        int32_t default_value)
-{
-    if (wcore_attrib_list_get(attrib_list, key, value)) {
-        return true;
-    }
-    else {
-        *value = default_value;
-        return false;
-    }
-}
-
-bool
-wcore_attrib_list_update(
-        int32_t *attrib_list,
-        int32_t key,
-        int32_t value)
-{
-    int32_t *i = attrib_list;
-
-    if (attrib_list == NULL)
-        return false;
-
-    while (*i != 0 && *i != key)
-        i += 2;
-
-    if (*i == key) {
-        i[1] = value;
-        return true;
-    }
-    else {
-        return false;
-    }
-}
+wgl_config_destroy(struct wcore_config *wc_self);

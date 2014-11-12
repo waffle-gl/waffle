@@ -66,10 +66,13 @@
             On CGL, this function returns <constant>NULL</constant>
 
             because there exists no <function>CGLGetProcAdress()</function>.
+
+            On WGL, this redirects to
+            <citerefentry><refentrytitle><function>wglGetProcAddress</function></refentrytitle><manvolnum>3</manvolnum></citerefentry>.
           </para>
 
           <para>
-            Some aspects of this function's behavior is platform-specific and non-intuitive.
+            Some aspects of this function's behavior are platform-specific and non-intuitive.
 
             For example,
 
@@ -89,6 +92,14 @@
                   then <function>waffle_get_proc_address()</function> may return a <constant>NULL</constant>.
                 </para>
               </listitem>
+
+              <listitem>
+                <para>
+                  Under Windows (WGL) a current context must be available before executing the function.
+
+                  Otherwise <function>waffle_get_proc_address()</function> may return a <constant>NULL</constant>.
+                </para>
+              </listitem>
             </itemizedlist>
           </para>
 
@@ -99,7 +110,9 @@
 
             the <ulink url="http://www.opengl.org/registry/doc/glx1.4.pdf">GLX 1.4 Specification</ulink>
 
-            or the <ulink url="http://www.khronos.org/registry/egl/specs/eglspec.1.4.20110406.pdf">EGL 1.4 Specification</ulink>.
+            the <ulink url="http://www.khronos.org/registry/egl/specs/eglspec.1.4.20110406.pdf">EGL 1.4 Specification</ulink>
+
+            or the <ulink url="http://msdn.microsoft.com/en-gb/library/windows/desktop/dd374386(v=vs.85).aspx">MSDN article</ulink>.
           </para>
         </listitem>
       </varlistentry>

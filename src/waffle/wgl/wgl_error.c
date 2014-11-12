@@ -1,4 +1,4 @@
-// Copyright 2013 Intel Corporation
+// Copyright 2014 Emil Velikov
 //
 // All rights reserved.
 //
@@ -23,81 +23,26 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "wcore_attrib_list.h"
-
+#include <assert.h>
 #include <stdbool.h>
-#include <stdint.h>
-#include <stddef.h>
+#include <stdlib.h>
 
-int32_t
-wcore_attrib_list_length(const int32_t attrib_list[])
+#include "wcore_error.h"
+
+#include "wgl_error.h"
+
+const char*
+wgl_error_to_string(int error_code)
 {
-    const int32_t *i = attrib_list;
-
-    if (attrib_list == NULL)
-        return 0;
-
-    while (*i != 0)
-        i += 2;
-
-    return (int32_t) (i - attrib_list) / 2;
+    return NULL;
 }
 
-bool
-wcore_attrib_list_get(
-        const int32_t *attrib_list,
-        int32_t key,
-        int32_t *value)
+void
+wgl_error_failed_func(const char *func_name, int error_code)
 {
-    if (attrib_list == NULL)
-        return false;
-
-    for (int i = 0; attrib_list[i] != 0; i += 2) {
-        if (attrib_list[i] != key)
-            continue;
-
-        *value = attrib_list[i + 1];
-        return true;
-    }
-
-    return false;
-}
-
-bool
-wcore_attrib_list_get_with_default(
-        const int32_t attrib_list[],
-        int32_t key,
-        int32_t *value,
-        int32_t default_value)
-{
-    if (wcore_attrib_list_get(attrib_list, key, value)) {
-        return true;
-    }
-    else {
-        *value = default_value;
-        return false;
-    }
-}
-
-bool
-wcore_attrib_list_update(
-        int32_t *attrib_list,
-        int32_t key,
-        int32_t value)
-{
-    int32_t *i = attrib_list;
-
-    if (attrib_list == NULL)
-        return false;
-
-    while (*i != 0 && *i != key)
-        i += 2;
-
-    if (*i == key) {
-        i[1] = value;
-        return true;
-    }
-    else {
-        return false;
-    }
+    wcore_errorf(WAFFLE_ERROR_UNKNOWN,
+                 "%s failed with %s: %s",
+                 func_name,
+                 wgl_error_to_string(error_code),
+                 NULL);
 }

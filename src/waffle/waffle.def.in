@@ -1,0 +1,33 @@
+LIBRARY @waffle_libname@
+
+EXPORTS
+    waffle_error_get_code
+    waffle_error_get_info
+    waffle_error_to_string
+    waffle_enum_to_string
+    waffle_init
+    waffle_make_current
+    waffle_get_proc_address
+    waffle_is_extension_in_string
+    waffle_display_connect
+    waffle_display_disconnect
+    waffle_display_supports_context_api
+    waffle_display_get_native
+    waffle_config_choose
+    waffle_config_destroy
+    waffle_config_get_native
+    waffle_context_create
+    waffle_context_destroy
+    waffle_context_get_native
+    waffle_window_create
+    waffle_window_destroy
+    waffle_window_show
+    waffle_window_swap_buffers
+    waffle_window_get_native
+    waffle_window_resize
+    waffle_dl_can_open
+    waffle_dl_sym
+    waffle_attrib_list_length
+    waffle_attrib_list_get
+    waffle_attrib_list_get_with_default
+    waffle_attrib_list_update

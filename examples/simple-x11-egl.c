@@ -49,8 +49,16 @@ enum {
     GL_COLOR_BUFFER_BIT = 0x00004000,
 };
 
-static void (*glClearColor)(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha);
-static void (*glClear)(GLbitfield mask);
+#ifndef _WIN32
+#define APIENTRY
+#else
+#ifndef APIENTRY
+#define APIENTRY __stdcall
+#endif
+#endif
+
+static void (APIENTRY *glClearColor)(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha);
+static void (APIENTRY *glClear)(GLbitfield mask);
 
 // ---------------------------------------------
 

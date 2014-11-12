@@ -1,4 +1,4 @@
-// Copyright 2013 Intel Corporation
+// Copyright 2014 Emil Velikov
 //
 // All rights reserved.
 //
@@ -23,81 +23,31 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "wcore_attrib_list.h"
+#pragma once
 
 #include <stdbool.h>
-#include <stdint.h>
-#include <stddef.h>
 
-int32_t
-wcore_attrib_list_length(const int32_t attrib_list[])
+#include "wcore_context.h"
+#include "wcore_util.h"
+
+struct wcore_config;
+struct wcore_platform;
+
+struct wgl_context {
+    struct wcore_context wcore;
+    HGLRC hglrc;
+};
+
+static inline struct wgl_context*
+wgl_context(struct wcore_context *wcore)
 {
-    const int32_t *i = attrib_list;
-
-    if (attrib_list == NULL)
-        return 0;
-
-    while (*i != 0)
-        i += 2;
-
-    return (int32_t) (i - attrib_list) / 2;
+	return (struct wgl_context *)wcore;
 }
+
+struct wcore_context*
+wgl_context_create(struct wcore_platform *wc_plat,
+                   struct wcore_config *wc_config,
+                   struct wcore_context *wc_share_ctx);
 
 bool
-wcore_attrib_list_get(
-        const int32_t *attrib_list,
-        int32_t key,
-        int32_t *value)
-{
-    if (attrib_list == NULL)
-        return false;
-
-    for (int i = 0; attrib_list[i] != 0; i += 2) {
-        if (attrib_list[i] != key)
-            continue;
-
-        *value = attrib_list[i + 1];
-        return true;
-    }
-
-    return false;
-}
-
-bool
-wcore_attrib_list_get_with_default(
-        const int32_t attrib_list[],
-        int32_t key,
-        int32_t *value,
-        int32_t default_value)
-{
-    if (wcore_attrib_list_get(attrib_list, key, value)) {
-        return true;
-    }
-    else {
-        *value = default_value;
-        return false;
-    }
-}
-
-bool
-wcore_attrib_list_update(
-        int32_t *attrib_list,
-        int32_t key,
-        int32_t value)
-{
-    int32_t *i = attrib_list;
-
-    if (attrib_list == NULL)
-        return false;
-
-    while (*i != 0 && *i != key)
-        i += 2;
-
-    if (*i == key) {
-        i[1] = value;
-        return true;
-    }
-    else {
-        return false;
-    }
-}
+wgl_context_destroy(struct wcore_context *wc_self);

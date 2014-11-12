@@ -16,6 +16,7 @@ include_directories(
     glx
     linux
     wayland
+    wgl
     x11
     xegl
 
@@ -161,6 +162,22 @@ if(waffle_has_gbm)
     )
 endif()
 
+if(waffle_on_windows)
+    list(APPEND waffle_sources
+        wgl/wgl_config.c
+        wgl/wgl_context.c
+        wgl/wgl_display.c
+        wgl/wgl_dl.c
+        wgl/wgl_error.c
+        wgl/wgl_platform.c
+        wgl/wgl_window.c
+        )
+
+    list(APPEND waffle_libdeps
+        opengl32.lib
+        )
+endif()
+
 # CMake will pass to the C compiler only C sources. CMake does not recognize the
 # .m extension and ignores any such files in the source lists. To coerce CMake
 # to pass .m files to the compiler, we must lie and claim that they are
@@ -169,8 +186,19 @@ set_source_files_properties(
     ${waffle_sources}
     PROPERTIES
     LANGUAGE C
-    COMPILE_FLAGS "-fvisibility=hidden"
     )
+
+if(waffle_on_windows)
+    configure_file(
+        waffle.def.in
+        ${CMAKE_CURRENT_SOURCE_DIR}/${waffle_libname}.def
+        @ONLY
+        )
+
+    list(APPEND waffle_sources
+        ${waffle_libname}.def
+        )
+endif()
 
 include_directories(
     ${GLX_INLCLUDE_DIRS}
@@ -184,14 +212,22 @@ target_link_libraries(${waffle_libname} PRIVATE ${waffle_libdeps})
 
 set_target_properties(${waffle_libname}
     PROPERTIES
-    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib
     SOVERSION ${waffle_soversion}
     VERSION ${waffle_soversion}.${waffle_minor_version}.${waffle_patch_version}
     )
 
+if(waffle_on_windows)
+    set_target_properties(${waffle_libname}
+        PROPERTIES
+        PREFIX ""
+    )
+endif()
+
 install(
     TARGETS ${waffle_libname}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     COMPONENT libraries
     )
 
@@ -215,8 +251,7 @@ target_link_libraries(waffle_static ${waffle_libdeps})
 
 set_target_properties(waffle_static
     PROPERTIES
-    OUTPUT_NAME "waffle-${waffle_major_version}"
-    ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
+    OUTPUT_NAME "waffle-static-${waffle_major_version}"
     )
 
 # ----------------------------------------------------------------------------
@@ -238,8 +273,7 @@ function(add_unittest unittest_name)
         waffle_static
     )
     add_custom_target(${unittest_name}_run
-        DEPENDS ${unittest_name}
-        COMMAND "${CMAKE_BINARY_DIR}/tests/${unittest_name}"
+        COMMAND "${unittest_name}"
     )
     add_dependencies(check ${unittest_name}_run)
 
