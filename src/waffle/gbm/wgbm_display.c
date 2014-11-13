@@ -26,6 +26,7 @@
 #define __GBM__ 1
 #define _GNU_SOURCE
 
+#include <dlfcn.h>
 #include <stdlib.h>
 #include <unistd.h>
 
@@ -137,6 +138,7 @@ wgbm_display_connect(struct wcore_platform *wc_plat,
         goto error;
     }
 
+    dlopen("libglapi.so.0", RTLD_LAZY | RTLD_GLOBAL);
     self->gbm_device = gbm_create_device(fd);
     if (!self->gbm_device) {
         wcore_errorf(WAFFLE_ERROR_UNKNOWN, "gbm_create_device failed");
