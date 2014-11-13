@@ -23,8 +23,9 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#if WAFFLE_ANDROID_MAJOR_VERSION >= 4 && \
-	WAFFLE_ANDROID_MINOR_VERSION >= 1
+#if WAFFLE_ANDROID_MAJOR_VERSION == 4 && \
+    WAFFLE_ANDROID_MINOR_VERSION >= 1 || \
+    WAFFLE_ANDROID_MAJOR_VERSION >= 5
 #	include <gui/Surface.h>
 #	include <gui/SurfaceComposerClient.h>
 #elif WAFFLE_ANROID_MAJOR_VERSION >= 4 && \
@@ -107,8 +108,9 @@ droid_setup_surface(
 
     // The signature of SurfaceComposerClient::createSurface() differs across
     // Android versions.
-#if WAFFLE_ANDROID_MAJOR_VERSION >= 4 &&        \
-    WAFFLE_ANDROID_MINOR_VERSION >= 2
+#if WAFFLE_ANDROID_MAJOR_VERSION == 4 &&        \
+    WAFFLE_ANDROID_MINOR_VERSION >= 2 || \
+    WAFFLE_ANDROID_MAJOR_VERSION >= 5
     pANWContainer->surface_control =
             pSFContainer->composer_client->createSurface(
             String8("Waffle Surface"),
