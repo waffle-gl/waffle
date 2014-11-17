@@ -7,6 +7,8 @@ CMakeFiles
 
 /install_manifest.txt
 /CMakeCache.txt
+/CPackConfig.cmake
+/CPackSourceConfig.cmake
 
 # ----------------------------------------------
 # Ninja
@@ -30,7 +32,9 @@ Makefile
 *.a
 *.so
 
+/bin/gl_basic
 /bin/gl_basic_test
+/bin/simple-x11-egl
 /bin/wflinfo
 /doc/html/man/waffle.7.html
 /doc/html/man/waffle_attrib_list.3.html
@@ -58,6 +62,7 @@ Makefile
 /lib/
 /libcmocka.a
 /src/waffle/libwaffle_static.a
+/tests/functional/gl_basic_test
 /tests/waffle_test/libwaffle_test.dylib
 /tests/unittests/waffle-unittest
 /tests/wcore_attrib_list_unittest
