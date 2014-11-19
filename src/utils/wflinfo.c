@@ -209,6 +209,7 @@ enum {
     GL_VERSION                             = 0x1F02,
     GL_EXTENSIONS                          = 0x1F03,
     GL_NUM_EXTENSIONS                      = 0x821D,
+    GL_SHADING_LANGUAGE_VERSION            = 0x8B8C,
 };
 
 #define WINDOW_WIDTH  320
@@ -574,8 +575,25 @@ print_wflinfo(const struct options *opts)
     if (!glGetStringi && use_getstringi)
         error_get_gl_symbol("glGetStringi");
 
-    if (opts->verbose)
+    if (opts->verbose) {
+        // There are two exceptional cases where wflinfo may not get a
+        // version (or a valid version): one is in gles1 and the other
+        // is GL < 2.0. In these cases do not return WFLINFO_GL_ERROR,
+        // return None. This is preferable to returning WFLINFO_GL_ERROR
+        // because it creates a consistant interface for parsers
+        const char *language_str = "None";
+        if ((opts->context_api == WAFFLE_CONTEXT_OPENGL && version >= 20) ||
+                opts->context_api == WAFFLE_CONTEXT_OPENGL_ES2 ||
+                opts->context_api == WAFFLE_CONTEXT_OPENGL_ES3) {
+            language_str = (const char *) glGetString(GL_SHADING_LANGUAGE_VERSION);
+            if (glGetError() != GL_NO_ERROR || language_str == NULL) {
+                language_str = "WFLINFO_GL_ERROR";
+            }
+        }
+
+        printf("OpenGL shading language version string: %s\n", language_str);
         print_extensions(use_getstringi);
+    }
 
     return true;
 }
