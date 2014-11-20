@@ -1037,7 +1037,28 @@ main(int argc, char **argv)
     if (!glGetString)
         error_get_gl_symbol("glGetString");
 
-    glGetStringi = waffle_get_proc_address("glGetStringi");
+    // Retrieving GL functions is tricky. When glGetStringi is supported, here
+    // are some boggling variations as of 2014-11-19:
+    //   - Mali drivers on EGL 1.4 expose glGetStringi statically from
+    //     libGLESv2 but not dynamically from eglGetProcAddress. The EGL 1.4 spec
+    //     permits this behavior.
+    //   - EGL 1.5 requires that eglGetStringi be exposed dynamically through
+    //     eglGetProcAddress. Exposing statically with dlsym is optional.
+    //   - Windows requires that glGetStringi be exposed dynamically from
+    //     wglGetProcAddress. Exposing statically from GetProcAddress (Window's
+    //     dlsym equivalent) is optional.
+    //   - Mesa drivers expose glGetStringi statically from libGL and libGLESv2
+    //     and dynamically from eglGetProcAddress and glxGetProcAddress.
+    //   - Mac exposes glGetStringi only statically.
+    //
+    // Try waffle_dl_sym before waffle_get_proc_address because
+    // (1) egl/glXProcAddress can return invalid non-null pointers for
+    // unsupported functions and (2) dlsym returns non-null if and only if the
+    // library exposes the symbol.
+    glGetStringi = waffle_dl_sym(opts.dl, "glGetStringi");
+    if (!glGetStringi) {
+        glGetStringi = waffle_get_proc_address("glGetStringi");
+    }
 
     const struct wflinfo_config_attrs config_attrs = {
         .api = opts.context_api,
