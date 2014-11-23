@@ -23,6 +23,7 @@ include_directories(
     ${egl_INCLUDE_DIRS}
     ${gbm_INCLUDE_DIRS}
     ${gl_INCLUDE_DIRS}
+    ${GLEXT_INCLUDE_DIR}
     ${libudev_INCLUDE_DIRS}
     ${wayland-client_INCLUDE_DIRS}
     ${wayland-egl_INCLUDE_DIRS}

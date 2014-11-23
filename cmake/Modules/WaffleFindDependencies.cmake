@@ -80,3 +80,8 @@ if(waffle_on_linux)
     waffle_pkg_config(gbm gbm)
     waffle_pkg_config(libudev libudev)
 endif()
+
+
+if(waffle_on_windows)
+    find_path(GLEXT_INCLUDE_DIR NAMES GL/wglext.h DOC "Include for GL/wglext.h")
+endif()
