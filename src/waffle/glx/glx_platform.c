@@ -24,6 +24,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <stdlib.h>
+#include <dlfcn.h>
 
 #include "wcore_error.h"
 
@@ -36,6 +37,8 @@
 #include "glx_window.h"
 #include "glx_wrappers.h"
 
+static const char *libGL_filename = "libGL.so.1";
+
 static const struct wcore_platform_vtbl glx_platform_vtbl;
 
 static bool
@@ -43,12 +46,23 @@ glx_platform_destroy(struct wcore_platform *wc_self)
 {
     struct glx_platform *self = glx_platform(wc_self);
     bool ok = true;
+    int error = 0;
 
     if (!self)
         return true;
 
     if (self->linux)
         ok &= linux_platform_destroy(self->linux);
+
+    if (self->glxHandle) {
+        error = dlclose(self->glxHandle);
+        if (error) {
+            ok &= false;
+            wcore_errorf(WAFFLE_ERROR_UNKNOWN,
+                         "dlclose(\"%s\") failed: %s",
+                         libGL_filename, dlerror());
+        }
+    }
 
     ok &= wcore_platform_teardown(wc_self);
     free(self);
@@ -69,11 +83,42 @@ glx_platform_create(void)
     if (!ok)
         goto error;
 
+    self->glxHandle = dlopen(libGL_filename, RTLD_LAZY | RTLD_LOCAL);
+    if (!self->glxHandle) {
+        wcore_errorf(WAFFLE_ERROR_FATAL,
+                     "dlopen(\"%s\") failed: %s",
+                     libGL_filename, dlerror());
+        goto error;
+    }
+
+#define RETRIEVE_GLX_SYMBOL(function)                                  \
+    self->function = dlsym(self->glxHandle, #function);                \
+    if (!self->function) {                                             \
+        wcore_errorf(WAFFLE_ERROR_FATAL,                             \
+                     "dlsym(\"%s\", \"" #function "\") failed: %s",    \
+                     libGL_filename, dlerror());                      \
+        goto error;                                                    \
+    }
+
+    RETRIEVE_GLX_SYMBOL(glXCreateNewContext);
+    RETRIEVE_GLX_SYMBOL(glXDestroyContext);
+    RETRIEVE_GLX_SYMBOL(glXMakeCurrent);
+
+    RETRIEVE_GLX_SYMBOL(glXQueryExtensionsString);
+    RETRIEVE_GLX_SYMBOL(glXGetProcAddress);
+
+    RETRIEVE_GLX_SYMBOL(glXGetVisualFromFBConfig);
+    RETRIEVE_GLX_SYMBOL(glXGetFBConfigAttrib);
+    RETRIEVE_GLX_SYMBOL(glXChooseFBConfig);
+
+    RETRIEVE_GLX_SYMBOL(glXSwapBuffers);
+#undef RETRIEVE_GLX_SYMBOL
+
     self->linux = linux_platform_create();
     if (!self->linux)
         goto error;
 
-    self->glXCreateContextAttribsARB = (PFNGLXCREATECONTEXTATTRIBSARBPROC) glXGetProcAddress((const uint8_t*) "glXCreateContextAttribsARB");
+    self->glXCreateContextAttribsARB = (PFNGLXCREATECONTEXTATTRIBSARBPROC) self->glXGetProcAddress((const uint8_t*) "glXCreateContextAttribsARB");
 
     self->wcore.vtbl = &glx_platform_vtbl;
     return &self->wcore;
@@ -89,12 +134,13 @@ glx_platform_make_current(struct wcore_platform *wc_self,
                           struct wcore_window *wc_window,
                           struct wcore_context *wc_ctx)
 {
-    bool ok;
+    struct glx_platform *self = glx_platform(wc_self);
     Display *dpy = glx_display(wc_dpy)->x11.xlib;
     GLXDrawable win = wc_window ? glx_window(wc_window)->x11.xcb : 0;
     GLXContext ctx = wc_ctx ? glx_context(wc_ctx)->glx : NULL;
-    
-    ok = wrapped_glXMakeCurrent(dpy, win, ctx);
+    bool ok;
+
+    ok = wrapped_glXMakeCurrent(self, dpy, win, ctx);
     if (!ok) {
         wcore_errorf(WAFFLE_ERROR_UNKNOWN, "glXMakeCurrent failed");
     }
@@ -106,7 +152,8 @@ static void*
 glx_platform_get_proc_address(struct wcore_platform *wc_self,
                               const char *name)
 {
-    return glXGetProcAddress((const GLubyte*) name);
+    struct glx_platform *self = glx_platform(wc_self);
+    return self->glXGetProcAddress((const GLubyte*) name);
 }
 
 static bool

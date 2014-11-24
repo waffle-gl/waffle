@@ -23,10 +23,10 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#define __GBM__ 1
 #define _POSIX_C_SOURCE 200112 // glib feature macro for unsetenv()
 
 #include <stdlib.h>
+#include <dlfcn.h>
 
 #include "wcore_error.h"
 
@@ -42,6 +42,8 @@
 #include "wgbm_platform.h"
 #include "wgbm_window.h"
 
+static const char *libgbm_filename = "libgbm.so.1";
+
 static const struct wcore_platform_vtbl wgbm_platform_vtbl;
 
 static bool
@@ -49,6 +51,7 @@ wgbm_platform_destroy(struct wcore_platform *wc_self)
 {
     struct wgbm_platform *self = wgbm_platform(wegl_platform(wc_self));
     bool ok = true;
+    int error = 0;
 
     if (!self)
         return true;
@@ -57,6 +60,16 @@ wgbm_platform_destroy(struct wcore_platform *wc_self)
 
     if (self->linux)
         ok &= linux_platform_destroy(self->linux);
+
+    if (self->gbmHandle) {
+        error = dlclose(self->gbmHandle);
+        if (error) {
+            ok &= false;
+            wcore_errorf(WAFFLE_ERROR_UNKNOWN,
+                         "dlclose(\"%s\") failed: %s",
+                         libgbm_filename, dlerror());
+        }
+    }
 
     ok &= wegl_platform_teardown(&self->wegl);
     free(self);
@@ -76,6 +89,34 @@ wgbm_platform_create(void)
     ok = wegl_platform_init(&self->wegl);
     if (!ok)
         goto error;
+
+    self->gbmHandle = dlopen(libgbm_filename, RTLD_LAZY | RTLD_LOCAL);
+    if (!self->gbmHandle) {
+        wcore_errorf(WAFFLE_ERROR_FATAL,
+                     "dlopen(\"%s\") failed: %s",
+                     libgbm_filename, dlerror());
+        goto error;
+    }
+
+#define RETRIEVE_GBM_SYMBOL(function)                                  \
+    self->function = dlsym(self->gbmHandle, #function);                \
+    if (!self->function) {                                             \
+        wcore_errorf(WAFFLE_ERROR_FATAL,                             \
+                     "dlsym(\"%s\", \"" #function "\") failed: %s",    \
+                     libgbm_filename, dlerror());                      \
+        goto error;                                                    \
+    }
+
+    RETRIEVE_GBM_SYMBOL(gbm_create_device);
+    RETRIEVE_GBM_SYMBOL(gbm_device_get_fd);
+    RETRIEVE_GBM_SYMBOL(gbm_device_destroy);
+
+    RETRIEVE_GBM_SYMBOL(gbm_surface_create);
+    RETRIEVE_GBM_SYMBOL(gbm_surface_destroy);
+
+    RETRIEVE_GBM_SYMBOL(gbm_surface_lock_front_buffer);
+    RETRIEVE_GBM_SYMBOL(gbm_surface_release_buffer);
+#undef RETRIEVE_GBM_SYMBOL
 
     self->linux = linux_platform_create();
     if (!self->linux)

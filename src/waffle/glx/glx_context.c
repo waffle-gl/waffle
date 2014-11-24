@@ -45,6 +45,7 @@ glx_context_destroy(struct wcore_context *wc_self)
 {
     struct glx_context *self;
     struct glx_display *dpy;
+    struct glx_platform *platform;
     bool ok = true;
 
     if (!wc_self)
@@ -52,9 +53,10 @@ glx_context_destroy(struct wcore_context *wc_self)
 
     self = glx_context(wc_self);
     dpy = glx_display(wc_self->display);
+    platform = glx_platform(wc_self->display->platform);
 
     if (self->glx)
-        wrapped_glXDestroyContext(dpy->x11.xlib, self->glx);
+        wrapped_glXDestroyContext(platform, dpy->x11.xlib, self->glx);
 
     ok &= wcore_context_teardown(wc_self);
     free(self);
@@ -182,7 +184,8 @@ glx_context_create_native(struct glx_config *config,
         }
     }
     else {
-        ctx = wrapped_glXCreateNewContext(dpy->x11.xlib,
+        ctx = wrapped_glXCreateNewContext(platform,
+                                          dpy->x11.xlib,
                                           config->glx_fbconfig,
                                           GLX_RGBA_TYPE,
                                           real_share_ctx,

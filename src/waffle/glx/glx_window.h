@@ -27,8 +27,6 @@
 
 #include <stdbool.h>
 
-#include <xcb/xcb.h>
-
 #include "wcore_window.h"
 #include "wcore_util.h"
 

@@ -26,11 +26,7 @@
 #pragma once
 
 #include <GL/glx.h>
-#include <X11/Xlib.h>
-#include <xcb/xcb.h>
 #undef linux
-
-#include "waffle_glx.h"
 
 #include "wcore_platform.h"
 #include "wcore_util.h"
@@ -40,6 +36,27 @@ struct linux_platform;
 struct glx_platform {
     struct wcore_platform wcore;
     struct linux_platform *linux;
+
+    // glX function pointers
+    void *glxHandle;
+
+    GLXContext (*glXCreateNewContext)(Display *dpy, GLXFBConfig config,
+                                      int renderType, GLXContext shareList,
+                                      Bool direct);
+    void (*glXDestroyContext)(Display *dpy, GLXContext ctx);
+    Bool (*glXMakeCurrent)(Display *dpy, GLXDrawable drawable, GLXContext ctx);
+
+    const char *(*glXQueryExtensionsString)(Display *dpy, int screen);
+    void *(*glXGetProcAddress)(const GLubyte *procname);
+
+    XVisualInfo *(*glXGetVisualFromFBConfig)(Display *dpy, GLXFBConfig config);
+    int (*glXGetFBConfigAttrib)(Display *dpy, GLXFBConfig config,
+                                int attribute, int *value);
+    GLXFBConfig *(*glXChooseFBConfig)(Display *dpy, int screen,
+                                      const int *attribList, int *nitems);
+
+    void (*glXSwapBuffers)(Display *dpy, GLXDrawable drawable);
+
 
     PFNGLXCREATECONTEXTATTRIBSARBPROC glXCreateContextAttribsARB;
 };

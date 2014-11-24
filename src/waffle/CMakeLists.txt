@@ -38,11 +38,6 @@ list(APPEND waffle_libdeps
     )
 
 if(waffle_on_linux)
-    if(waffle_has_glx)
-        list(APPEND waffle_libdeps
-            ${gl_LDFLAGS}
-            )
-    endif()
     if(waffle_has_wayland)
         list(APPEND waffle_libdeps
             ${wayland-client_LDFLAGS}
@@ -56,7 +51,6 @@ if(waffle_on_linux)
     endif()
     if(waffle_has_gbm)
         list(APPEND waffle_libdeps
-            ${gbm_LDFLAGS}
             ${libudev_LDFLAGS}
             )
     endif()

@@ -12,8 +12,6 @@ provides=(waffle)
 conflicts=(waffle)
 depends=(
   'libgl' # for glx
-  'libegl'
-  'libgbm'
   'libx11'
   'libxcb'
   'wayland'
@@ -21,6 +19,9 @@ depends=(
 makedepends=(
   'cmake'
   'xcb-proto'
+
+  'libegl'
+  'libgbm'
 
   # for building the docs.
   'libxslt'
@@ -43,10 +44,6 @@ build() {
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DCMAKE_INSTALL_LIBDIR=/usr/lib \
     -DCMAKE_BUILD_TYPE=Release \
-    -Dwaffle_has_glx=1 \
-    -Dwaffle_has_x11_egl=1 \
-    -Dwaffle_has_wayland=1 \
-    -Dwaffle_has_gbm=1 \
     -Dwaffle_build_manpages=1 \
     -Dwaffle_build_htmldocs=1 \
     -Dwaffle_build_examples=0
@@ -54,6 +51,9 @@ build() {
 }
 
 package() {
+  optdepends=('libegl: for x11_egl, gbm or wayland support')
+  optdepends=('libgbm: for gbm support')
+
   cd "$srcdir/${_unpackdir}"
   make DESTDIR="$pkgdir/" install
   install -m755 -d "$pkgdir/usr/share/licenses/$pkgname"
