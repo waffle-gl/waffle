@@ -1,0 +1,39 @@
+Waffle 1.4.2 Release Notes
+==========================
+
+Bugfixes
+--------
+* wflinfo used glGetStringi incorrectly on Mali drivers.
+  [https://github.com/waffle-gl/waffle/commit/0543d0d12aa16e0daf361937619998c8995fd6fc]
+
+* gbm: Workaround Mesa linkage issue
+  [https://github.com/waffle-gl/waffle/commit/9a4f7c0e4b50f1053318cc76478da530b7b66299]
+
+* gbm: Remove Mesa warning evoked by waffle_window_swap_buffers().
+  [https://github.com/waffle-gl/waffle/commit/37db06de448e64f46db9a73a99444ccf72c35e20]
+
+
+Changes
+-------
+Chad Versace (5):
+      doc: Add waffle-1.4.2 release notes
+      waffle: Bump version to 1.4.2
+      wflinfo: Fix glGetStringi on Mali
+      pkg/archlinux: Add PKGBUILD for waffle-1.4.1
+      pkg/macports: Update to 1.4.1
+
+Frank Henigman (2):
+      gbm: work around mesa linkage issue
+      gbm: lock and release buffer in swap buffers
+
+ Android.mk                              |  2 +-
+ cmake/Modules/WaffleDefineVersion.cmake |  2 +-
+ doc/release-notes/waffle-1.4.2.txt      | 36 +++++++++++++++++++++
+ pkg/archlinux/waffle-1.4.1/PKGBUILD     | 55 +++++++++++++++++++++++++++++++++
+ pkg/macports/Portfile                   |  4 +--
+ src/utils/wflinfo.c                     | 23 +++++++++++++-
+ src/waffle/gbm/wgbm_display.c           |  2 ++
+ src/waffle/gbm/wgbm_platform.c          |  2 +-
+ src/waffle/gbm/wgbm_window.c            | 17 ++++++++++
+ src/waffle/gbm/wgbm_window.h            |  3 ++
+ 10 files changed, 140 insertions(+), 6 deletions(-)
