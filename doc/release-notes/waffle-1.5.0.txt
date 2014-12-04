@@ -1,0 +1,37 @@
+Waffle 1.5.0 Release Notes
+==========================
+
+Backwards compatibility notes
+-----------------------------
+Waffle 1.5.0 is backwards-compatible with Waffle 1.4.0, in ABI and API.
+
+
+New Features
+------------
+* Windows: Experimental support for WGL [Emil Velikov]
+
+  Emil graciously added support for the Windows WGL API this summer,
+  represented by the new enum 'WAFFLE_PLATFORM_WGL'. The plan is to convert
+  Piglit's Windows build to use this rather than GLUT.
+
+* wflinfo now prints the OpenGL shading language version. [Dylan Baker]
+
+* Linux: Some library dependencies converted from static to dynamic [Emil Velikov]
+
+  libwaffle on Linux no longer statically links to, and instead dynamically
+  opens, the libraries below. This change allows a single build of Waffle to be
+  deployed onto systems with and without these libraries.
+
+    libEGL
+    libGL
+    libgbm
+
+
+Contributors since Waffle 1.4.0
+-------------------------------
+    80	Emil Velikov <emil.l.velikov@gmail.com>
+    28	Chad Versace <chad.versace@linux.intel.com>
+     2	Frank Henigman <fjhenigman@chromium.org>
+     2	Jordan Justen <jordan.l.justen@intel.com>
+     1	Dylan Baker <dylanx.c.baker@intel.com>
+     1	José Fonseca <jfonseca@vmware.com>
