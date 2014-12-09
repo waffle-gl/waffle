@@ -203,7 +203,27 @@ include_directories(
     )
 
 add_library(${waffle_libname} SHARED ${waffle_sources})
-target_link_libraries(${waffle_libname} PRIVATE ${waffle_libdeps})
+
+# Debian's packaging system emits warnings if wflinfo directly links to any
+# library that it doesn't directly use. Silence the warnings by annotating
+# libwaffle's library dependencies as private, which prevents wflinfo from
+# linking to them.
+if(CMAKE_VERSION VERSION_LESS "2.8.12")
+    # On older CMake, we must rely on hacking the LINK_INTERFACE_LIBRARIES
+    # property.
+    if(NOT waffle_on_mac)
+        set_target_properties(${waffle_libname}
+            PROPERTIES
+            LINK_INTERFACE_LIBRARIES ""
+            )
+    endif()
+else()
+    # CMake 2.8.12 introduced the PRIVATE keyword to target_link_libraries().
+    # All libraries listed after PRIVATE get annotated as such.
+    list(INSERT waffle_libdeps 0 PRIVATE)
+endif()
+
+target_link_libraries(${waffle_libname} ${waffle_libdeps})
 
 set_target_properties(${waffle_libname}
     PROPERTIES

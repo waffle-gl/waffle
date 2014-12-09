@@ -1,0 +1,37 @@
+Waffle 1.4.3 Release Notes
+==========================
+
+Bugfixes
+--------
+* cmake: Fix building with CMake 2.8.11
+  [https://github.com/waffle-gl/waffle/commit/80f2c3eca4bcb7ebe356fb92a9c3132e0c80d9d9]
+
+* glx: Fix requirements for creation of ES2 context
+  [https://github.com/waffle-gl/waffle/commit/2e02e593246cd417d42f66489f573493eb553960]
+
+* Minor html manpage fix.
+
+
+Changes
+-------
+Chad Versace (6):
+      doc: Add release notes for Waffle 1.4.3
+      waffle: Bump version to 1.4.3
+      glx: Fix requirements for creation of ES2 context
+      cmake: Fix building with CMake 2.8.11
+      examples: Remove bitrotted XCode project files
+      doc/html/man: Remove duplicate link to manpage waffle_init(3)
+
+ Android.mk                                         |    2 +-
+ cmake/Modules/WaffleDefineVersion.cmake            |    2 +-
+ doc/html/man/index.html                            |    3 -
+ doc/release-notes/waffle-1.4.3.txt                 |   12 +
+ examples/gl_basic.xcodeproj/.gitignore             |    2 -
+ examples/gl_basic.xcodeproj/Info.plist             |   32 -
+ examples/gl_basic.xcodeproj/InfoPlist.strings      |    2 -
+ examples/gl_basic.xcodeproj/MainMenu.xib           | 4666 --------------------
+ examples/gl_basic.xcodeproj/project.pbxproj        |  274 --
+ .../xcshareddata/xcschemes/gl_basic.xcscheme       |   92 -
+ src/waffle/CMakeLists.txt                          |   22 +-
+ src/waffle/glx/glx_config.c                        |    4 +-
+ 12 files changed, 38 insertions(+), 5075 deletions(-)
