@@ -26,12 +26,25 @@ New Features
     libGL
     libgbm
 
+* Android: Experimental support for Android Lollipop. (Waffle builds on
+  Lollipop but may have critical bugs). [Yongqin Liu]
+
+
+Bugfixes since 1.4.0
+--------------------
+* cmake: Fix building with CMake 2.8.11
+* glx: Fix requirements for creation of ES2 context
+* wflinfo used glGetStringi incorrectly on Mali drivers.
+* gbm: Workaround Mesa linkage issue
+* gbm: Remove Mesa warning evoked by waffle_window_swap_buffers().
+
 
 Contributors since Waffle 1.4.0
 -------------------------------
     80	Emil Velikov <emil.l.velikov@gmail.com>
-    28	Chad Versace <chad.versace@linux.intel.com>
+    39	Chad Versace <chad.versace@linux.intel.com>
+     9	Jordan Justen <jordan.l.justen@intel.com>
      2	Frank Henigman <fjhenigman@chromium.org>
-     2	Jordan Justen <jordan.l.justen@intel.com>
+     2	Yongqin Liu <yongqin.liu@linaro.org>
      1	Dylan Baker <dylanx.c.baker@intel.com>
      1	José Fonseca <jfonseca@vmware.com>
