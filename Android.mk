@@ -27,8 +27,6 @@ $(waffle_top)/include/waffle/waffle_version.h: \
 LOCAL_MODULE_TAGS := eng
 LOCAL_MODULE := libwaffle-$(waffle_major_version)
 
-LOCAL_CC := $(TARGET_CC) -std=c99
-
 LOCAL_CFLAGS := \
     -DANDROID_STUB \
     -DWAFFLE_API_VERSION=$(waffle_api_version) \
@@ -37,6 +35,8 @@ LOCAL_CFLAGS := \
     -DWAFFLE_ANDROID_MAJOR_VERSION=$(waffle_android_major_version) \
     -DWAFFLE_ANDROID_MINOR_VERSION=$(waffle_android_minor_version) \
     -Wno-pointer-arith
+
+LOCAL_CFLAGS += -std=c99
 
 LOCAL_C_INCLUDES := \
     $(LOCAL_PATH)/include \
