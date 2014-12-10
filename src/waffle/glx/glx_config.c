@@ -121,8 +121,10 @@ glx_config_check_context_attrs(struct glx_display *dpy,
             assert(attrs->context_major_version == 2);
             assert(!attrs->context_forward_compatible);
 
-            if (!dpy->EXT_create_context_es2_profile) {
+            if (!dpy->EXT_create_context_es_profile
+                && !dpy->EXT_create_context_es2_profile) {
                 wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
+                             "GLX_EXT_create_context_es_profile or "
                              "GLX_EXT_create_context_es2_profile is required "
                              "to create an OpenGL ES2 context");
                 return false;
