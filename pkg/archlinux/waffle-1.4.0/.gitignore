@@ -1,7 +1,0 @@
-pkg/
-src/
-waffle/
-
-*.gz
-*.sig
-*.xz
