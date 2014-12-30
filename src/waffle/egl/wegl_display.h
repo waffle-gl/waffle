@@ -56,3 +56,7 @@ wegl_display_teardown(struct wegl_display *dpy);
 bool
 wegl_display_supports_context_api(struct wcore_display *wc_dpy,
                                   int32_t waffle_context_api);
+
+bool
+wegl_display_print_info(struct wcore_display *wc_self,
+                        bool verbose);

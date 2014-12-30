@@ -1134,7 +1134,7 @@ main(int argc, char **argv)
         error_waffle();
 
     if (opts.specific) {
-        //TODO print platform-specific information
+        waffle_display_print_info(dpy, opts.verbose);
     }
 
     ok = waffle_make_current(dpy, NULL, NULL);

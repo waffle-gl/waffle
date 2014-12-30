@@ -105,6 +105,9 @@ glx_platform_create(void)
     RETRIEVE_GLX_SYMBOL(glXMakeCurrent);
 
     RETRIEVE_GLX_SYMBOL(glXQueryExtensionsString);
+    RETRIEVE_GLX_SYMBOL(glXQueryServerString);
+    RETRIEVE_GLX_SYMBOL(glXQueryVersion);
+    RETRIEVE_GLX_SYMBOL(glXGetClientString);
     RETRIEVE_GLX_SYMBOL(glXGetProcAddress);
 
     RETRIEVE_GLX_SYMBOL(glXGetVisualFromFBConfig);
@@ -186,6 +189,7 @@ static const struct wcore_platform_vtbl glx_platform_vtbl = {
         .connect = glx_display_connect,
         .destroy = glx_display_destroy,
         .supports_context_api = glx_display_supports_context_api,
+        .print_info = glx_display_print_info,
         .get_native = glx_display_get_native,
     },
 

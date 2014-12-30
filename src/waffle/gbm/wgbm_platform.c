@@ -179,6 +179,7 @@ static const struct wcore_platform_vtbl wgbm_platform_vtbl = {
         .destroy = wgbm_display_destroy,
         .supports_context_api = wegl_display_supports_context_api,
         .get_native = wgbm_display_get_native,
+        .print_info = wegl_display_print_info,
     },
 
     .config = {

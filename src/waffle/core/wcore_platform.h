@@ -77,6 +77,11 @@ struct wcore_platform_vtbl {
                 struct wcore_display *display,
                 int32_t context_api);
 
+        bool
+        (*print_info)(
+                struct wcore_display *display,
+                bool verbose);
+
         /// May be null.
         union waffle_native_display*
         (*get_native)(struct wcore_display *display);

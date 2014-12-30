@@ -47,6 +47,9 @@ struct glx_platform {
     Bool (*glXMakeCurrent)(Display *dpy, GLXDrawable drawable, GLXContext ctx);
 
     const char *(*glXQueryExtensionsString)(Display *dpy, int screen);
+    const char *(*glXQueryServerString)(Display *dpy, int screen, int name);
+    const char *(*glXQueryVersion)(Display *dpy, int *major, int *minor);
+    const char *(*glXGetClientString)(Display *dpy, int name);
     void *(*glXGetProcAddress)(const GLubyte *procname);
 
     XVisualInfo *(*glXGetVisualFromFBConfig)(Display *dpy, GLXFBConfig config);

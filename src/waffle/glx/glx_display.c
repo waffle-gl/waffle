@@ -23,6 +23,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#include <stdio.h>
 #include <stdlib.h>
 
 #include "wcore_error.h"
@@ -139,6 +140,37 @@ glx_display_supports_context_api(struct wcore_display *wc_self,
                                  context_api);
             return false;
     }
+}
+
+bool
+glx_display_print_info(struct wcore_display *wc_self,
+                       bool verbose)
+{
+    struct glx_display *self = glx_display(wc_self);
+    struct glx_platform *plat = glx_platform(wc_self->platform);
+
+    int major, minor;
+    if (!plat->glXQueryVersion(self->x11.xlib, &major, &minor)) {
+        return false;
+    }
+
+    printf("server glx vendor string: %s\n",
+        plat->glXQueryServerString(self->x11.xlib, self->x11.screen, GLX_VENDOR));
+    printf("server glx version string: %s\n",
+        plat->glXQueryServerString(self->x11.xlib, self->x11.screen, GLX_VERSION));
+    printf("server glx extensions: %s\n",
+        plat->glXQueryServerString(self->x11.xlib, self->x11.screen, GLX_EXTENSIONS));
+    printf("client glx vendor string: %s\n",
+        plat->glXGetClientString(self->x11.xlib, GLX_VENDOR));
+    printf("client glx version string: %s\n",
+        plat->glXGetClientString(self->x11.xlib, GLX_VERSION));
+    printf("client glx extensions: %s\n",
+        plat->glXGetClientString(self->x11.xlib, GLX_EXTENSIONS));
+    printf("GLX version: %d.%d\n", major, minor);
+    printf("GLX extensions: %s\n",
+        plat->glXQueryExtensionsString(self->x11.xlib, self->x11.screen));
+
+    return true;
 }
 
 union waffle_native_display*

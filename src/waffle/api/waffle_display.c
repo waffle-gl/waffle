@@ -90,6 +90,26 @@ waffle_display_supports_context_api(
                                                             context_api);
 }
 
+WAFFLE_API bool
+waffle_display_print_info(struct waffle_display *self, bool verbose)
+{
+    struct wcore_display *wc_self = wcore_display(self);
+
+    const struct api_object *obj_list[] = {
+        wc_self ? &wc_self->api : NULL,
+    };
+
+    if (!api_check_entry(obj_list, 1))
+        return false;
+
+    if (api_platform->vtbl->display.print_info) {
+        return api_platform->vtbl->display.print_info(wc_self, verbose);
+    }
+
+    wcore_error(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM);
+    return false;
+}
+
 WAFFLE_API union waffle_native_display*
 waffle_display_get_native(struct waffle_display *self)
 {

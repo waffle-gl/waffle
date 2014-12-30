@@ -24,6 +24,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <assert.h>
+#include <stdio.h>
 
 #include "wcore_error.h"
 #include "wcore_platform.h"
@@ -63,7 +64,6 @@ wegl_display_init(struct wegl_display *dpy,
 {
     struct wegl_platform *plat = wegl_platform(wc_plat);
     bool ok;
-    EGLint major, minor;
 
     ok = wcore_display_init(&dpy->wcore, wc_plat);
     if (!ok)
@@ -75,7 +75,7 @@ wegl_display_init(struct wegl_display *dpy,
         goto fail;
     }
 
-    ok = plat->eglInitialize(dpy->egl, &major, &minor);
+    ok = plat->eglInitialize(dpy->egl, &plat->major, &plat->minor);
     if (!ok) {
         wegl_emit_error(plat, "eglInitialize");
         goto fail;
@@ -138,4 +138,27 @@ wegl_display_supports_context_api(struct wcore_display *wc_dpy,
     }
 
     return wc_plat->vtbl->dl_can_open(wc_plat, waffle_dl);
+}
+
+bool
+wegl_display_print_info(struct wcore_display *wc_dpy,
+                        bool verbose)
+{
+    struct wegl_display *dpy = wegl_display(wc_dpy);
+    struct wegl_platform *plat = wegl_platform(dpy->wcore.platform);
+
+    printf("EGL API version: %d.%d\n",
+        plat->major, plat->minor);
+    printf("EGL vendor string: %s\n",
+        plat->eglQueryString(dpy->egl, EGL_VENDOR));
+    printf("EGL version string: %s\n",
+        plat->eglQueryString(dpy->egl, EGL_VERSION));
+#ifdef EGL_VERSION_1_2
+    printf("EGL client APIs: %s\n",
+        plat->eglQueryString(dpy->egl, EGL_CLIENT_APIS));
+#endif
+    printf("EGL extensions string: %s\n",
+        plat->eglQueryString(dpy->egl, EGL_EXTENSIONS));
+
+    return true;
 }

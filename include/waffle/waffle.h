@@ -213,6 +213,9 @@ bool
 waffle_display_supports_context_api(struct waffle_display *self,
                                     int32_t context_api);
 
+bool
+waffle_display_print_info(struct waffle_display *self, bool verbose);
+
 union waffle_native_display*
 waffle_display_get_native(struct waffle_display *self);
 
