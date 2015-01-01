@@ -1129,7 +1129,7 @@ run_testsuite(void (*testsuite)(void))
             }
             else {
                 fprintf(stderr, "gl_basic_test: error: get thread exit status"
-                                " failed (%d)\n", GetLastError());
+                                " failed (%lu)\n", GetLastError());
                 abort();
             }
         }

@@ -68,6 +68,7 @@ static const char *usage_message =
     "             [--forward-compatible]\n"
     "             [--debug]\n"
     "             [--resize-window]\n"
+    "             [--window-size=WIDTHxHEIGHT]\n"
     "\n"
     "examples:\n"
     "    gl_basic --platform=glx --api=gl\n"
@@ -96,6 +97,7 @@ enum {
     OPT_DEBUG,
     OPT_FORWARD_COMPATIBLE,
     OPT_RESIZE_WINDOW,
+    OPT_WINDOW_SIZE,
 };
 
 static const struct option get_opts[] = {
@@ -106,6 +108,7 @@ static const struct option get_opts[] = {
     { .name = "debug",          .has_arg = no_argument,           .val = OPT_DEBUG },
     { .name = "forward-compatible", .has_arg = no_argument,       .val = OPT_FORWARD_COMPATIBLE },
     { .name = "resize-window",  .has_arg = no_argument,           .val = OPT_RESIZE_WINDOW },
+    { .name = "window-size",    .has_arg = required_argument,     .val = OPT_WINDOW_SIZE },
     { 0 },
 };
 
@@ -190,8 +193,8 @@ enum {
     GL_CONTEXT_FLAG_DEBUG_BIT              = 0x00000002,
 };
 
-#define WINDOW_WIDTH  320
-#define WINDOW_HEIGHT 240
+static int window_width = 320;
+static int window_height = 240;
 
 #ifndef _WIN32
 #define APIENTRY
@@ -348,6 +351,15 @@ parse_args(int argc, char *argv[], struct options *opts)
             case OPT_RESIZE_WINDOW:
                 opts->resize_window = true;
                 break;
+            case OPT_WINDOW_SIZE: {
+                int match_count;
+                match_count = sscanf(optarg, "%dx%d", &window_width, &window_height);
+                if (match_count != 2) {
+                    usage_error_printf("'%s' is not a valid window geometry",
+                                       optarg);
+                }
+                break;
+            }
             default:
                 abort();
                 loop_get_opt = false;
@@ -389,8 +401,8 @@ draw(struct waffle_window *window, bool resize)
 {
     bool ok;
     unsigned char *colors;
-    int width = WINDOW_WIDTH;
-    int height = WINDOW_HEIGHT;
+    int width = window_width;
+    int height = window_height;
 
 #if !defined(_WIN32)
     static const struct timespec sleep_time = {
@@ -616,7 +628,7 @@ main(int argc, char **argv)
     if (!ctx)
         error_waffle();
 
-    window = waffle_window_create(config, WINDOW_WIDTH, WINDOW_HEIGHT);
+    window = waffle_window_create(config, window_width, window_height);
     if (!window)
         error_waffle();
 

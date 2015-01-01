@@ -127,6 +127,16 @@ wgl_window_priv_create(struct wcore_platform *wc_plat,
     if (!self->hWnd)
         goto error;
 
+#ifndef NDEBUG
+    // Verify the client area size matches the required size.
+
+    GetClientRect(self->hWnd, &rect);
+    assert(rect.left == 0);
+    assert(rect.top == 0);
+    assert(rect.right - rect.left == width);
+    assert(rect.bottom - rect.top == height);
+#endif
+
     self->hDC = GetDC(self->hWnd);
     if (!self->hDC)
         goto error;
@@ -178,7 +188,7 @@ wgl_window_resize(struct wcore_window *wc_self,
                       rect.bottom - rect.top,
                       SWP_NOMOVE|SWP_NOZORDER|SWP_NOACTIVATE);
 
-#ifdef DEBUG
+#ifndef NDEBUG
     // Verify the client area size matches the required size.
 
     GetClientRect(self->hWnd, &rect);
