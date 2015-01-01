@@ -128,7 +128,8 @@ if(waffle_build_examples)
 endif()
 
 # ------------------------------------------------------------------------------
-# Install packaging files: waffle.pc, FindWaffle.cmake
+# Install packaging files: waffle.pc, FindWaffle.cmake,
+# WaffleConfigVersion.cmake, and WaffleConfig.cmake
 # ------------------------------------------------------------------------------
 
 configure_file(waffle.pc.in ${waffle_libname}.pc @ONLY)
@@ -144,6 +145,30 @@ install(
     DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/cmake/Modules"
     COMPONENT cmakefind
     )
+
+set(ConfigPackageLocation "${CMAKE_INSTALL_LIBDIR}/cmake/Waffle")
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+    "${CMAKE_BINARY_DIR}/cmake/Modules/WaffleConfigVersion.cmake"
+    VERSION "${waffle_version}"
+    COMPATIBILITY SameMajorVersion
+)
+
+configure_package_config_file(
+    cmake/Modules/WaffleConfig.cmake.in
+    cmake/Modules/WaffleConfig.cmake
+    INSTALL_DESTINATION "${ConfigPackageLocation}"
+    PATH_VARS CMAKE_INSTALL_LIBDIR CMAKE_INSTALL_INCLUDEDIR
+    NO_CHECK_REQUIRED_COMPONENTS_MACRO
+)
+
+install(
+    FILES
+        "${CMAKE_BINARY_DIR}/cmake/Modules/WaffleConfigVersion.cmake"
+        "${CMAKE_BINARY_DIR}/cmake/Modules/WaffleConfig.cmake"
+    DESTINATION "${ConfigPackageLocation}"
+    COMPONENT devel
+)
 
 # ------------------------------------------------------------------------------
 # Install core documentation

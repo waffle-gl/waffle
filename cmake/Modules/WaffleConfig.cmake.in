@@ -1,0 +1,12 @@
+# Config module for Waffle
+#
+# Provides the following variables
+# Waffle_INCLUDE_DIRS - Directories to include
+# Waffle_LIBRARIES    - Libraries to link
+# Waffle_LIBRARY_DIRS - Library directories to search for link libraries
+
+@PACKAGE_INIT@
+
+set_and_check(Waffle_INCLUDE_DIRS "@PACKAGE_CMAKE_INSTALL_INCLUDEDIR@/@waffle_libname@")
+set_and_check(Waffle_LIBRARY_DIRS "@PACKAGE_CMAKE_INSTALL_LIBDIR@")
+set(Waffle_LIBRARIES "@waffle_libname@")
