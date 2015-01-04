@@ -29,75 +29,87 @@
 #include <stdint.h>
 #include <stddef.h>
 
-size_t
-wcore_attrib_list32_length(const int32_t attrib_list[])
-{
-    const int32_t *i = attrib_list;
-
-    if (attrib_list == NULL)
-        return 0;
-
-    while (*i != 0)
-        i += 2;
-
-    return (i - attrib_list) / 2;
-}
-
-bool
-wcore_attrib_list32_get(
-        const int32_t *attrib_list,
-        int32_t key,
-        int32_t *value)
-{
-    if (attrib_list == NULL)
-        return false;
-
-    for (int i = 0; attrib_list[i] != 0; i += 2) {
-        if (attrib_list[i] != key)
-            continue;
-
-        *value = attrib_list[i + 1];
-        return true;
+#define WCORE_ATTRIB_LIST_COMMON_FUNCS(T,                               \
+                                       length_func,                     \
+                                       get_func,                        \
+                                       get_with_default_func,           \
+                                       update_func)                     \
+                                                                        \
+    size_t                                                              \
+    length_func(const T attrib_list[])                                  \
+    {                                                                   \
+        const T *i = attrib_list;                                       \
+                                                                        \
+        if (!attrib_list) {                                             \
+            return 0;                                                   \
+        }                                                               \
+                                                                        \
+        while (*i) {                                                    \
+            i += 2;                                                     \
+        }                                                               \
+                                                                        \
+        return (i - attrib_list) / 2;                                   \
+    }                                                                   \
+                                                                        \
+    bool                                                                \
+    get_func(const T *attrib_list,                                      \
+             T key,                                                     \
+             T *value)                                                  \
+    {                                                                   \
+        if (!attrib_list) {                                             \
+            return false;                                               \
+        }                                                               \
+                                                                        \
+        for (size_t i = 0; attrib_list[i] != 0; i += 2) {               \
+            if (attrib_list[i] == key) {                                \
+                *value = attrib_list[i + 1];                            \
+                return true;                                            \
+            }                                                           \
+        }                                                               \
+                                                                        \
+        return false;                                                   \
+    }                                                                   \
+                                                                        \
+    bool                                                                \
+    get_with_default_func(                                              \
+            const T attrib_list[],                                      \
+            T key,                                                      \
+            T *value,                                                   \
+            T default_value)                                            \
+    {                                                                   \
+        if (get_func(attrib_list, key, value)) {                        \
+            return true;                                                \
+        } else {                                                        \
+            *value = default_value;                                     \
+            return false;                                               \
+        }                                                               \
+    }                                                                   \
+                                                                        \
+    bool                                                                \
+    update_func(T *attrib_list,                                         \
+                T key,                                                  \
+                T value)                                                \
+    {                                                                   \
+        T *i = attrib_list;                                             \
+                                                                        \
+        if (attrib_list == NULL) {                                      \
+            return false;                                               \
+        }                                                               \
+                                                                        \
+        while (*i != 0 && *i != key) {                                  \
+            i += 2;                                                     \
+        }                                                               \
+                                                                        \
+        if (*i == key) {                                                \
+            i[1] = value;                                               \
+            return true;                                                \
+        } else {                                                        \
+            return false;                                               \
+        }                                                               \
     }
 
-    return false;
-}
-
-bool
-wcore_attrib_list32_get_with_default(
-        const int32_t attrib_list[],
-        int32_t key,
-        int32_t *value,
-        int32_t default_value)
-{
-    if (wcore_attrib_list32_get(attrib_list, key, value)) {
-        return true;
-    }
-    else {
-        *value = default_value;
-        return false;
-    }
-}
-
-bool
-wcore_attrib_list32_update(
-        int32_t *attrib_list,
-        int32_t key,
-        int32_t value)
-{
-    int32_t *i = attrib_list;
-
-    if (attrib_list == NULL)
-        return false;
-
-    while (*i != 0 && *i != key)
-        i += 2;
-
-    if (*i == key) {
-        i[1] = value;
-        return true;
-    }
-    else {
-        return false;
-    }
-}
+WCORE_ATTRIB_LIST_COMMON_FUNCS(int32_t,
+                               wcore_attrib_list32_length,
+                               wcore_attrib_list32_get,
+                               wcore_attrib_list32_get_with_default,
+                               wcore_attrib_list32_update)
