@@ -29,6 +29,9 @@
 #include <stdint.h>
 #include <stddef.h>
 
+#include "wcore_error.h"
+#include "wcore_util.h"
+
 #define WCORE_ATTRIB_LIST_COMMON_FUNCS(T,                               \
                                        length_func,                     \
                                        get_func,                        \
@@ -119,3 +122,48 @@ WCORE_ATTRIB_LIST_COMMON_FUNCS(intptr_t,
                                wcore_attrib_list_get,
                                wcore_attrib_list_get_with_default,
                                wcore_attrib_list_update)
+
+/// Given length of attribute list, calculate its size in bytes. Return false
+/// on arithemtic overflow.
+static bool
+wcore_attrib_list_get_size(size_t *size, size_t len) {
+    bool ok;
+
+    ok = wcore_mul_size(size, 2, len);
+    ok &= wcore_iadd_size(size, 1);
+    ok &= wcore_imul_size(size, sizeof(intptr_t));
+
+    return ok;
+}
+
+intptr_t*
+wcore_attrib_list_from_int32(const int32_t attrib_list32[])
+{
+    size_t len = 0;
+    size_t size = 0;
+    intptr_t *attrib_list = NULL;
+
+    len = wcore_attrib_list32_length(attrib_list32);
+
+    if (!wcore_attrib_list_get_size(&size, len)) {
+        // Arithmetic overflow occurred, therefore we can't allocate the
+        // memory.
+        wcore_error(WAFFLE_ERROR_BAD_ALLOC);
+        return NULL;
+    }
+
+    attrib_list = wcore_malloc(size);
+    if (!attrib_list) {
+        return NULL;
+    }
+
+    // Copy all key/value pairs.
+    for (size_t i = 0; i < 2 * len; ++i) {
+        attrib_list[i] = attrib_list32[i];
+    }
+
+    // Add terminal null.
+    attrib_list[2 * len] = 0;
+
+    return attrib_list;
+}

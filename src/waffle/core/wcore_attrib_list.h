@@ -30,6 +30,10 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+/// @brief Convert int32_t attribute list to an intptr_t attribute list.
+intptr_t*
+wcore_attrib_list_from_int32(const int32_t attrib_list[]);
+
 size_t
 wcore_attrib_list_length(const intptr_t attrib_list[]);
 
