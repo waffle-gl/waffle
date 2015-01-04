@@ -36,6 +36,20 @@
 extern "C" {
 #endif
 
+#if defined(__GNUC__) && ((__GNUC__ * 100 + __GNUC_MINOR__) >= 301)
+#    define WAFFLE_DEPRECATED __attribute__((deprecated))
+#elif defined(_MSC_VER)
+#    define WAFFLE_DEPRECATED __declspec(deprecated)
+#else
+#    define WAFFLE_DEPRECATED
+#endif
+
+#if WAFFLE_API_VERSION >= 0x0106
+#    define WAFFLE_DEPRECATED_1_06 WAFFLE_DEPRECATED
+#else
+#    define WAFFLE_DEPRECATED_1_06
+#endif
+
 struct waffle_display;
 struct waffle_config;
 struct waffle_context;
