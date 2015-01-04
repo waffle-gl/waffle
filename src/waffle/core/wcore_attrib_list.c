@@ -113,3 +113,9 @@ WCORE_ATTRIB_LIST_COMMON_FUNCS(int32_t,
                                wcore_attrib_list32_get,
                                wcore_attrib_list32_get_with_default,
                                wcore_attrib_list32_update)
+
+WCORE_ATTRIB_LIST_COMMON_FUNCS(intptr_t,
+                               wcore_attrib_list_length,
+                               wcore_attrib_list_get,
+                               wcore_attrib_list_get_with_default,
+                               wcore_attrib_list_update)

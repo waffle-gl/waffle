@@ -28,6 +28,29 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <stdlib.h>
+
+size_t
+wcore_attrib_list_length(const intptr_t attrib_list[]);
+
+bool
+wcore_attrib_list_get(
+        const intptr_t *attrib_list,
+        intptr_t key,
+        intptr_t *value);
+
+bool
+wcore_attrib_list_get_with_default(
+        const intptr_t attrib_list[],
+        intptr_t key,
+        intptr_t *value,
+        intptr_t default_value);
+
+bool
+wcore_attrib_list_update(
+        intptr_t *attrib_list,
+        intptr_t key,
+        intptr_t value);
 
 size_t
 wcore_attrib_list32_length(const int32_t attrib_list[]);
