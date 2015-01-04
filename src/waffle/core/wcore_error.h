@@ -63,6 +63,10 @@ wcore_errorf(enum waffle_error error, const char *format, ...);
 void
 wcore_error_errno(const char *format, ...);
 
+/// @brief Emit WAFFLE_ERROR_BAD_ATTRIBUTE with a default error message.
+void
+wcore_error_bad_attribute(intptr_t attr);
+
 /// @brief Set error to WAFFLE_INTERNAL_ERROR with source location.
 #define wcore_error_internal(format, ...) \
     _wcore_error_internal(__FILE__, __LINE__, format, __VA_ARGS__)

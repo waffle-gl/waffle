@@ -24,6 +24,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <errno.h>
+#include <inttypes.h>
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -167,6 +168,13 @@ wcore_error_errno(const char *format, ...)
    }
 
    strerror_r(saved_errno, cur, end - cur);
+}
+
+void
+wcore_error_bad_attribute(intptr_t attr)
+{
+    wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
+                 "bad attribute 0x%"PRIxPTR, attr);
 }
 
 void
