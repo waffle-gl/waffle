@@ -70,8 +70,8 @@ bool
 x11_window_init(struct x11_window *self,
                 struct x11_display *dpy,
                 xcb_visualid_t visual_id,
-                int width,
-                int height)
+                int32_t width,
+                int32_t height)
 {
     xcb_colormap_t colormap = 0;
     xcb_window_t window = 0;

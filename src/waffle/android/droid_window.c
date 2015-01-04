@@ -37,8 +37,8 @@
 struct wcore_window*
 droid_window_create(struct wcore_platform *wc_plat,
                     struct wcore_config *wc_config,
-                    int width,
-                    int height)
+                    int32_t width,
+                    int32_t height)
 {
     struct droid_window *self;
     struct wegl_config *config = wegl_config(wc_config);

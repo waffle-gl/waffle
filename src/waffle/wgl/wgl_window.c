@@ -68,8 +68,8 @@ wgl_window_priv_destroy(struct wcore_window *wc_self)
 struct wcore_window*
 wgl_window_create(struct wcore_platform *wc_plat,
                   struct wcore_config *wc_config,
-                  int width,
-                  int height)
+                  int32_t width,
+                  int32_t height)
 {
     struct wgl_config *config = wgl_config(wc_config);
     bool ok;
@@ -95,8 +95,8 @@ wgl_window_create(struct wcore_platform *wc_plat,
 struct wcore_window*
 wgl_window_priv_create(struct wcore_platform *wc_plat,
                        struct wcore_config *wc_config,
-                       int width,
-                       int height)
+                       int32_t width,
+                       int32_t height)
 {
     struct wgl_platform *plat = wgl_platform(wc_plat);
     struct wgl_window *self;

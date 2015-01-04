@@ -48,8 +48,8 @@ DEFINE_CONTAINER_CAST_FUNC(cgl_window,
 struct wcore_window*
 cgl_window_create(struct wcore_platform *wc_plat,
                   struct wcore_config *wc_config,
-                  int width,
-                  int height);
+                  int32_t width,
+                  int32_t height);
 
 bool
 cgl_window_destroy(struct wcore_window *wc_self);

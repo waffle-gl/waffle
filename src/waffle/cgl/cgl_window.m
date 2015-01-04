@@ -53,7 +53,7 @@ cgl_window_destroy(struct wcore_window *wc_self)
 
 
 static WaffleGLView*
-cgl_window_create_gl_view(int width, int height)
+cgl_window_create_gl_view(int32_t width, int32_t height)
 {
     WaffleGLView *view = [[WaffleGLView alloc]
                           initWithFrame:NSMakeRect(0, 0, width, height)];
@@ -94,8 +94,8 @@ cgl_window_create_ns_window(NSView *view)
 struct wcore_window*
 cgl_window_create(struct wcore_platform *wc_plat,
                   struct wcore_config *wc_config,
-                  int width,
-                  int height)
+                  int32_t width,
+                  int32_t height)
 {
     struct cgl_window *self;
     bool ok = true;

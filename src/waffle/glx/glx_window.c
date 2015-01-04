@@ -52,8 +52,8 @@ glx_window_destroy(struct wcore_window *wc_self)
 struct wcore_window*
 glx_window_create(struct wcore_platform *wc_plat,
                   struct wcore_config *wc_config,
-                  int width,
-                  int height)
+                  int32_t width,
+                  int32_t height)
 {
     struct glx_window *self;
     struct glx_display *dpy = glx_display(wc_config->display);
