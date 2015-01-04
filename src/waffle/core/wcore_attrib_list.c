@@ -29,7 +29,7 @@
 #include <stdint.h>
 #include <stddef.h>
 
-int32_t
+size_t
 wcore_attrib_list32_length(const int32_t attrib_list[])
 {
     const int32_t *i = attrib_list;
@@ -40,7 +40,7 @@ wcore_attrib_list32_length(const int32_t attrib_list[])
     while (*i != 0)
         i += 2;
 
-    return (int32_t) (i - attrib_list) / 2;
+    return (i - attrib_list) / 2;
 }
 
 bool

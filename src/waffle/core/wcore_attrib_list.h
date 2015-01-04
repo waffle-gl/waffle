@@ -26,9 +26,10 @@
 #pragma once
 
 #include <stdbool.h>
+#include <stddef.h>
 #include <stdint.h>
 
-int32_t
+size_t
 wcore_attrib_list32_length(const int32_t attrib_list[]);
 
 bool
