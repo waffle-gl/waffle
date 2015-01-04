@@ -204,3 +204,43 @@ wcore_attrib_list_copy(const intptr_t attrib_list[])
 
     return copy;
 }
+
+bool
+wcore_attrib_list_pop(
+        intptr_t attrib_list[],
+        intptr_t key,
+        intptr_t *value)
+{
+    // Address of key in attrib_list.
+    intptr_t *key_addr = NULL;
+
+    // Address of the terminal zero in attrib_list.
+    intptr_t *end_addr = NULL;
+
+    if (attrib_list == NULL) {
+        return false;
+    }
+
+    for (intptr_t *i = attrib_list; *i != 0; i += 2) {
+        if (i[0] == key) {
+            key_addr = i;
+            *value = i[1];
+            break;
+        }
+    }
+
+    if (!key_addr) {
+        return false;
+    }
+
+    end_addr = key_addr + 2; // Step to next pair.
+    while (*end_addr != 0) {
+        end_addr += 2; // Step to next pair.
+    }
+
+    // Move all key/value pairs located at or above (key_addr + 2), and
+    // move the terminal null too.
+    memmove(key_addr, key_addr + 2,
+            sizeof(intptr_t) * (end_addr - key_addr - 1));
+    return true;
+}

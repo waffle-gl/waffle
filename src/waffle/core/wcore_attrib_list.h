@@ -54,6 +54,12 @@ wcore_attrib_list_get_with_default(
         intptr_t default_value);
 
 bool
+wcore_attrib_list_pop(
+        intptr_t attrib_list[],
+        intptr_t key,
+        intptr_t *value);
+
+bool
 wcore_attrib_list_update(
         intptr_t *attrib_list,
         intptr_t key,
