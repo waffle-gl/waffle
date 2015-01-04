@@ -33,7 +33,7 @@ waffle_attrib_list_length(const int32_t attrib_list[])
 {
 
     wcore_error_reset();
-    return wcore_attrib_list_length(attrib_list);
+    return wcore_attrib_list32_length(attrib_list);
 }
 
 WAFFLE_API bool
@@ -43,7 +43,7 @@ waffle_attrib_list_get(
         int32_t *value)
 {
     wcore_error_reset();
-    return wcore_attrib_list_get(attrib_list, key, value);
+    return wcore_attrib_list32_get(attrib_list, key, value);
 }
 
 WAFFLE_API bool
@@ -54,7 +54,7 @@ waffle_attrib_list_get_with_default(
         int32_t default_value)
 {
     wcore_error_reset();
-    return wcore_attrib_list_get_with_default(attrib_list, key, value,
+    return wcore_attrib_list32_get_with_default(attrib_list, key, value,
                                                default_value);
 }
 
@@ -65,5 +65,5 @@ waffle_attrib_list_update(
         int32_t value)
 {
     wcore_error_reset();
-    return wcore_attrib_list_update(attrib_list, key, value);
+    return wcore_attrib_list32_update(attrib_list, key, value);
 }

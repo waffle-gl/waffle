@@ -30,7 +30,7 @@
 #include <stddef.h>
 
 int32_t
-wcore_attrib_list_length(const int32_t attrib_list[])
+wcore_attrib_list32_length(const int32_t attrib_list[])
 {
     const int32_t *i = attrib_list;
 
@@ -44,7 +44,7 @@ wcore_attrib_list_length(const int32_t attrib_list[])
 }
 
 bool
-wcore_attrib_list_get(
+wcore_attrib_list32_get(
         const int32_t *attrib_list,
         int32_t key,
         int32_t *value)
@@ -64,13 +64,13 @@ wcore_attrib_list_get(
 }
 
 bool
-wcore_attrib_list_get_with_default(
+wcore_attrib_list32_get_with_default(
         const int32_t attrib_list[],
         int32_t key,
         int32_t *value,
         int32_t default_value)
 {
-    if (wcore_attrib_list_get(attrib_list, key, value)) {
+    if (wcore_attrib_list32_get(attrib_list, key, value)) {
         return true;
     }
     else {
@@ -80,7 +80,7 @@ wcore_attrib_list_get_with_default(
 }
 
 bool
-wcore_attrib_list_update(
+wcore_attrib_list32_update(
         int32_t *attrib_list,
         int32_t key,
         int32_t value)

@@ -84,7 +84,7 @@ parse_bool(const int32_t attrib_list[],
 {
 	int32_t raw_value;
 
-	wcore_attrib_list_get_with_default(attrib_list, attrib_name,
+	wcore_attrib_list32_get_with_default(attrib_list, attrib_name,
                                        &raw_value, default_value);
 
 	if (raw_value == WAFFLE_DONT_CARE) {
@@ -108,7 +108,7 @@ parse_context_api(struct wcore_config_attrs *attrs,
 {
     bool found;
 
-    found = wcore_attrib_list_get(attrib_list,
+    found = wcore_attrib_list32_get(attrib_list,
                                   WAFFLE_CONTEXT_API, &attrs->context_api);
     if (!found) {
         wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
@@ -163,11 +163,11 @@ static bool
 parse_context_version(struct wcore_config_attrs *attrs,
                       const int32_t attrib_list[])
 {
-    wcore_attrib_list_get_with_default(attrib_list,
+    wcore_attrib_list32_get_with_default(attrib_list,
                                        WAFFLE_CONTEXT_MAJOR_VERSION,
                                        &attrs->context_major_version,
                                        attrs->context_major_version);
-    wcore_attrib_list_get_with_default(attrib_list,
+    wcore_attrib_list32_get_with_default(attrib_list,
                                        WAFFLE_CONTEXT_MINOR_VERSION,
                                        &attrs->context_minor_version,
                                        attrs->context_minor_version);
@@ -260,7 +260,7 @@ static bool
 parse_context_profile(struct wcore_config_attrs *attrs,
                       const int32_t attrib_list[])
 {
-    wcore_attrib_list_get_with_default(attrib_list,
+    wcore_attrib_list32_get_with_default(attrib_list,
                                        WAFFLE_CONTEXT_PROFILE,
                                        &attrs->context_profile,
                                        attrs->context_profile);

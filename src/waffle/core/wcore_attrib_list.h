@@ -29,23 +29,23 @@
 #include <stdint.h>
 
 int32_t
-wcore_attrib_list_length(const int32_t attrib_list[]);
+wcore_attrib_list32_length(const int32_t attrib_list[]);
 
 bool
-wcore_attrib_list_get(
+wcore_attrib_list32_get(
         const int32_t *attrib_list,
         int32_t key,
         int32_t *value);
 
 bool
-wcore_attrib_list_get_with_default(
+wcore_attrib_list32_get_with_default(
         const int32_t attrib_list[],
         int32_t key,
         int32_t *value,
         int32_t default_value);
 
 bool
-wcore_attrib_list_update(
+wcore_attrib_list32_update(
         int32_t *attrib_list,
         int32_t key,
         int32_t value);
