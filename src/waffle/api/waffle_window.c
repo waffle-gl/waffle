@@ -35,7 +35,7 @@
 WAFFLE_API struct waffle_window*
 waffle_window_create(
         struct waffle_config *config,
-        int width, int height)
+        int32_t width, int32_t height)
 {
     struct wcore_window *wc_self;
     struct wcore_config *wc_config = wcore_config(config);
