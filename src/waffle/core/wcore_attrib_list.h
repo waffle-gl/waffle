@@ -37,6 +37,9 @@ wcore_attrib_list_from_int32(const int32_t attrib_list[]);
 size_t
 wcore_attrib_list_length(const intptr_t attrib_list[]);
 
+intptr_t*
+wcore_attrib_list_copy(const intptr_t attrib_list[]);
+
 bool
 wcore_attrib_list_get(
         const intptr_t *attrib_list,

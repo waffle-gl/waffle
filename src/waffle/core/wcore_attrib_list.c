@@ -28,6 +28,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stddef.h>
+#include <string.h>
 
 #include "wcore_error.h"
 #include "wcore_util.h"
@@ -166,4 +167,40 @@ wcore_attrib_list_from_int32(const int32_t attrib_list32[])
     attrib_list[2 * len] = 0;
 
     return attrib_list;
+}
+
+intptr_t*
+wcore_attrib_list_copy(const intptr_t attrib_list[])
+{
+    intptr_t *copy = NULL;
+
+    if (attrib_list) {
+        size_t len;
+        size_t size = 0;
+
+        len = wcore_attrib_list_length(attrib_list);
+
+        if (!wcore_attrib_list_get_size(&size, len)) {
+            // Arithmetic overflow occurred, therefore we can't allocate the
+            // memory.
+            wcore_error(WAFFLE_ERROR_BAD_ALLOC);
+            return NULL;
+        }
+
+        copy = wcore_malloc(size);
+        if (!copy) {
+            return NULL;
+        }
+
+        memcpy(copy, attrib_list, size);
+    } else {
+        copy = wcore_malloc(sizeof(intptr_t));
+        if (!copy) {
+            return NULL;
+        }
+
+        copy[0] = 0;
+    }
+
+    return copy;
 }
