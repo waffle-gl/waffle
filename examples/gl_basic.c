@@ -34,7 +34,7 @@
 ///        each buffer swap.
 
 #define _POSIX_C_SOURCE 199309L // glibc feature macro for nanosleep.
-#define WAFFLE_API_VERSION 0x0103
+#define WAFFLE_API_VERSION 0x0106
 #define WAFFLE_API_EXPERIMENTAL
 
 #include <getopt.h>
@@ -530,6 +530,7 @@ main(int argc, char **argv)
 
     int32_t init_attrib_list[3];
     int32_t config_attrib_list[64];
+    intptr_t window_attrib_list[5];
 
     struct waffle_display *dpy;
     struct waffle_config *config;
@@ -628,7 +629,15 @@ main(int argc, char **argv)
     if (!ctx)
         error_waffle();
 
-    window = waffle_window_create(config, window_width, window_height);
+
+    i = 0;
+    window_attrib_list[i++] = WAFFLE_WINDOW_WIDTH;
+    window_attrib_list[i++] = window_width;
+    window_attrib_list[i++] = WAFFLE_WINDOW_HEIGHT;
+    window_attrib_list[i++] = window_height;
+    window_attrib_list[i++] = 0;
+
+    window = waffle_window_create2(config, window_attrib_list);
     if (!window)
         error_waffle();
 
