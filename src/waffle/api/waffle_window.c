@@ -27,35 +27,94 @@
 
 #include "api_priv.h"
 
+#include "wcore_attrib_list.h"
 #include "wcore_config.h"
 #include "wcore_error.h"
 #include "wcore_platform.h"
 #include "wcore_window.h"
 
 WAFFLE_API struct waffle_window*
-waffle_window_create(
+waffle_window_create2(
         struct waffle_config *config,
-        int32_t width, int32_t height)
+        const intptr_t attrib_list[])
 {
-    struct wcore_window *wc_self;
+    struct wcore_window *wc_self = NULL;
     struct wcore_config *wc_config = wcore_config(config);
+    intptr_t *attrib_list_filtered = NULL;
+    intptr_t width = 0, height = 0;
 
     const struct api_object *obj_list[] = {
         wc_config ? &wc_config->api : NULL,
     };
 
-    if (!api_check_entry(obj_list, 1))
-        return NULL;
+    if (!api_check_entry(obj_list, 1)) {
+        goto done;
+    }
+
+    attrib_list_filtered = wcore_attrib_list_copy(attrib_list);
+
+    if (!wcore_attrib_list_pop(attrib_list_filtered,
+                               WAFFLE_WINDOW_WIDTH, &width)) {
+        wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
+                     "required attribute WAFFLE_WINDOW_WIDTH is missing");
+        goto done;
+    }
+
+    if (!wcore_attrib_list_pop(attrib_list_filtered,
+                               WAFFLE_WINDOW_HEIGHT, &height)) {
+        wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
+                     "required attribute WAFFLE_WINDOW_HEIGHT is missing");
+        goto done;
+    }
+
+    if (width <= 0) {
+        wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
+                     "WAFFLE_WINDOW_WIDTH is not positive");
+        goto done;
+    } else if (width > INT32_MAX) {
+        wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
+                     "WAFFLE_WINDOW_WIDTH is greater than INT32_MAX");
+        goto done;
+    }
+
+    if (height <= 0) {
+        wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
+                     "WAFFLE_WINDOW_HEIGHT is not positive");
+        goto done;
+    } else if (height > INT32_MAX) {
+        wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
+                     "WAFFLE_WINDOW_HEIGHT is greater than INT32_MAX");
+        goto done;
+    }
 
     wc_self = api_platform->vtbl->window.create(api_platform,
                                                 wc_config,
-                                                width,
-                                                height,
-                                                NULL /*attrib_list*/);
-    if (!wc_self)
+                                                (int32_t) width,
+                                                (int32_t) height,
+                                                attrib_list_filtered);
+
+done:
+    free(attrib_list_filtered);
+
+    if (!wc_self) {
         return NULL;
+    }
 
     return waffle_window(wc_self);
+}
+
+WAFFLE_API struct waffle_window*
+waffle_window_create(
+        struct waffle_config *config,
+        int32_t width, int32_t height)
+{
+    const intptr_t attrib_list[] = {
+        WAFFLE_WINDOW_WIDTH, width,
+        WAFFLE_WINDOW_HEIGHT, height,
+        0,
+    };
+
+    return waffle_window_create2(config, attrib_list);
 }
 
 WAFFLE_API bool

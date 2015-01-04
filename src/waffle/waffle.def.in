@@ -20,6 +20,7 @@ EXPORTS
     waffle_context_destroy
     waffle_context_get_native
     waffle_window_create
+    waffle_window_create2
     waffle_window_destroy
     waffle_window_show
     waffle_window_swap_buffers

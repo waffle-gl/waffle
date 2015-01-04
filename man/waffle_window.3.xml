@@ -56,6 +56,12 @@ struct waffle_window;
       </funcprototype>
 
       <funcprototype>
+        <funcdef>struct waffle_window* <function>waffle_window_create2</function></funcdef>
+        <paramdef>struct waffle_window *<parameter>config</parameter></paramdef>
+        <paramdef>const intptr_t <parameter>attrib_list</parameter>[]</paramdef>
+      </funcprototype>
+
+      <funcprototype>
         <funcdef>bool <function>waffle_window_destroy</function></funcdef>
         <paramdef>struct waffle_window *<parameter>self</parameter></paramdef>
       </funcprototype>
@@ -99,6 +105,27 @@ struct waffle_window;
           <para>
             If the platform allows, the window is not displayed onto the screen after creation. To display the window,
             call <function>waffle_window_show()</function>.
+          </para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><function>waffle_window_create2()</function></term>
+        <listitem>
+          <para>
+            Feature test macro: <code>WAFFLE_API_VERSION >= 0x0106</code>.
+            (See <citerefentry><refentrytitle>waffle_feature_test_macros</refentrytitle><manvolnum>7</manvolnum></citerefentry>).
+          </para>
+          <para>
+            Create a window with the properties specified by
+            <parameter>config</parameter> and
+            <parameter>attrib_list</parameter>.
+
+            <parameter>attrib_list</parameter> must contain the attributes
+            <constant>WAFFLE_WINDOW_WIDTH</constant> and
+            <constant>WAFFLE_WINDOW_HEIGHT</constant>,
+            whose values must be positive
+            and no greater than <constant>INT32_MAX</constant>.
           </para>
         </listitem>
       </varlistentry>

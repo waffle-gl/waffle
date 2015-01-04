@@ -165,6 +165,13 @@ enum waffle_enum {
     WAFFLE_DL_OPENGL_ES1                                        = 0x0302,
     WAFFLE_DL_OPENGL_ES2                                        = 0x0303,
     WAFFLE_DL_OPENGL_ES3                                        = 0x0304,
+
+    // ------------------------------------------------------------------
+    // For waffle_window
+    // ------------------------------------------------------------------
+
+    WAFFLE_WINDOW_WIDTH                                         = 0x0310,
+    WAFFLE_WINDOW_HEIGHT                                        = 0x0311,
 };
 
 const char*
@@ -235,6 +242,13 @@ waffle_context_get_native(struct waffle_context *self);
 // ---------------------------------------------------------------------------
 // waffle_window
 // ---------------------------------------------------------------------------
+
+#if WAFFLE_API_VERSION >= 0x0106
+struct waffle_window*
+waffle_window_create2(
+        struct waffle_config *config,
+        const intptr_t attrib_list[]);
+#endif
 
 struct waffle_window*
 waffle_window_create(
