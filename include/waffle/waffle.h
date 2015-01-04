@@ -325,23 +325,23 @@ union waffle_native_window {
 // waffle_attrib_list
 // ---------------------------------------------------------------------------
 
-int32_t
+WAFFLE_DEPRECATED_1_06 int32_t
 waffle_attrib_list_length(const int32_t attrib_list[]);
 
-bool
+WAFFLE_DEPRECATED_1_06 bool
 waffle_attrib_list_get(
         const int32_t attrib_list[],
         int32_t key,
         int32_t *value);
 
-bool
+WAFFLE_DEPRECATED_1_06 bool
 waffle_attrib_list_get_with_default(
         const int32_t attrib_list[],
         int32_t key,
         int32_t *value,
         int32_t default_value);
 
-bool
+WAFFLE_DEPRECATED_1_06 bool
 waffle_attrib_list_update(
         int32_t *attrib_list,
         int32_t key,

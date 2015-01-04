@@ -44,19 +44,19 @@
       <funcsynopsisinfo>#include &lt;waffle.h&gt;</funcsynopsisinfo>
 
       <funcprototype>
-        <funcdef>bool <function>waffle_attrib_list_length</function></funcdef>
+        <funcdef>DEPRECATED bool <function>waffle_attrib_list_length</function></funcdef>
         <paramdef>const int32_t <parameter>attrib_list</parameter>[]</paramdef>
       </funcprototype>
 
       <funcprototype>
-        <funcdef>bool <function>waffle_attrib_list_get</function></funcdef>
+        <funcdef>DEPRECATED bool <function>waffle_attrib_list_get</function></funcdef>
         <paramdef>const int32_t <parameter>attrib_list</parameter>[]</paramdef>
         <paramdef>int32_t <parameter>key</parameter></paramdef>
         <paramdef>int32_t *<parameter>value</parameter></paramdef>
       </funcprototype>
 
       <funcprototype>
-        <funcdef>bool <function>waffle_attrib_list_get_with_default</function></funcdef>
+        <funcdef>DEPRECATED bool <function>waffle_attrib_list_get_with_default</function></funcdef>
         <paramdef>const int32_t <parameter>attrib_list</parameter>[]</paramdef>
         <paramdef>int32_t <parameter>key</parameter></paramdef>
         <paramdef>int32_t *<parameter>value</parameter></paramdef>
@@ -64,13 +64,19 @@
       </funcprototype>
 
       <funcprototype>
-        <funcdef>bool <function>waffle_attrib_list_update</function></funcdef>
+        <funcdef>DEPRECATED bool <function>waffle_attrib_list_update</function></funcdef>
         <paramdef>int32_t <parameter>attrib_list</parameter>[]</paramdef>
         <paramdef>int32_t <parameter>key</parameter></paramdef>
         <paramdef>int32_t *<parameter>value</parameter></paramdef>
       </funcprototype>
 
     </funcsynopsis>
+
+    <refsect2>
+      <title>Deprecation</title>
+      <para>All functions above are deprecated in Waffle 1.6 and later.</para>
+    </refsect2>
+
   </refsynopsisdiv>
 
   <refsect1>
