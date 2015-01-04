@@ -28,6 +28,7 @@
 
 #include <xcb/xcb.h>
 
+#include "wcore_attrib_list.h"
 #include "wcore_error.h"
 
 #include "wegl_config.h"
@@ -56,7 +57,8 @@ struct wcore_window*
 xegl_window_create(struct wcore_platform *wc_plat,
                    struct wcore_config *wc_config,
                    int32_t width,
-                   int32_t height)
+                   int32_t height,
+                   const intptr_t attrib_list[])
 {
     struct xegl_window *self;
     struct xegl_display *dpy = xegl_display(wc_config->display);
@@ -64,6 +66,11 @@ xegl_window_create(struct wcore_platform *wc_plat,
     struct wegl_platform *plat = wegl_platform(wc_plat);
     xcb_visualid_t visual;
     bool ok = true;
+
+    if (wcore_attrib_list_length(attrib_list) > 0) {
+        wcore_error_bad_attribute(attrib_list[0]);
+        return NULL;
+    }
 
     self = wcore_calloc(sizeof(*self));
     if (self == NULL)

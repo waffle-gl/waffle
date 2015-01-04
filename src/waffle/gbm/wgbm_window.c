@@ -30,6 +30,7 @@
 
 #include "waffle_gbm.h"
 
+#include "wcore_attrib_list.h"
 #include "wcore_error.h"
 
 #include "wegl_config.h"
@@ -60,13 +61,19 @@ struct wcore_window*
 wgbm_window_create(struct wcore_platform *wc_plat,
                    struct wcore_config *wc_config,
                    int32_t width,
-                   int32_t height)
+                   int32_t height,
+                   const intptr_t attrib_list[])
 {
     struct wgbm_display *dpy = wgbm_display(wc_config->display);
     struct wgbm_platform *plat = wgbm_platform(wegl_platform(wc_plat));
     struct wgbm_window *self;
     uint32_t gbm_format;
     bool ok = true;
+
+    if (wcore_attrib_list_length(attrib_list) > 0) {
+        wcore_error_bad_attribute(attrib_list[0]);
+        return NULL;
+    }
 
     self = wcore_calloc(sizeof(*self));
     if (self == NULL)

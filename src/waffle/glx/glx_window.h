@@ -46,8 +46,9 @@ DEFINE_CONTAINER_CAST_FUNC(glx_window,
 struct wcore_window*
 glx_window_create(struct wcore_platform *wc_plat,
                   struct wcore_config *wc_config,
-                  int width,
-                  int height);
+                  int32_t width,
+                  int32_t height,
+                  const intptr_t attrib_list[]);
 
 bool
 glx_window_destroy(struct wcore_window *wc_self);

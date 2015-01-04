@@ -25,6 +25,7 @@
 
 #include <windows.h>
 
+#include "wcore_attrib_list.h"
 #include "wcore_error.h"
 
 #include "wgl_config.h"
@@ -69,12 +70,18 @@ struct wcore_window*
 wgl_window_create(struct wcore_platform *wc_plat,
                   struct wcore_config *wc_config,
                   int32_t width,
-                  int32_t height)
+                  int32_t height,
+                  const intptr_t attrib_list[])
 {
     struct wgl_config *config = wgl_config(wc_config);
     bool ok;
 
     assert(config->window);
+
+    if (wcore_attrib_list_length(attrib_list) > 0) {
+        wcore_error_bad_attribute(attrib_list[0]);
+        return NULL;
+    }
 
     // Currently we do not allow multiple windows per config.
     // Neither piglit nor the waffle examples do that yet, so just

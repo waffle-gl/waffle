@@ -26,6 +26,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "wcore_attrib_list.h"
 #include "wcore_error.h"
 
 #include "wegl_config.h"
@@ -38,12 +39,17 @@ struct wcore_window*
 droid_window_create(struct wcore_platform *wc_plat,
                     struct wcore_config *wc_config,
                     int32_t width,
-                    int32_t height)
+                    int32_t height,
+                    const intptr_t attrib_list[])
 {
     struct droid_window *self;
     struct wegl_config *config = wegl_config(wc_config);
     struct droid_display *dpy = droid_display(wc_config->display);
     bool ok = true;
+
+    if (wcore_attrib_list_length(attrib_list) > 0) {
+        wcore_error_bad_attribute(attrib_list[0]);
+    }
 
     self = wcore_calloc(sizeof(*self));
     if (self == NULL)

@@ -50,7 +50,8 @@ waffle_window_create(
     wc_self = api_platform->vtbl->window.create(api_platform,
                                                 wc_config,
                                                 width,
-                                                height);
+                                                height,
+                                                NULL /*attrib_list*/);
     if (!wc_self)
         return NULL;
 

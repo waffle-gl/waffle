@@ -26,6 +26,7 @@
 #import <Cocoa/Cocoa.h>
 #import <OpenGL/OpenGL.h>
 
+#include "wcore_attrib_list.h"
 #include "wcore_error.h"
 
 #include "cgl_config.h"
@@ -95,10 +96,16 @@ struct wcore_window*
 cgl_window_create(struct wcore_platform *wc_plat,
                   struct wcore_config *wc_config,
                   int32_t width,
-                  int32_t height)
+                  int32_t height,
+                  const intptr_t attrib_list[])
 {
     struct cgl_window *self;
     bool ok = true;
+
+    if (wcore_attrib_list_length(attrib_list) > 0) {
+        wcore_error_bad_attribute(attrib_list[0]);
+        return NULL;
+    }
 
     self = wcore_calloc(sizeof(*self));
     if (!self)

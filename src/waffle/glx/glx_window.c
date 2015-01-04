@@ -27,6 +27,7 @@
 #include <string.h>
 #include <xcb/xcb.h>
 
+#include "wcore_attrib_list.h"
 #include "wcore_error.h"
 
 #include "glx_config.h"
@@ -53,12 +54,18 @@ struct wcore_window*
 glx_window_create(struct wcore_platform *wc_plat,
                   struct wcore_config *wc_config,
                   int32_t width,
-                  int32_t height)
+                  int32_t height,
+                  const intptr_t attrib_list[])
 {
     struct glx_window *self;
     struct glx_display *dpy = glx_display(wc_config->display);
     struct glx_config *config = glx_config(wc_config);
     bool ok = true;
+
+    if (wcore_attrib_list_length(attrib_list) > 0) {
+        wcore_error_bad_attribute(attrib_list[0]);
+        return NULL;
+    }
 
     self = wcore_calloc(sizeof(*self));
     if (self == NULL)
