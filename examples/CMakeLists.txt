@@ -11,7 +11,7 @@ install(
 # Target: simple-x11-egl (executable)
 # ----------------------------------------------------------------------------
 
-if(waffle_on_linux)
+if(waffle_on_linux AND waffle_has_x11_egl)
     add_executable(simple-x11-egl simple-x11-egl.c)
     target_link_libraries(simple-x11-egl ${waffle_libname})
 endif()
