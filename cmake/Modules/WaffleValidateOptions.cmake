@@ -46,11 +46,38 @@ endif()
 
 if(waffle_on_linux)
     if(NOT waffle_has_glx AND NOT waffle_has_wayland AND
-       NOT waffle_has_x11_egl AND NOT waffle_has_gbm)
+       NOT waffle_has_x11_egl AND NOT waffle_has_gbm AND
+       NOT waffle_has_nacl)
         message(FATAL_ERROR
                 "Must enable at least one of: "
                 "waffle_has_glx, waffle_has_wayland, "
-                "waffle_has_x11_egl, waffle_has_gbm.")
+                "waffle_has_x11_egl, waffle_has_gbm, "
+                "waffle_has_nacl.")
+    endif()
+    if(waffle_has_nacl)
+        if(NOT EXISTS ${nacl_sdk_path})
+            message(FATAL_ERROR "NaCl SDK path not found : ${nacl_sdk_path}")
+        endif()
+
+        if(NOT EXISTS ${CMAKE_TOOLCHAIN_FILE})
+            message(FATAL_ERROR "Toolchain for Nacl not found. This must be "
+                                "configured using CMAKE_TOOLCHAIN_FILE.")
+        endif()
+
+        # Warn the user that building tests is disabled.
+        if(waffle_build_tests)
+            message(WARNING "Building the tests with the NaCl backend "
+                            "is not supported, skipping tests.")
+            set(waffle_build_tests OFF)
+        endif()
+
+        # When building for NaCl, disable incompatible backends.
+        set(waffle_has_gbm OFF)
+        set(waffle_has_egl OFF)
+        set(waffle_has_glx OFF)
+        set(waffle_has_x11 OFF)
+        set(waffle_has_x11_egl OFF)
+        set(waffle_has_wayland OFF)
     endif()
     if(waffle_has_gbm)
         if(NOT gbm_FOUND)

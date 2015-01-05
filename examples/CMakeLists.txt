@@ -20,6 +20,10 @@ endif()
 # Target: gl_basic (executable)
 # ----------------------------------------------------------------------------
 
+if(waffle_has_nacl)
+    return()
+endif()
+
 add_executable(gl_basic gl_basic.c)
 target_link_libraries(gl_basic ${waffle_libname} ${GETOPT_LIBRARIES})
 

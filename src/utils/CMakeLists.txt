@@ -2,6 +2,10 @@
 # Target: wflinfo (executable)
 # ----------------------------------------------------------------------------
 
+if(waffle_has_nacl)
+    return()
+endif()
+
 add_executable(wflinfo wflinfo.c)
 target_link_libraries(wflinfo ${waffle_libname} ${GETOPT_LIBRARIES})
 

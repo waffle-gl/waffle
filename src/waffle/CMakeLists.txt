@@ -25,6 +25,7 @@ include_directories(
     ${gl_INCLUDE_DIRS}
     ${GLEXT_INCLUDE_DIR}
     ${libudev_INCLUDE_DIRS}
+    ${nacl_INCLUDE_DIRS}
     ${wayland-client_INCLUDE_DIRS}
     ${wayland-egl_INCLUDE_DIRS}
     ${x11-xcb_INCLUDE_DIRS}
@@ -55,6 +56,12 @@ if(waffle_on_linux)
             ${libudev_LDFLAGS}
             )
     endif()
+endif()
+
+if(waffle_has_nacl)
+    list(APPEND waffle_libdeps
+        ${nacl_LDFLAGS}
+        )
 endif()
 
 set(waffle_sources
