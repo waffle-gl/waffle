@@ -6,6 +6,7 @@ EXPORTS
     waffle_error_to_string
     waffle_enum_to_string
     waffle_init
+    waffle_teardown
     waffle_make_current
     waffle_get_proc_address
     waffle_is_extension_in_string

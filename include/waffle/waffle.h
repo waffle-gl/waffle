@@ -182,6 +182,11 @@ waffle_enum_to_string(int32_t e);
 bool
 waffle_init(const int32_t *attrib_list);
 
+#if WAFFLE_API_VERSION >= 0x0106
+bool
+waffle_teardown(void);
+#endif
+
 bool
 waffle_make_current(struct waffle_display *dpy,
                     struct waffle_window *window,

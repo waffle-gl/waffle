@@ -1,0 +1,115 @@
+<?xml version='1.0'?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+  "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+
+<!--
+  Copyright Intel 2015
+
+  This manual page is licensed under the Creative Commons Attribution-ShareAlike 3.0 United States License (CC BY-SA 3.0
+  US). To view a copy of this license, visit http://creativecommons.org.license/by-sa/3.0/us.
+-->
+
+<refentry
+    id="waffle_teardown"
+    xmlns:xi="http://www.w3.org/2001/XInclude">
+
+  <!-- See http://www.docbook.org/tdg/en/html/refentry.html. -->
+
+  <refmeta>
+    <refentrytitle>waffle_teardown</refentrytitle>
+    <manvolnum>3</manvolnum>
+  </refmeta>
+
+  <refnamediv>
+    <refname>waffle_teardown</refname>
+    <refpurpose>Teardown waffle's per-process global state</refpurpose>
+  </refnamediv>
+
+  <refentryinfo>
+    <title>Waffle Manual</title>
+    <productname>waffle</productname>
+    <xi:include href="common/author-emil.velikov.xml"/>
+    <xi:include href="common/copyright.xml"/>
+    <xi:include href="common/legalnotice.xml"/>
+  </refentryinfo>
+
+  <refsynopsisdiv>
+    <funcsynopsis>
+      <funcsynopsisinfo><![CDATA[#include <waffle.h>]]></funcsynopsisinfo>
+      <funcprototype>
+        <funcdef>bool <function>waffle_teardown</function></funcdef>
+        <void/>
+      </funcprototype>
+    </funcsynopsis>
+  </refsynopsisdiv>
+
+  <refsect1>
+    <title>Description</title>
+
+    <term><function>waffle_teardown()</function></term>
+    <listitem>
+      <para>
+        Feature test macro: <code>WAFFLE_API_VERSION >= 0x0106</code>.
+        (See <citerefentry><refentrytitle>waffle_feature_test_macros</refentrytitle><manvolnum>7</manvolnum></citerefentry>).
+      </para>
+      <para>
+        Tears down the per-process global state of the waffle library.
+      </para>
+      <para>
+        А call to <function>waffle_teardown()</function> can fail. In the case it does the caller is advised
+        to use <function>waffle_error_get_info</function>, <function>waffle_error_get_code</function>
+        and/or <function>waffle_error_to_string</function> to retrieve the error.
+
+        In case of an error that differs from <errorcode>WAFFLE_ERROR_NOT_INITIALIZED</errorcode> the caller
+        should not use the Waffle API as the global state is likely to be in an undetermined/corrupt.
+
+        In the case of <errorcode>WAFFLE_ERROR_NOT_INITIALIZED</errorcode> one should call
+        <function>waffle_init()</function> prior to reusing Waffle.
+      </para>
+    </listitem>
+  </refsect1>
+
+  <refsect1>
+    <title>Return Value</title>
+    <xi:include href="common/return-value.xml"/>
+  </refsect1>
+
+  <refsect1>
+    <title>Errors</title>
+
+    <xi:include href="common/error-codes.xml"/>
+
+    <variablelist>
+
+      <varlistentry>
+        <term><errorcode>WAFFLE_ERROR_NOT_INITIALIZED</errorcode></term>
+        <listitem>
+          <para>
+            Waffle has not been initialized with a successfull call to <function>waffle_init()</function>
+            since the last call to <function>waffle_teardown()</function> or the start of the program.
+          </para>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
+  </refsect1>
+
+  <xi:include href="common/issues.xml"/>
+
+  <refsect1>
+    <title>See Also</title>
+
+    <para>
+      <simplelist>
+        <member><citerefentry><refentrytitle>waffle_init</refentrytitle><manvolnum>3</manvolnum></citerefentry>,</member>
+        <member><citerefentry><refentrytitle>waffle</refentrytitle><manvolnum>7</manvolnum></citerefentry>.</member>
+      </simplelist>
+    </para>
+  </refsect1>
+
+</refentry>
+
+<!--
+vim:tw=120 et ts=2 sw=2:
+-->

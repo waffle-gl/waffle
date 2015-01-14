@@ -60,7 +60,8 @@
     <para>
       If a call to <function>waffle_init()</function> fails, no global state is initialized and the caller may safely
       attempt to call <function>waffle_init()</function> again.  If waffle has already been initialized by a successful
-      call to <function>waffle_init()</function>, then calling <function>waffle_init()</function> again emits the error
+      call to <function>waffle_init()</function> one has to call <function>waffle_teardown()</function> to clear the
+      global state. Otherwise calling <function>waffle_init()</function> again emits the error
       <errorcode>WAFFLE_ERROR_ALREADY_INITIALIZED</errorcode>.
     </para>
 

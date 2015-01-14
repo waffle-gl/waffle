@@ -50,10 +50,10 @@
 struct api_object;
 struct wcore_platform;
 
-/// @brief Managed by waffle_init().
+/// @brief Managed by waffle_init() and waffle_teardown().
 ///
-/// This is null if and only if waffle has not been initialized with
-/// waffle_init().
+/// This is null if waffle has not been initialized with waffle_init() or
+/// it has been torn down with waffle_teardown().
 extern struct wcore_platform *api_platform;
 
 /// @brief Used to validate most API entry points.
