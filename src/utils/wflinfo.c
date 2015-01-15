@@ -32,7 +32,7 @@
 ///     2. Create an OpenGL context.
 ///     3. Print information about the context.
 
-#define WAFFLE_API_VERSION 0x0103
+#define WAFFLE_API_VERSION 0x0106
 
 #include <assert.h>
 #include <ctype.h>
@@ -1140,6 +1140,10 @@ main(int argc, char **argv)
         error_waffle();
 
     ok = waffle_display_disconnect(dpy);
+    if (!ok)
+        error_waffle();
+
+    ok = waffle_teardown();
     if (!ok)
         error_waffle();
 
