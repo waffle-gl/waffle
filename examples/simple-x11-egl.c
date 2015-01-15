@@ -33,6 +33,9 @@
 /// This example is too simple; it does not perform proper error checking. For
 /// a complete example with error checking, see gl_basic.c.
 
+#define WAFFLE_API_VERSION 0x0106
+#define WAFFLE_API_EXPERIMENTAL
+
 #include <stdlib.h>
 #include <unistd.h>
 
@@ -133,6 +136,8 @@ main()
     waffle_context_destroy(ctx);
     waffle_config_destroy(config);
     waffle_display_disconnect(dpy);
+
+    waffle_teardown();
 
     return 0;
 }

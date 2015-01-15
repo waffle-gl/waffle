@@ -704,6 +704,10 @@ main(int argc, char **argv)
     if (!ok)
         error_waffle();
 
+    ok = waffle_teardown();
+    if (!ok)
+        error_waffle();
+
     #ifdef __APPLE__
         cocoa_finish();
     #endif
