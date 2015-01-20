@@ -28,6 +28,11 @@ if(waffle_on_linux)
     option(waffle_has_wayland "Build support for Wayland" ${wayland_default})
     option(waffle_has_x11_egl "Build support for X11/EGL" ${x11_egl_default})
     option(waffle_has_gbm "Build support for GBM" ${gbm_default})
+    option(waffle_has_nacl "Build support for NaCl" OFF)
+
+    # NaCl specific settings.
+    set(nacl_sdk_path "" CACHE STRING "Set nacl_sdk path here")
+    set(nacl_version "pepper_39" CACHE STRING "Set NaCl bundle here")
 endif()
 
 option(waffle_build_tests "Build tests" ON)

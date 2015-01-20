@@ -15,6 +15,7 @@ include_directories(
     egl
     glx
     linux
+    nacl
     wayland
     wgl
     x11
@@ -25,6 +26,7 @@ include_directories(
     ${gl_INCLUDE_DIRS}
     ${GLEXT_INCLUDE_DIR}
     ${libudev_INCLUDE_DIRS}
+    ${nacl_INCLUDE_DIRS}
     ${wayland-client_INCLUDE_DIRS}
     ${wayland-egl_INCLUDE_DIRS}
     ${x11-xcb_INCLUDE_DIRS}
@@ -55,6 +57,12 @@ if(waffle_on_linux)
             ${libudev_LDFLAGS}
             )
     endif()
+endif()
+
+if(waffle_has_nacl)
+    list(APPEND waffle_libdeps
+        ${nacl_LDFLAGS}
+        )
 endif()
 
 set(waffle_sources
@@ -173,6 +181,19 @@ if(waffle_on_windows)
         )
 endif()
 
+if(waffle_has_nacl)
+    list(APPEND waffle_sources
+        nacl/nacl_config.c
+        nacl/nacl_context.c
+        nacl/nacl_display.c
+        nacl/nacl_platform.c
+        nacl/nacl_window.c
+        )
+    list(APPEND waffle_cxx_sources
+        nacl/nacl_container.cpp
+        )
+endif()
+
 # CMake will pass to the C compiler only C sources. CMake does not recognize the
 # .m extension and ignores any such files in the source lists. To coerce CMake
 # to pass .m files to the compiler, we must lie and claim that they are
@@ -202,7 +223,7 @@ include_directories(
     ${XCB_INCLUDE_DIRS}
     )
 
-add_library(${waffle_libname} SHARED ${waffle_sources})
+add_library(${waffle_libname} SHARED ${waffle_sources} ${waffle_cxx_sources})
 
 # Debian's packaging system emits warnings if wflinfo directly links to any
 # library that it doesn't directly use. Silence the warnings by annotating

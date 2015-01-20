@@ -125,6 +125,10 @@ if(waffle_on_linux)
     add_definitions(-D_XOPEN_SOURCE=600)
 endif()
 
+if(waffle_has_nacl)
+    add_definitions(-DWAFFLE_HAS_NACL)
+endif()
+
 if(waffle_on_windows)
     add_definitions(-DWAFFLE_HAS_WGL)
 endif()
