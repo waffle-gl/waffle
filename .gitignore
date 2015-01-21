@@ -59,6 +59,7 @@ Makefile
 /doc/html/man/wflinfo.1.html
 /examples/gl_basic
 /examples/simple-x11-egl
+/html/
 /lib/
 /libcmocka.a
 /src/waffle/libwaffle_static.a

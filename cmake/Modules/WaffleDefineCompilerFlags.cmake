@@ -45,12 +45,16 @@ if (NOT MSVC)
     # enough for single-stepping.
     set(CMAKE_C_FLAGS_RELEASE "-g1 -O2 -DNDEBUG")
 
-    waffle_add_c_flag("-Werror=implicit-function-declaration" WERROR_IMPLICIT_FUNCTION_DECLARATION)
+    # These are disabled for NaCl because compilation against ppapi_simple would fail.
+    if(NOT waffle_has_nacl)
+        waffle_add_c_flag("-Werror=implicit-function-declaration" WERROR_IMPLICIT_FUNCTION_DECLARATION)
+        waffle_add_c_flag("-fvisibility=hidden" WITH_VISIBILITY_HIDDEN)
+    endif()
+
     waffle_add_c_flag("-Werror=incompatible-pointer-types" WERROR_INCOMPATIBLE_POINTER_TYPES)
     waffle_add_c_flag("-Werror=int-conversion" WERROR_INT_CONVERSION)
-    waffle_add_c_flag("-fvisibility=hidden" WITH_VISIBILITY_HIDDEN)
 
-    if(waffle_on_linux)
+    if(waffle_on_linux AND NOT waffle_has_nacl)
         # On MacOS, the SSE2 headers trigger this error.
         waffle_add_c_flag("-Werror=missing-prototypes" WERROR_MISSING_PROTOTYPES)
     endif()
