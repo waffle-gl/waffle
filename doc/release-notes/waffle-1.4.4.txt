@@ -1,0 +1,32 @@
+Waffle 1.4.4 Release Notes
+==========================
+
+New Stuff
+---------
+* Waffle now installs CMake PackageConfig files.
+
+  The new files are WaffleConfig.cmake and WaffleConfigVersion.cmake.
+  These are like Linux pkg-config files, but specific to CMake. See
+  commit 622efdd [1].
+
+  [1] https://github.com/waffle-gl/waffle/commit/622efdd3f3e832ac34edb9f7f54bb675f0fdec13
+
+Bugfixes
+--------
+* Fix version check in FindWaffle.cmake
+
+  This bug only affects other projects that use CMake and used FindWaffle.cmake.
+  See bug [https://github.com/waffle-gl/waffle/issues/27].
+
+Changes since 1.4.3
+-------------------
+Chad Versace (2):
+      doc: Add release notes for Waffle 1.4.4
+      waffle: Bump version to 1.4.4
+
+Dylan Baker (2):
+      cmake: Add cmake PackageConfig files
+      cmake: fix version search
+
+Jordan Justen (4):
+      debian: Add WaffleConfig*.cmake to libwaffle-dev package

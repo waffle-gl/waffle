@@ -1,0 +1,50 @@
+Waffle 1.5.1 Release Notes
+==========================
+
+New Stuff
+---------
+* cmake: Waffle now installs CMake PackageConfig files.
+
+  The new files are WaffleConfig.cmake and WaffleConfigVersion.cmake.
+  These are like Linux pkg-config files, but specific to CMake. See
+  commit 622efdd [1].
+
+  [1] https://github.com/waffle-gl/waffle/commit/622efdd3f3e832ac34edb9f7f54bb675f0fdec13
+
+* examples/gl_basic: Add option for window size.
+
+  Useful for testing tiny and huge windows. The new parameter is --window-size=WxH.
+
+
+Bugfixes
+--------
+* wgl: Fix requirements for creation of ES2 context
+  See [https://github.com/waffle-gl/waffle/issues/23].
+
+* wgl: Verify the client area size matches the required size on window creation too.
+  See [https://github.com/waffle-gl/waffle/commit/fc9db89c53a2e6e65751bcd87337c74fa05de182].
+
+* Fix version check in FindWaffle.cmake
+
+  This bug only affects other projects that use CMake and used FindWaffle.cmake.
+  See bug [https://github.com/waffle-gl/waffle/issues/27].
+
+
+Changes since 1.5.0
+-------------------
+Chad Versace (3):
+      doc: Add release notes for Waffle 1.5.1
+      doc: Add release notes for Waffle 1.4.4
+      wgl: Fix requirements for creation of ES2 context
+
+Dylan Baker (2):
+      cmake: Add cmake PackageConfig files
+      cmake: fix version search
+
+Jordan Justen (1):
+      debian: Add WaffleConfig*.cmake to libwaffle-dev package
+
+José Fonseca (3):
+      wgl: Verify the client area size matches the required size on window creation too.
+      examples/gl_basic: Add option for window size.
+      test/gl_basic_test: Address gcc format mismatch warning.
