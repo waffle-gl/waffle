@@ -14,7 +14,7 @@ Build-Depends: binutils (>> 2.18),
                libx11-dev,
                pkg-config,
                xsltproc
-Standards-Version: 3.9.5
+Standards-Version: 3.9.6
 Homepage: http://www.waffle-gl.org
 Vcs-Git: git://github.com/waffle-gl/waffle
 Vcs-Browser: https://github.com/waffle-gl/waffle
