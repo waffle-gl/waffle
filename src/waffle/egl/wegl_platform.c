@@ -68,6 +68,7 @@ wegl_platform_init(struct wegl_platform *self)
         wcore_errorf(WAFFLE_ERROR_FATAL,
                      "dlopen(\"%s\") failed: %s",
                      libEGL_filename, dlerror());
+        ok = false;
         goto error;
     }
 
@@ -77,6 +78,7 @@ wegl_platform_init(struct wegl_platform *self)
         wcore_errorf(WAFFLE_ERROR_FATAL,                             \
                      "dlsym(\"%s\", \"" #function "\") failed: %s",    \
                      libEGL_filename, dlerror());                      \
+        ok = false;                                                    \
         goto error;                                                    \
     }
 
