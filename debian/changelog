@@ -1,3 +1,10 @@
+waffle (1.5.1-1) unstable; urgency=low
+
+  * New upstream release
+  * Add WaffleConfig*.cmake to libwaffle-dev package
+
+ -- Jordan Justen <jordan.l.justen@intel.com>  Thu, 22 Jan 2015 12:51:49 -0800
+
 waffle (1.5.0-1) unstable; urgency=low
 
   * New upstream release
