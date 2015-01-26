@@ -77,6 +77,9 @@ static const char *usage_message =
     "    -v, --verbose\n"
     "        Print more information.\n"
     "\n"
+    "    -s, --specific\n"
+    "        Print platform-specific information.\n"
+    "\n"
     "    --forward-compatible\n"
     "        Create a forward-compatible context.\n"
     "\n"
@@ -100,6 +103,7 @@ enum {
     OPT_VERSION = 'V',
     OPT_PROFILE,
     OPT_VERBOSE = 'v',
+    OPT_SPECIFIC = 's',
     OPT_DEBUG_CONTEXT,
     OPT_FORWARD_COMPATIBLE,
     OPT_HELP = 'h',
@@ -111,6 +115,7 @@ static const struct option get_opts[] = {
     { .name = "version",        .has_arg = required_argument,     .val = OPT_VERSION },
     { .name = "profile",        .has_arg = required_argument,     .val = OPT_PROFILE },
     { .name = "verbose",        .has_arg = no_argument,           .val = OPT_VERBOSE },
+    { .name = "specific",       .has_arg = no_argument,           .val = OPT_SPECIFIC },
     { .name = "debug-context",  .has_arg = no_argument,           .val = OPT_DEBUG_CONTEXT },
     { .name = "forward-compatible", .has_arg = no_argument,       .val = OPT_FORWARD_COMPATIBLE },
     { .name = "help",           .has_arg = no_argument,           .val = OPT_HELP },
@@ -250,6 +255,8 @@ struct options {
 
     bool verbose;
 
+    bool specific;
+
     bool context_forward_compatible;
     bool context_debug;
 
@@ -335,7 +342,7 @@ parse_args(int argc, char *argv[], struct options *opts)
     opterr = 0;
 
     while (loop_get_opt) {
-        int opt = getopt_long(argc, argv, "a:hp:vV:", get_opts, NULL);
+        int opt = getopt_long(argc, argv, "a:hp:svV:", get_opts, NULL);
         switch (opt) {
             case -1:
                 loop_get_opt = false;
@@ -386,6 +393,9 @@ parse_args(int argc, char *argv[], struct options *opts)
                 break;
             case OPT_VERBOSE:
                 opts->verbose = true;
+                break;
+            case OPT_SPECIFIC:
+                opts->specific = true;
                 break;
             case OPT_FORWARD_COMPATIBLE:
                 opts->context_forward_compatible = true;
@@ -1122,6 +1132,10 @@ main(int argc, char **argv)
     ok = print_wflinfo(&opts);
     if (!ok)
         error_waffle();
+
+    if (opts.specific) {
+        //TODO print platform-specific information
+    }
 
     ok = waffle_make_current(dpy, NULL, NULL);
     if (!ok)
