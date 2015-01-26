@@ -1076,6 +1076,25 @@ main(int argc, char **argv)
     if (!glGetString)
         error_get_gl_symbol("glGetString");
 
+    const struct wflinfo_config_attrs config_attrs = {
+        .api = opts.context_api,
+        .profile = opts.context_profile,
+        .major = opts.context_major,
+        .minor = opts.context_minor,
+        .forward_compat = opts.context_forward_compatible,
+        .debug = opts.context_debug,
+    };
+
+    wflinfo_create_context(dpy, config_attrs, &ctx, &config);
+
+    window = waffle_window_create(config, WINDOW_WIDTH, WINDOW_HEIGHT);
+    if (!window)
+        error_waffle();
+
+    ok = waffle_make_current(dpy, window, ctx);
+    if (!ok)
+        error_waffle();
+
     // Retrieving GL functions is tricky. When glGetStringi is supported, here
     // are some boggling variations as of 2014-11-19:
     //   - Mali drivers on EGL 1.4 expose glGetStringi statically from
@@ -1098,27 +1117,6 @@ main(int argc, char **argv)
     if (!glGetStringi) {
         glGetStringi = waffle_get_proc_address("glGetStringi");
     }
-
-    const struct wflinfo_config_attrs config_attrs = {
-        .api = opts.context_api,
-        .profile = opts.context_profile,
-        .major = opts.context_major,
-        .minor = opts.context_minor,
-        .forward_compat = opts.context_forward_compatible,
-        .debug = opts.context_debug,
-    };
-
-    wflinfo_create_context(dpy, config_attrs, &ctx, &config);
-
-    window = waffle_window_create(config, WINDOW_WIDTH, WINDOW_HEIGHT);
-    if (!window)
-        error_waffle();
-
-    ok = waffle_make_current(dpy, window, ctx);
-    if (!ok)
-        error_waffle();
-
-    glGetStringi = waffle_get_proc_address("glGetStringi");
 
     ok = print_wflinfo(&opts);
     if (!ok)
