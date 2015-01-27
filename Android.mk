@@ -101,3 +101,10 @@ LOCAL_COPY_HEADERS := \
 LOCAL_COPY_HEADERS_TO := waffle-$(waffle_major_version)
 
 include $(BUILD_SHARED_LIBRARY)
+
+SUBDIRS := \
+    examples \
+    src/utils
+
+mkfiles := $(patsubst %,$(waffle_top)/%/Android.mk,$(SUBDIRS))
+include $(mkfiles)
