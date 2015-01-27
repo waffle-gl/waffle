@@ -114,8 +114,9 @@ struct wcore_platform_vtbl {
         struct wcore_window*
         (*create)(struct wcore_platform *platform,
                   struct wcore_config *config,
-                  int width,
-                  int height);
+                  int32_t width,
+                  int32_t height,
+                  const intptr_t attrib_list[]);
         bool
         (*destroy)(struct wcore_window *window);
 

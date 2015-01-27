@@ -28,6 +28,28 @@
 #include "wcore_error.h"
 #include "wcore_util.h"
 
+bool
+wcore_add_size(size_t *res, size_t x, size_t y)
+{
+    if (x > SIZE_MAX - y) {
+        return false;
+    }
+
+    *res = x + y;
+    return true;
+}
+
+bool
+wcore_mul_size(size_t *res, size_t x, size_t y)
+{
+    if (x > SIZE_MAX / y) {
+        return false;
+    }
+
+    *res = x * y;
+    return true;
+}
+
 void*
 wcore_malloc(size_t size)
 {
@@ -89,6 +111,8 @@ wcore_enum_to_string(int32_t e)
         CASE(WAFFLE_DL_OPENGL_ES1);
         CASE(WAFFLE_DL_OPENGL_ES2);
         CASE(WAFFLE_DL_OPENGL_ES3);
+        CASE(WAFFLE_WINDOW_WIDTH);
+        CASE(WAFFLE_WINDOW_HEIGHT);
 
         default: return NULL;
 

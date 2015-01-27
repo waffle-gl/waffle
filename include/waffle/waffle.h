@@ -36,6 +36,20 @@
 extern "C" {
 #endif
 
+#if defined(__GNUC__) && ((__GNUC__ * 100 + __GNUC_MINOR__) >= 301)
+#    define WAFFLE_DEPRECATED __attribute__((deprecated))
+#elif defined(_MSC_VER)
+#    define WAFFLE_DEPRECATED __declspec(deprecated)
+#else
+#    define WAFFLE_DEPRECATED
+#endif
+
+#if WAFFLE_API_VERSION >= 0x0106
+#    define WAFFLE_DEPRECATED_1_06 WAFFLE_DEPRECATED
+#else
+#    define WAFFLE_DEPRECATED_1_06
+#endif
+
 struct waffle_display;
 struct waffle_config;
 struct waffle_context;
@@ -151,6 +165,13 @@ enum waffle_enum {
     WAFFLE_DL_OPENGL_ES1                                        = 0x0302,
     WAFFLE_DL_OPENGL_ES2                                        = 0x0303,
     WAFFLE_DL_OPENGL_ES3                                        = 0x0304,
+
+    // ------------------------------------------------------------------
+    // For waffle_window
+    // ------------------------------------------------------------------
+
+    WAFFLE_WINDOW_WIDTH                                         = 0x0310,
+    WAFFLE_WINDOW_HEIGHT                                        = 0x0311,
 };
 
 const char*
@@ -221,6 +242,13 @@ waffle_context_get_native(struct waffle_context *self);
 // ---------------------------------------------------------------------------
 // waffle_window
 // ---------------------------------------------------------------------------
+
+#if WAFFLE_API_VERSION >= 0x0106
+struct waffle_window*
+waffle_window_create2(
+        struct waffle_config *config,
+        const intptr_t attrib_list[]);
+#endif
 
 struct waffle_window*
 waffle_window_create(
@@ -311,23 +339,23 @@ union waffle_native_window {
 // waffle_attrib_list
 // ---------------------------------------------------------------------------
 
-int32_t
+WAFFLE_DEPRECATED_1_06 int32_t
 waffle_attrib_list_length(const int32_t attrib_list[]);
 
-bool
+WAFFLE_DEPRECATED_1_06 bool
 waffle_attrib_list_get(
         const int32_t attrib_list[],
         int32_t key,
         int32_t *value);
 
-bool
+WAFFLE_DEPRECATED_1_06 bool
 waffle_attrib_list_get_with_default(
         const int32_t attrib_list[],
         int32_t key,
         int32_t *value,
         int32_t default_value);
 
-bool
+WAFFLE_DEPRECATED_1_06 bool
 waffle_attrib_list_update(
         int32_t *attrib_list,
         int32_t key,

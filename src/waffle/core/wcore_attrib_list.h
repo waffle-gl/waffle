@@ -26,26 +26,63 @@
 #pragma once
 
 #include <stdbool.h>
+#include <stddef.h>
 #include <stdint.h>
+#include <stdlib.h>
 
-int32_t
-wcore_attrib_list_length(const int32_t attrib_list[]);
+/// @brief Convert int32_t attribute list to an intptr_t attribute list.
+intptr_t*
+wcore_attrib_list_from_int32(const int32_t attrib_list[]);
+
+size_t
+wcore_attrib_list_length(const intptr_t attrib_list[]);
+
+intptr_t*
+wcore_attrib_list_copy(const intptr_t attrib_list[]);
 
 bool
 wcore_attrib_list_get(
+        const intptr_t *attrib_list,
+        intptr_t key,
+        intptr_t *value);
+
+bool
+wcore_attrib_list_get_with_default(
+        const intptr_t attrib_list[],
+        intptr_t key,
+        intptr_t *value,
+        intptr_t default_value);
+
+bool
+wcore_attrib_list_pop(
+        intptr_t attrib_list[],
+        intptr_t key,
+        intptr_t *value);
+
+bool
+wcore_attrib_list_update(
+        intptr_t *attrib_list,
+        intptr_t key,
+        intptr_t value);
+
+size_t
+wcore_attrib_list32_length(const int32_t attrib_list[]);
+
+bool
+wcore_attrib_list32_get(
         const int32_t *attrib_list,
         int32_t key,
         int32_t *value);
 
 bool
-wcore_attrib_list_get_with_default(
+wcore_attrib_list32_get_with_default(
         const int32_t attrib_list[],
         int32_t key,
         int32_t *value,
         int32_t default_value);
 
 bool
-wcore_attrib_list_update(
+wcore_attrib_list32_update(
         int32_t *attrib_list,
         int32_t key,
         int32_t value);

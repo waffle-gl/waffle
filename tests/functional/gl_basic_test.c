@@ -216,6 +216,12 @@ gl_basic_draw__(struct gl_basic_draw_args__ args)
     struct waffle_window *window = NULL;
     struct waffle_context *ctx = NULL;
 
+    const intptr_t window_attrib_list[] = {
+        WAFFLE_WINDOW_WIDTH,    WINDOW_WIDTH,
+        WAFFLE_WINDOW_HEIGHT,   WINDOW_HEIGHT,
+        0,
+    };
+
     libgl = libgl_from_context_api(waffle_context_api);
 
     i = 0;
@@ -271,8 +277,7 @@ gl_basic_draw__(struct gl_basic_draw_args__ args)
         }
     }
 
-    ASSERT_TRUE(window = waffle_window_create(config,
-                                              WINDOW_WIDTH, WINDOW_HEIGHT));
+    ASSERT_TRUE(window = waffle_window_create2(config, window_attrib_list));
     ASSERT_TRUE(waffle_window_show(window));
 
     ctx = waffle_context_create(config, NULL);

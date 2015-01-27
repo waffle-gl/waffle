@@ -26,6 +26,7 @@
 #import <Cocoa/Cocoa.h>
 #import <OpenGL/OpenGL.h>
 
+#include "wcore_attrib_list.h"
 #include "wcore_error.h"
 
 #include "cgl_config.h"
@@ -53,7 +54,7 @@ cgl_window_destroy(struct wcore_window *wc_self)
 
 
 static WaffleGLView*
-cgl_window_create_gl_view(int width, int height)
+cgl_window_create_gl_view(int32_t width, int32_t height)
 {
     WaffleGLView *view = [[WaffleGLView alloc]
                           initWithFrame:NSMakeRect(0, 0, width, height)];
@@ -94,11 +95,17 @@ cgl_window_create_ns_window(NSView *view)
 struct wcore_window*
 cgl_window_create(struct wcore_platform *wc_plat,
                   struct wcore_config *wc_config,
-                  int width,
-                  int height)
+                  int32_t width,
+                  int32_t height,
+                  const intptr_t attrib_list[])
 {
     struct cgl_window *self;
     bool ok = true;
+
+    if (wcore_attrib_list_length(attrib_list) > 0) {
+        wcore_error_bad_attribute(attrib_list[0]);
+        return NULL;
+    }
 
     self = wcore_calloc(sizeof(*self));
     if (!self)

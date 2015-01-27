@@ -28,76 +28,219 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stddef.h>
+#include <string.h>
 
-int32_t
-wcore_attrib_list_length(const int32_t attrib_list[])
+#include "wcore_error.h"
+#include "wcore_util.h"
+
+#define WCORE_ATTRIB_LIST_COMMON_FUNCS(T,                               \
+                                       length_func,                     \
+                                       get_func,                        \
+                                       get_with_default_func,           \
+                                       update_func)                     \
+                                                                        \
+    size_t                                                              \
+    length_func(const T attrib_list[])                                  \
+    {                                                                   \
+        const T *i = attrib_list;                                       \
+                                                                        \
+        if (!attrib_list) {                                             \
+            return 0;                                                   \
+        }                                                               \
+                                                                        \
+        while (*i) {                                                    \
+            i += 2;                                                     \
+        }                                                               \
+                                                                        \
+        return (i - attrib_list) / 2;                                   \
+    }                                                                   \
+                                                                        \
+    bool                                                                \
+    get_func(const T *attrib_list,                                      \
+             T key,                                                     \
+             T *value)                                                  \
+    {                                                                   \
+        if (!attrib_list) {                                             \
+            return false;                                               \
+        }                                                               \
+                                                                        \
+        for (size_t i = 0; attrib_list[i] != 0; i += 2) {               \
+            if (attrib_list[i] == key) {                                \
+                *value = attrib_list[i + 1];                            \
+                return true;                                            \
+            }                                                           \
+        }                                                               \
+                                                                        \
+        return false;                                                   \
+    }                                                                   \
+                                                                        \
+    bool                                                                \
+    get_with_default_func(                                              \
+            const T attrib_list[],                                      \
+            T key,                                                      \
+            T *value,                                                   \
+            T default_value)                                            \
+    {                                                                   \
+        if (get_func(attrib_list, key, value)) {                        \
+            return true;                                                \
+        } else {                                                        \
+            *value = default_value;                                     \
+            return false;                                               \
+        }                                                               \
+    }                                                                   \
+                                                                        \
+    bool                                                                \
+    update_func(T *attrib_list,                                         \
+                T key,                                                  \
+                T value)                                                \
+    {                                                                   \
+        T *i = attrib_list;                                             \
+                                                                        \
+        if (attrib_list == NULL) {                                      \
+            return false;                                               \
+        }                                                               \
+                                                                        \
+        while (*i != 0 && *i != key) {                                  \
+            i += 2;                                                     \
+        }                                                               \
+                                                                        \
+        if (*i == key) {                                                \
+            i[1] = value;                                               \
+            return true;                                                \
+        } else {                                                        \
+            return false;                                               \
+        }                                                               \
+    }
+
+WCORE_ATTRIB_LIST_COMMON_FUNCS(int32_t,
+                               wcore_attrib_list32_length,
+                               wcore_attrib_list32_get,
+                               wcore_attrib_list32_get_with_default,
+                               wcore_attrib_list32_update)
+
+WCORE_ATTRIB_LIST_COMMON_FUNCS(intptr_t,
+                               wcore_attrib_list_length,
+                               wcore_attrib_list_get,
+                               wcore_attrib_list_get_with_default,
+                               wcore_attrib_list_update)
+
+/// Given length of attribute list, calculate its size in bytes. Return false
+/// on arithemtic overflow.
+static bool
+wcore_attrib_list_get_size(size_t *size, size_t len) {
+    bool ok;
+
+    ok = wcore_mul_size(size, 2, len);
+    ok &= wcore_iadd_size(size, 1);
+    ok &= wcore_imul_size(size, sizeof(intptr_t));
+
+    return ok;
+}
+
+intptr_t*
+wcore_attrib_list_from_int32(const int32_t attrib_list32[])
 {
-    const int32_t *i = attrib_list;
+    size_t len = 0;
+    size_t size = 0;
+    intptr_t *attrib_list = NULL;
 
-    if (attrib_list == NULL)
-        return 0;
+    len = wcore_attrib_list32_length(attrib_list32);
 
-    while (*i != 0)
-        i += 2;
+    if (!wcore_attrib_list_get_size(&size, len)) {
+        // Arithmetic overflow occurred, therefore we can't allocate the
+        // memory.
+        wcore_error(WAFFLE_ERROR_BAD_ALLOC);
+        return NULL;
+    }
 
-    return (int32_t) (i - attrib_list) / 2;
+    attrib_list = wcore_malloc(size);
+    if (!attrib_list) {
+        return NULL;
+    }
+
+    // Copy all key/value pairs.
+    for (size_t i = 0; i < 2 * len; ++i) {
+        attrib_list[i] = attrib_list32[i];
+    }
+
+    // Add terminal null.
+    attrib_list[2 * len] = 0;
+
+    return attrib_list;
+}
+
+intptr_t*
+wcore_attrib_list_copy(const intptr_t attrib_list[])
+{
+    intptr_t *copy = NULL;
+
+    if (attrib_list) {
+        size_t len;
+        size_t size = 0;
+
+        len = wcore_attrib_list_length(attrib_list);
+
+        if (!wcore_attrib_list_get_size(&size, len)) {
+            // Arithmetic overflow occurred, therefore we can't allocate the
+            // memory.
+            wcore_error(WAFFLE_ERROR_BAD_ALLOC);
+            return NULL;
+        }
+
+        copy = wcore_malloc(size);
+        if (!copy) {
+            return NULL;
+        }
+
+        memcpy(copy, attrib_list, size);
+    } else {
+        copy = wcore_malloc(sizeof(intptr_t));
+        if (!copy) {
+            return NULL;
+        }
+
+        copy[0] = 0;
+    }
+
+    return copy;
 }
 
 bool
-wcore_attrib_list_get(
-        const int32_t *attrib_list,
-        int32_t key,
-        int32_t *value)
+wcore_attrib_list_pop(
+        intptr_t attrib_list[],
+        intptr_t key,
+        intptr_t *value)
 {
-    if (attrib_list == NULL)
-        return false;
+    // Address of key in attrib_list.
+    intptr_t *key_addr = NULL;
 
-    for (int i = 0; attrib_list[i] != 0; i += 2) {
-        if (attrib_list[i] != key)
-            continue;
+    // Address of the terminal zero in attrib_list.
+    intptr_t *end_addr = NULL;
 
-        *value = attrib_list[i + 1];
-        return true;
-    }
-
-    return false;
-}
-
-bool
-wcore_attrib_list_get_with_default(
-        const int32_t attrib_list[],
-        int32_t key,
-        int32_t *value,
-        int32_t default_value)
-{
-    if (wcore_attrib_list_get(attrib_list, key, value)) {
-        return true;
-    }
-    else {
-        *value = default_value;
+    if (attrib_list == NULL) {
         return false;
     }
-}
 
-bool
-wcore_attrib_list_update(
-        int32_t *attrib_list,
-        int32_t key,
-        int32_t value)
-{
-    int32_t *i = attrib_list;
-
-    if (attrib_list == NULL)
-        return false;
-
-    while (*i != 0 && *i != key)
-        i += 2;
-
-    if (*i == key) {
-        i[1] = value;
-        return true;
+    for (intptr_t *i = attrib_list; *i != 0; i += 2) {
+        if (i[0] == key) {
+            key_addr = i;
+            *value = i[1];
+            break;
+        }
     }
-    else {
+
+    if (!key_addr) {
         return false;
     }
+
+    end_addr = key_addr + 2; // Step to next pair.
+    while (*end_addr != 0) {
+        end_addr += 2; // Step to next pair.
+    }
+
+    // Move all key/value pairs located at or above (key_addr + 2), and
+    // move the terminal null too.
+    memmove(key_addr, key_addr + 2,
+            sizeof(intptr_t) * (end_addr - key_addr - 1));
+    return true;
 }

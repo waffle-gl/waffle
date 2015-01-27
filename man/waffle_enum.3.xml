@@ -142,6 +142,13 @@ enum waffle_enum {
     WAFFLE_DL_OPENGL                                            = 0x0301,
     WAFFLE_DL_OPENGL_ES1                                        = 0x0302,
     WAFFLE_DL_OPENGL_ES2                                        = 0x0303,
+
+    // ------------------------------------------------------------------
+    // For waffle_window
+    // ------------------------------------------------------------------
+
+    WAFFLE_WINDOW_WIDTH                                         = 0x0310,
+    WAFFLE_WINDOW_HEIGHT                                        = 0x0311,
 };
 ]]>
             </programlisting>

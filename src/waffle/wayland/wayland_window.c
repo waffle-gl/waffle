@@ -33,6 +33,7 @@
 
 #include "waffle_wayland.h"
 
+#include "wcore_attrib_list.h"
 #include "wcore_error.h"
 
 #include "wegl_config.h"
@@ -96,12 +97,18 @@ static const struct wl_shell_surface_listener shell_surface_listener = {
 struct wcore_window*
 wayland_window_create(struct wcore_platform *wc_plat,
                       struct wcore_config *wc_config,
-                      int width,
-                      int height)
+                      int32_t width,
+                      int32_t height,
+                      const intptr_t attrib_list[])
 {
     struct wayland_window *self;
     struct wayland_display *dpy = wayland_display(wc_config->display);
     bool ok = true;
+
+    if (wcore_attrib_list_length(attrib_list) > 0) {
+        wcore_error_bad_attribute(attrib_list[0]);
+        return NULL;
+    }
 
     self = wcore_calloc(sizeof(*self));
     if (self == NULL)
