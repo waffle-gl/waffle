@@ -40,6 +40,8 @@ droid_display_connect(struct wcore_platform *wc_plat,
     bool ok = true;
     struct droid_display *self;
 
+    (void) name;
+
     self = wcore_calloc(sizeof(*self));
     if (self == NULL)
         return NULL;

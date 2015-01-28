@@ -47,6 +47,8 @@ droid_window_create(struct wcore_platform *wc_plat,
     struct droid_display *dpy = droid_display(wc_config->display);
     bool ok = true;
 
+    (void) wc_plat;
+
     if (wcore_attrib_list_length(attrib_list) > 0) {
         wcore_error_bad_attribute(attrib_list[0]);
     }
