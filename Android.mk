@@ -36,7 +36,7 @@ LOCAL_CFLAGS := \
     -DWAFFLE_ANDROID_MINOR_VERSION=$(waffle_android_minor_version) \
     -Wno-pointer-arith
 
-LOCAL_CFLAGS += -std=c99
+LOCAL_CFLAGS += -std=c99 -fvisibility=hidden
 
 LOCAL_C_INCLUDES := \
     $(LOCAL_PATH)/include \
