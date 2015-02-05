@@ -120,7 +120,7 @@ Download and install the latest version CMake from the official website:
 
     http://cmake.org/
 
-Install Microsoft Visual Studio 2013* or later.
+Install Microsoft Visual Studio 2013 Update 4* or later.
 Install 'Visual C++' feature.
 
 Download OpenGL Core API and Extension Header Files.
