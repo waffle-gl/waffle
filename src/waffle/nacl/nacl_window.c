@@ -97,5 +97,6 @@ nacl_window_resize(struct wcore_window *wc_self,
 bool
 nacl_window_swap_buffers(struct wcore_window *wc_self)
 {
-    return false;
+    struct nacl_platform *plat = nacl_platform(wc_self->display->platform);
+    return nacl_swapbuffers(plat->nacl);
 }

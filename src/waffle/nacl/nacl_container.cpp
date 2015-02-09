@@ -28,11 +28,13 @@
 #include "ppapi/cpp/module.h"
 #include "ppapi/c/pp_errors.h"
 #include "nacl_container.h"
+#include "nacl_swap_thread.h"
 
 namespace waffle {
 
 struct nacl_container {
     pp::Graphics3D *ctx;
+    NaclSwapThread *swapper;
 
     void *glapi;
     bool (*glInitializePPAPI) (PPB_GetInterface);
@@ -49,6 +51,7 @@ nacl_container_dtor(waffle::nacl_container *nc)
     if (nc->glapi)
         dlclose(nc->glapi);
 
+    delete nc->swapper;
     delete nc;
 }
 
@@ -119,6 +122,7 @@ nacl_context_init(waffle::nacl_container *nc, struct nacl_config *cfg)
         return false;
     }
 
+    nc->swapper = new NaclSwapThread(pp_instance, nc->ctx);
     return true;
 }
 
@@ -193,4 +197,12 @@ nacl_makecurrent(nacl_container *nc, bool release)
     cpp_nc->glSetCurrentContextPPAPI(ctx);
 
     return true;
+}
+
+extern "C" bool
+nacl_swapbuffers(nacl_container *nc)
+{
+    waffle::nacl_container *cpp_nc =
+        reinterpret_cast<waffle::nacl_container*>(nc);
+    return cpp_nc->swapper->swap();
 }
