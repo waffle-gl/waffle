@@ -68,7 +68,9 @@ nacl_platform_make_current(struct wcore_platform *wc_self,
                            struct wcore_window *wc_window,
                            struct wcore_context *wc_ctx)
 {
-    return false;
+    bool release = (!wc_window && !wc_ctx);
+    return nacl_makecurrent(nacl_platform(wc_self)->nacl,
+                            release);
 }
 
 struct wcore_platform*

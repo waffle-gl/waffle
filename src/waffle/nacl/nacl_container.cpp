@@ -181,3 +181,16 @@ nacl_resize(struct nacl_container *nc, int32_t width, int32_t height)
     }
     return false;
 }
+
+extern "C" bool
+nacl_makecurrent(nacl_container *nc, bool release)
+{
+    waffle::nacl_container *cpp_nc =
+        reinterpret_cast<waffle::nacl_container*>(nc);
+
+    PP_Resource ctx = release ? 0 : cpp_nc->ctx->pp_resource();
+
+    cpp_nc->glSetCurrentContextPPAPI(ctx);
+
+    return true;
+}
