@@ -25,13 +25,22 @@
 
 #ifdef __cplusplus
 
+#include <dlfcn.h>
+
 extern "C" {
 #endif
+
+#include "nacl_config.h"
+#include "wcore_error.h"
+
+#define NACL_GLES2_LIBRARY "libppapi_gles2.so"
 
 struct nacl_container;
 
 struct nacl_container *nacl_init();
 void nacl_teardown(struct nacl_container *nc);
+bool nacl_context_init(struct nacl_container *nc, struct nacl_config *cfg);
+void nacl_context_fini(struct nacl_container *nc);
 
 #ifdef __cplusplus
 };
