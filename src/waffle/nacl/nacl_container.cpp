@@ -26,6 +26,7 @@
 #include "ppapi/cpp/graphics_3d.h"
 #include "ppapi/cpp/instance.h"
 #include "ppapi/cpp/module.h"
+#include "ppapi/c/pp_errors.h"
 #include "nacl_container.h"
 
 namespace waffle {
@@ -153,4 +154,30 @@ nacl_context_fini(struct nacl_container *nc)
 
     cpp_nc->glSetCurrentContextPPAPI(0);
     cpp_nc->glTerminatePPAPI();
+}
+
+extern "C" bool
+nacl_resize(struct nacl_container *nc, int32_t width, int32_t height)
+{
+    waffle::nacl_container *cpp_nc =
+        reinterpret_cast<waffle::nacl_container*>(nc);
+
+    int32_t error = cpp_nc->ctx->ResizeBuffers(width, height);
+
+    if (error == PP_OK)
+       return true;
+
+    switch (error) {
+        case PP_ERROR_BADRESOURCE:
+            wcore_errorf(WAFFLE_ERROR_FATAL, "Invalid NaCl 3D context.");
+            break;
+        case PP_ERROR_BADARGUMENT:
+            wcore_errorf(WAFFLE_ERROR_BAD_PARAMETER,
+                         "Invalid values given for resize (w %d h %d)",
+                         width, height);
+            break;
+        default:
+            wcore_errorf(WAFFLE_ERROR_UNKNOWN, "NaCl resize failed.");
+    }
+    return false;
 }

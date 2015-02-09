@@ -40,6 +40,7 @@ struct nacl_container;
 struct nacl_container *nacl_init();
 void nacl_teardown(struct nacl_container *nc);
 bool nacl_context_init(struct nacl_container *nc, struct nacl_config *cfg);
+bool nacl_resize(struct nacl_container *nc, int32_t width, int32_t height);
 void nacl_context_fini(struct nacl_container *nc);
 
 #ifdef __cplusplus

@@ -27,6 +27,7 @@
 
 #include "wcore_window.h"
 #include "wcore_util.h"
+#include "nacl_container.h"
 #include "nacl_platform.h"
 
 struct wcore_platform;

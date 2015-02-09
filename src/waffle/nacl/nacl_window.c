@@ -53,6 +53,7 @@ nacl_window_create(struct wcore_platform *wc_plat,
 
 {
     struct nacl_window *self;
+    struct nacl_platform *nplat = nacl_platform(wc_plat);
     bool ok = true;
 
     if (wcore_attrib_list_length(attrib_list) > 0) {
@@ -68,8 +69,9 @@ nacl_window_create(struct wcore_platform *wc_plat,
     if (!ok)
         goto error;
 
-    if (!ok)
-        goto error;
+    // Set requested dimensions for the backing surface.
+    if (!nacl_resize(nplat->nacl, width, height))
+         goto error;
 
     return &self->wcore;
 
@@ -88,7 +90,8 @@ bool
 nacl_window_resize(struct wcore_window *wc_self,
                    int32_t width, int32_t height)
 {
-    return false;
+    struct nacl_platform *plat = nacl_platform(wc_self->display->platform);
+    return nacl_resize(plat->nacl, width, height);
 }
 
 bool
