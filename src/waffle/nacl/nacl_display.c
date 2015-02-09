@@ -66,5 +66,16 @@ bool
 nacl_display_supports_context_api(struct wcore_display *wc_self,
                                   int32_t context_api)
 {
-    return false;
+    switch (context_api) {
+        case WAFFLE_CONTEXT_OPENGL_ES2:
+            return true;
+        case WAFFLE_CONTEXT_OPENGL:
+        case WAFFLE_CONTEXT_OPENGL_ES1:
+        case WAFFLE_CONTEXT_OPENGL_ES3:
+            return false;
+        default:
+            wcore_error_internal("waffle_context_api has bad value %#x",
+                                 context_api);
+            return false;
+    }
 }
