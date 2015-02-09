@@ -24,6 +24,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "wcore_error.h"
+#include "wcore_attrib_list.h"
 #include "nacl_config.h"
 #include "nacl_display.h"
 #include "nacl_window.h"
@@ -47,10 +48,17 @@ struct wcore_window*
 nacl_window_create(struct wcore_platform *wc_plat,
                    struct wcore_config *wc_config,
                    int width,
-                   int height)
+                   int height,
+                   const intptr_t attrib_list[])
+
 {
     struct nacl_window *self;
     bool ok = true;
+
+    if (wcore_attrib_list_length(attrib_list) > 0) {
+        wcore_error_bad_attribute(attrib_list[0]);
+        return NULL;
+    }
 
     self = wcore_calloc(sizeof(*self));
     if (self == NULL)
