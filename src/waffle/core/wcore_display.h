@@ -25,6 +25,7 @@
 
 #pragma once
 
+#include <assert.h>
 #include "c99_compat.h"
 
 #include "api_object.h"
@@ -55,5 +56,10 @@ wcore_display_init(struct wcore_display *self,
                    struct wcore_platform *platform);
 
 
-bool
-wcore_display_teardown(struct wcore_display *self);
+static inline bool
+wcore_display_teardown(struct wcore_display *self)
+{
+    (void) self;
+    assert(self);
+    return true;
+}

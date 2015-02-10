@@ -144,6 +144,7 @@ struct wcore_platform {
 static inline bool
 wcore_platform_init(struct wcore_platform *self)
 {
+    (void) self;
     assert(self);
     return true;
 }
@@ -151,6 +152,7 @@ wcore_platform_init(struct wcore_platform *self)
 static inline bool
 wcore_platform_teardown(struct wcore_platform *self)
 {
+    (void) self;
     assert(self);
     return true;
 }

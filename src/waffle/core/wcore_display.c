@@ -52,10 +52,3 @@ wcore_display_init(struct wcore_display *self,
 
     return true;
 }
-
-bool
-wcore_display_teardown(struct wcore_display *self)
-{
-    assert(self);
-    return true;
-}

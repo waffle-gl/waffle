@@ -73,6 +73,7 @@ wcore_config_init(struct wcore_config *self,
 static inline bool
 wcore_config_teardown(struct wcore_config *self)
 {
+    (void) self;
     assert(self);
     return true;
 }

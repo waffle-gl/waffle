@@ -166,6 +166,8 @@ wegl_context_create(struct wcore_platform *wc_plat,
     struct wegl_context *share_ctx = wegl_context(wc_share_ctx);
     bool ok;
 
+    (void) wc_plat;
+
     ctx = wcore_calloc(sizeof(*ctx));
     if (!ctx)
         return NULL;

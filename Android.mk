@@ -36,7 +36,7 @@ LOCAL_CFLAGS := \
     -DWAFFLE_ANDROID_MINOR_VERSION=$(waffle_android_minor_version) \
     -Wno-pointer-arith
 
-LOCAL_CFLAGS += -std=c99
+LOCAL_CFLAGS += -std=c99 -fvisibility=hidden
 
 LOCAL_C_INCLUDES := \
     $(LOCAL_PATH)/include \
@@ -101,3 +101,10 @@ LOCAL_COPY_HEADERS := \
 LOCAL_COPY_HEADERS_TO := waffle-$(waffle_major_version)
 
 include $(BUILD_SHARED_LIBRARY)
+
+SUBDIRS := \
+    examples \
+    src/utils
+
+mkfiles := $(patsubst %,$(waffle_top)/%/Android.mk,$(SUBDIRS))
+include $(mkfiles)

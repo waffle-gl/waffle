@@ -215,6 +215,8 @@ wegl_config_choose(struct wcore_platform *wc_plat,
     struct wegl_config *config;
     bool ok;
 
+    (void) wc_plat;
+
     config = wcore_calloc(sizeof(*config));
     if (!config)
         return NULL;
