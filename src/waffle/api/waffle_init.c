@@ -204,3 +204,23 @@ waffle_init(const int32_t *attrib_list)
 
     return true;
 }
+
+WAFFLE_API bool
+waffle_teardown(void)
+{
+    bool ok = true;
+
+    wcore_error_reset();
+
+    if (!api_platform) {
+        wcore_error(WAFFLE_ERROR_NOT_INITIALIZED);
+        return false;
+    }
+
+    ok &= api_platform->vtbl->destroy(api_platform);
+    if (!ok)
+        return false;
+
+    api_platform = NULL;
+    return true;
+}

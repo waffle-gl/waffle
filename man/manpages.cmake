@@ -45,6 +45,7 @@ set(man_outputs
     ${man_out_dir}/man3/waffle_is_extension_in_string.3
     ${man_out_dir}/man3/waffle_make_current.3
     ${man_out_dir}/man3/waffle_native.3
+    ${man_out_dir}/man3/waffle_teardown.3
     ${man_out_dir}/man3/waffle_wayland.3
     ${man_out_dir}/man3/waffle_window.3
     ${man_out_dir}/man3/waffle_x11_egl.3
@@ -81,6 +82,7 @@ waffle_add_manpage(3 waffle_init)
 waffle_add_manpage(3 waffle_is_extension_in_string)
 waffle_add_manpage(3 waffle_make_current)
 waffle_add_manpage(3 waffle_native)
+waffle_add_manpage(3 waffle_teardown)
 waffle_add_manpage(3 waffle_wayland)
 waffle_add_manpage(3 waffle_window)
 waffle_add_manpage(3 waffle_x11_egl)

@@ -43,6 +43,7 @@ set(html_outputs
     ${html_out_dir}/waffle_is_extension_in_string.3.html
     ${html_out_dir}/waffle_make_current.3.html
     ${html_out_dir}/waffle_native.3.html
+    ${html_out_dir}/waffle_teardown.3.html
     ${html_out_dir}/waffle_wayland.3.html
     ${html_out_dir}/waffle_window.3.html
     ${html_out_dir}/waffle_x11_egl.3.html
@@ -81,6 +82,7 @@ waffle_add_html(3 waffle_init)
 waffle_add_html(3 waffle_is_extension_in_string)
 waffle_add_html(3 waffle_make_current)
 waffle_add_html(3 waffle_native)
+waffle_add_html(3 waffle_teardown)
 waffle_add_html(3 waffle_wayland)
 waffle_add_html(3 waffle_window)
 waffle_add_html(3 waffle_x11_egl)
