@@ -77,8 +77,13 @@ cgl_dl_can_open(struct wcore_platform *wc_plat,
                 int32_t waffle_dl)
 {
     struct cgl_platform *plat = cgl_platform(wc_plat);
+    bool ok;
 
-    if (!cgl_dl_check_enum(waffle_dl))
+    WCORE_ERROR_DISABLED({
+        ok = cgl_dl_check_enum(waffle_dl);
+    });
+
+    if (!ok)
         return false;
 
     if (plat->dl_gl != NULL)
