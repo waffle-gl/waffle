@@ -46,27 +46,24 @@
   <refsect1>
     <title>Description</title>
 
-    <term><function>waffle_teardown()</function></term>
-    <listitem>
-      <para>
-        Feature test macro: <code>WAFFLE_API_VERSION >= 0x0106</code>.
-        (See <citerefentry><refentrytitle>waffle_feature_test_macros</refentrytitle><manvolnum>7</manvolnum></citerefentry>).
-      </para>
-      <para>
-        Tears down the per-process global state of the waffle library.
-      </para>
-      <para>
-        А call to <function>waffle_teardown()</function> can fail. In the case it does the caller is advised
-        to use <function>waffle_error_get_info</function>, <function>waffle_error_get_code</function>
-        and/or <function>waffle_error_to_string</function> to retrieve the error.
+    <para>
+      Feature test macro: <code>WAFFLE_API_VERSION >= 0x0106</code>.
+      (See <citerefentry><refentrytitle>waffle_feature_test_macros</refentrytitle><manvolnum>7</manvolnum></citerefentry>).
+    </para>
+    <para>
+      <function>waffle_teardown()</function> tears down the per-process global state of the waffle library.
+    </para>
+    <para>
+      А call to <function>waffle_teardown()</function> can fail. In the case it does the caller is advised
+      to use <function>waffle_error_get_info</function>, <function>waffle_error_get_code</function>
+      and/or <function>waffle_error_to_string</function> to retrieve the error.
 
-        In case of an error that differs from <errorcode>WAFFLE_ERROR_NOT_INITIALIZED</errorcode> the caller
-        should not use the Waffle API as the global state is likely to be in an undetermined/corrupt.
+      In case of an error that differs from <errorcode>WAFFLE_ERROR_NOT_INITIALIZED</errorcode> the caller
+      should not use the Waffle API as the global state is likely to be in an undetermined/corrupt.
 
-        In the case of <errorcode>WAFFLE_ERROR_NOT_INITIALIZED</errorcode> one should call
-        <function>waffle_init()</function> prior to reusing Waffle.
-      </para>
-    </listitem>
+      In the case of <errorcode>WAFFLE_ERROR_NOT_INITIALIZED</errorcode> one should call
+      <function>waffle_init()</function> prior to reusing Waffle.
+    </para>
   </refsect1>
 
   <refsect1>
