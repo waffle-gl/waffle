@@ -184,35 +184,35 @@ wayland_window_show(struct wcore_window *wc_self)
 bool
 wayland_window_swap_buffers(struct wcore_window *wc_self)
 {
-   struct wayland_display *dpy = wayland_display(wc_self->display);
-   bool ok;
+    struct wayland_display *dpy = wayland_display(wc_self->display);
+    bool ok;
 
-   ok = wegl_window_swap_buffers(wc_self);
-   if (!ok)
-      return false;
+    ok = wegl_window_swap_buffers(wc_self);
+    if (!ok)
+        return false;
 
-   ok = wayland_display_sync(dpy);
-   if (!ok)
-      return false;
+    ok = wayland_display_sync(dpy);
+    if (!ok)
+        return false;
 
-   return true;
+    return true;
 }
 
 bool
 wayland_window_resize(struct wcore_window *wc_self,
                       int32_t width, int32_t height)
 {
-   struct wayland_window *self = wayland_window(wc_self);
-   struct wayland_display *dpy = wayland_display(self->wegl.wcore.display);
+    struct wayland_window *self = wayland_window(wc_self);
+    struct wayland_display *dpy = wayland_display(self->wegl.wcore.display);
 
-   wl_egl_window_resize(wayland_window(wc_self)->wl_window,
-                        width, height, 0, 0);
+    wl_egl_window_resize(wayland_window(wc_self)->wl_window,
+                         width, height, 0, 0);
 
-   if (!wayland_display_sync(dpy))
-      return false;
+    if (!wayland_display_sync(dpy))
+        return false;
 
-   // FIXME: How to detect if the resize failed?
-   return true;
+    // FIXME: How to detect if the resize failed?
+    return true;
 }
 
 union waffle_native_window*
