@@ -24,6 +24,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nacl_context.h"
+#include "api_priv.h"
 
 bool
 nacl_context_destroy(struct wcore_context *wc_self)
@@ -34,7 +35,12 @@ nacl_context_destroy(struct wcore_context *wc_self)
     if (!wc_self)
         return ok;
 
+    struct nacl_platform *nacl_plat =
+        nacl_platform(api_platform);
+
     self = nacl_context(wc_self);
+
+    nacl_context_fini(nacl_plat->nacl);
 
     ok &= wcore_context_teardown(wc_self);
     free(self);
@@ -47,6 +53,8 @@ nacl_context_create(struct wcore_platform *wc_plat,
                     struct wcore_context *wc_share_ctx)
 {
     struct nacl_context *self;
+    struct nacl_config *config = nacl_config(wc_config);
+    struct nacl_platform *platform = nacl_platform(wc_plat);
     bool ok = true;
 
     self = wcore_calloc(sizeof(*self));
@@ -54,6 +62,10 @@ nacl_context_create(struct wcore_platform *wc_plat,
         return NULL;
 
     ok = wcore_context_init(&self->wcore, wc_config);
+    if (!ok)
+        goto error;
+
+    ok = nacl_context_init(platform->nacl, config);
     if (!ok)
         goto error;
 

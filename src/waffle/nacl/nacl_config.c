@@ -23,7 +23,9 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#include "ppapi/c/pp_graphics_3d.h"
 #include "nacl_config.h"
+#include "wcore_error.h"
 
 bool
 nacl_config_destroy(struct wcore_config *wc_self)
@@ -49,6 +51,41 @@ nacl_config_choose(struct wcore_platform *wc_plat,
     self = wcore_calloc(sizeof(*self));
     if (self == NULL)
         return NULL;
+
+    // Currently only OpenGL ES 2.0 is supported.
+    if (attrs->context_api != WAFFLE_CONTEXT_OPENGL_ES2) {
+        wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
+                     "NaCl does no support context type %s.",
+                     wcore_enum_to_string(attrs->context_api));
+        goto error;
+    }
+
+    unsigned attr = 0;
+
+    // Max amount of attribs is hardcoded in nacl_config.h (64)
+#define PUSH_ATTRIB(a, val) \
+    if (val != WAFFLE_DONT_CARE) {\
+        self->attribs[attr++] = a; \
+        self->attribs[attr++] = val;\
+    }
+
+    PUSH_ATTRIB(PP_GRAPHICS3DATTRIB_ALPHA_SIZE,     attrs->alpha_size);
+    PUSH_ATTRIB(PP_GRAPHICS3DATTRIB_BLUE_SIZE,      attrs->blue_size);
+    PUSH_ATTRIB(PP_GRAPHICS3DATTRIB_GREEN_SIZE,     attrs->green_size);
+    PUSH_ATTRIB(PP_GRAPHICS3DATTRIB_RED_SIZE,       attrs->red_size);
+    PUSH_ATTRIB(PP_GRAPHICS3DATTRIB_DEPTH_SIZE,     attrs->depth_size);
+    PUSH_ATTRIB(PP_GRAPHICS3DATTRIB_STENCIL_SIZE,   attrs->stencil_size);
+    PUSH_ATTRIB(PP_GRAPHICS3DATTRIB_SAMPLES,        attrs->samples);
+    PUSH_ATTRIB(PP_GRAPHICS3DATTRIB_SAMPLE_BUFFERS, attrs->sample_buffers);
+
+    // Note, we have to have at least 1x1 size so that initial context
+    // backing surface creation will succeed without errors. Later on
+    // it is resized by window creation/resize.
+    PUSH_ATTRIB(PP_GRAPHICS3DATTRIB_WIDTH,  1);
+    PUSH_ATTRIB(PP_GRAPHICS3DATTRIB_HEIGHT, 1);
+    PUSH_ATTRIB(PP_GRAPHICS3DATTRIB_NONE, 0);
+
+#undef PUSH_ATTRIB
 
     ok = wcore_config_init(&self->wcore, wc_dpy, attrs);
     if (!ok)

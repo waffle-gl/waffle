@@ -33,6 +33,7 @@ struct wcore_platform;
 
 struct nacl_config {
     struct wcore_config wcore;
+    int32_t attribs[64];
 };
 
 DEFINE_CONTAINER_CAST_FUNC(nacl_config,

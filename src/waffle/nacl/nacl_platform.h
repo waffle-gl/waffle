@@ -38,6 +38,7 @@
 struct nacl_platform {
     struct wcore_platform wcore;
     struct nacl_container *nacl;
+    void *gl_dl;
 };
 
 DEFINE_CONTAINER_CAST_FUNC(nacl_platform,
