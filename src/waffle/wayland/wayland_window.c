@@ -39,11 +39,14 @@
 #include "wegl_config.h"
 
 #include "wayland_display.h"
+#include "wayland_platform.h"
 #include "wayland_window.h"
 
 bool
 wayland_window_destroy(struct wcore_window *wc_self)
 {
+    struct wcore_platform *wc_plat = wc_self->display->platform;
+    struct wayland_platform *plat = wayland_platform(wegl_platform(wc_plat));
     struct wayland_window *self = wayland_window(wc_self);
     bool ok = true;
 
@@ -53,7 +56,7 @@ wayland_window_destroy(struct wcore_window *wc_self)
     ok &= wegl_window_teardown(&self->wegl);
 
     if (self->wl_window)
-        wl_egl_window_destroy(self->wl_window);
+        plat->wl_egl_window_destroy(self->wl_window);
 
     if (self->wl_shell_surface)
         wl_shell_surface_destroy(self->wl_shell_surface);
@@ -102,6 +105,7 @@ wayland_window_create(struct wcore_platform *wc_plat,
                       const intptr_t attrib_list[])
 {
     struct wayland_window *self;
+    struct wayland_platform *plat = wayland_platform(wegl_platform(wc_plat));
     struct wayland_display *dpy = wayland_display(wc_config->display);
     bool ok = true;
 
@@ -142,7 +146,8 @@ wayland_window_create(struct wcore_platform *wc_plat,
                                   &shell_surface_listener,
                                   NULL);
 
-    self->wl_window = wl_egl_window_create(self->wl_surface, width, height);
+    self->wl_window = plat->wl_egl_window_create(self->wl_surface,
+                                                 width, height);
     if (!self->wl_window) {
         wcore_errorf(WAFFLE_ERROR_UNKNOWN, "wl_egl_window_create failed");
         goto error;
@@ -203,10 +208,12 @@ wayland_window_resize(struct wcore_window *wc_self,
                       int32_t width, int32_t height)
 {
     struct wayland_window *self = wayland_window(wc_self);
+    struct wcore_platform *wc_plat = wc_self->display->platform;
+    struct wayland_platform *plat = wayland_platform(wegl_platform(wc_plat));
     struct wayland_display *dpy = wayland_display(self->wegl.wcore.display);
 
-    wl_egl_window_resize(wayland_window(wc_self)->wl_window,
-                         width, height, 0, 0);
+    plat->wl_egl_window_resize(wayland_window(wc_self)->wl_window,
+                               width, height, 0, 0);
 
     if (!wayland_display_sync(dpy))
         return false;

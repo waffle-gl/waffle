@@ -44,7 +44,6 @@ if(waffle_on_linux)
     if(waffle_has_wayland)
         list(APPEND waffle_libdeps
             ${wayland-client_LDFLAGS}
-            ${wayland-egl_LDFLAGS}
             )
     endif()
     if(waffle_has_x11)
