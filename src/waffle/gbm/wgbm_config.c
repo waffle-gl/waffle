@@ -25,6 +25,8 @@
 
 #include "wcore_error.h"
 
+#include "wegl_platform.h"
+
 #include "wgbm_config.h"
 #include "wgbm_display.h"
 
@@ -33,7 +35,8 @@ wgbm_config_choose(struct wcore_platform *wc_plat,
                    struct wcore_display *wc_dpy,
                    const struct wcore_config_attrs *attrs)
 {
-    if (wgbm_config_get_gbm_format(attrs) == 0) {
+    struct wcore_config *config = wegl_config_choose(wc_plat, wc_dpy, attrs);
+    if (wgbm_config_get_gbm_format(wc_plat, wc_dpy, config) == 0) {
         wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
                      "requested config is unsupported on GBM");
         return NULL;
@@ -43,19 +46,23 @@ wgbm_config_choose(struct wcore_platform *wc_plat,
 }
 
 uint32_t
-wgbm_config_get_gbm_format(const struct wcore_config_attrs *attrs)
+wgbm_config_get_gbm_format(struct wcore_platform *wc_plat,
+                           struct wcore_display *wc_display,
+                           struct wcore_config *wc_config)
 {
-    if (attrs->red_size > 8 || attrs->blue_size > 8 ||
-        attrs->green_size > 8 || attrs->alpha_size > 8) {
+    EGLint gbm_format;
+    struct wgbm_display *dpy = wgbm_display(wc_display);
+    struct wegl_platform *plat = wegl_platform(wc_plat);
+    struct wegl_config *egl_config = wegl_config(wc_config);
+    bool ok = plat->eglGetConfigAttrib(dpy->wegl.egl,
+                                       egl_config->egl,
+                                       EGL_NATIVE_VISUAL_ID,
+                                       &gbm_format);
+
+    if (!ok) {
         return 0;
     }
-
-    if (attrs->alpha_size <= 0)
-        return GBM_FORMAT_XRGB8888;
-    else if (attrs->alpha_size <= 8)
-        return GBM_FORMAT_ABGR8888;
-
-    return 0;
+    return gbm_format;
 }
 
 union waffle_native_config*
