@@ -79,7 +79,8 @@ wgbm_window_create(struct wcore_platform *wc_plat,
     if (self == NULL)
         return NULL;
 
-    gbm_format = wgbm_config_get_gbm_format(&wc_config->attrs);
+    gbm_format = wgbm_config_get_gbm_format(wc_plat, wc_config->display,
+                                            wc_config);
     assert(gbm_format != 0);
     self->gbm_surface = plat->gbm_surface_create(dpy->gbm_device,
                                                  width, height, gbm_format,
