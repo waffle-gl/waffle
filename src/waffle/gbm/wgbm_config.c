@@ -33,14 +33,18 @@ wgbm_config_choose(struct wcore_platform *wc_plat,
                    struct wcore_display *wc_dpy,
                    const struct wcore_config_attrs *attrs)
 {
-    struct wcore_config *config = wegl_config_choose(wc_plat, wc_dpy, attrs);
-    if (wgbm_config_get_gbm_format(wc_plat, wc_dpy, config) == 0) {
+    struct wcore_config *wc_config = wegl_config_choose(wc_plat, wc_dpy, attrs);
+    if (!wc_config)
+        return NULL;
+
+    if (wgbm_config_get_gbm_format(wc_plat, wc_dpy, wc_config) == 0) {
         wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
                      "requested config is unsupported on GBM");
+        wegl_config_destroy(wc_config);
         return NULL;
     }
 
-    return wegl_config_choose(wc_plat, wc_dpy, attrs);
+    return wc_config;
 }
 
 uint32_t
