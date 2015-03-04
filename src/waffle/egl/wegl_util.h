@@ -26,13 +26,12 @@
 #pragma once
 
 #include <stdbool.h>
-#include <stdint.h>
-
-#include <EGL/egl.h>
 
 struct wcore_context;
 struct wcore_display;
+struct wcore_platform;
 struct wcore_window;
+
 struct wegl_platform;
 
 /// @brief Sets the waffle error with info from eglGetError().
