@@ -43,6 +43,7 @@
 #include "wayland_display.h"
 #include "wayland_platform.h"
 #include "wayland_window.h"
+#include "wayland_wrapper.h"
 
 static const char *libwl_egl_filename = "libwayland-egl.so.1";
 
@@ -73,6 +74,7 @@ wayland_platform_destroy(struct wcore_platform *wc_self)
         }
     }
 
+    ok &= wayland_wrapper_teardown();
     ok &= wegl_platform_teardown(&self->wegl);
     free(self);
     return ok;
@@ -89,6 +91,10 @@ wayland_platform_create(void)
         return NULL;
 
     ok = wegl_platform_init(&self->wegl);
+    if (!ok)
+        goto error;
+
+    ok = wayland_wrapper_init();
     if (!ok)
         goto error;
 

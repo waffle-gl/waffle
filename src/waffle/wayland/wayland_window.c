@@ -28,6 +28,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+// The wrapper must be included before wayland-(client|egl).h
+#include "wayland_wrapper.h"
 #include <wayland-egl.h>
 #undef container_of
 

@@ -41,11 +41,6 @@ list(APPEND waffle_libdeps
     )
 
 if(waffle_on_linux)
-    if(waffle_has_wayland)
-        list(APPEND waffle_libdeps
-            ${wayland-client_LDFLAGS}
-            )
-    endif()
     if(waffle_has_x11)
         list(APPEND waffle_libdeps
             ${x11-xcb_LDFLAGS}
@@ -137,6 +132,7 @@ if(waffle_has_wayland)
         wayland/wayland_display.c
         wayland/wayland_platform.c
         wayland/wayland_window.c
+        wayland/wayland_wrapper.c
     )
 endif()
 
