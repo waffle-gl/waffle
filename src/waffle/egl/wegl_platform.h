@@ -26,6 +26,7 @@
 #pragma once
 
 #include <EGL/egl.h>
+#include <EGL/eglext.h>
 
 #include "wcore_platform.h"
 #include "wcore_util.h"
@@ -68,6 +69,9 @@ struct wegl_platform {
                                          const EGLint *attrib_list);
     EGLBoolean (*eglDestroySurface)(EGLDisplay dpy, EGLSurface surface);
     EGLBoolean (*eglSwapBuffers)(EGLDisplay dpy, EGLSurface surface);
+
+    EGLImageKHR (*eglCreateImageKHR) (EGLDisplay dpy, EGLContext ctx, EGLenum target, EGLClientBuffer buffer, const EGLint *attrib_list);
+    EGLBoolean (*eglDestroyImageKHR)(EGLDisplay dpy, EGLImageKHR image);
 };
 
 DEFINE_CONTAINER_CAST_FUNC(wegl_platform,
