@@ -337,8 +337,8 @@ struct waffle_config;
 
             The set of accepted values is
 
-            <constant>WAFFLE_CONTEXT_PROFILE_CORE</constant> and
-            <constant>WAFFLE_CONTEXT_PROFILE_COMPATIBILITY</constant>.
+            <constant>WAFFLE_CONTEXT_CORE_PROFILE</constant> and
+            <constant>WAFFLE_CONTEXT_COMPATIBILITY_PROFILE</constant>.
           </para>
         </listitem>
       </varlistentry>
