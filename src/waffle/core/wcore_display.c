@@ -25,7 +25,6 @@
 
 #include <assert.h>
 #include <stdio.h>
-#include "threads.h"
 
 #include "wcore_display.h"
 

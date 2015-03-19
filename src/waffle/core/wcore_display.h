@@ -27,6 +27,7 @@
 
 #include <assert.h>
 #include "c99_compat.h"
+#include "threads.h"
 
 #include "api_object.h"
 
