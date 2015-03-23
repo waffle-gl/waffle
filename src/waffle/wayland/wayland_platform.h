@@ -36,10 +36,28 @@
 #include "wcore_util.h"
 
 struct linux_platform;
+struct wl_egl_window;
+struct wl_surface;
 
 struct wayland_platform {
     struct wegl_platform wegl;
     struct linux_platform *linux;
+
+
+    void *dl_wl_egl;
+
+    struct wl_egl_window *
+    (*wl_egl_window_create)(struct wl_surface *surface,
+                            int width, int height);
+
+    void
+    (*wl_egl_window_destroy)(struct wl_egl_window *egl_window);
+
+    void
+    (*wl_egl_window_resize)(struct wl_egl_window *egl_window,
+                            int width, int height,
+                            int dx, int dy);
+
 };
 
 DEFINE_CONTAINER_CAST_FUNC(wayland_platform,

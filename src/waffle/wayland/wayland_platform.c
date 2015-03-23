@@ -27,6 +27,7 @@
 #define _POSIX_C_SOURCE 200112 // glib feature macro for unsetenv()
 
 #include <stdlib.h>
+#include <dlfcn.h>
 
 #include "waffle_wayland.h"
 
@@ -42,6 +43,9 @@
 #include "wayland_display.h"
 #include "wayland_platform.h"
 #include "wayland_window.h"
+#include "wayland_wrapper.h"
+
+static const char *libwl_egl_filename = "libwayland-egl.so.1";
 
 static const struct wcore_platform_vtbl wayland_platform_vtbl;
 
@@ -50,6 +54,7 @@ wayland_platform_destroy(struct wcore_platform *wc_self)
 {
     struct wayland_platform *self = wayland_platform(wegl_platform(wc_self));
     bool ok = true;
+    int error;
 
     if (!self)
         return true;
@@ -59,6 +64,17 @@ wayland_platform_destroy(struct wcore_platform *wc_self)
     if (self->linux)
         ok &= linux_platform_destroy(self->linux);
 
+    if (self->dl_wl_egl) {
+        error = dlclose(self->dl_wl_egl);
+        if (error) {
+            ok &= false;
+            wcore_errorf(WAFFLE_ERROR_UNKNOWN,
+                         "dlclose(\"%s\") failed: %s",
+                         libwl_egl_filename, dlerror());
+        }
+    }
+
+    ok &= wayland_wrapper_teardown();
     ok &= wegl_platform_teardown(&self->wegl);
     free(self);
     return ok;
@@ -77,6 +93,33 @@ wayland_platform_create(void)
     ok = wegl_platform_init(&self->wegl);
     if (!ok)
         goto error;
+
+    ok = wayland_wrapper_init();
+    if (!ok)
+        goto error;
+
+    self->dl_wl_egl = dlopen(libwl_egl_filename, RTLD_LAZY | RTLD_LOCAL);
+    if (!self->dl_wl_egl) {
+        wcore_errorf(WAFFLE_ERROR_FATAL,
+                     "dlopen(\"%s\") failed: %s",
+                     libwl_egl_filename, dlerror());
+        goto error;
+    }
+
+#define RETRIEVE_WL_EGL_SYMBOL(function)                                  \
+    self->function = dlsym(self->dl_wl_egl, #function);                \
+    if (!self->function) {                                             \
+        wcore_errorf(WAFFLE_ERROR_FATAL,                             \
+                     "dlsym(\"%s\", \"" #function "\") failed: %s",    \
+                     libwl_egl_filename, dlerror());                      \
+        goto error;                                                    \
+    }
+
+    RETRIEVE_WL_EGL_SYMBOL(wl_egl_window_create);
+    RETRIEVE_WL_EGL_SYMBOL(wl_egl_window_destroy);
+    RETRIEVE_WL_EGL_SYMBOL(wl_egl_window_resize);
+
+#undef RETRIEVE_WL_EGL_SYMBOL
 
     self->linux = linux_platform_create();
     if (!self->linux)
