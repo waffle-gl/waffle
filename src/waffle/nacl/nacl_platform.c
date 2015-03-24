@@ -26,6 +26,7 @@
 #include <dlfcn.h>
 #include <stdio.h>
 
+#include "nacl_dl.h"
 #include "nacl_platform.h"
 
 static const struct wcore_platform_vtbl nacl_platform_vtbl;
@@ -43,88 +44,11 @@ nacl_platform_destroy(struct wcore_platform *wc_self)
 
     nacl_teardown(self->nacl);
 
-    if (self->gl_dl)
-        if (dlclose(self->gl_dl) != 0)
-            wcore_errorf(WAFFLE_ERROR_UNKNOWN, "dlclose failed: %s",
-                         dlerror());
+    if (self->dl_gl)
+        ok &= nacl_dl_close(&self->wcore);
 
     free(self);
     return ok;
-}
-
-static bool
-nacl_platform_dl_can_open(struct wcore_platform *wc_self,
-                          int32_t waffle_dl)
-{
-    struct nacl_platform *self = nacl_platform(wc_self);
-
-    switch (waffle_dl) {
-        case WAFFLE_DL_OPENGL_ES2:
-            if (!self->gl_dl)
-                self->gl_dl = dlopen(NACL_GLES2_LIBRARY, RTLD_LAZY);
-            break;
-        // API not supported
-        default:
-            return false;
-    }
-
-    if (!self->gl_dl)
-        wcore_errorf(WAFFLE_ERROR_UNKNOWN, "dlopen failed: %s", dlerror());
-
-    return self->gl_dl ? true : false;
-}
-
-// Construct a string that maps GL function to NaCl function
-// by concating given prefix and function name tail from 'src'.
-static char *
-nacl_prefix(const char *src, const char *prefix)
-{
-    if (strncmp(src, "gl", 2) != 0)
-        return NULL;
-
-    uint32_t len = strlen(src) + strlen(prefix);
-
-    char *dst = wcore_calloc(len);
-    if (!dst)
-        return NULL;
-
-    snprintf(dst, len, "%s%s", prefix, src + 2);
-
-    return dst;
-}
-
-static void*
-nacl_platform_dl_sym(struct wcore_platform *wc_self,
-                     int32_t waffle_dl,
-                     const char *name)
-{
-    struct nacl_platform *self = nacl_platform(wc_self);
-    char *nacl_name = NULL;
-    void *func = NULL;
-
-    if (!self->gl_dl)
-        if (!nacl_platform_dl_can_open(wc_self, waffle_dl))
-            return false;
-
-    nacl_name = nacl_prefix(name, "GLES2");
-
-    if (!nacl_name)
-        return NULL;
-
-    func = dlsym(self->gl_dl, nacl_name);
-
-    if (!func) {
-        const char *error = dlerror();
-        if (error) {
-            wcore_errorf(WAFFLE_ERROR_UNKNOWN,
-                         "dlsym(libname=\"%s\", symbol=\"%s\") failed: %s",
-                         NACL_GLES2_LIBRARY, nacl_name, error);
-        }
-    }
-
-    free(nacl_name);
-
-    return func;
 }
 
 static bool
@@ -168,8 +92,8 @@ static const struct wcore_platform_vtbl nacl_platform_vtbl = {
     .destroy = nacl_platform_destroy,
 
     .make_current = nacl_platform_make_current,
-    .dl_can_open = nacl_platform_dl_can_open,
-    .dl_sym = nacl_platform_dl_sym,
+    .dl_can_open = nacl_dl_can_open,
+    .dl_sym = nacl_dl_sym,
 
     .display = {
         .connect = nacl_display_connect,

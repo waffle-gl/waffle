@@ -1,4 +1,4 @@
-// Copyright 2014 Intel Corporation
+// Copyright 2012-2015 Intel Corporation
 //
 // All rights reserved.
 //
@@ -25,26 +25,19 @@
 
 #pragma once
 
-#include "wcore_platform.h"
-#include "wcore_error.h"
-#include "wcore_util.h"
+#include <stdbool.h>
+#include <stdint.h>
 
-#include "nacl_config.h"
-#include "nacl_container.h"
-#include "nacl_context.h"
-#include "nacl_display.h"
-#include "nacl_window.h"
+struct wcore_platform;
 
-struct nacl_platform {
-    struct wcore_platform wcore;
-    struct nacl_container *nacl;
-    void *dl_gl;
-};
+bool
+nacl_dl_can_open(struct wcore_platform *wc_plat,
+                 int32_t waffle_dl);
 
-DEFINE_CONTAINER_CAST_FUNC(nacl_platform,
-                           struct nacl_platform,
-                           struct wcore_platform,
-                           wcore)
+void*
+nacl_dl_sym(struct wcore_platform *wc_plat,
+            int32_t waffle_dl,
+            const char *name);
 
-struct wcore_platform*
-nacl_platform_create(void);
+bool
+nacl_dl_close(struct wcore_platform *wc_plat);
