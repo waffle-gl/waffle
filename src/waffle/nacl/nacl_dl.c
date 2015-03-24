@@ -102,8 +102,11 @@ nacl_dl_can_open(struct wcore_platform *wc_plat,
 static char *
 nacl_dl_prefix(const char *src, const char *prefix)
 {
-    if (strncmp(src, "gl", 2) != 0)
+    if (strncmp(src, "gl", 2) != 0) {
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN,
+                     "NACL symbol name does not start with \"gl\"");
         return NULL;
+    }
 
     uint32_t len = strlen(src) + strlen(prefix);
 
@@ -111,7 +114,13 @@ nacl_dl_prefix(const char *src, const char *prefix)
     if (!dst)
         return NULL;
 
-    snprintf(dst, len, "%s%s", prefix, src + 2);
+    int n = snprintf(dst, len, "%s%s", prefix, src + 2);
+    if (n < 0 || n >= len) {
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN,
+                     "NACL cannot create symbol prefix");
+        free(dst);
+        return NULL;
+    }
 
     return dst;
 }
