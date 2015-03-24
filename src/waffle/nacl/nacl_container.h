@@ -25,8 +25,6 @@
 
 #ifdef __cplusplus
 
-#include <dlfcn.h>
-
 extern "C" {
 #endif
 
