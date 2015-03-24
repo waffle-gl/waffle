@@ -28,6 +28,10 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /// @brief Encodes the attribute list received by waffle_config_choose().
 struct wcore_config_attrs {
     int32_t context_api;
@@ -84,3 +88,7 @@ bool
 wcore_config_attrs_version_le(
       const struct wcore_config_attrs *attrs,
       int merged_version);
+
+#ifdef __cplusplus
+}
+#endif

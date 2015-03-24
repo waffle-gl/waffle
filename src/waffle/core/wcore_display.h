@@ -33,6 +33,10 @@
 
 #include "wcore_util.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct wcore_display;
 struct wcore_platform;
 union waffle_native_display;
@@ -64,3 +68,7 @@ wcore_display_teardown(struct wcore_display *self)
     assert(self);
     return true;
 }
+
+#ifdef __cplusplus
+}
+#endif

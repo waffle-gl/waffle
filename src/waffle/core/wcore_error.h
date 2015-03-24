@@ -29,6 +29,10 @@
 
 #include "waffle.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /// @brief Thread-local info for the wcore_error module.
 struct wcore_error_tinfo;
 
@@ -92,3 +96,7 @@ _wcore_error_internal(const char *file, int line, const char *format, ...);
 
 void _wcore_error_enable(void);
 void _wcore_error_disable(void);
+
+#ifdef __cplusplus
+}
+#endif
