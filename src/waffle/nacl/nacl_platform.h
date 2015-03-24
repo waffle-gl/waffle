@@ -26,14 +26,7 @@
 #pragma once
 
 #include "wcore_platform.h"
-#include "wcore_error.h"
 #include "wcore_util.h"
-
-#include "nacl_config.h"
-#include "nacl_container.h"
-#include "nacl_context.h"
-#include "nacl_display.h"
-#include "nacl_window.h"
 
 struct nacl_platform {
     struct wcore_platform wcore;

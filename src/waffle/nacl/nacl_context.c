@@ -23,24 +23,24 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#include "nacl_config.h"
+#include "nacl_container.h"
 #include "nacl_context.h"
-#include "api_priv.h"
+#include "nacl_platform.h"
 
 bool
 nacl_context_destroy(struct wcore_context *wc_self)
 {
-    struct nacl_context *self;
+    struct nacl_context *self = nacl_context(wc_self);
+    struct nacl_platform *plat;
     bool ok = true;
 
     if (!wc_self)
         return ok;
 
-    struct nacl_platform *nacl_plat =
-        nacl_platform(api_platform);
+    plat = nacl_platform(wc_self->display->platform);
 
-    self = nacl_context(wc_self);
-
-    nacl_container_context_fini(nacl_plat->nacl);
+    nacl_container_context_fini(plat->nacl);
 
     ok &= wcore_context_teardown(wc_self);
     free(self);

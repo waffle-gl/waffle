@@ -23,10 +23,10 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "wcore_error.h"
 #include "wcore_attrib_list.h"
-#include "nacl_config.h"
-#include "nacl_display.h"
+#include "wcore_error.h"
+
+#include "nacl_container.h"
 #include "nacl_window.h"
 #include "nacl_platform.h"
 

@@ -23,8 +23,8 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "nacl_config.h"
-#include "wcore_error.h"
+#include <stdbool.h>
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -33,6 +33,7 @@ extern "C" {
 #define NACL_GLES2_LIBRARY "libppapi_gles2.so"
 
 struct nacl_container;
+struct nacl_config;
 
 struct nacl_container *nacl_container_init();
 void nacl_container_teardown(struct nacl_container *nc);

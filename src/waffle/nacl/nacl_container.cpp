@@ -29,6 +29,10 @@
 #include "ppapi/cpp/instance.h"
 #include "ppapi/cpp/module.h"
 #include "ppapi/c/pp_errors.h"
+
+#include "wcore_error.h"
+
+#include "nacl_config.h"
 #include "nacl_container.h"
 #include "nacl_swap_thread.h"
 

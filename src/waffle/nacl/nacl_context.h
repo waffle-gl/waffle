@@ -25,11 +25,10 @@
 
 #pragma once
 
+#include <stdbool.h>
+
 #include "wcore_context.h"
 #include "wcore_util.h"
-
-#include "nacl_display.h"
-#include "nacl_platform.h"
 
 struct wcore_config;
 struct wcore_platform;

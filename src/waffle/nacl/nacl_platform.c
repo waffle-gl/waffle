@@ -26,8 +26,13 @@
 #include <dlfcn.h>
 #include <stdio.h>
 
+#include "nacl_config.h"
+#include "nacl_container.h"
+#include "nacl_context.h"
+#include "nacl_display.h"
 #include "nacl_dl.h"
 #include "nacl_platform.h"
+#include "nacl_window.h"
 
 static const struct wcore_platform_vtbl nacl_platform_vtbl;
 
