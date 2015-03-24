@@ -42,7 +42,7 @@ nacl_platform_destroy(struct wcore_platform *wc_self)
 
     ok &= wcore_platform_teardown(wc_self);
 
-    nacl_teardown(self->nacl);
+    nacl_container_teardown(self->nacl);
 
     if (self->dl_gl)
         ok &= nacl_dl_close(&self->wcore);
@@ -58,7 +58,7 @@ nacl_platform_make_current(struct wcore_platform *wc_self,
                            struct wcore_context *wc_ctx)
 {
     bool release = (!wc_window && !wc_ctx);
-    return nacl_makecurrent(nacl_platform(wc_self)->nacl,
+    return nacl_container_context_makecurrent(nacl_platform(wc_self)->nacl,
                             release);
 }
 
@@ -76,7 +76,7 @@ nacl_platform_create(void)
     if (!ok)
         goto error;
 
-    self->nacl = nacl_init();
+    self->nacl = nacl_container_init();
     if (!self->nacl)
         goto error;
 

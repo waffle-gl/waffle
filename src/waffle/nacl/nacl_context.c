@@ -40,7 +40,7 @@ nacl_context_destroy(struct wcore_context *wc_self)
 
     self = nacl_context(wc_self);
 
-    nacl_context_fini(nacl_plat->nacl);
+    nacl_container_context_fini(nacl_plat->nacl);
 
     ok &= wcore_context_teardown(wc_self);
     free(self);
@@ -65,7 +65,7 @@ nacl_context_create(struct wcore_platform *wc_plat,
     if (!ok)
         goto error;
 
-    ok = nacl_context_init(platform->nacl, config);
+    ok = nacl_container_context_init(platform->nacl, config);
     if (!ok)
         goto error;
 

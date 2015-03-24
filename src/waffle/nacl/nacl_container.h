@@ -34,13 +34,13 @@ extern "C" {
 
 struct nacl_container;
 
-struct nacl_container *nacl_init();
-void nacl_teardown(struct nacl_container *nc);
-bool nacl_context_init(struct nacl_container *nc, struct nacl_config *cfg);
-bool nacl_resize(struct nacl_container *nc, int32_t width, int32_t height);
-bool nacl_makecurrent(struct nacl_container *nc, bool release);
-void nacl_context_fini(struct nacl_container *nc);
-bool nacl_swapbuffers(struct nacl_container *nc);
+struct nacl_container *nacl_container_init();
+void nacl_container_teardown(struct nacl_container *nc);
+bool nacl_container_context_init(struct nacl_container *nc, struct nacl_config *cfg);
+bool nacl_container_window_resize(struct nacl_container *nc, int32_t width, int32_t height);
+bool nacl_container_context_makecurrent(struct nacl_container *nc, bool release);
+void nacl_container_context_fini(struct nacl_container *nc);
+bool nacl_container_swapbuffere(struct nacl_container *nc);
 #ifdef __cplusplus
 };
 #endif
