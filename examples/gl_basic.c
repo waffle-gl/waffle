@@ -616,6 +616,8 @@ main(int argc, char **argv)
     config_attrib_list[i++] = 8;
     config_attrib_list[i++] = WAFFLE_BLUE_SIZE;
     config_attrib_list[i++] = 8;
+    config_attrib_list[i++] = WAFFLE_ALPHA_SIZE;
+    config_attrib_list[i++] = 8;
     config_attrib_list[i++] = WAFFLE_DOUBLE_BUFFERED;
     config_attrib_list[i++] = true;
     config_attrib_list[i++] = 0;
