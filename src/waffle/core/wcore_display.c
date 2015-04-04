@@ -25,20 +25,28 @@
 
 #include <assert.h>
 #include <stdio.h>
-#include "threads.h"
 
 #include "wcore_display.h"
+
+static mtx_t mutex;
+
+static void
+wcore_display_init_once(void)
+{
+    mtx_init(&mutex, mtx_plain);
+}
 
 bool
 wcore_display_init(struct wcore_display *self,
                    struct wcore_platform *platform)
 {
     static size_t id_counter = 0;
-    static mtx_t mutex = _MTX_INITIALIZER_NP;
+    static once_flag flag = ONCE_FLAG_INIT;
 
     assert(self);
     assert(platform);
 
+    call_once(&flag, wcore_display_init_once);
     mtx_lock(&mutex);
     self->api.display_id = ++id_counter;
     mtx_unlock(&mutex);
