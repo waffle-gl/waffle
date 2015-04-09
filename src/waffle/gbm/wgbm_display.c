@@ -65,7 +65,7 @@ wgbm_display_destroy(struct wcore_display *wc_self)
     return ok;
 }
 
-static int
+int
 wgbm_get_default_fd_for_pattern(const char *pattern)
 {
     struct udev *ud;

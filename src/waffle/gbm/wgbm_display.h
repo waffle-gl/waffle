@@ -65,3 +65,6 @@ wgbm_display_get_native(struct wcore_display *wc_self);
 void
 wgbm_display_fill_native(struct wgbm_display *self,
                          struct waffle_gbm_display *n_dpy);
+
+int
+wgbm_get_default_fd_for_pattern(const char *pattern);

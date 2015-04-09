@@ -68,7 +68,6 @@ create_real_context(struct wegl_config *config,
     struct wegl_display *dpy = wegl_display(config->wcore.display);
     struct wegl_platform *plat = wegl_platform(dpy->wcore.platform);
     struct wcore_config_attrs *attrs = &config->wcore.attrs;
-    bool ok = true;
     int32_t waffle_context_api = attrs->context_api;
     EGLint attrib_list[64];
     EGLint context_flags = 0;
@@ -144,9 +143,8 @@ create_real_context(struct wegl_config *config,
 
     attrib_list[i++] = EGL_NONE;
 
-    ok = bind_api(plat, waffle_context_api);
-    if (!ok)
-        return false;
+    if (!bind_api(plat, waffle_context_api))
+        return EGL_NO_CONTEXT;
 
     EGLContext ctx = plat->eglCreateContext(dpy->egl, config->egl,
                                             share_ctx, attrib_list);
@@ -156,21 +154,14 @@ create_real_context(struct wegl_config *config,
     return ctx;
 }
 
-struct wcore_context*
-wegl_context_create(struct wcore_platform *wc_plat,
-                    struct wcore_config *wc_config,
-                    struct wcore_context *wc_share_ctx)
+bool
+wegl_context_init(struct wegl_context *ctx,
+                  struct wcore_config *wc_config,
+                  struct wcore_context *wc_share_ctx)
 {
-    struct wegl_context *ctx;
     struct wegl_config *config = wegl_config(wc_config);
     struct wegl_context *share_ctx = wegl_context(wc_share_ctx);
     bool ok;
-
-    (void) wc_plat;
-
-    ctx = wcore_calloc(sizeof(*ctx));
-    if (!ctx)
-        return NULL;
 
     ok = wcore_context_init(&ctx->wcore, &config->wcore);
     if (!ok)
@@ -179,40 +170,69 @@ wegl_context_create(struct wcore_platform *wc_plat,
     ctx->egl = create_real_context(config,
                                    share_ctx
                                        ? share_ctx->egl
-                                       : NULL);
-    if (!ctx->egl)
+                                       : EGL_NO_CONTEXT);
+    if (ctx->egl == EGL_NO_CONTEXT)
         goto fail;
 
-    return &ctx->wcore;
+    return true;
 
 fail:
-    wegl_context_destroy(&ctx->wcore);
-    return NULL;
+    wegl_context_teardown(ctx);
+    return false;
+}
+
+struct wcore_context*
+wegl_context_create(struct wcore_platform *wc_plat,
+                    struct wcore_config *wc_config,
+                    struct wcore_context *wc_share_ctx)
+{
+    struct wegl_context *ctx;
+
+    (void) wc_plat;
+
+    ctx = wcore_calloc(sizeof(*ctx));
+    if (!ctx)
+        return NULL;
+
+    if (!wegl_context_init(ctx, wc_config, wc_share_ctx)) {
+        wegl_context_destroy(&ctx->wcore);
+        return NULL;
+    }
+
+    return &ctx->wcore;
 }
 
 bool
-wegl_context_destroy(struct wcore_context *wc_ctx)
+wegl_context_teardown(struct wegl_context *ctx)
 {
-    struct wegl_display *dpy = wegl_display(wc_ctx->display);
-    struct wegl_platform *plat = wegl_platform(dpy->wcore.platform);
-    struct wegl_context *ctx;
     bool result = true;
 
-    if (!wc_ctx)
+    if (!ctx)
         return result;
 
-    ctx = wegl_context(wc_ctx);
+    if (ctx->egl != EGL_NO_CONTEXT) {
+        struct wegl_display *dpy = wegl_display(ctx->wcore.display);
+        struct wegl_platform *plat = wegl_platform(dpy->wcore.platform);
 
-    if (ctx->egl) {
-        bool ok = plat->eglDestroyContext(wegl_display(wc_ctx->display)->egl,
-                                          ctx->egl);
-        if (!ok) {
+        if (!plat->eglDestroyContext(dpy->egl, ctx->egl)) {
             wegl_emit_error(plat, "eglDestroyContext");
             result = false;
         }
     }
 
-    result &= wcore_context_teardown(wc_ctx);
-    free(ctx);
+    result &= wcore_context_teardown(&ctx->wcore);
+    return result;
+}
+
+bool
+wegl_context_destroy(struct wcore_context *wc_ctx)
+{
+    bool result = true;
+
+    if (wc_ctx) {
+        struct wegl_context *ctx = wegl_context(wc_ctx);
+        result = wegl_context_teardown(ctx);
+        free(ctx);
+    }
     return result;
 }
