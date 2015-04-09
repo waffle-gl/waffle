@@ -66,7 +66,7 @@ nacl_dl_open(struct nacl_platform *plat)
 
     if (!plat->dl_gl) {
         wcore_errorf(WAFFLE_ERROR_UNKNOWN,
-                     "dlopen(\"%s\") failed", NACL_GLES2_LIBRARY);
+                     "dlopen(\"%s\") failed: %s", NACL_GLES2_LIBRARY, dlerror());
         return false;
     }
 

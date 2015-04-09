@@ -65,7 +65,7 @@ cgl_dl_open(struct cgl_platform *plat)
 
     if (!plat->dl_gl) {
         wcore_errorf(WAFFLE_ERROR_UNKNOWN,
-                     "dlopen(\"%s\") failed", cgl_dl_gl_path);
+                     "dlopen(\"%s\") failed: %s", cgl_dl_gl_path, dlerror());
         return false;
     }
 
