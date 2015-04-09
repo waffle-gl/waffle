@@ -72,8 +72,11 @@ wegl_platform_init(struct wegl_platform *self)
         goto error;
     }
 
+#define OPTIONAL_EGL_SYMBOL(function)                                  \
+    self->function = dlsym(self->eglHandle, #function);
+
 #define RETRIEVE_EGL_SYMBOL(function)                                  \
-    self->function = dlsym(self->eglHandle, #function);                \
+    OPTIONAL_EGL_SYMBOL(function)                                      \
     if (!self->function) {                                             \
         wcore_errorf(WAFFLE_ERROR_FATAL,                             \
                      "dlsym(\"%s\", \"" #function "\") failed: %s",    \
@@ -81,6 +84,9 @@ wegl_platform_init(struct wegl_platform *self)
         ok = false;                                                    \
         goto error;                                                    \
     }
+
+    OPTIONAL_EGL_SYMBOL(eglCreateImageKHR);
+    OPTIONAL_EGL_SYMBOL(eglDestroyImageKHR);
 
     RETRIEVE_EGL_SYMBOL(eglMakeCurrent);
     RETRIEVE_EGL_SYMBOL(eglGetProcAddress);
@@ -106,6 +112,7 @@ wegl_platform_init(struct wegl_platform *self)
     RETRIEVE_EGL_SYMBOL(eglDestroySurface);
     RETRIEVE_EGL_SYMBOL(eglSwapBuffers);
 
+#undef OPTIONAL_EGL_SYMBOL
 #undef RETRIEVE_EGL_SYMBOL
 
 error:

@@ -34,6 +34,24 @@
 #include "wegl_platform.h"
 #include "wcore_util.h"
 
+#define GBM_FUNCTIONS(f) \
+    f(struct gbm_device * , gbm_create_device            , (int fd)) \
+    f(int                 , gbm_device_get_fd            , (struct gbm_device *dev)) \
+    f(void                , gbm_device_destroy           , (struct gbm_device *gbm)) \
+    f(struct gbm_surface *, gbm_surface_create           , (struct gbm_device *gbm, uint32_t width, uint32_t height, uint32_t format, uint32_t flags)) \
+    f(void                , gbm_surface_destroy          , (struct gbm_surface *surface)) \
+    f(struct gbm_bo *     , gbm_surface_lock_front_buffer, (struct gbm_surface *surface)) \
+    f(void                , gbm_surface_release_buffer   , (struct gbm_surface *surface, struct gbm_bo *bo)) \
+    f(struct gbm_bo *     , gbm_bo_create                , (struct gbm_device *gbm, uint32_t width, uint32_t height, uint32_t format, uint32_t flags)) \
+    f(void                , gbm_bo_destroy               , (struct gbm_bo *bo)) \
+    f(int                 , gbm_bo_get_fd                , (struct gbm_bo *bo)) \
+    f(uint32_t            , gbm_bo_get_width             , (struct gbm_bo *bo)) \
+    f(uint32_t            , gbm_bo_get_height            , (struct gbm_bo *bo)) \
+    f(uint32_t            , gbm_bo_get_stride            , (struct gbm_bo *bo)) \
+    f(uint32_t            , gbm_bo_get_format            , (struct gbm_bo *bo)) \
+    f(union gbm_bo_handle , gbm_bo_get_handle            , (struct gbm_bo *bo)) \
+    f(struct gbm_device * , gbm_bo_get_device            , (struct gbm_bo *bo))
+
 struct linux_platform;
 
 struct wgbm_platform {
@@ -43,18 +61,9 @@ struct wgbm_platform {
     // GBM function pointers
     void *gbmHandle;
 
-    struct gbm_device *(*gbm_create_device)(int fd);
-    int (*gbm_device_get_fd)(struct gbm_device *gbm);
-    void (*gbm_device_destroy)(struct gbm_device *gbm);
-
-    struct gbm_surface *(*gbm_surface_create)(struct gbm_device *gbm,
-                                              uint32_t width, uint32_t height,
-                                              uint32_t format, uint32_t flags);
-    void (*gbm_surface_destroy)(struct gbm_surface *surface);
-
-    struct gbm_bo *(*gbm_surface_lock_front_buffer)(struct gbm_surface *surface);
-    void (*gbm_surface_release_buffer)(struct gbm_surface *surface,
-                                       struct gbm_bo *bo);
+#define DECLARE(type, function, args) type (*function) args;
+    GBM_FUNCTIONS(DECLARE)
+#undef DECLARE
 };
 
 DEFINE_CONTAINER_CAST_FUNC(wgbm_platform,
@@ -62,5 +71,23 @@ DEFINE_CONTAINER_CAST_FUNC(wgbm_platform,
                            struct wegl_platform,
                            wegl)
 
+bool
+wgbm_platform_init(struct wgbm_platform *self);
+
+bool
+wgbm_platform_teardown(struct wgbm_platform *self);
+
 struct wcore_platform*
 wgbm_platform_create(void);
+
+bool
+wgbm_platform_destroy(struct wcore_platform *wc_self);
+
+bool
+wgbm_dl_can_open(struct wcore_platform *wc_self,
+                 int32_t waffle_dl);
+
+void*
+wgbm_dl_sym(struct wcore_platform *wc_self,
+            int32_t waffle_dl,
+            const char *name);

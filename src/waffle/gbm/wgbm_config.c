@@ -55,10 +55,10 @@ wgbm_config_get_gbm_format(struct wcore_platform *wc_plat,
                            struct wcore_config *wc_config)
 {
     EGLint gbm_format;
-    struct wgbm_display *dpy = wgbm_display(wc_display);
+    struct wegl_display *dpy = wegl_display(wc_display);
     struct wegl_platform *plat = wegl_platform(wc_plat);
     struct wegl_config *egl_config = wegl_config(wc_config);
-    bool ok = plat->eglGetConfigAttrib(dpy->wegl.egl,
+    bool ok = plat->eglGetConfigAttrib(dpy->egl,
                                        egl_config->egl,
                                        EGL_NATIVE_VISUAL_ID,
                                        &gbm_format);

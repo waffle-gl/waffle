@@ -33,8 +33,6 @@
 #include "wcore_context.h"
 #include "wcore_util.h"
 
-struct wegl_display;
-
 struct wegl_context {
     struct wcore_context wcore;
     EGLContext egl;
@@ -44,6 +42,14 @@ DEFINE_CONTAINER_CAST_FUNC(wegl_context,
                            struct wegl_context,
                            struct wcore_context,
                            wcore)
+
+bool
+wegl_context_init(struct wegl_context *ctx,
+                  struct wcore_config *wc_config,
+                  struct wcore_context *wc_share_ctx);
+
+bool
+wegl_context_teardown(struct wegl_context *ctx);
 
 struct wcore_context*
 wegl_context_create(struct wcore_platform *wc_plat,

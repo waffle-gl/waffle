@@ -46,10 +46,9 @@ static const char *libgbm_filename = "libgbm.so.1";
 
 static const struct wcore_platform_vtbl wgbm_platform_vtbl;
 
-static bool
-wgbm_platform_destroy(struct wcore_platform *wc_self)
+bool
+wgbm_platform_teardown(struct wgbm_platform *self)
 {
-    struct wgbm_platform *self = wgbm_platform(wegl_platform(wc_self));
     bool ok = true;
     int error = 0;
 
@@ -72,19 +71,26 @@ wgbm_platform_destroy(struct wcore_platform *wc_self)
     }
 
     ok &= wegl_platform_teardown(&self->wegl);
+    return ok;
+}
+
+bool
+wgbm_platform_destroy(struct wcore_platform *wc_self)
+{
+    struct wgbm_platform *self = wgbm_platform(wegl_platform(wc_self));
+
+    if (!self)
+        return true;
+
+    bool ok = wgbm_platform_teardown(self);
     free(self);
     return ok;
 }
 
-struct wcore_platform*
-wgbm_platform_create(void)
+bool
+wgbm_platform_init(struct wgbm_platform *self)
 {
-    struct wgbm_platform *self;
     bool ok = true;
-
-    self = wcore_calloc(sizeof(*self));
-    if (self == NULL)
-        return NULL;
 
     ok = wegl_platform_init(&self->wegl);
     if (!ok)
@@ -98,7 +104,7 @@ wgbm_platform_create(void)
         goto error;
     }
 
-#define RETRIEVE_GBM_SYMBOL(function)                                  \
+#define RETRIEVE_GBM_SYMBOL(type, function, args)                                  \
     self->function = dlsym(self->gbmHandle, #function);                \
     if (!self->function) {                                             \
         wcore_errorf(WAFFLE_ERROR_FATAL,                             \
@@ -107,15 +113,7 @@ wgbm_platform_create(void)
         goto error;                                                    \
     }
 
-    RETRIEVE_GBM_SYMBOL(gbm_create_device);
-    RETRIEVE_GBM_SYMBOL(gbm_device_get_fd);
-    RETRIEVE_GBM_SYMBOL(gbm_device_destroy);
-
-    RETRIEVE_GBM_SYMBOL(gbm_surface_create);
-    RETRIEVE_GBM_SYMBOL(gbm_surface_destroy);
-
-    RETRIEVE_GBM_SYMBOL(gbm_surface_lock_front_buffer);
-    RETRIEVE_GBM_SYMBOL(gbm_surface_release_buffer);
+    GBM_FUNCTIONS(RETRIEVE_GBM_SYMBOL);
 #undef RETRIEVE_GBM_SYMBOL
 
     self->linux = linux_platform_create();
@@ -125,14 +123,28 @@ wgbm_platform_create(void)
     setenv("EGL_PLATFORM", "drm", true);
 
     self->wegl.wcore.vtbl = &wgbm_platform_vtbl;
-    return &self->wegl.wcore;
+    return true;
 
 error:
+    wgbm_platform_teardown(self);
+    return false;
+}
+
+struct wcore_platform*
+wgbm_platform_create(void)
+{
+    struct wgbm_platform *self = wcore_calloc(sizeof(*self));
+    if (self == NULL)
+        return NULL;
+
+    if (wgbm_platform_init(self))
+        return &self->wegl.wcore;
+
     wgbm_platform_destroy(&self->wegl.wcore);
     return NULL;
 }
 
-static bool
+bool
 wgbm_dl_can_open(struct wcore_platform *wc_self,
                  int32_t waffle_dl)
 {
@@ -140,7 +152,7 @@ wgbm_dl_can_open(struct wcore_platform *wc_self,
     return linux_platform_dl_can_open(self->linux, waffle_dl);
 }
 
-static void*
+void*
 wgbm_dl_sym(struct wcore_platform *wc_self,
             int32_t waffle_dl,
             const char *name)
