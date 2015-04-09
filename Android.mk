@@ -13,6 +13,7 @@ waffle_api_version := 0x0105
 
 waffle_android_major_version := $(word 1, $(subst ., , $(PLATFORM_VERSION)))
 waffle_android_minor_version := $(word 2, $(subst ., , $(PLATFORM_VERSION)))
+waffle_android_version := $(waffle_android_major_version).$(waffle_android_minor_version)
 
 $(waffle_top)/include/waffle/waffle_version.h: \
     $(waffle_top)/Android.mk \
@@ -36,7 +37,13 @@ LOCAL_CFLAGS := \
     -DWAFFLE_ANDROID_MINOR_VERSION=$(waffle_android_minor_version) \
     -Wno-pointer-arith
 
-LOCAL_CFLAGS += -std=c99 -fvisibility=hidden
+ifeq ($(shell echo "$(waffle_android_version) >= 4.4" | bc),1)
+LOCAL_CONLYFLAGS := -std=c99
+else
+LOCAL_CFLAGS += -std=c99
+endif
+
+LOCAL_CFLAGS += -fvisibility=hidden
 
 LOCAL_C_INCLUDES := \
     $(LOCAL_PATH)/include \
