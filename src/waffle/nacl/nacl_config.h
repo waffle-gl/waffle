@@ -25,8 +25,15 @@
 
 #pragma once
 
+#include <stdbool.h>
+#include <stdint.h>
+
 #include "wcore_config.h"
 #include "wcore_util.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 struct wcore_config_attrs;
 struct wcore_platform;
@@ -48,3 +55,7 @@ nacl_config_choose(struct wcore_platform *wc_plat,
 
 bool
 nacl_config_destroy(struct wcore_config *wc_self);
+
+#ifdef __cplusplus
+}
+#endif

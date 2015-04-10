@@ -24,8 +24,11 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "ppapi/c/pp_graphics_3d.h"
-#include "nacl_config.h"
+
+#include "wcore_config_attrs.h"
 #include "wcore_error.h"
+
+#include "nacl_config.h"
 
 bool
 nacl_config_destroy(struct wcore_config *wc_self)

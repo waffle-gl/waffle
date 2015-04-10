@@ -25,8 +25,10 @@
 
 #pragma once
 
+#include <stdbool.h>
+#include <stdint.h>
+
 #include "wcore_display.h"
-#include "wcore_error.h"
 #include "wcore_util.h"
 
 struct wcore_platform;

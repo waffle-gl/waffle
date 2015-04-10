@@ -36,6 +36,10 @@
 #include "wcore_config_attrs.h"
 #include "wcore_util.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct wcore_config;
 union waffle_native_config;
 
@@ -77,3 +81,7 @@ wcore_config_teardown(struct wcore_config *self)
     assert(self);
     return true;
 }
+
+#ifdef __cplusplus
+}
+#endif

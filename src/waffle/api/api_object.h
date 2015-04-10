@@ -27,6 +27,10 @@
 
 #include "waffle.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // This header is so sad and lonely... but there is no other appropriate place
 // to define this struct.
 
@@ -36,3 +40,7 @@ struct api_object {
     /// For consistency, a `waffle_display` belongs to itself.
     size_t display_id;
 };
+
+#ifdef __cplusplus
+}
+#endif

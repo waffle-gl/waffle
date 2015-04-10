@@ -28,6 +28,10 @@
 #include <stddef.h>
 #include "c99_compat.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define container_of(ptr, type, member) ({                              \
         const __typeof__(((type *)0)->member ) *__mptr = (ptr);         \
         (type*)((void*)__mptr - offsetof(type, member));                \
@@ -107,3 +111,7 @@ wcore_calloc(size_t size);
 
 const char*
 wcore_enum_to_string(int32_t e);
+
+#ifdef __cplusplus
+}
+#endif
