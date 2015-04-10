@@ -23,10 +23,10 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "wcore_error.h"
 #include "wcore_attrib_list.h"
-#include "nacl_config.h"
-#include "nacl_display.h"
+#include "wcore_error.h"
+
+#include "nacl_container.h"
 #include "nacl_window.h"
 #include "nacl_platform.h"
 
@@ -70,7 +70,7 @@ nacl_window_create(struct wcore_platform *wc_plat,
         goto error;
 
     // Set requested dimensions for the backing surface.
-    if (!nacl_resize(nplat->nacl, width, height))
+    if (!nacl_container_window_resize(nplat->nacl, width, height))
          goto error;
 
     return &self->wcore;
@@ -91,12 +91,12 @@ nacl_window_resize(struct wcore_window *wc_self,
                    int32_t width, int32_t height)
 {
     struct nacl_platform *plat = nacl_platform(wc_self->display->platform);
-    return nacl_resize(plat->nacl, width, height);
+    return nacl_container_window_resize(plat->nacl, width, height);
 }
 
 bool
 nacl_window_swap_buffers(struct wcore_window *wc_self)
 {
     struct nacl_platform *plat = nacl_platform(wc_self->display->platform);
-    return nacl_swapbuffers(plat->nacl);
+    return nacl_container_swapbuffere(plat->nacl);
 }

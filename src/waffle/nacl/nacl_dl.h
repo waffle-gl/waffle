@@ -1,4 +1,4 @@
-// Copyright 2014 Intel Corporation
+// Copyright 2012-2015 Intel Corporation
 //
 // All rights reserved.
 //
@@ -26,26 +26,18 @@
 #pragma once
 
 #include <stdbool.h>
+#include <stdint.h>
 
-#include "wcore_context.h"
-#include "wcore_util.h"
-
-struct wcore_config;
 struct wcore_platform;
 
-struct nacl_context {
-    struct wcore_context wcore;
-};
+bool
+nacl_dl_can_open(struct wcore_platform *wc_plat,
+                 int32_t waffle_dl);
 
-DEFINE_CONTAINER_CAST_FUNC(nacl_context,
-                           struct nacl_context,
-                           struct wcore_context,
-                           wcore)
-
-struct wcore_context*
-nacl_context_create(struct wcore_platform *wc_plat,
-                    struct wcore_config *wc_config,
-                    struct wcore_context *wc_share_ctx);
+void*
+nacl_dl_sym(struct wcore_platform *wc_plat,
+            int32_t waffle_dl,
+            const char *name);
 
 bool
-nacl_context_destroy(struct wcore_context *wc_self);
+nacl_dl_close(struct wcore_platform *wc_plat);

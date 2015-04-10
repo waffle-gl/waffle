@@ -37,10 +37,8 @@
 
 #include "droid_surfaceflingerlink.h"
 
-extern "C" {
 #include "wcore_util.h"
 #include "wcore_error.h"
-};
 
 using namespace android;
 

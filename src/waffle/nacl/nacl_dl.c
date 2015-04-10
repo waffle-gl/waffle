@@ -1,4 +1,4 @@
-// Copyright 2012 Intel Corporation
+// Copyright 2012-2015 Intel Corporation
 //
 // All rights reserved.
 //
@@ -25,32 +25,33 @@
 
 #include <assert.h>
 #include <dlfcn.h>
+#include <stdio.h>
+#include <string.h>
 
 #include "wcore_error.h"
 
-#include "cgl_dl.h"
-#include "cgl_platform.h"
+#include "nacl_container.h"
+#include "nacl_dl.h"
+#include "nacl_platform.h"
 
-static const char *cgl_dl_gl_path =
-    "/System/Library/Frameworks/OpenGL.framework/Versions/Current/OpenGL";
 
 static bool
-cgl_dl_check_enum(int32_t waffle_dl)
+nacl_dl_check_enum(int32_t waffle_dl)
 {
     switch (waffle_dl) {
         case WAFFLE_DL_OPENGL:
-            return true;
+            wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
+                         "NACL does not support OpenGL");
+            return false;
         case WAFFLE_DL_OPENGL_ES1:
             wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
-                         "CGL does not support OpenGL ES1");
+                         "NACL does not support OpenGL ES1");
             return false;
         case WAFFLE_DL_OPENGL_ES2:
-            wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
-                         "CGL does not support OpenGL ES2");
-            return false;
+            return true;
         case WAFFLE_DL_OPENGL_ES3:
             wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
-                         "CGL does not support OpenGL ES3");
+                         "NACL does not support OpenGL ES3");
             return false;
         default:
             assert(false);
@@ -59,13 +60,13 @@ cgl_dl_check_enum(int32_t waffle_dl)
 }
 
 static bool
-cgl_dl_open(struct cgl_platform *plat)
+nacl_dl_open(struct nacl_platform *plat)
 {
-    plat->dl_gl = dlopen(cgl_dl_gl_path, RTLD_LAZY);
+    plat->dl_gl = dlopen(NACL_GLES2_LIBRARY, RTLD_LAZY);
 
     if (!plat->dl_gl) {
         wcore_errorf(WAFFLE_ERROR_UNKNOWN,
-                     "dlopen(\"%s\") failed: %s", cgl_dl_gl_path, dlerror());
+                     "dlopen(\"%s\") failed: %s", NACL_GLES2_LIBRARY, dlerror());
         return false;
     }
 
@@ -73,14 +74,14 @@ cgl_dl_open(struct cgl_platform *plat)
 }
 
 bool
-cgl_dl_can_open(struct wcore_platform *wc_plat,
-                int32_t waffle_dl)
+nacl_dl_can_open(struct wcore_platform *wc_plat,
+                 int32_t waffle_dl)
 {
-    struct cgl_platform *plat = cgl_platform(wc_plat);
+    struct nacl_platform *plat = nacl_platform(wc_plat);
     bool ok;
 
     WCORE_ERROR_DISABLED({
-        ok = cgl_dl_check_enum(waffle_dl);
+        ok = nacl_dl_check_enum(waffle_dl);
     });
 
     if (!ok)
@@ -90,26 +91,58 @@ cgl_dl_can_open(struct wcore_platform *wc_plat,
         return true;
 
     WCORE_ERROR_DISABLED({
-        cgl_dl_open(plat);
+        nacl_dl_open(plat);
     });
 
     return plat->dl_gl != NULL;
 }
 
-void*
-cgl_dl_sym(struct wcore_platform *wc_plat,
-          int32_t waffle_dl,
-          const char *name)
+// Construct a string that maps GL function to NaCl function
+// by concating given prefix and function name tail from 'src'.
+static char *
+nacl_dl_prefix(const char *src, const char *prefix)
 {
-    struct cgl_platform *plat = cgl_platform(wc_plat);
+    if (strncmp(src, "gl", 2) != 0) {
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN,
+                     "NACL symbol name does not start with \"gl\"");
+        return NULL;
+    }
 
-    if (!cgl_dl_check_enum(waffle_dl))
+    uint32_t len = strlen(src) + strlen(prefix);
+
+    char *dst = wcore_calloc(len);
+    if (!dst)
+        return NULL;
+
+    int n = snprintf(dst, len, "%s%s", prefix, src + 2);
+    if (n < 0 || n >= len) {
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN,
+                     "NACL cannot create symbol prefix");
+        free(dst);
+        return NULL;
+    }
+
+    return dst;
+}
+
+void*
+nacl_dl_sym(struct wcore_platform *wc_plat,
+            int32_t waffle_dl,
+            const char *name)
+{
+    struct nacl_platform *plat = nacl_platform(wc_plat);
+
+    if (!nacl_dl_check_enum(waffle_dl))
         return NULL;
 
     if (plat->dl_gl == NULL)
-        cgl_dl_open(plat);
+        nacl_dl_open(plat);
 
     if (plat->dl_gl == NULL)
+        return NULL;
+
+    char *nacl_name = nacl_dl_prefix(name, "GLES2");
+    if (!nacl_name)
         return NULL;
 
     // Clear any previous error.
@@ -117,24 +150,27 @@ cgl_dl_sym(struct wcore_platform *wc_plat,
 
     void *sym = dlsym(plat->dl_gl, name);
 
-    if (sym)
+    if (sym) {
+        free(nacl_name);
         return sym;
+    }
 
     // dlsym returned NULL. Check if an error occured.
     const char *error = dlerror();
     if (error) {
         wcore_errorf(WAFFLE_ERROR_UNKNOWN,
                      "dlsym(libname=\"%s\", symbol=\"%s\") failed: %s",
-                     cgl_dl_gl_path, name, error);
+                     NACL_GLES2_LIBRARY, nacl_name, error);
     }
+    free(nacl_name);
 
     return NULL;
 }
 
 bool
-cgl_dl_close(struct wcore_platform *wc_plat)
+nacl_dl_close(struct wcore_platform *wc_plat)
 {
-    struct cgl_platform *plat = cgl_platform(wc_plat);
+    struct nacl_platform *plat = nacl_platform(wc_plat);
 
     int error_code = 0;
     const char *error_msg = NULL;
@@ -152,12 +188,12 @@ cgl_dl_close(struct wcore_platform *wc_plat)
     if (error_msg) {
         wcore_errorf(WAFFLE_ERROR_UNKNOWN,
                      "dlclose(libname=\"%s\") failed: %s",
-                     cgl_dl_gl_path, error_msg);
+                     NACL_GLES2_LIBRARY, error_msg);
     }
     else {
         wcore_errorf(WAFFLE_ERROR_UNKNOWN,
                      "dlclose(libname=\"%s\") failed",
-                     cgl_dl_gl_path);
+                     NACL_GLES2_LIBRARY);
     }
 
     return false;

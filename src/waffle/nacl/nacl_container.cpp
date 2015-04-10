@@ -23,10 +23,16 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#include <dlfcn.h>
+
 #include "ppapi/cpp/graphics_3d.h"
 #include "ppapi/cpp/instance.h"
 #include "ppapi/cpp/module.h"
 #include "ppapi/c/pp_errors.h"
+
+#include "wcore_error.h"
+
+#include "nacl_config.h"
 #include "nacl_container.h"
 #include "nacl_swap_thread.h"
 
@@ -67,7 +73,7 @@ nacl_container_ctor()
 }
 
 static bool
-nacl_context_init(waffle::nacl_container *nc, struct nacl_config *cfg)
+nacl_container_context_init(waffle::nacl_container *nc, struct nacl_config *cfg)
 {
     // There is no way currently to pass a pp::Instance for Waffle, so
     // we fetch a map of all instances and if there's only one we select
@@ -129,26 +135,26 @@ nacl_context_init(waffle::nacl_container *nc, struct nacl_config *cfg)
 }; // namespace waffle ends
 
 extern "C" struct nacl_container*
-nacl_init()
+nacl_container_init()
 {
     return reinterpret_cast<nacl_container*>(waffle::nacl_container_ctor());
 }
 
 extern "C" void
-nacl_teardown(nacl_container *nc)
+nacl_container_teardown(nacl_container *nc)
 {
     waffle::nacl_container_dtor(reinterpret_cast<waffle::nacl_container*>(nc));
 }
 
 extern "C" bool
-nacl_context_init(struct nacl_container *nc, struct nacl_config *cfg)
+nacl_container_context_init(struct nacl_container *nc, struct nacl_config *cfg)
 {
-    return waffle::nacl_context_init(
+    return waffle::nacl_container_context_init(
                    reinterpret_cast<waffle::nacl_container*>(nc), cfg);
 }
 
 extern "C" void
-nacl_context_fini(struct nacl_container *nc)
+nacl_container_context_fini(struct nacl_container *nc)
 {
     waffle::nacl_container *cpp_nc =
         reinterpret_cast<waffle::nacl_container*>(nc);
@@ -161,7 +167,7 @@ nacl_context_fini(struct nacl_container *nc)
 }
 
 extern "C" bool
-nacl_resize(struct nacl_container *nc, int32_t width, int32_t height)
+nacl_container_window_resize(struct nacl_container *nc, int32_t width, int32_t height)
 {
     waffle::nacl_container *cpp_nc =
         reinterpret_cast<waffle::nacl_container*>(nc);
@@ -187,7 +193,7 @@ nacl_resize(struct nacl_container *nc, int32_t width, int32_t height)
 }
 
 extern "C" bool
-nacl_makecurrent(nacl_container *nc, bool release)
+nacl_container_context_makecurrent(nacl_container *nc, bool release)
 {
     waffle::nacl_container *cpp_nc =
         reinterpret_cast<waffle::nacl_container*>(nc);
@@ -200,7 +206,7 @@ nacl_makecurrent(nacl_container *nc, bool release)
 }
 
 extern "C" bool
-nacl_swapbuffers(nacl_container *nc)
+nacl_container_swapbuffere(nacl_container *nc)
 {
     waffle::nacl_container *cpp_nc =
         reinterpret_cast<waffle::nacl_container*>(nc);

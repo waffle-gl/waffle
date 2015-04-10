@@ -181,6 +181,7 @@ if(waffle_has_nacl)
         nacl/nacl_config.c
         nacl/nacl_context.c
         nacl/nacl_display.c
+        nacl/nacl_dl.c
         nacl/nacl_platform.c
         nacl/nacl_window.c
         )
