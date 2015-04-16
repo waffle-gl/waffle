@@ -70,6 +70,12 @@ wgbm_window_create(struct wcore_platform *wc_plat,
     uint32_t gbm_format;
     bool ok = true;
 
+    if (width == -1 && height == -1) {
+        wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
+                     "fullscreen window not supported");
+        return NULL;
+    }
+
     if (wcore_attrib_list_length(attrib_list) > 0) {
         wcore_error_bad_attribute(attrib_list[0]);
         return NULL;

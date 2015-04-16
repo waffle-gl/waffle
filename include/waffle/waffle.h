@@ -172,6 +172,7 @@ enum waffle_enum {
 
     WAFFLE_WINDOW_WIDTH                                         = 0x0310,
     WAFFLE_WINDOW_HEIGHT                                        = 0x0311,
+    WAFFLE_WINDOW_FULLSCREEN                                    = 0x0312,
 };
 
 const char*
