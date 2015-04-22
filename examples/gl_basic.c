@@ -68,7 +68,7 @@ static const char *usage_message =
     "             [--forward-compatible]\n"
     "             [--debug]\n"
     "             [--resize-window]\n"
-    "             [--window-size=WIDTHxHEIGHT]\n"
+    "             [--window-size=WIDTHxHEIGHT | --fullscreen]\n"
     "\n"
     "examples:\n"
     "    gl_basic --platform=glx --api=gl\n"
@@ -87,6 +87,9 @@ static const char *usage_message =
     "\n"
     "    --resize-window\n"
     "        Resize the window between each draw call.\n"
+    "\n"
+    "    --fullscreen\n"
+    "        Create a fullscreen window.\n"
     ;
 
 enum {
@@ -98,6 +101,7 @@ enum {
     OPT_FORWARD_COMPATIBLE,
     OPT_RESIZE_WINDOW,
     OPT_WINDOW_SIZE,
+    OPT_FULLSCREEN,
 };
 
 static const struct option get_opts[] = {
@@ -109,6 +113,7 @@ static const struct option get_opts[] = {
     { .name = "forward-compatible", .has_arg = no_argument,       .val = OPT_FORWARD_COMPATIBLE },
     { .name = "resize-window",  .has_arg = no_argument,           .val = OPT_RESIZE_WINDOW },
     { .name = "window-size",    .has_arg = required_argument,     .val = OPT_WINDOW_SIZE },
+    { .name = "fullscreen",     .has_arg = no_argument,           .val = OPT_FULLSCREEN },
     { 0 },
 };
 
@@ -229,6 +234,8 @@ struct options {
 
     bool resize_window;
 
+    bool fullscreen;
+
     /// @brief One of `WAFFLE_DL_*`.
     int dl;
 };
@@ -284,6 +291,7 @@ parse_args(int argc, char *argv[], struct options *opts)
 {
     bool ok;
     bool loop_get_opt = true;
+    bool found_window_size = false;
 
 #ifdef __APPLE__
     removeXcodeArgs(&argc, argv);
@@ -358,8 +366,12 @@ parse_args(int argc, char *argv[], struct options *opts)
                     usage_error_printf("'%s' is not a valid window geometry",
                                        optarg);
                 }
+                found_window_size = true;
                 break;
             }
+            case OPT_FULLSCREEN:
+                opts->fullscreen = true;
+                break;
             default:
                 abort();
                 loop_get_opt = false;
@@ -377,6 +389,11 @@ parse_args(int argc, char *argv[], struct options *opts)
 
     if (!opts->context_api) {
         usage_error_printf("--api is required");
+    }
+
+    if (opts->fullscreen && found_window_size) {
+        usage_error_printf("--fullscreen and --window-size are mutually "
+                           "exclusive options");
     }
 
     // Set dl.
@@ -654,11 +671,17 @@ main(int argc, char **argv)
 
 
     i = 0;
-    window_attrib_list[i++] = WAFFLE_WINDOW_WIDTH;
-    window_attrib_list[i++] = window_width;
-    window_attrib_list[i++] = WAFFLE_WINDOW_HEIGHT;
-    window_attrib_list[i++] = window_height;
-    window_attrib_list[i++] = 0;
+    if (opts.fullscreen) {
+        window_attrib_list[i++] = WAFFLE_WINDOW_FULLSCREEN;
+        window_attrib_list[i++] = true;
+        window_attrib_list[i++] = 0;
+    } else {
+        window_attrib_list[i++] = WAFFLE_WINDOW_WIDTH;
+        window_attrib_list[i++] = window_width;
+        window_attrib_list[i++] = WAFFLE_WINDOW_HEIGHT;
+        window_attrib_list[i++] = window_height;
+        window_attrib_list[i++] = 0;
+    }
 
     window = waffle_window_create2(config, window_attrib_list);
     if (!window)
