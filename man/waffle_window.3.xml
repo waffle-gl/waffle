@@ -121,11 +121,13 @@ struct waffle_window;
             <parameter>config</parameter> and
             <parameter>attrib_list</parameter>.
 
-            <parameter>attrib_list</parameter> must contain the attributes
+            <parameter>attrib_list</parameter> must specify the window size
+            either with the attributes
             <constant>WAFFLE_WINDOW_WIDTH</constant> and
-            <constant>WAFFLE_WINDOW_HEIGHT</constant>,
-            whose values must be positive
-            and no greater than <constant>INT32_MAX</constant>.
+            <constant>WAFFLE_WINDOW_HEIGHT</constant> having positive values
+            &lt;= <constant>INT32_MAX</constant>,
+            or with the attribute
+            <constant>WAFFLE_WINDOW_FULLSCREEN</constant> equal to true(1).
           </para>
         </listitem>
       </varlistentry>

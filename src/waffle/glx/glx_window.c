@@ -62,6 +62,11 @@ glx_window_create(struct wcore_platform *wc_plat,
     struct glx_config *config = glx_config(wc_config);
     bool ok = true;
 
+    if (width == -1 && height == -1) {
+        width = DisplayWidth(dpy->x11.xlib, dpy->x11.screen);
+        height = DisplayHeight(dpy->x11.xlib, dpy->x11.screen);
+    }
+
     if (wcore_attrib_list_length(attrib_list) > 0) {
         wcore_error_bad_attribute(attrib_list[0]);
         return NULL;

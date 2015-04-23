@@ -113,6 +113,7 @@ wcore_enum_to_string(int32_t e)
         CASE(WAFFLE_DL_OPENGL_ES3);
         CASE(WAFFLE_WINDOW_WIDTH);
         CASE(WAFFLE_WINDOW_HEIGHT);
+        CASE(WAFFLE_WINDOW_FULLSCREEN);
 
         default: return NULL;
 

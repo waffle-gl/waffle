@@ -41,7 +41,9 @@ waffle_window_create2(
     struct wcore_window *wc_self = NULL;
     struct wcore_config *wc_config = wcore_config(config);
     intptr_t *attrib_list_filtered = NULL;
-    intptr_t width = 0, height = 0;
+    intptr_t width = 1, height = 1;
+    bool need_size = true;
+    intptr_t fullscreen = WAFFLE_DONT_CARE;
 
     const struct api_object *obj_list[] = {
         wc_config ? &wc_config->api : NULL,
@@ -53,15 +55,31 @@ waffle_window_create2(
 
     attrib_list_filtered = wcore_attrib_list_copy(attrib_list);
 
+    wcore_attrib_list_pop(attrib_list_filtered,
+                          WAFFLE_WINDOW_FULLSCREEN, &fullscreen);
+    if (fullscreen == WAFFLE_DONT_CARE)
+        fullscreen = 0; // default
+
+    if (fullscreen == 1) {
+        need_size = false;
+    } else if (fullscreen != 0) {
+        // Same error message as in wcore_config_attrs.c.
+        wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
+                     "WAFFLE_WINDOW_FULLSCREEN has bad value 0x%x. "
+                     "Must be true(1), false(0), or WAFFLE_DONT_CARE(-1)",
+                     fullscreen);
+        goto done;
+    }
+
     if (!wcore_attrib_list_pop(attrib_list_filtered,
-                               WAFFLE_WINDOW_WIDTH, &width)) {
+                               WAFFLE_WINDOW_WIDTH, &width) && need_size) {
         wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
                      "required attribute WAFFLE_WINDOW_WIDTH is missing");
         goto done;
     }
 
     if (!wcore_attrib_list_pop(attrib_list_filtered,
-                               WAFFLE_WINDOW_HEIGHT, &height)) {
+                               WAFFLE_WINDOW_HEIGHT, &height) && need_size) {
         wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
                      "required attribute WAFFLE_WINDOW_HEIGHT is missing");
         goto done;
@@ -86,6 +104,9 @@ waffle_window_create2(
                      "WAFFLE_WINDOW_HEIGHT is greater than INT32_MAX");
         goto done;
     }
+
+    if (fullscreen)
+        width = height = -1;
 
     wc_self = api_platform->vtbl->window.create(api_platform,
                                                 wc_config,
