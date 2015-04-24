@@ -40,6 +40,7 @@ union waffle_native_context;
 
 struct wcore_context {
     struct api_object api;
+    enum waffle_enum context_api; // WAFFLE_CONTEXT_*
     struct wcore_display *display;
 };
 
@@ -61,6 +62,7 @@ wcore_context_init(struct wcore_context *self,
     assert(config);
 
     self->api.display_id = config->display->api.display_id;
+    self->context_api = config->attrs.context_api;
     self->display = config->display;
 
     return true;
