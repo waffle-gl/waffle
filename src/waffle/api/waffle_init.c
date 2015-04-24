@@ -142,43 +142,58 @@ waffle_init_parse_attrib_list(
 static struct wcore_platform*
 waffle_init_create_platform(int32_t waffle_platform)
 {
+    struct wcore_platform *wc_platform = NULL;
+
     switch (waffle_platform) {
 #ifdef WAFFLE_HAS_ANDROID
         case WAFFLE_PLATFORM_ANDROID:
-            return droid_platform_create();
+            wc_platform = droid_platform_create();
+            break;
 #endif
 #ifdef WAFFLE_HAS_CGL
         case WAFFLE_PLATFORM_CGL:
-            return cgl_platform_create();
+            wc_platform = cgl_platform_create();
+            break;
 #endif
 #ifdef WAFFLE_HAS_GLX
         case WAFFLE_PLATFORM_GLX:
-            return glx_platform_create();
+            wc_platform = glx_platform_create();
+            break;
 #endif
 #ifdef WAFFLE_HAS_WAYLAND
         case  WAFFLE_PLATFORM_WAYLAND:
-            return wayland_platform_create();
+            wc_platform = wayland_platform_create();
+            break;
 #endif
 #ifdef WAFFLE_HAS_X11_EGL
         case WAFFLE_PLATFORM_X11_EGL:
-            return xegl_platform_create();
+            wc_platform = xegl_platform_create();
+            break;
 #endif
 #ifdef WAFFLE_HAS_GBM
         case WAFFLE_PLATFORM_GBM:
-            return wgbm_platform_create();
+            wc_platform = wgbm_platform_create();
+            break;
 #endif
 #ifdef WAFFLE_HAS_WGL
         case WAFFLE_PLATFORM_WGL:
-            return wgl_platform_create();
+            wc_platform = wgl_platform_create();
+            break;
 #endif
 #ifdef WAFFLE_HAS_NACL
         case WAFFLE_PLATFORM_NACL:
-            return nacl_platform_create();
+            wc_platform = nacl_platform_create();
+            break;
 #endif
         default:
             assert(false);
             return NULL;
     }
+
+    if (wc_platform)
+        wc_platform->waffle_platform = waffle_platform;
+
+    return wc_platform;
 }
 
 WAFFLE_API bool
