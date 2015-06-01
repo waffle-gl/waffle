@@ -535,7 +535,7 @@ struct waffle_config;
                   <itemizedlist>
                     <listitem>
                       <para>
-                        GLX supports creation of an OpenGL ES2 context only if libGLESv2.so is installed and if
+                        GLX supports creation of an OpenGL ES2 context only if libGLESv2.so.2 is installed and if
                         GLX_EXT_create_context_es2_profile is exposed as both a server and client extension.
                       </para>
                     </listitem>
