@@ -34,7 +34,7 @@
 #include "linux_dl.h"
 
 struct linux_dl {
-    /// @brief For example, "libGLESv2.so".
+    /// @brief For example, "libGLESv2.so.2".
     const char *name;
 
     /// @brief The library obtained with dlopen().
@@ -50,17 +50,24 @@ linux_dl_get_name(int32_t waffle_dl)
         case WAFFLE_DL_OPENGL:
             return "libGL.so.1";
         case WAFFLE_DL_OPENGL_ES1:
+#ifdef WAFFLE_HAS_ANDROID
             return "libGLESv1_CM.so";
+#else
+            return "libGLESv1_CM.so.1";
+#endif
         case WAFFLE_DL_OPENGL_ES2:
         case WAFFLE_DL_OPENGL_ES3:
             // As of 2014-04-20, Mesa statically provides the ES2 and ES3
-            // symbols symbols in libGLESv2.so and provides no ES3-only library
+            // symbols symbols in libGLESv2.so.2 and provides no ES3-only library
             // 
-            // Even though Waffle does not use the library's soname, note that
             // Mesa did not change the library's soname when it added the ES3
             // symbols. The soname was and is libGLESv2.so.2 before and after
             // ES3.
+#ifdef WAFFLE_HAS_ANDROID
             return "libGLESv2.so";
+#else
+            return "libGLESv2.so.2";
+#endif
         default:
             wcore_error_internal("waffle_dl has bad value %#x", waffle_dl);
             return NULL;
