@@ -105,10 +105,15 @@ struct waffle_display;
             uses the value of the environment variable <envar>WAYLAND_DISPLAY</envar>.
           </para>
           <para>
-            On GBM, the function opens the device at the filepath <parameter>name</parameter>. If
-            <parameter>name</parameter> is null, then it iterates using udev through the set of card devices in the drm
-            subsystem, which are usually located in <filename>/dev/dri</filename>, and attempts to open each in turn
-            with <code>open(O_RDWR | O_CLOEXEC)</code> until successful.
+            On GBM, the function opens the device at the filepath <parameter>name</parameter>.
+
+            If <parameter>name</parameter> is NULL, then the function uses the value of environment variable
+            <envar>WAFFLE_GBM_DEVICE</envar>.
+
+            If <parameter>name</parameter> is null and <envar>WAFFLE_GBM_DEVICE</envar> is unset, then the function
+            iterates using udev through the set of card devices in the drm subsystem, which are usually located in
+            <filename>/dev/dri</filename>, and attempts to open each in turn with <code>open(O_RDWR | O_CLOEXEC)</code>
+            until successful.
           </para>
         </listitem>
       </varlistentry>
