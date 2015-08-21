@@ -1,0 +1,93 @@
+Waffle 1.5.2 Release Notes
+==========================
+
+Fixes since 1.5.1
+-----------------
+
+* Linux, all platforms
+    * Fix dlopen'ing the GLES libararies. Don't rely on libGLES*.so symlinks at
+      runtime. Instead, pass the full SONAME (libGLES*.so.${N}) to dlopen. (See
+      5c2c7e8).
+
+    * waffle_init() now returns false if it fails to dlopen libEGL or fails to
+      dlsym any required symbol from libEGL. (See 2195f3e).
+
+    * wflinfo: Fix glGetStringi usage on ARM Mali drivers. (See 9dc5555).
+
+* GBM
+    * Fix alpha channel in GBM format, fixing Piglit on some drivers. Waffle
+      always chose a GBM format without alpha even the EGLConfig contained an
+      alpha channel. (See 2bb9390).
+
+* Windows
+    * Fix some compilation errors. (See 9a33a3d).
+
+    * Fix glGetStringi() usage. (See 9dc5555).
+
+* Android
+      * Don't export private symbols. Waffle neglected to add
+        -fvisibility=hidden to the compiler flags. (See caf8001).
+
+      * Fix building with clang. (See fc58a6f).
+
+      * Add wflinfo and the gl_basic demo to the build. (See ad1b0c8).
+
+* Apple
+    * Don't emit unexpected errors from waffle_display_supports_context_api()
+      when the system lacks the library for the queried API. (See 475b44f).
+
+* Misc
+    * gl_basic: Choose an EGLConfig with an alpha plane. gl_basic depended on
+      the presence of an alpha plane despite neglecting to request it. (See
+      76df03e).
+
+
+
+Features since 1.5.1
+--------------------
+
+All new features introduced in minor releases are *minor* and introduce no
+instability.
+
+* gbm: Allow user to provide default device path in environment
+
+  If waffle_display_connect() is passed name=NULL, then Waffle's GBM backend will
+  now open the device path defined by environment variable WAFFLE_GBM_DEVICE. If
+  WAFFLE_GBM_DEVICE is unset, then Waffle's behavior remains as before: it uses
+  udev to search for a sensible DRM device node. (See 8d20f3a).
+
+
+
+Changes since 1.5.1
+-------------------
+Bernhard Rosenkränzer (1):
+      android: Don't specify -std=gnu99 for C++ builds -- it breaks clang
+
+Chad Versace (3):
+      gbm: Fix crash when eglChooseConfig fails
+      gbm: Allow user to provide device path in environment
+      waffle: Bump version to 1.5.2
+
+Emil Velikov (3):
+      android: include gl_basic & wflinfo to the build
+      android: export only the required functions
+      cgl: do not emit an error on dl_can_open
+
+Frank Henigman (3):
+      waffle: return accurate result from wegl_platform_init()
+      wflinfo: find glGetStringi on both Mali and WGL
+      gl_basic: request alpha planes
+
+Jordan Justen (2):
+      debian: Update standards version to 3.9.6
+      debian: Release 1.5.1-1
+
+Jose Fonseca (2):
+      wflinfo: Fix MSVC compilation error.
+      man: Fix typo in WAFFLE_CONTEXT_*_PROFILE.
+
+Michel Dänzer (1):
+      linux: Use full libGLES*.so.[12] SONAMEs
+
+Tom Stellard (1):
+      gbm: Use EGLConfig to select the correct gbm format
