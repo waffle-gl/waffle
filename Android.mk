@@ -8,7 +8,7 @@ waffle_top := $(LOCAL_PATH)
 #
 waffle_major_version := 1
 waffle_minor_version := 5
-waffle_patch_version := 1
+waffle_patch_version := 2
 waffle_api_version := 0x0105
 
 waffle_android_major_version := $(word 1, $(subst ., , $(PLATFORM_VERSION)))

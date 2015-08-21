@@ -40,7 +40,7 @@
 #
 set(waffle_major_version "1")
 set(waffle_minor_version "5")
-set(waffle_patch_version "1")
+set(waffle_patch_version "2")
 
 set(waffle_version "${waffle_major_version}.${waffle_minor_version}.${waffle_patch_version}")
 
