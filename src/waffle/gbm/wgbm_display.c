@@ -128,15 +128,23 @@ wgbm_display_connect(struct wcore_platform *wc_plat,
     if (self == NULL)
         return NULL;
 
-    if (name != NULL) {
-        fd = open(name, O_RDWR | O_CLOEXEC);
-    } else {
-        fd = wgbm_get_default_fd();
+    if (name == NULL) {
+        name = getenv("WAFFLE_GBM_DEVICE");
     }
 
-    if (fd < 0) {
-        wcore_errorf(WAFFLE_ERROR_UNKNOWN, "open drm file for gbm failed");
-        goto error;
+    if (name != NULL) {
+        fd = open(name, O_RDWR | O_CLOEXEC);
+        if (fd < 0) {
+            wcore_errorf(WAFFLE_ERROR_UNKNOWN,
+                    "failed to open gbm device \"%s\"", name);
+            goto error;
+        }
+    } else {
+        fd = wgbm_get_default_fd();
+        if (fd < 0) {
+            wcore_errorf(WAFFLE_ERROR_UNKNOWN, "open drm file for gbm failed");
+            goto error;
+        }
     }
 
     dlopen("libglapi.so.0", RTLD_LAZY | RTLD_GLOBAL);
