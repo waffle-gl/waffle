@@ -29,6 +29,14 @@
 // It is an alias of GLX_CONTEXT_ES2_PROFILE_BIT_EXT.
 #define GLX_CONTEXT_ES_PROFILE_BIT_EXT 0x00000004
 
+// The official headers provided by nvidia do not provide these via glxext.h
+#ifndef GLX_ARB_create_context_profile
+#define GLX_ARB_create_context_profile 1
+#define GLX_CONTEXT_CORE_PROFILE_BIT_ARB  0x00000001
+#define GLX_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB 0x00000002
+#define GLX_CONTEXT_PROFILE_MASK_ARB      0x9126
+#endif /* GLX_ARB_create_context_profile */
+
 #include <assert.h>
 #include <stdlib.h>
 
