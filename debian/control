@@ -53,6 +53,6 @@ Depends: libwaffle-1-0 (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
 Description: Waffle library utilities
  A library for selecting an OpenGL API and window system at runtime
  .
- This package contains waffle utilities.
- * wflinfo: Creates an OpenGL context and prints information about
-            the created context.
+ This package contains waffle utilities:
+  * wflinfo: Creates an OpenGL context and prints information about
+             the created context.
