@@ -1,3 +1,9 @@
+waffle (1.5.2-2) unstable; urgency=low
+
+  * Improve debian package descriptions
+
+ -- Jordan Justen <jordan.l.justen@intel.com>  Tue, 08 Sep 2015 23:50:31 -0700
+
 waffle (1.5.2-1) unstable; urgency=low
 
   * New upstream release
