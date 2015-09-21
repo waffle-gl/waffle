@@ -70,6 +70,26 @@ wegl_emit_error(struct wegl_platform *plat, const char *egl_func_call)
 }
 
 bool
+wegl_make_current2(struct wcore_platform *wc_plat,
+                   struct wcore_display *wc_dpy,
+                   struct wcore_window *wc_window,
+                   EGLContext wc_ctx)
+{
+    struct wegl_platform *plat = wegl_platform(wc_plat);
+    EGLSurface surface = wc_window ? wegl_window(wc_window)->egl : NULL;
+    bool ok;
+
+    ok = plat->eglMakeCurrent(wegl_display(wc_dpy)->egl,
+                              surface,
+                              surface,
+                              wc_ctx);
+    if (!ok)
+        wegl_emit_error(plat, "eglMakeCurrent");
+
+    return ok;
+}
+
+bool
 wegl_make_current(struct wcore_platform *wc_plat,
                   struct wcore_display *wc_dpy,
                   struct wcore_window *wc_window,

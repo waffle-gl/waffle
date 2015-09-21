@@ -34,6 +34,7 @@
 #include "wcore_error.h"
 
 #include "wegl_config.h"
+#include "wegl_util.h"
 
 #include "wgbm_config.h"
 #include "wgbm_display.h"
@@ -102,6 +103,8 @@ wgbm_window_create(struct wcore_platform *wc_plat,
     if (!ok)
         goto error;
 
+    self->wc_config = wc_config;
+
     return &self->wegl.wcore;
 
 error:
@@ -133,6 +136,66 @@ wgbm_window_swap_buffers(struct wcore_window *wc_self)
 
     plat->gbm_surface_release_buffer(self->gbm_surface, bo);
     return true;
+}
+
+
+bool
+wgbm_window_resize(struct wcore_window *wc_self,
+                   int32_t width, int32_t height)
+{
+    struct wcore_platform *wc_plat = wc_self->display->platform;
+    struct wegl_platform *egl_plat = wegl_platform(wc_plat);
+    struct wgbm_platform *plat = wgbm_platform(egl_plat);
+    struct wgbm_window *self = wgbm_window(wc_self);
+    struct wcore_display *wc_dpy = self->wc_config->display;
+    struct wgbm_display *dpy = wgbm_display(wc_dpy);
+    uint32_t gbm_format;
+    bool ok = true;
+
+    if (!self)
+        return ok;
+
+    EGLContext ctx = egl_plat->eglGetCurrentContext();
+
+    ok = wegl_window_teardown(&self->wegl);
+    if (!ok)
+        return false;
+
+    plat->gbm_surface_destroy(self->gbm_surface);
+    self->gbm_surface = NULL;
+
+    if (width == -1 && height == -1) {
+        wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
+                     "fullscreen window not supported");
+        return false;
+    }
+
+    gbm_format = wgbm_config_get_gbm_format(wc_plat, self->wc_config->display,
+                                            self->wc_config);
+    assert(gbm_format != 0);
+    self->gbm_surface = plat->gbm_surface_create(dpy->gbm_device,
+                                                 width, height, gbm_format,
+                                                 GBM_BO_USE_RENDERING);
+    if (!self->gbm_surface) {
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN,
+                     "gbm_surface_create failed");
+        goto error;
+    }
+
+    ok = wegl_window_init(&self->wegl, self->wc_config,
+                          (intptr_t) self->gbm_surface);
+    if (!ok)
+        goto error;
+
+    ok = wegl_make_current2(wc_plat, wc_dpy, wc_self, ctx);
+    if (!ok)
+        goto error;
+
+    return true;
+
+error:
+    wgbm_window_destroy(&self->wegl.wcore);
+    return false;
 }
 
 

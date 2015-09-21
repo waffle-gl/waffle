@@ -35,6 +35,7 @@ struct gbm_surface;
 struct wgbm_window {
     struct gbm_surface *gbm_surface;
     struct wegl_window wegl;
+    struct wcore_config *wc_config;
 };
 
 static inline struct wgbm_window*
@@ -64,6 +65,10 @@ wgbm_window_show(struct wcore_window *wc_self);
 
 bool
 wgbm_window_swap_buffers(struct wcore_window *wc_self);
+
+bool
+wgbm_window_resize(struct wcore_window *wc_self,
+                   int32_t width, int32_t height);
 
 union waffle_native_window*
 wgbm_window_get_native(struct wcore_window *wc_self);

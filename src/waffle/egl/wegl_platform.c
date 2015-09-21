@@ -105,6 +105,7 @@ wegl_platform_init(struct wegl_platform *self)
     RETRIEVE_EGL_SYMBOL(eglBindAPI);
     RETRIEVE_EGL_SYMBOL(eglCreateContext);
     RETRIEVE_EGL_SYMBOL(eglDestroyContext);
+    RETRIEVE_EGL_SYMBOL(eglGetCurrentContext);
 
     // window
     RETRIEVE_EGL_SYMBOL(eglGetConfigAttrib);

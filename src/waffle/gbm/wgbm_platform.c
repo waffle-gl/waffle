@@ -210,6 +210,7 @@ static const struct wcore_platform_vtbl wgbm_platform_vtbl = {
         .destroy = wgbm_window_destroy,
         .show = wgbm_window_show,
         .swap_buffers = wgbm_window_swap_buffers,
+        .resize = wgbm_window_resize,
         .get_native = wgbm_window_get_native,
     },
 };
