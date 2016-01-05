@@ -460,6 +460,39 @@ parse_version(const char *version)
     return (major * 10) + minor;
 }
 
+static const char *
+get_vendor(void)
+{
+    const char *vendor = (const char *) glGetString(GL_VENDOR);
+    if (glGetError() != GL_NO_ERROR || vendor == NULL) {
+        vendor = "WFLINFO_GL_ERROR";
+    }
+
+    return vendor;
+}
+
+static const char *
+get_renderer(void)
+{
+    const char *renderer = (const char *) glGetString(GL_RENDERER);
+    if (glGetError() != GL_NO_ERROR || renderer == NULL) {
+        renderer = "WFLINFO_GL_ERROR";
+    }
+
+    return renderer;
+}
+
+static const char *
+get_version(void)
+{
+    const char *version_str = (const char *) glGetString(GL_VERSION);
+    if (glGetError() != GL_NO_ERROR || version_str == NULL) {
+        version_str = "WFLINFO_GL_ERROR";
+    }
+
+    return version_str;
+}
+
 static void
 print_extensions(bool use_stringi)
 {
@@ -538,20 +571,9 @@ print_wflinfo(const struct options *opts)
         /* Clear all errors */
     }
 
-    const char *vendor = (const char *) glGetString(GL_VENDOR);
-    if (glGetError() != GL_NO_ERROR || vendor == NULL) {
-        vendor = "WFLINFO_GL_ERROR";
-    }
-
-    const char *renderer = (const char *) glGetString(GL_RENDERER);
-    if (glGetError() != GL_NO_ERROR || renderer == NULL) {
-        renderer = "WFLINFO_GL_ERROR";
-    }
-
-    const char *version_str = (const char *) glGetString(GL_VERSION);
-    if (glGetError() != GL_NO_ERROR || version_str == NULL) {
-        version_str = "WFLINFO_GL_ERROR";
-    }
+    const char *vendor =  get_vendor();
+    const char *renderer = get_renderer();
+    const char *version_str = get_version();
 
     const char *platform = enum_map_to_str(platform_map, opts->platform);
     assert(platform != NULL);
