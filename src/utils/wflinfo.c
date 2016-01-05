@@ -487,23 +487,24 @@ print_extensions(bool use_stringi)
     printf("\n");
 }
 
+static struct {
+    GLint flag;
+    char *str;
+} context_flags[] = {
+    { GL_CONTEXT_FLAG_FORWARD_COMPATIBLE_BIT, "FORWARD_COMPATIBLE" },
+    { GL_CONTEXT_FLAG_DEBUG_BIT, "DEBUG" },
+    { GL_CONTEXT_FLAG_ROBUST_ACCESS_BIT_ARB, "ROBUST_ACCESS" },
+};
+
 static void
 print_context_flags(void)
 {
-    static struct {
-        GLint flag;
-        char *str;
-    } flags[] = {
-        { GL_CONTEXT_FLAG_FORWARD_COMPATIBLE_BIT, "FORWARD_COMPATIBLE" },
-        { GL_CONTEXT_FLAG_DEBUG_BIT, "DEBUG" },
-        { GL_CONTEXT_FLAG_ROBUST_ACCESS_BIT_ARB, "ROBUST_ACCESS" },
-    };
-    int flag_count = sizeof(flags) / sizeof(flags[0]);
-    GLint context_flags = 0;
+    int flag_count = sizeof(context_flags) / sizeof(context_flags[0]);
+    GLint gl_context_flags = 0;
 
     printf("OpenGL context flags:");
 
-    glGetIntegerv(GL_CONTEXT_FLAGS, &context_flags);
+    glGetIntegerv(GL_CONTEXT_FLAGS, &gl_context_flags);
     if (glGetError() != GL_NO_ERROR) {
         printf(" WFLINFO_GL_ERROR\n");
         return;
@@ -515,13 +516,13 @@ print_context_flags(void)
     }
 
     for (int i = 0; i < flag_count; i++) {
-        if ((flags[i].flag & context_flags) != 0) {
-            printf(" %s", flags[i].str);
-            context_flags = context_flags & ~flags[i].flag;
+        if ((context_flags[i].flag & gl_context_flags) != 0) {
+            printf(" %s", context_flags[i].str);
+            gl_context_flags = gl_context_flags & ~context_flags[i].flag;
         }
     }
-    for (int i = 0; context_flags != 0; context_flags >>= 1, i++) {
-        if ((context_flags & 1) != 0) {
+    for (int i = 0; gl_context_flags != 0; gl_context_flags >>= 1, i++) {
+        if ((gl_context_flags & 1) != 0) {
             printf(" 0x%x", 1 << i);
         }
     }
