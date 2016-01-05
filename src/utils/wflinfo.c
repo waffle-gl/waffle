@@ -53,6 +53,8 @@ removeXcodeArgs(int *argc, char **argv);
 
 #include "waffle.h"
 
+#define ARRAY_SIZE(a) (sizeof(a) / sizeof(a[0]))
+
 static const char *usage_message =
     "Usage:\n"
     "    wflinfo <Required Parameters> [Options]\n"
@@ -499,7 +501,6 @@ static struct {
 static void
 print_context_flags(void)
 {
-    int flag_count = sizeof(context_flags) / sizeof(context_flags[0]);
     GLint gl_context_flags = 0;
 
     printf("OpenGL context flags:");
@@ -515,7 +516,7 @@ print_context_flags(void)
         return;
     }
 
-    for (int i = 0; i < flag_count; i++) {
+    for (int i = 0; i < ARRAY_SIZE(context_flags); i++) {
         if ((context_flags[i].flag & gl_context_flags) != 0) {
             printf(" %s", context_flags[i].str);
             gl_context_flags = gl_context_flags & ~context_flags[i].flag;
@@ -946,8 +947,6 @@ success:
     *out_config = config;
     return true;
 }
-
-#define ARRAY_SIZE(a) (sizeof(a) / sizeof(a[0]))
 
 /// Exit on failure.
 static void
