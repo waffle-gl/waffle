@@ -323,15 +323,14 @@ gl_basic_draw__(void **state, struct gl_basic_draw_args__ args)
         assert_true(waffle_error_get_code() == expect_error);
         return;
     } else if (ts->config == NULL) {
-        if (waffle_error_get_code() == WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM) {
-            skip();
-        }
-        else if (waffle_error_get_code() == WAFFLE_ERROR_UNKNOWN) {
+        switch (waffle_error_get_code()) {
+        case WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM:
+            // fall-through
+        case WAFFLE_ERROR_UNKNOWN:
             // Assume that the native platform rejected the requested
-            // context flavor.
+            // config flavor.
             skip();
-        }
-        else {
+        default:
             assert_true(0);
         }
     }
@@ -341,15 +340,14 @@ gl_basic_draw__(void **state, struct gl_basic_draw_args__ args)
 
     ts->ctx = waffle_context_create(ts->config, NULL);
     if (ts->ctx == NULL) {
-        if (waffle_error_get_code() == WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM) {
-            skip();
-        }
-        else if (waffle_error_get_code() == WAFFLE_ERROR_UNKNOWN) {
+        switch (waffle_error_get_code()) {
+        case WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM:
+            // fall-through
+        case WAFFLE_ERROR_UNKNOWN:
             // Assume that the native platform rejected the requested
             // context flavor.
             skip();
-        }
-        else {
+        default:
             assert_true(0);
         }
     }
