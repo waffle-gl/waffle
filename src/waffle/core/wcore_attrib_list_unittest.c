@@ -228,26 +228,26 @@ test_wcore_attrib_list32_update_missing_key(void **state) {
 
 int
 main(void) {
-    const UnitTest tests[] = {
-        unit_test(test_wcore_attrib_list32_get_null),
-        unit_test(test_wcore_attrib_list32_get_empty),
-        unit_test(test_wcore_attrib_list32_get_missing_value),
-        unit_test(test_wcore_attrib_list32_get_trailing_items),
-        unit_test(test_wcore_attrib_list32_get_value_not_modified_if_not_found),
-        unit_test(test_wcore_attrib_list32_get_key_is_first),
-        unit_test(test_wcore_attrib_list32_get_key_is_last),
-        unit_test(test_wcore_attrib_list32_length_null),
-        unit_test(test_wcore_attrib_list32_length_is_0),
-        unit_test(test_wcore_attrib_list32_length_is_1),
-        unit_test(test_wcore_attrib_list32_length_is_2),
-        unit_test(test_wcore_attrib_list32_length_is_37),
-        unit_test(test_wcore_attrib_list32_length_trailing_items),
-        unit_test(test_wcore_attrib_list32_update_null),
-        unit_test(test_wcore_attrib_list32_update_empty_list),
-        unit_test(test_wcore_attrib_list32_update_at_0),
-        unit_test(test_wcore_attrib_list32_update_at_1),
-        unit_test(test_wcore_attrib_list32_update_missing_key),
+    const struct CMUnitTest tests[] = {
+        cmocka_unit_test(test_wcore_attrib_list32_get_null),
+        cmocka_unit_test(test_wcore_attrib_list32_get_empty),
+        cmocka_unit_test(test_wcore_attrib_list32_get_missing_value),
+        cmocka_unit_test(test_wcore_attrib_list32_get_trailing_items),
+        cmocka_unit_test(test_wcore_attrib_list32_get_value_not_modified_if_not_found),
+        cmocka_unit_test(test_wcore_attrib_list32_get_key_is_first),
+        cmocka_unit_test(test_wcore_attrib_list32_get_key_is_last),
+        cmocka_unit_test(test_wcore_attrib_list32_length_null),
+        cmocka_unit_test(test_wcore_attrib_list32_length_is_0),
+        cmocka_unit_test(test_wcore_attrib_list32_length_is_1),
+        cmocka_unit_test(test_wcore_attrib_list32_length_is_2),
+        cmocka_unit_test(test_wcore_attrib_list32_length_is_37),
+        cmocka_unit_test(test_wcore_attrib_list32_length_trailing_items),
+        cmocka_unit_test(test_wcore_attrib_list32_update_null),
+        cmocka_unit_test(test_wcore_attrib_list32_update_empty_list),
+        cmocka_unit_test(test_wcore_attrib_list32_update_at_0),
+        cmocka_unit_test(test_wcore_attrib_list32_update_at_1),
+        cmocka_unit_test(test_wcore_attrib_list32_update_missing_key),
     };
 
-    return run_tests(tests);
+    return cmocka_run_group_tests(tests, NULL, NULL);
 }

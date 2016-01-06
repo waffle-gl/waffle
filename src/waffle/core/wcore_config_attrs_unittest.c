@@ -40,7 +40,7 @@ struct test_state_wcore_config_attrs {
     struct wcore_config_attrs expect_attrs;
 };
 
-static void
+static int
 setup(void **state) {
     static const struct wcore_config_attrs default_attrs = {
         // There is no default context api, so arbitrarily choose OpenGL. The
@@ -73,18 +73,24 @@ setup(void **state) {
 
     wcore_error_reset();
 
-    *state = ts = calloc(1, sizeof(*ts));
+    ts = calloc(1, sizeof(*ts));
+    if (!ts)
+        return -1;
+
+    *state = ts;
 
     // Fill actual_attrs with canaries.
     memset(&ts->actual_attrs, 0x99, sizeof(ts->actual_attrs));
 
     // Set expect_attrs to defaults.
     memcpy(&ts->expect_attrs, &default_attrs, sizeof(ts->expect_attrs));
+    return 0;
 }
 
-static void
+static int
 teardown(void **state) {
     free(*state);
+    return 0;
 }
 
 static void
@@ -1145,8 +1151,8 @@ test_wcore_config_attrs_debug_gles3(void **state) {
 
 int
 main(void) {
-    const UnitTest tests[] = {
-        #define unit_test_make(name) unit_test_setup_teardown(name, setup, teardown)
+    const struct CMUnitTest tests[] = {
+        #define unit_test_make(name) cmocka_unit_test_setup_teardown(name, setup, teardown)
 
         unit_test_make(test_wcore_config_attrs_null_attrib_list),
         unit_test_make(test_wcore_config_attrs_empty_attrib_list),
@@ -1213,5 +1219,5 @@ main(void) {
         #undef unit_test_make
     };
 
-    return run_tests(tests);
+    return cmocka_run_group_tests(tests, NULL, NULL);
 }

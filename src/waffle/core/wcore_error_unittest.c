@@ -227,19 +227,19 @@ test_wcore_error_thread_local(void **state) {
 
 int
 main(void) {
-    const UnitTest tests[] = {
-        unit_test(test_wcore_error_code_unknown_error),
-        unit_test(test_wcore_error_code_bad_attribute),
-        unit_test(test_wcore_error_code_unknown_error),
-        unit_test(test_wcore_error_with_message),
-        unit_test(test_wcore_error_internal_error),
-        unit_test(test_wcore_error_first_call_without_message_wins),
-        unit_test(test_wcore_error_first_call_with_message_wins),
-        unit_test(test_wcore_error_disable_then_error),
-        unit_test(test_wcore_error_disable_then_errorf),
-        unit_test(test_wcore_error_disable_then_error_internal),
-        unit_test(test_wcore_error_thread_local),
+    const struct CMUnitTest tests[] = {
+        cmocka_unit_test(test_wcore_error_code_unknown_error),
+        cmocka_unit_test(test_wcore_error_code_bad_attribute),
+        cmocka_unit_test(test_wcore_error_code_unknown_error),
+        cmocka_unit_test(test_wcore_error_with_message),
+        cmocka_unit_test(test_wcore_error_internal_error),
+        cmocka_unit_test(test_wcore_error_first_call_without_message_wins),
+        cmocka_unit_test(test_wcore_error_first_call_with_message_wins),
+        cmocka_unit_test(test_wcore_error_disable_then_error),
+        cmocka_unit_test(test_wcore_error_disable_then_errorf),
+        cmocka_unit_test(test_wcore_error_disable_then_error_internal),
+        cmocka_unit_test(test_wcore_error_thread_local),
     };
 
-    return run_tests(tests);
+    return cmocka_run_group_tests(tests, NULL, NULL);
 }
