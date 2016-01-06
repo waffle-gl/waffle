@@ -34,10 +34,12 @@
 ///     4. Verify the window contents with glReadPixels.
 ///     5. Tear down all waffle state.
 
+#include <stdarg.h> // for va_start, va_end
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <getopt.h>
 #if !defined(_WIN32)
 #include <unistd.h>
 #else
@@ -1118,12 +1120,47 @@ testsuite_wgl(void)
 }
 #endif // WAFFLE_HAS_WGL
 
-static void
-usage_error(void)
+
+static const char *usage_message =
+    "Usage:\n"
+    "    gl_basic_test <Required Parameter> [Options]\n"
+    "\n"
+    "Description:\n"
+    "    Run the basic functionality tests.\n"
+    "\n"
+    "Required Parameter:\n"
+    "    -p, --platform\n"
+    "        One of: cgl, glx, wayland, wgl or x11_egl\n"
+    "\n"
+    "Options:\n"
+    "    -h, --help\n"
+    "        Print gl_basic_test usage information.\n"
+    ;
+
+#if defined(__GNUC__)
+#define NORETURN __attribute__((noreturn))
+#elif defined(_MSC_VER)
+#define NORETURN __declspec(noreturn)
+#else
+#define NORETURN
+#endif
+
+static void NORETURN
+write_usage_and_exit(FILE *f, int exit_code)
 {
-    fprintf(stderr, "gl_basic_test: usage error\n");
-    exit(1);
+    fprintf(f, "%s", usage_message);
+    exit(exit_code);
 }
+
+enum {
+    OPT_PLATFORM = 'p',
+    OPT_HELP = 'h',
+};
+
+static const struct option get_opts[] = {
+    { .name = "platform",       .has_arg = required_argument,     .val = OPT_PLATFORM },
+    { .name = "help",           .has_arg = no_argument,           .val = OPT_HELP },
+};
 
 #ifdef _WIN32
 static DWORD __stdcall
@@ -1231,27 +1268,155 @@ run_testsuite(void (*testsuite)(void))
 
 #endif // _WIN32
 
+static void NORETURN
+usage_error_printf(const char *fmt, ...)
+{
+    fprintf(stderr, "gl_basic_test usage error: ");
+
+    if (fmt) {
+        va_list ap;
+        va_start(ap, fmt);
+        vfprintf(stderr, fmt, ap);
+        va_end(ap);
+        fprintf(stderr, " ");
+    }
+
+    fprintf(stderr, "(see gl_basic_test --help)\n");
+    exit(EXIT_FAILURE);
+}
+
+struct enum_map {
+    int i;
+    const char *s;
+};
+
+static const struct enum_map platform_map[] = {
+    {WAFFLE_PLATFORM_CGL,       "cgl",          },
+    {WAFFLE_PLATFORM_GLX,       "glx"           },
+    {WAFFLE_PLATFORM_WAYLAND,   "wayland"       },
+    {WAFFLE_PLATFORM_WGL,       "wgl"           },
+    {WAFFLE_PLATFORM_X11_EGL,   "x11_egl"       },
+    {0,                         0               },
+};
+
+/// @brief Translate string to `enum waffle_enum`.
+///
+/// @param self is a list of map items. The last item must be zero-filled.
+/// @param result is altered only if @a s if found.
+/// @return true if @a s was found in @a map.
+static bool
+enum_map_translate_str(
+        const struct enum_map *self,
+        const char *s,
+        int *result)
+{
+    for (const struct enum_map *i = self; i->i != 0; ++i) {
+        if (!strncmp(s, i->s, strlen(i->s) + 1)) {
+            *result = i->i;
+            return true;
+        }
+    }
+
+    return false;
+}
+
+/// @return true on success.
+static bool
+parse_args(int argc, char *argv[], int *platform)
+{
+    bool ok;
+    bool loop_get_opt = true;
+
+#ifdef __APPLE__
+    removeXcodeArgs(&argc, argv);
+#endif
+
+    // prevent getopt_long from printing an error message
+    opterr = 0;
+
+    while (loop_get_opt) {
+        int opt = getopt_long(argc, argv, "hp:", get_opts, NULL);
+        switch (opt) {
+            case -1:
+                loop_get_opt = false;
+                break;
+            case '?':
+                goto error_unrecognized_arg;
+            case OPT_PLATFORM:
+                ok = enum_map_translate_str(platform_map, optarg, platform);
+                if (!ok) {
+                    usage_error_printf("'%s' is not a valid platform",
+                                       optarg);
+                }
+                break;
+            case OPT_HELP:
+                write_usage_and_exit(stdout, EXIT_SUCCESS);
+                break;
+            default:
+                loop_get_opt = false;
+                break;
+        }
+    }
+
+    if (optind < argc) {
+        goto error_unrecognized_arg;
+    }
+
+    if (!*platform) {
+        usage_error_printf("--platform is required");
+    }
+
+    return true;
+
+error_unrecognized_arg:
+    if (optarg)
+        usage_error_printf("unrecognized option '%s'", optarg);
+    else if (optopt)
+        usage_error_printf("unrecognized option '-%c'", optopt);
+    else
+        usage_error_printf("unrecognized option");
+}
+
 int
 main(int argc, char *argv[])
 {
-    if (argc != 1)
-        usage_error();
+    int platform;
+    bool ok;
 
+    ok = parse_args(argc, argv, &platform);
+    if (!ok)
+        exit(EXIT_FAILURE);
+
+    switch (platform) {
 #ifdef WAFFLE_HAS_CGL
-    run_testsuite(testsuite_cgl);
+    case WAFFLE_PLATFORM_CGL:
+        run_testsuite(testsuite_cgl);
+        break;
 #endif
 #ifdef WAFFLE_HAS_GLX
-    run_testsuite(testsuite_glx);
+    case WAFFLE_PLATFORM_GLX:
+        run_testsuite(testsuite_glx);
+        break;
 #endif
 #ifdef WAFFLE_HAS_WAYLAND
-    run_testsuite(testsuite_wayland);
-#endif
-#ifdef WAFFLE_HAS_X11_EGL
-    run_testsuite(testsuite_x11_egl);
+    case WAFFLE_PLATFORM_WAYLAND:
+        run_testsuite(testsuite_wayland);
+        break;
 #endif
 #ifdef WAFFLE_HAS_WGL
-    run_testsuite(testsuite_wgl);
+    case WAFFLE_PLATFORM_WGL:
+        run_testsuite(testsuite_wgl);
+        break;
 #endif
+#ifdef WAFFLE_HAS_X11_EGL
+    case WAFFLE_PLATFORM_X11_EGL:
+        run_testsuite(testsuite_x11_egl);
+        break;
+#endif
+    default:
+        abort();
+        break;
+    }
 
-   return 0;
+    return 0;
 }
