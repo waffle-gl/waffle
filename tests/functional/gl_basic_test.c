@@ -70,7 +70,8 @@ static const uint8_t    GREEN_UB    = 0x00;
 static const uint8_t    BLUE_UB     = 0xff;
 static const uint8_t    ALPHA_UB    = 0xff;
 
-static uint8_t pixels[4 * WINDOW_WIDTH * WINDOW_HEIGHT];
+static uint8_t actual_pixels[4 * WINDOW_WIDTH * WINDOW_HEIGHT];
+static uint8_t expect_pixels[4 * WINDOW_WIDTH * WINDOW_HEIGHT];
 
 #define ASSERT_GL(statement) \
     do { \
@@ -139,7 +140,17 @@ static void (APIENTRY *glReadPixels)(GLint x, GLint y,
 static void
 testgroup_gl_basic_setup(void)
 {
-    memset(pixels, 0, sizeof(pixels));
+    for (int y = 0 ; y < WINDOW_HEIGHT; ++y) {
+        for (int x = 0; x < WINDOW_WIDTH; ++x) {
+            uint8_t *p = &expect_pixels[4 * (y * WINDOW_WIDTH + x)];
+            p[0] = RED_UB;
+            p[1] = GREEN_UB;
+            p[2] = BLUE_UB;
+            p[3] = ALPHA_UB;
+        }
+    }
+
+    memset(actual_pixels, 0x99, sizeof(actual_pixels));
 }
 
 static void
@@ -348,21 +359,15 @@ gl_basic_draw__(struct gl_basic_draw_args__ args)
     ASSERT_GL(glClear(GL_COLOR_BUFFER_BIT));
     ASSERT_GL(glReadPixels(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT,
                            GL_RGBA, GL_UNSIGNED_BYTE,
-                           pixels));
+                           actual_pixels));
     ASSERT_TRUE(waffle_window_swap_buffers(window));
 
     // Probe color buffer.
     //
     // Fail at first failing pixel. If the draw fails, we don't want a terminal
     // filled with error messages.
-    for (int y = 0 ; y < WINDOW_HEIGHT; ++y) {
-        for (int x = 0; x < WINDOW_WIDTH; ++x) {
-            uint8_t *p = &pixels[4 * (y * WINDOW_WIDTH + x)];
-            ASSERT_TRUE(p[0] == RED_UB);
-            ASSERT_TRUE(p[1] == GREEN_UB);
-            ASSERT_TRUE(p[2] == BLUE_UB);
-            ASSERT_TRUE(p[3] == ALPHA_UB);
-        }
+    for (i = 0 ; i < sizeof(actual_pixels); ++i) {
+        ASSERT_TRUE(actual_pixels[i] == expect_pixels[i]);
     }
 
     // Teardown.
