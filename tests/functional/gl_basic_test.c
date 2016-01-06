@@ -35,6 +35,7 @@
 ///     5. Tear down all waffle state.
 
 #include <stdarg.h> // for va_start, va_end
+#include <setjmp.h> // for cmocka.h
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -48,8 +49,8 @@
 #include <windows.h>
 #endif
 
+#include <cmocka.h>
 #include "waffle.h"
-#include "waffle_test/waffle_test.h"
 
 #include "gl_basic_cocoa.h"
 
@@ -70,22 +71,21 @@ static const uint8_t    GREEN_UB    = 0x00;
 static const uint8_t    BLUE_UB     = 0xff;
 static const uint8_t    ALPHA_UB    = 0xff;
 
-static uint8_t actual_pixels[4 * WINDOW_WIDTH * WINDOW_HEIGHT];
-static uint8_t expect_pixels[4 * WINDOW_WIDTH * WINDOW_HEIGHT];
+struct test_state_gl_basic {
+    bool initialized;
+    struct waffle_display *dpy;
+    struct waffle_config *config;
+    struct waffle_window *window;
+    struct waffle_context *ctx;
+
+    uint8_t actual_pixels[4 * WINDOW_WIDTH * WINDOW_HEIGHT];
+    uint8_t expect_pixels[4 * WINDOW_WIDTH * WINDOW_HEIGHT];
+};
 
 #define ASSERT_GL(statement) \
     do { \
         statement; \
-        ASSERT_TRUE(!glGetError()); \
-    } while (0)
-
-/// Use this when @a cond will corrupt future tests.
-#define ABORT_IF(cond) \
-    do { \
-        if (cond) { \
-            TEST_ERROR_PRINTF("expect %x; aborting...", #cond); \
-            abort(); \
-        } \
+        assert_false(glGetError()); \
     } while (0)
 
 typedef unsigned int        GLenum;
@@ -137,26 +137,36 @@ static void (APIENTRY *glReadPixels)(GLint x, GLint y,
                                      GLenum format, GLenum type,
                                      GLvoid *pixels );
 
-static void
-testgroup_gl_basic_setup(void)
+static int
+setup(void **state)
 {
+    struct test_state_gl_basic *ts;
+
+    ts = calloc(1, sizeof(*ts));
+    if (!ts)
+        return -1;
+
     for (int y = 0 ; y < WINDOW_HEIGHT; ++y) {
         for (int x = 0; x < WINDOW_WIDTH; ++x) {
-            uint8_t *p = &expect_pixels[4 * (y * WINDOW_WIDTH + x)];
+            uint8_t *p = &ts->expect_pixels[4 * (y * WINDOW_WIDTH + x)];
             p[0] = RED_UB;
             p[1] = GREEN_UB;
             p[2] = BLUE_UB;
             p[3] = ALPHA_UB;
         }
     }
+    // Fill actual_pixels with canaries.
+    memset(&ts->actual_pixels, 0x99, sizeof(ts->actual_pixels));
 
-    memset(actual_pixels, 0x99, sizeof(actual_pixels));
+    *state = ts;
+    return 0;
 }
 
-static void
-testgroup_gl_basic_teardown(void)
+static int
+teardown(void **state)
 {
-    // empty
+    free(*state);
+    return 0;
 }
 
 static int32_t
@@ -169,25 +179,65 @@ libgl_from_context_api(int32_t waffle_context_api)
         case WAFFLE_CONTEXT_OPENGL_ES3: return WAFFLE_DL_OPENGL_ES3;
 
         default:
-            TEST_FAIL();
+            assert_true(0);
             return 0;
     }
 }
 
-static void
-gl_basic_init(int32_t waffle_platform)
+static int
+gl_basic_init(void **state, int32_t waffle_platform)
 {
+    struct test_state_gl_basic *ts;
+    int ret;
+
+    ret = setup((void **)&ts);
+    if (ret)
+        return -1;
+
     const int32_t init_attrib_list[] = {
         WAFFLE_PLATFORM, waffle_platform,
         0,
     };
 
-    ASSERT_TRUE(waffle_init(init_attrib_list));
+    ts->initialized = waffle_init(init_attrib_list);
+    if (!ts->initialized) {
+        // XXX: does cmocka call teardown if setup fails ?
+        teardown(state);
+        return -1;
+    }
+
+    *state = ts;
+    return 0;
 }
 
-#define gl_basic_draw(...) \
+static int
+gl_basic_fini(void **state)
+{
+    struct test_state_gl_basic *ts = *state;
+    bool ret = false;
+
+    // XXX: return immediately on error or attempt to finish the teardown ?
+    if (ts->dpy) // XXX: keep track if we've had current ctx ?
+        ret = waffle_make_current(ts->dpy, NULL, NULL);
+    if (ts->window)
+        ret = waffle_window_destroy(ts->window);
+    if (ts->ctx)
+        ret = waffle_context_destroy(ts->ctx);
+    if (ts->config)
+        ret = waffle_config_destroy(ts->config);
+    if (ts->dpy)
+        ret = waffle_display_disconnect(ts->dpy);
+
+    if (ts->initialized)
+        ret = waffle_teardown();
+
+    teardown(state);
+    return ret ? 0 : -1;
+}
+
+#define gl_basic_draw(state, ...) \
     \
-    gl_basic_draw__((struct gl_basic_draw_args__) { \
+    gl_basic_draw__(state, (struct gl_basic_draw_args__) { \
         .api = 0, \
         .version = WAFFLE_DONT_CARE, \
         .profile = WAFFLE_DONT_CARE, \
@@ -209,8 +259,9 @@ struct gl_basic_draw_args__ {
 };
 
 static void
-gl_basic_draw__(struct gl_basic_draw_args__ args)
+gl_basic_draw__(void **state, struct gl_basic_draw_args__ args)
 {
+    struct test_state_gl_basic *ts = *state;
     int32_t waffle_context_api = args.api;
     int32_t context_version = args.version;
     int32_t context_profile = args.profile;
@@ -223,11 +274,6 @@ gl_basic_draw__(struct gl_basic_draw_args__ args)
 
     int32_t config_attrib_list[64];
     int i;
-
-    struct waffle_display *dpy = NULL;
-    struct waffle_config *config = NULL;
-    struct waffle_window *window = NULL;
-    struct waffle_context *ctx = NULL;
 
     const intptr_t window_attrib_list[] = {
         WAFFLE_WINDOW_WIDTH,    WINDOW_WIDTH,
@@ -269,72 +315,72 @@ gl_basic_draw__(struct gl_basic_draw_args__ args)
     config_attrib_list[i++] = 0;
 
     // Create objects.
-    ASSERT_TRUE(dpy = waffle_display_connect(NULL));
+    assert_true(ts->dpy = waffle_display_connect(NULL));
 
-    config = waffle_config_choose(dpy, config_attrib_list);
+    ts->config = waffle_config_choose(ts->dpy, config_attrib_list);
     if (expect_error) {
-        ASSERT_TRUE(config == NULL);
-        ASSERT_TRUE(waffle_error_get_code() == expect_error);
-        TEST_PASS();
-    } else if (config == NULL) {
+        assert_true(ts->config == NULL);
+        assert_true(waffle_error_get_code() == expect_error);
+        return;
+    } else if (ts->config == NULL) {
         if (waffle_error_get_code() == WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM) {
-            TEST_SKIP();
+            skip();
         }
         else if (waffle_error_get_code() == WAFFLE_ERROR_UNKNOWN) {
             // Assume that the native platform rejected the requested
             // context flavor.
-            TEST_SKIP();
+            skip();
         }
         else {
-            TEST_FAIL();
+            assert_true(0);
         }
     }
 
-    ASSERT_TRUE(window = waffle_window_create2(config, window_attrib_list));
-    ASSERT_TRUE(waffle_window_show(window));
+    assert_true(ts->window = waffle_window_create2(ts->config, window_attrib_list));
+    assert_true(waffle_window_show(ts->window));
 
-    ctx = waffle_context_create(config, NULL);
-    if (!ctx) {
+    ts->ctx = waffle_context_create(ts->config, NULL);
+    if (ts->ctx == NULL) {
         if (waffle_error_get_code() == WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM) {
-            TEST_SKIP();
+            skip();
         }
         else if (waffle_error_get_code() == WAFFLE_ERROR_UNKNOWN) {
             // Assume that the native platform rejected the requested
             // context flavor.
-            TEST_SKIP();
+            skip();
         }
         else {
-            TEST_FAIL();
+            assert_true(0);
         }
     }
 
     // Get OpenGL functions.
-    ASSERT_TRUE(glClear         = waffle_dl_sym(libgl, "glClear"));
-    ASSERT_TRUE(glClearColor    = waffle_dl_sym(libgl, "glClearColor"));
-    ASSERT_TRUE(glGetError      = waffle_dl_sym(libgl, "glGetError"));
-    ASSERT_TRUE(glGetIntegerv   = waffle_dl_sym(libgl, "glGetIntegerv"));
-    ASSERT_TRUE(glReadPixels    = waffle_dl_sym(libgl, "glReadPixels"));
-    ASSERT_TRUE(glGetString     = waffle_dl_sym(libgl, "glGetString"));
+    assert_true(glClear         = waffle_dl_sym(libgl, "glClear"));
+    assert_true(glClearColor    = waffle_dl_sym(libgl, "glClearColor"));
+    assert_true(glGetError      = waffle_dl_sym(libgl, "glGetError"));
+    assert_true(glGetIntegerv   = waffle_dl_sym(libgl, "glGetIntegerv"));
+    assert_true(glReadPixels    = waffle_dl_sym(libgl, "glReadPixels"));
+    assert_true(glGetString     = waffle_dl_sym(libgl, "glGetString"));
 
-    ASSERT_TRUE(waffle_make_current(dpy, window, ctx));
+    assert_true(waffle_make_current(ts->dpy, ts->window, ts->ctx));
 
-    ASSERT_TRUE(waffle_get_current_display() == dpy);
-    ASSERT_TRUE(waffle_get_current_window() == window);
-    ASSERT_TRUE(waffle_get_current_context() == ctx);
+    assert_true(waffle_get_current_display() == ts->dpy);
+    assert_true(waffle_get_current_window() == ts->window);
+    assert_true(waffle_get_current_context() == ts->ctx);
 
     const char *version_str;
     int major, minor, count;
 
     ASSERT_GL(version_str = (const char *) glGetString(GL_VERSION));
-    ASSERT_TRUE(version_str != NULL);
+    assert_true(version_str != NULL);
 
     while (*version_str != '\0' && !isdigit(*version_str))
         version_str++;
 
     count = sscanf(version_str, "%d.%d", &major, &minor);
-    ASSERT_TRUE(count == 2);
-    ASSERT_TRUE(major >= 0);
-    ASSERT_TRUE(minor >= 0 && minor < 10);
+    assert_true(count == 2);
+    assert_true(major >= 0);
+    assert_true(minor >= 0 && minor < 10);
 
     int version_10x = 10 * major + minor;
 
@@ -346,11 +392,11 @@ gl_basic_draw__(struct gl_basic_draw_args__ args)
         }
 
         if (context_forward_compatible) {
-            ASSERT_TRUE(context_flags & GL_CONTEXT_FLAG_FORWARD_COMPATIBLE_BIT);
+            assert_true(context_flags & GL_CONTEXT_FLAG_FORWARD_COMPATIBLE_BIT);
         }
 
         if (context_debug) {
-            ASSERT_TRUE(context_flags & GL_CONTEXT_FLAG_DEBUG_BIT);
+            assert_true(context_flags & GL_CONTEXT_FLAG_DEBUG_BIT);
         }
     }
 
@@ -359,28 +405,11 @@ gl_basic_draw__(struct gl_basic_draw_args__ args)
     ASSERT_GL(glClear(GL_COLOR_BUFFER_BIT));
     ASSERT_GL(glReadPixels(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT,
                            GL_RGBA, GL_UNSIGNED_BYTE,
-                           actual_pixels));
-    ASSERT_TRUE(waffle_window_swap_buffers(window));
+                           ts->actual_pixels));
+    assert_true(waffle_window_swap_buffers(ts->window));
 
-    // Probe color buffer.
-    //
-    // Fail at first failing pixel. If the draw fails, we don't want a terminal
-    // filled with error messages.
-    for (i = 0 ; i < sizeof(actual_pixels); ++i) {
-        ASSERT_TRUE(actual_pixels[i] == expect_pixels[i]);
-    }
-
-    // Teardown.
-    ABORT_IF(!waffle_make_current(dpy, NULL, NULL));
-
-    ASSERT_TRUE(waffle_get_current_display() == dpy);
-    ASSERT_TRUE(waffle_get_current_window() == NULL);
-    ASSERT_TRUE(waffle_get_current_context() == NULL);
-
-    ASSERT_TRUE(waffle_window_destroy(window));
-    ASSERT_TRUE(waffle_context_destroy(ctx));
-    ASSERT_TRUE(waffle_config_destroy(config));
-    ASSERT_TRUE(waffle_display_disconnect(dpy));
+    assert_memory_equal(&ts->actual_pixels, &ts->expect_pixels,
+                        sizeof(ts->expect_pixels));
 }
 
 //
@@ -388,66 +417,74 @@ gl_basic_draw__(struct gl_basic_draw_args__ args)
 //
 
 #define test_XX_rgb(context_api, waffle_api, error)                     \
-static void test_gl_basic_##context_api##_rgb(void)                     \
+static void test_gl_basic_##context_api##_rgb(void **state)             \
 {                                                                       \
-    gl_basic_draw(.api=WAFFLE_CONTEXT_##waffle_api,                     \
+    gl_basic_draw(state,                                                \
+                  .api=WAFFLE_CONTEXT_##waffle_api,                     \
                   .expect_error=WAFFLE_##error);                        \
 }
 
 #define test_XX_rgba(context_api, waffle_api, error)                    \
-static void test_gl_basic_##context_api##_rgba(void)                    \
+static void test_gl_basic_##context_api##_rgba(void **state)            \
 {                                                                       \
-    gl_basic_draw(.api=WAFFLE_CONTEXT_##waffle_api,                     \
+    gl_basic_draw(state,                                                \
+                  .api=WAFFLE_CONTEXT_##waffle_api,                     \
                   .alpha=true,                                          \
                   .expect_error=WAFFLE_##error);                        \
 }
 
 #define test_XX_fwdcompat(context_api, waffle_api, error)               \
-static void test_gl_basic_##context_api##_fwdcompat(void)               \
+static void test_gl_basic_##context_api##_fwdcompat(void **state)       \
 {                                                                       \
-    gl_basic_draw(.api=WAFFLE_CONTEXT_##waffle_api,                     \
+    gl_basic_draw(state,                                                \
+                  .api=WAFFLE_CONTEXT_##waffle_api,                     \
                   .forward_compatible=true,                             \
                   .expect_error=WAFFLE_##error);                        \
 }
 
 #define test_gl_debug(error)                                            \
-static void test_gl_basic_gl_debug(void)                                \
+static void test_gl_basic_gl_debug(void **state)                        \
 {                                                                       \
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,                           \
+    gl_basic_draw(state,                                                \
+                  .api=WAFFLE_CONTEXT_OPENGL,                           \
                   .debug=true,                                          \
                   .expect_error=WAFFLE_##error);                        \
 }
 
 #define test_glXX(waffle_version, error)                                \
-static void test_gl_basic_gl##waffle_version(void)                      \
+static void test_gl_basic_gl##waffle_version(void **state)              \
 {                                                                       \
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,                           \
+    gl_basic_draw(state,                                                \
+                  .api=WAFFLE_CONTEXT_OPENGL,                           \
                   .version=waffle_version,                              \
                   .expect_error=WAFFLE_##error);                        \
 }
 
 #define test_glXX_fwdcompat(waffle_version, error)                      \
-static void test_gl_basic_gl##waffle_version##_fwdcompat(void)          \
+static void test_gl_basic_gl##waffle_version##_fwdcompat(void **state)  \
 {                                                                       \
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,                           \
+    gl_basic_draw(state,                                                \
+                  .api=WAFFLE_CONTEXT_OPENGL,                           \
                   .version=waffle_version,                              \
                   .forward_compatible=true,                             \
                   .expect_error=WAFFLE_##error);                        \
 }
 
 #define test_glXX_core(waffle_version, error)                           \
-static void test_gl_basic_gl##waffle_version##_core(void)               \
+static void test_gl_basic_gl##waffle_version##_core(void **state)       \
 {                                                                       \
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,                           \
+    gl_basic_draw(state,                                                \
+                  .api=WAFFLE_CONTEXT_OPENGL,                           \
                   .version=waffle_version,                              \
                   .profile=WAFFLE_CONTEXT_CORE_PROFILE,                 \
                   .expect_error=WAFFLE_##error);                        \
 }
 
 #define test_glXX_core_fwdcompat(waffle_version, error)                 \
-static void test_gl_basic_gl##waffle_version##_core_fwdcompat(void)     \
+static void test_gl_basic_gl##waffle_version##_core_fwdcompat(void **state) \
 {                                                                       \
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,                           \
+    gl_basic_draw(state,                                                \
+                  .api=WAFFLE_CONTEXT_OPENGL,                           \
                   .version=waffle_version,                              \
                   .profile=WAFFLE_CONTEXT_CORE_PROFILE,                 \
                   .forward_compatible=true,                             \
@@ -455,22 +492,25 @@ static void test_gl_basic_gl##waffle_version##_core_fwdcompat(void)     \
 }
 
 #define test_glXX_compat(waffle_version, error)                         \
-static void test_gl_basic_gl##waffle_version##_compat(void)             \
+static void test_gl_basic_gl##waffle_version##_compat(void **state)     \
 {                                                                       \
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL,                           \
+    gl_basic_draw(state,                                                \
+                  .api=WAFFLE_CONTEXT_OPENGL,                           \
                   .version=waffle_version,                              \
                   .profile=WAFFLE_CONTEXT_COMPATIBILITY_PROFILE,        \
                   .expect_error=WAFFLE_##error);                        \
 }
 
 #define test_glesXX(api_version, waffle_version, error)                 \
-static void test_gl_basic_gles##waffle_version(void)                    \
+static void test_gl_basic_gles##waffle_version(void **state)            \
 {                                                                       \
-    gl_basic_draw(.api=WAFFLE_CONTEXT_OPENGL_ES##api_version,           \
+    gl_basic_draw(state,                                                \
+                  .api=WAFFLE_CONTEXT_OPENGL_ES##api_version,           \
                   .version=waffle_version,                              \
                   .expect_error=WAFFLE_##error);                        \
 }
 
+#if 0
 test_XX_rgb(gl, OPENGL, NO_ERROR)
 test_XX_rgba(gl, OPENGL, NO_ERROR)
 
@@ -862,6 +902,7 @@ testsuite_wgl(void)
     TEST_RUN(gl_basic, gles30);
 }
 #endif // WAFFLE_HAS_WGL
+#endif // 0
 
 #undef test_glesXX
 
@@ -916,112 +957,6 @@ static const struct option get_opts[] = {
     { .name = "platform",       .has_arg = required_argument,     .val = OPT_PLATFORM },
     { .name = "help",           .has_arg = no_argument,           .val = OPT_HELP },
 };
-
-#ifdef _WIN32
-static DWORD __stdcall
-worker_thread(LPVOID lpParam)
-{
-    void (__stdcall *testsuite)(void) = lpParam;
-    void (__stdcall *testsuites[])(void) = {testsuite, 0};
-    int argc = 0;
-    DWORD num_failures = wt_main(&argc, NULL, testsuites);
-
-    return num_failures;
-}
-
-/// Run the testsuite in a separate thread. If the testsuite fails, then exit
-/// immediately.
-static void
-run_testsuite(void (*testsuite)(void))
-{
-    HANDLE hThread;
-    DWORD dwThreadId;
-
-    hThread = CreateThread(NULL, 0, worker_thread, testsuite, 0, &dwThreadId);
-    if (hThread != NULL) {
-        // XXX: Add a decent timeout interval
-        if (WaitForSingleObject(hThread, INFINITE) == WAIT_OBJECT_0) {
-            DWORD exit_status;
-
-            if (GetExitCodeThread(hThread, &exit_status)) {
-                // exit_status is number of failures.
-                if (exit_status == 0) {
-                    // All tests passed.
-                    CloseHandle(hThread);
-                    return;
-                }
-                else {
-                    // Some tests failed. Don't run any more tests.
-                    exit(exit_status);
-                    // or exit process ?
-                }
-            }
-            else {
-                fprintf(stderr, "gl_basic_test: error: get thread exit status"
-                                " failed (%lu)\n", GetLastError());
-                abort();
-            }
-        }
-        else {
-            fprintf(stderr, "gl_basic_test: error: wait for thread failed\n");
-            abort();
-        }
-    }
-    else {
-        fprintf(stderr, "gl_basic_test: error: CreateThread failed\n");
-        abort();
-    }
-}
-
-#else
-
-/// Run the testsuite in a separate process. If the testsuite fails, then exit
-/// immediately.
-static void
-run_testsuite(void (*testsuite)(void))
-{
-    pid_t pid = fork();
-    int status;
-
-    if (pid > 0) {
-        waitpid(pid, &status, 0);
-        int exit_status = WEXITSTATUS(status);
-        // exit_status is number of failures.
-        if (exit_status == 0) {
-            // All tests passed.
-            return;
-        }
-        else if (exit_status > 0) {
-            // Some tests failed. Don't run any more tests.
-            exit(exit_status);
-        }
-        else {
-            fprintf(stderr, "gl_basic_test: error: child process aborted\n");
-            abort();
-        }
-    }
-    else if (pid == 0) {
-        #ifdef __APPLE__
-            gl_basic_cocoa_init();
-        #endif
-
-        void (*testsuites[])(void) = {testsuite, 0};
-        int argc = 0;
-        int num_failures = wt_main(&argc, NULL, testsuites);
-
-        #ifdef __APPLE__
-            gl_basic_cocoa_finish();
-        #endif
-
-        exit(num_failures);
-    }
-    else {
-        fprintf(stderr, "gl_basic_test: error: fork failed\n");
-        abort();
-    }
-}
-
-#endif // _WIN32
 
 static void NORETURN
 usage_error_printf(const char *fmt, ...)
@@ -1143,6 +1078,7 @@ main(int argc, char *argv[])
         exit(EXIT_FAILURE);
 
     switch (platform) {
+#if 0
 #ifdef WAFFLE_HAS_CGL
     case WAFFLE_PLATFORM_CGL:
         run_testsuite(testsuite_cgl);
@@ -1168,6 +1104,7 @@ main(int argc, char *argv[])
         run_testsuite(testsuite_x11_egl);
         break;
 #endif
+#endif // 0
     default:
         abort();
         break;

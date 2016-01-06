@@ -31,7 +31,7 @@ add_executable(gl_basic_test
 
 target_link_libraries(gl_basic_test
     ${waffle_libname}
-    waffle_test
+    cmocka
     ${GETOPT_LIBRARIES}
     )
 
