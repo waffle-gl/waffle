@@ -71,13 +71,13 @@ setup(void **state) {
 
     struct test_state_wcore_config_attrs *ts;
 
-    wcore_error_reset();
-
     ts = calloc(1, sizeof(*ts));
     if (!ts)
         return -1;
 
     *state = ts;
+
+    wcore_error_reset();
 
     // Fill actual_attrs with canaries.
     memset(&ts->actual_attrs, 0x99, sizeof(ts->actual_attrs));
