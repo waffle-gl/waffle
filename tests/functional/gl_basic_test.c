@@ -510,7 +510,76 @@ static void test_gl_basic_gles##waffle_version(void **state)            \
                   .expect_error=WAFFLE_##error);                        \
 }
 
-#if 0
+
+#define CREATE_TESTSUITE(waffle_platform, platform)                     \
+                                                                        \
+static int                                                              \
+setup_##platform(void **state)                                          \
+{                                                                       \
+    return gl_basic_init(state, waffle_platform);                       \
+}                                                                       \
+                                                                        \
+static int                                                              \
+testsuite_##platform(void)                                              \
+{                                                                       \
+    const struct CMUnitTest tests[] = {                                 \
+                                                                        \
+        unit_test_make(test_gl_basic_gl_rgb),                           \
+        unit_test_make(test_gl_basic_gl_rgba),                          \
+        unit_test_make(test_gl_basic_gl_fwdcompat),                     \
+        unit_test_make(test_gl_basic_gl_debug),                         \
+                                                                        \
+        unit_test_make(test_gl_basic_gl10),                             \
+        unit_test_make(test_gl_basic_gl11),                             \
+        unit_test_make(test_gl_basic_gl12),                             \
+        unit_test_make(test_gl_basic_gl13),                             \
+        unit_test_make(test_gl_basic_gl14),                             \
+        unit_test_make(test_gl_basic_gl15),                             \
+        unit_test_make(test_gl_basic_gl20),                             \
+        unit_test_make(test_gl_basic_gl21),                             \
+        unit_test_make(test_gl_basic_gl21_fwdcompat),                   \
+                                                                        \
+        unit_test_make(test_gl_basic_gl30),                             \
+        unit_test_make(test_gl_basic_gl30_fwdcompat),                   \
+        unit_test_make(test_gl_basic_gl31),                             \
+        unit_test_make(test_gl_basic_gl31_fwdcompat),                   \
+                                                                        \
+        unit_test_make(test_gl_basic_gl32_core),                        \
+        unit_test_make(test_gl_basic_gl32_core_fwdcompat),              \
+        unit_test_make(test_gl_basic_gl33_core),                        \
+        unit_test_make(test_gl_basic_gl40_core),                        \
+        unit_test_make(test_gl_basic_gl41_core),                        \
+        unit_test_make(test_gl_basic_gl42_core),                        \
+        unit_test_make(test_gl_basic_gl43_core),                        \
+                                                                        \
+        unit_test_make(test_gl_basic_gl32_compat),                      \
+        unit_test_make(test_gl_basic_gl33_compat),                      \
+        unit_test_make(test_gl_basic_gl40_compat),                      \
+        unit_test_make(test_gl_basic_gl41_compat),                      \
+        unit_test_make(test_gl_basic_gl42_compat),                      \
+        unit_test_make(test_gl_basic_gl43_compat),                      \
+                                                                        \
+        unit_test_make(test_gl_basic_gles1_rgb),                        \
+        unit_test_make(test_gl_basic_gles1_rgba),                       \
+        unit_test_make(test_gl_basic_gles1_fwdcompat),                  \
+        unit_test_make(test_gl_basic_gles10),                           \
+        unit_test_make(test_gl_basic_gles11),                           \
+                                                                        \
+        unit_test_make(test_gl_basic_gles2_rgb),                        \
+        unit_test_make(test_gl_basic_gles2_rgba),                       \
+        unit_test_make(test_gl_basic_gles2_fwdcompat),                  \
+        unit_test_make(test_gl_basic_gles20),                           \
+                                                                        \
+        unit_test_make(test_gl_basic_gles3_rgb),                        \
+        unit_test_make(test_gl_basic_gles3_rgba),                       \
+        unit_test_make(test_gl_basic_gles3_fwdcompat),                  \
+        unit_test_make(test_gl_basic_gles30),                           \
+                                                                        \
+    };                                                                  \
+                                                                        \
+    return cmocka_run_group_tests_name(#platform, tests, NULL, NULL);   \
+}
+
 test_XX_rgb(gl, OPENGL, NO_ERROR)
 test_XX_rgba(gl, OPENGL, NO_ERROR)
 
@@ -570,6 +639,7 @@ test_XX_fwdcompat(gles3, OPENGL_ES3, ERROR_BAD_ATTRIBUTE)
 test_glesXX(3, 30, NO_ERROR)
 #endif
 
+#if 0
 #ifdef WAFFLE_HAS_CGL
 TEST(gl_basic, cgl_init)
 {
@@ -646,71 +716,20 @@ testsuite_cgl(void)
     TEST_RUN(gl_basic, gles20);
 }
 #endif // WAFFLE_HAS_CGL
+#endif // 0
 
 #ifdef WAFFLE_HAS_GLX
-TEST(gl_basic, glx_init)
-{
-    gl_basic_init(WAFFLE_PLATFORM_GLX);
-}
 
-static void
-testsuite_glx(void)
-{
-    TEST_RUN(gl_basic, glx_init);
+#define unit_test_make(name)                                            \
+    cmocka_unit_test_setup_teardown(name, setup_glx, gl_basic_fini)
 
-    TEST_RUN(gl_basic, gl_rgb);
-    TEST_RUN(gl_basic, gl_rgba);
-    TEST_RUN(gl_basic, gl_fwdcompat);
-    TEST_RUN(gl_basic, gl_debug);
+CREATE_TESTSUITE(WAFFLE_PLATFORM_GLX, glx)
 
-    TEST_RUN(gl_basic, gl10);
-    TEST_RUN(gl_basic, gl11);
-    TEST_RUN(gl_basic, gl12);
-    TEST_RUN(gl_basic, gl13);
-    TEST_RUN(gl_basic, gl14);
-    TEST_RUN(gl_basic, gl15);
-    TEST_RUN(gl_basic, gl20);
-    TEST_RUN(gl_basic, gl21);
-    TEST_RUN(gl_basic, gl21_fwdcompat);
+#undef unit_test_make
 
-    TEST_RUN(gl_basic, gl30);
-    TEST_RUN(gl_basic, gl30_fwdcompat);
-    TEST_RUN(gl_basic, gl31);
-    TEST_RUN(gl_basic, gl31_fwdcompat);
-
-    TEST_RUN(gl_basic, gl32_core);
-    TEST_RUN(gl_basic, gl32_core_fwdcompat);
-    TEST_RUN(gl_basic, gl33_core);
-    TEST_RUN(gl_basic, gl40_core);
-    TEST_RUN(gl_basic, gl41_core);
-    TEST_RUN(gl_basic, gl42_core);
-    TEST_RUN(gl_basic, gl43_core);
-
-    TEST_RUN(gl_basic, gl32_compat);
-    TEST_RUN(gl_basic, gl33_compat);
-    TEST_RUN(gl_basic, gl40_compat);
-    TEST_RUN(gl_basic, gl41_compat);
-    TEST_RUN(gl_basic, gl42_compat);
-    TEST_RUN(gl_basic, gl43_compat);
-
-    TEST_RUN(gl_basic, gles1_rgb);
-    TEST_RUN(gl_basic, gles1_rgba);
-    TEST_RUN(gl_basic, gles1_fwdcompat);
-    TEST_RUN(gl_basic, gles10);
-    TEST_RUN(gl_basic, gles11);
-
-    TEST_RUN(gl_basic, gles2_rgb);
-    TEST_RUN(gl_basic, gles2_rgba);
-    TEST_RUN(gl_basic, gles2_fwdcompat);
-    TEST_RUN(gl_basic, gles20);
-
-    TEST_RUN(gl_basic, gles3_rgb);
-    TEST_RUN(gl_basic, gles3_rgba);
-    TEST_RUN(gl_basic, gles3_fwdcompat);
-    TEST_RUN(gl_basic, gles30);
-}
 #endif // WAFFLE_HAS_GLX
 
+#if 0
 #ifdef WAFFLE_HAS_WAYLAND
 TEST(gl_basic, wayland_init)
 {
@@ -1084,11 +1103,12 @@ main(int argc, char *argv[])
         run_testsuite(testsuite_cgl);
         break;
 #endif
+#endif // 0
 #ifdef WAFFLE_HAS_GLX
     case WAFFLE_PLATFORM_GLX:
-        run_testsuite(testsuite_glx);
-        break;
+        return testsuite_glx();
 #endif
+#if 0
 #ifdef WAFFLE_HAS_WAYLAND
     case WAFFLE_PLATFORM_WAYLAND:
         run_testsuite(testsuite_wayland);
