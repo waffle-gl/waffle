@@ -13,7 +13,7 @@ if (UNIX AND NOT WIN32)
         set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu99 -pedantic -pedantic-errors")
         set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Wshadow -Wmissing-prototypes -Wdeclaration-after-statement")
         set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wunused -Wfloat-equal -Wpointer-arith -Wwrite-strings -Wformat-security")
-        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wmissing-format-attribute")
+        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wmissing-format-attribute -Wundef")
 
         # with -fPIC
         check_c_compiler_flag("-fPIC" WITH_FPIC)
@@ -28,7 +28,7 @@ if (UNIX AND NOT WIN32)
 
         if (CMAKE_BUILD_TYPE)
             string(TOLOWER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_LOWER)
-            if (NOT CMAKE_BUILD_TYPE_LOWER MATCHES debug)
+            if (CMAKE_BUILD_TYPE_LOWER MATCHES (release|relwithdebinfo|minsizerel))
                 check_c_compiler_flag("-Wp,-D_FORTIFY_SOURCE=2" WITH_FORTIFY_SOURCE)
                 if (WITH_FORTIFY_SOURCE)
                     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wp,-D_FORTIFY_SOURCE=2")
@@ -36,10 +36,7 @@ if (UNIX AND NOT WIN32)
             endif()
         endif()
 
-        check_c_compiler_flag("-D_GNU_SOURCE" WITH_GNU_SOURCE)
-        if (WITH_GNU_SOURCE)
-            set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D_GNU_SOURCE")
-        endif (WITH_GNU_SOURCE)
+        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D_GNU_SOURCE")
     endif (${CMAKE_C_COMPILER_ID} MATCHES "(GNU|Clang)")
 
     #

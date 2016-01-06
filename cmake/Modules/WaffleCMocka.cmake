@@ -23,11 +23,24 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/third_party/cmocka")
+
 set(cmocka_source_dir ${CMAKE_SOURCE_DIR}/third_party/cmocka)
+set(cmocka_build_dir ${CMAKE_SOURCE_DIR}/third_party/cmocka)
+
+include(ConfigureChecks)
+add_definitions(-DHAVE_CONFIG_H=1)
+configure_file(
+        ${cmocka_source_dir}/config.h.cmake
+        ${cmocka_build_dir}/config.h
+)
 
 list(APPEND CMOCKA_SOURCES
        ${cmocka_source_dir}/src/cmocka.c
 )
 
 add_library(cmocka STATIC ${cmocka_source_dir}/src/cmocka.c)
-target_include_directories(cmocka PUBLIC ${cmocka_source_dir}/include)
+target_include_directories(cmocka PUBLIC
+    ${cmocka_source_dir}/include
+    ${cmocka_build_dir}
+)

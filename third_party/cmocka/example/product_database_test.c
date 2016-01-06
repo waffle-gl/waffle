@@ -26,7 +26,7 @@ extern DatabaseConnection* connect_to_product_database(void);
  * that use the imaginary database.h module. */
 DatabaseConnection* connect_to_database(const char * const url,
                                         const unsigned int port) {
-    check_expected(url);
+    check_expected_ptr(url);
     check_expected(port);
     return (DatabaseConnection*)((size_t)mock());
 }
@@ -63,10 +63,10 @@ static void test_connect_to_product_database_missing_parameter(void **state) {
 }
 
 int main(void) {
-    const UnitTest tests[] = {
-        unit_test(test_connect_to_product_database),
-        unit_test(test_connect_to_product_database_bad_url),
-        unit_test(test_connect_to_product_database_missing_parameter),
+    const struct CMUnitTest tests[] = {
+        cmocka_unit_test(test_connect_to_product_database),
+        cmocka_unit_test(test_connect_to_product_database_bad_url),
+        cmocka_unit_test(test_connect_to_product_database_missing_parameter),
     };
-    return run_tests(tests);
+    return cmocka_run_group_tests(tests, NULL, NULL);
 }

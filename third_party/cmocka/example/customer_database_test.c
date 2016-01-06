@@ -72,7 +72,8 @@ static void test_get_customer_id_by_name(void **state) {
 
     (void) state; /* unused */
 
-    will_return(mock_query_database, &customer_ids);
+    will_return(mock_query_database,
+                cast_ptr_to_largest_integral_type(&customer_ids));
     will_return(mock_query_database, 1);
 
     rc = get_customer_id_by_name(&connection, "john doe");
@@ -80,9 +81,9 @@ static void test_get_customer_id_by_name(void **state) {
 }
 
 int main(void) {
-    const UnitTest tests[] = {
-        unit_test(test_connect_to_customer_database),
-        unit_test(test_get_customer_id_by_name),
+    const struct CMUnitTest tests[] = {
+        cmocka_unit_test(test_connect_to_customer_database),
+        cmocka_unit_test(test_get_customer_id_by_name),
     };
-    return run_tests(tests);
+    return cmocka_run_group_tests(tests, NULL, NULL);
 }

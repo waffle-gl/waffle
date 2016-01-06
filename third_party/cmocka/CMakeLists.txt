@@ -6,9 +6,9 @@ cmake_minimum_required(VERSION 2.6.0)
 # global needed variables
 set(APPLICATION_NAME ${PROJECT_NAME})
 
-set(APPLICATION_VERSION_MAJOR "0")
-set(APPLICATION_VERSION_MINOR "3")
-set(APPLICATION_VERSION_PATCH "2")
+set(APPLICATION_VERSION_MAJOR "1")
+set(APPLICATION_VERSION_MINOR "0")
+set(APPLICATION_VERSION_PATCH "1")
 
 set(APPLICATION_VERSION "${APPLICATION_VERSION_MAJOR}.${APPLICATION_VERSION_MINOR}.${APPLICATION_VERSION_PATCH}")
 
@@ -19,7 +19,7 @@ set(APPLICATION_VERSION "${APPLICATION_VERSION_MAJOR}.${APPLICATION_VERSION_MINO
 #     Increment AGE. Set REVISION to 0
 #   If the source code was changed, but there were no interface changes:
 #     Increment REVISION.
-set(LIBRARY_VERSION "0.1.2")
+set(LIBRARY_VERSION "0.3.1")
 set(LIBRARY_SOVERSION "0")
 
 # where to look first for cmake modules, before ${CMAKE_ROOT}/Modules/ is checked
@@ -35,10 +35,6 @@ include(DefineInstallationPaths)
 include(DefineOptions.cmake)
 include(CPackConfig.cmake)
 
-if (UNIT_TESTING)
-    include(AddCMockaTest)
-endif (UNIT_TESTING)
-
 # disallow in-source build
 include(MacroEnsureOutOfSourceBuild)
 macro_ensure_out_of_source_build("${PROJECT_NAME} requires an out of source build. Please create a separate build directory and run 'cmake /path/to/${PROJECT_NAME} [options]' there.")
@@ -51,9 +47,13 @@ configure_file(config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 add_subdirectory(doc)
 add_subdirectory(include)
 add_subdirectory(src)
+
 if (UNIT_TESTING)
-    add_subdirectory(example)
+    include(AddCMockaTest)
+    add_subdirectory(tests)
 endif (UNIT_TESTING)
+
+add_subdirectory(example)
 
 # pkg-config file
 configure_file(cmocka.pc.cmake ${CMAKE_CURRENT_BINARY_DIR}/cmocka.pc)
@@ -64,4 +64,19 @@ install(
     ${LIB_INSTALL_DIR}/pkgconfig
   COMPONENT
     pkgconfig
+)
+
+# cmake config files
+set(CMOCKA_LIBRARY_NAME ${CMAKE_SHARED_LIBRARY_PREFIX}${PROJECT_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX})
+
+configure_file(${PROJECT_NAME}-config.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake @ONLY)
+configure_file(${PROJECT_NAME}-config-version.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake @ONLY)
+install(
+    FILES
+        ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake
+        ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake
+    DESTINATION
+        ${CMAKE_INSTALL_DIR}/${PROJECT_NAME}
+    COMPONENT
+        devel
 )

@@ -23,6 +23,9 @@
 /* Define to 1 if you have the <inttypes.h> header file. */
 #cmakedefine HAVE_INTTYPES_H 1
 
+/* Define to 1 if you have the <io.h> header file. */
+#cmakedefine HAVE_IO_H 1
+
 /* Define to 1 if you have the <malloc.h> header file. */
 #cmakedefine HAVE_MALLOC_H 1
 
@@ -62,8 +65,15 @@
 /* Define to 1 if you have the <sys/types.h> header file. */
 #cmakedefine HAVE_SYS_TYPES_H 1
 
+/* Define to 1 if you have the <time.h> header file. */
+#cmakedefine HAVE_TIME_H 1
+
 /* Define to 1 if you have the <unistd.h> header file. */
 #cmakedefine HAVE_UNISTD_H 1
+
+/**************************** STRUCTS ****************************/
+
+#cmakedefine HAVE_STRUCT_TIMESPEC 1
 
 /*************************** FUNCTIONS ***************************/
 
@@ -75,6 +85,24 @@
 
 /* Define to 1 if you have the `fprintf' function. */
 #cmakedefine HAVE_FPRINTF 1
+
+/* Define to 1 if you have the `snprintf' function. */
+#cmakedefine HAVE_SNPRINTF 1
+
+/* Define to 1 if you have the `_snprintf' function. */
+#cmakedefine HAVE__SNPRINTF 1
+
+/* Define to 1 if you have the `_snprintf_s' function. */
+#cmakedefine HAVE__SNPRINTF_S 1
+
+/* Define to 1 if you have the `vsnprintf' function. */
+#cmakedefine HAVE_VSNPRINTF 1
+
+/* Define to 1 if you have the `_vsnprintf' function. */
+#cmakedefine HAVE__VSNPRINTF 1
+
+/* Define to 1 if you have the `_vsnprintf_s' function. */
+#cmakedefine HAVE__VSNPRINTF_S 1
 
 /* Define to 1 if you have the `free' function. */
 #cmakedefine HAVE_FREE 1
@@ -112,22 +140,22 @@
 /* Define to 1 if you have the `vsnprintf' function. */
 #cmakedefine HAVE_VSNPRINTF 1
 
+/* Define to 1 if you have the `strsignal' function. */
+#cmakedefine HAVE_STRSIGNAL 1
+
+/* Define to 1 if you have the `clock_gettime' function. */
+#cmakedefine HAVE_CLOCK_GETTIME 1
+
 /**************************** OPTIONS ****************************/
 
-/* define if the compiler implements namespaces */
-#cmakedefine HAVE_NAMESPACES
+/* Check if we have TLS support with GCC */
+#cmakedefine HAVE_GCC_THREAD_LOCAL_STORAGE 1
 
-/* Namespace for Google classes */
-#cmakedefine GOOGLE_NAMESPACE
+/* Check if we have TLS support with MSVC */
+#cmakedefine HAVE_MSVC_THREAD_LOCAL_STORAGE 1
 
-/* the namespace where STL code like vector<> is defined */
-#cmakedefine STL_NAMESPACE
-
-/* Stops putting the code inside the Google namespace */
-#cmakedefine _END_GOOGLE_NAMESPACE_
-
-/* Puts following code inside the Google namespace */
-#cmakedefine _START_GOOGLE_NAMESPACE_
+/* Check if we have CLOCK_REALTIME for clock_gettime() */
+#cmakedefine HAVE_CLOCK_GETTIME_REALTIME 1
 
 /*************************** ENDIAN *****************************/
 

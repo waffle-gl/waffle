@@ -13,41 +13,50 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/* Use the unit test allocators */
+#define UNIT_TESTING 1
+
 #include <stdarg.h>
 #include <stddef.h>
 #include <setjmp.h>
 #include <cmocka.h>
 
-extern void leak_memory();
-extern void buffer_overflow();
-extern void buffer_underflow();
+static int setup(void **state) {
+    int *answer = malloc(sizeof(int));
 
-/* Test case that fails as leak_memory() leaks a dynamically allocated block. */
-static void leak_memory_test(void **state) {
-    (void) state; /* unused */
+    assert_non_null(answer);
+    *answer = 42;
 
-    leak_memory();
+    *state = answer;
+
+    return 0;
 }
 
-/* Test case that fails as buffer_overflow() corrupts an allocated block. */
-static void buffer_overflow_test(void **state) {
-    (void) state; /* unused */
+static int teardown(void **state) {
+    free(*state);
 
-    buffer_overflow();
+    return 0;
 }
 
-/* Test case that fails as buffer_underflow() corrupts an allocated block. */
-static void buffer_underflow_test(void **state) {
-    (void) state; /* unused */
-
-    buffer_underflow();
+/* A test case that does nothing and succeeds. */
+static void null_test_success(void **state) {
+    (void) state;
 }
+
+/* A test case that does check if an int is equal. */
+static void int_test_success(void **state) {
+    int *answer = *state;
+
+    assert_int_equal(*answer, 42);
+}
+
 
 int main(void) {
     const struct CMUnitTest tests[] = {
-        cmocka_unit_test(leak_memory_test),
-        cmocka_unit_test(buffer_overflow_test),
-        cmocka_unit_test(buffer_underflow_test),
+        cmocka_unit_test(null_test_success),
+        cmocka_unit_test_setup_teardown(int_test_success, setup, teardown),
     };
+
     return cmocka_run_group_tests(tests, NULL, NULL);
 }

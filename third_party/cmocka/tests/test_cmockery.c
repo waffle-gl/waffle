@@ -13,26 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <assert.h>
 
-#include "assert_module.h"
+#include <stdarg.h>
+#include <stddef.h>
+#include <setjmp.h>
+#include <cmockery/cmockery.h>
 
-/* If unit testing is enabled override assert with mock_assert(). */
-#ifdef UNIT_TESTING
-extern void mock_assert(const int result, const char* const expression,
-                        const char * const file, const int line);
-#undef assert
-#define assert(expression) \
-    mock_assert(((expression) ? 1 : 0), #expression, __FILE__, __LINE__);
-#endif /* UNIT_TESTING */
-
-void increment_value(int * const value) {
-    assert(value);
-    (*value) ++;
+/* A test case that does nothing and succeeds. */
+static void null_test_success(void **state) {
+    (void) state; /* unused */
 }
 
-void decrement_value(int * const value) {
-    if (value) {
-      (*value) --;
-    }
+int main(void) {
+    const UnitTest tests[] = {
+        unit_test(null_test_success),
+    };
+    return run_tests(tests);
 }

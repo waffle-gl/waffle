@@ -13,26 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <assert.h>
 
-#include "assert_module.h"
+#include <stdarg.h>
+#include <stddef.h>
+#include <setjmp.h>
+#include <cmocka.h>
 
-/* If unit testing is enabled override assert with mock_assert(). */
-#ifdef UNIT_TESTING
-extern void mock_assert(const int result, const char* const expression,
-                        const char * const file, const int line);
-#undef assert
-#define assert(expression) \
-    mock_assert(((expression) ? 1 : 0), #expression, __FILE__, __LINE__);
-#endif /* UNIT_TESTING */
+/* A test case that does check if an int is equal. */
+static void test_check_skip(void **state) {
+    (void)state; /* unused */
 
-void increment_value(int * const value) {
-    assert(value);
-    (*value) ++;
+    skip();
+
+    assert_true(0);
 }
 
-void decrement_value(int * const value) {
-    if (value) {
-      (*value) --;
-    }
+
+int main(void) {
+    const struct CMUnitTest tests[] = {
+        cmocka_unit_test(test_check_skip),
+    };
+
+    return cmocka_run_group_tests(tests, NULL, NULL);
 }
+

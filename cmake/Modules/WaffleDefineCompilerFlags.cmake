@@ -130,7 +130,7 @@ if(waffle_on_linux)
         add_definitions(-DWAFFLE_HAS_TLS_MODEL_INITIAL_EXEC)
     endif()
 
-    add_definitions(-D_XOPEN_SOURCE=600)
+    add_definitions(-D_XOPEN_SOURCE=700)
 endif()
 
 if(waffle_has_nacl)

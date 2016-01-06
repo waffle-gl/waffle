@@ -4,6 +4,7 @@ include(CheckFunctionExists)
 include(CheckLibraryExists)
 include(CheckTypeSize)
 include(CheckCXXSourceCompiles)
+include(CheckStructHasMember)
 include(TestBigEndian)
 
 set(PACKAGE ${APPLICATION_NAME})
@@ -48,6 +49,7 @@ endif (SOLARIS)
 # HEADER FILES
 check_include_file(assert.h HAVE_ASSERT_H)
 check_include_file(inttypes.h HAVE_INTTYPES_H)
+check_include_file(io.h HAVE_IO_H)
 check_include_file(malloc.h HAVE_MALLOC_H)
 check_include_file(memory.h HAVE_MEMORY_H)
 check_include_file(setjmp.h HAVE_SETJMP_H)
@@ -61,8 +63,12 @@ check_include_file(string.h HAVE_STRING_H)
 check_include_file(strings.h HAVE_STRINGS_H)
 check_include_file(sys/stat.h HAVE_SYS_STAT_H)
 check_include_file(sys/types.h HAVE_SYS_TYPES_H)
+check_include_file(time.h HAVE_TIME_H)
 check_include_file(unistd.h HAVE_UNISTD_H)
 
+if (HAVE_TIME_H)
+    check_struct_has_member("struct timespec" tv_sec "time.h" HAVE_STRUCT_TIMESPEC)
+endif (HAVE_TIME_H)
 
 # FUNCTIONS
 check_function_exists(calloc HAVE_CALLOC)
@@ -80,6 +86,7 @@ check_function_exists(strsignal HAVE_STRSIGNAL)
 check_function_exists(sprintf HAVE_SNPRINTF)
 check_function_exists(strcmp HAVE_STRCMP)
 check_function_exists(vsnprintf HAVE_VSNPRINTF)
+check_function_exists(clock_gettime HAVE_CLOCK_GETTIME)
 
 if (WIN32)
     check_function_exists(_vsnprintf_s HAVE__VSNPRINTF_S)
@@ -88,9 +95,46 @@ if (WIN32)
     check_function_exists(_snprintf_s HAVE__SNPRINTF_S)
 endif (WIN32)
 
+find_library(RT_LIBRARY rt)
+if (RT_LIBRARY)
+    set(CMAKE_REQUIRED_LIBRARIES ${RT_LIBRARY})
+endif (RT_LIBRARY)
+
 set(CMOCKA_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES} CACHE INTERNAL "cmocka required system libraries")
 
 # OPTIONS
+check_c_source_compiles("
+__thread int tls;
+
+int main(void) {
+    return 0;
+}" HAVE_GCC_THREAD_LOCAL_STORAGE)
+
+if (WIN32)
+check_c_source_compiles("
+__declspec(thread) int tls;
+
+int main(void) {
+    return 0;
+}" HAVE_MSVC_THREAD_LOCAL_STORAGE)
+endif(WIN32)
+
+if (HAVE_TIME_H AND HAVE_STRUCT_TIMESPEC AND HAVE_CLOCK_GETTIME)
+    set(CMAKE_REQUIRED_LIBRARIES ${RT_LIBRARY})
+
+    message(STATUS "CMAKE_REQUIRED_INCLUDES=${CMAKE_REQUIRED_INCLUDES} CMAKE_REQUIRED_LIBRARIES=${CMAKE_REQUIRED_LIBRARIES}")
+    check_c_source_compiles("
+#include <time.h>
+
+int main(void) {
+    struct timespec ts;
+
+    clock_gettime(CLOCK_REALTIME, &ts);
+
+    return 0;
+}" HAVE_CLOCK_GETTIME_REALTIME)
+    set(CMAKE_REQUIRED_INCLUDES)
+endif ()
 
 # ENDIAN
 if (NOT WIN32)

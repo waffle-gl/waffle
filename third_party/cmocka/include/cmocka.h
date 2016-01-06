@@ -17,69 +17,84 @@
 #define CMOCKA_H_
 
 #ifdef _WIN32
-#if _MSC_VER < 1500
-#ifdef __cplusplus
-extern "C" {
-#endif   /* __cplusplus */
-int __stdcall IsDebuggerPresent();
-#ifdef __cplusplus
-} /* extern "C" */
-#endif   /* __cplusplus */
-#endif  /* _MSC_VER < 1500 */
-#endif  /* _WIN32 */
+# ifdef _MSC_VER
 
-/*
- * These headers or their equivalents should be included prior to including
- * this header file.
- *
- * #include <stdarg.h>
- * #include <stddef.h>
- * #include <setjmp.h>
- *
- * This allows test applications to use custom definitions of C standard
- * library functions and types.
- */
-
-/* For those who are used to __func__ from gcc. */
-#ifndef __func__
 #define __func__ __FUNCTION__
-#endif
 
-/* GCC have printf type attribute check.  */
-#ifdef __GNUC__
-#define PRINTF_ATTRIBUTE(a,b) __attribute__ ((__format__ (__printf__, a, b)))
-#else
-#define PRINTF_ATTRIBUTE(a,b)
-#endif /* __GNUC__ */
+# ifndef inline
+#define inline __inline
+# endif /* inline */
+
+#  if _MSC_VER < 1500
+#   ifdef __cplusplus
+extern "C" {
+#   endif   /* __cplusplus */
+int __stdcall IsDebuggerPresent();
+#   ifdef __cplusplus
+} /* extern "C" */
+#   endif   /* __cplusplus */
+#  endif  /* _MSC_VER < 1500 */
+# endif /* _MSC_VER */
+#endif  /* _WIN32 */
 
 /**
  * @defgroup cmocka The CMocka API
  *
- * TODO Describe cmocka.
+ * These headers or their equivalents should be included prior to including
+ * this header file.
+ * @code
+ * #include <stdarg.h>
+ * #include <stddef.h>
+ * #include <setjmp.h>
+ * @endcode
+ *
+ * This allows test applications to use custom definitions of C standard
+ * library functions and types.
  *
  * @{
  */
 
-/*
+/* If __WORDSIZE is not set, try to figure it out and default to 32 bit. */
+#ifndef __WORDSIZE
+# if defined(__x86_64__) && !defined(__ILP32__)
+#  define __WORDSIZE 64
+# else
+#  define __WORDSIZE 32
+# endif
+#endif
+
+#ifdef DOXYGEN
+/**
  * Largest integral type.  This type should be large enough to hold any
  * pointer or integer supported by the compiler.
  */
+typedef uintmax_t LargestIntegralType;
+#else /* DOXGEN */
 #ifndef LargestIntegralType
-#define LargestIntegralType unsigned long long
+# if __WORDSIZE == 64
+#  define LargestIntegralType unsigned long int
+# else
+#  define LargestIntegralType unsigned long long int
+# endif
 #endif /* LargestIntegralType */
+#endif /* DOXYGEN */
 
 /* Printf format used to display LargestIntegralType. */
 #ifndef LargestIntegralTypePrintfFormat
-#ifdef _WIN32
-#define LargestIntegralTypePrintfFormat "%I64x"
-#else
-#define LargestIntegralTypePrintfFormat "%llx"
-#endif /* _WIN32 */
+# ifdef _WIN32
+#  define LargestIntegralTypePrintfFormat "0x%I64x"
+# else
+#  if __WORDSIZE == 64
+#   define LargestIntegralTypePrintfFormat "%#lx"
+#  else
+#   define LargestIntegralTypePrintfFormat "%#llx"
+#  endif
+# endif /* _WIN32 */
 #endif /* LargestIntegralTypePrintfFormat */
 
 /* Perform an unsigned cast to LargestIntegralType. */
 #define cast_to_largest_integral_type(value) \
-    ((LargestIntegralType)((size_t)(value)))
+    ((LargestIntegralType)(value))
 
 /* Smallest integral type capable of holding a pointer. */
 #if !defined(_UINTPTR_T) && !defined(_UINTPTR_T_DEFINED)
@@ -112,11 +127,27 @@ int __stdcall IsDebuggerPresent();
 
 /* Perform an unsigned cast to uintptr_t. */
 #define cast_to_pointer_integral_type(value) \
-    ((uintptr_t)(value))
+    ((uintptr_t)((size_t)(value)))
 
-/* Perform a cast of a pointer to uintmax_t */
+/* Perform a cast of a pointer to LargestIntegralType */
 #define cast_ptr_to_largest_integral_type(value) \
 cast_to_largest_integral_type(cast_to_pointer_integral_type(value))
+
+/* GCC have printf type attribute check.  */
+#ifdef __GNUC__
+#define CMOCKA_PRINTF_ATTRIBUTE(a,b) \
+    __attribute__ ((__format__ (__printf__, a, b)))
+#else
+#define CMOCKA_PRINTF_ATTRIBUTE(a,b)
+#endif /* __GNUC__ */
+
+#if defined(__GNUC__)
+#define CMOCKA_DEPRECATED __attribute__ ((deprecated))
+#elif defined(_MSC_VER)
+#define CMOCKA_DEPRECATED __declspec(deprecated)
+#else
+#define CMOCKA_DEPRECATED
+#endif
 
 /**
  * @defgroup cmocka_mock Mock Objects
@@ -126,7 +157,7 @@ cast_to_largest_integral_type(cast_to_pointer_integral_type(value))
  * real objects. Instead of calling the real objects, the tested object calls a
  * mock object that merely asserts that the correct methods were called, with
  * the expected parameters, in the correct order.
- * 
+ *
  * <ul>
  * <li><strong>will_return(function, value)</strong> - The will_return() macro
  * pushes a value onto a stack of mock values. This macro is intended to be
@@ -174,7 +205,7 @@ cast_to_largest_integral_type(cast_to_pointer_integral_type(value))
  *
  * @see will_return()
  */
-void *mock(void);
+LargestIntegralType mock(void);
 #else
 #define mock() _mock(__func__, __FILE__, __LINE__)
 #endif
@@ -200,7 +231,7 @@ void *mock(void);
  * @see mock()
  * @see mock_ptr_type()
  */
-void *mock_type(#type);
+#type mock_type(#type);
 #else
 #define mock_type(type) ((type) mock())
 #endif
@@ -227,7 +258,7 @@ void *mock_type(#type);
  * @see mock()
  * @see mock_type()
  */
-void *mock_ptr_type(#type);
+type mock_ptr_type(#type);
 #else
 #define mock_ptr_type(type) ((type) (uintptr_t) mock())
 #endif
@@ -258,7 +289,7 @@ void *mock_ptr_type(#type);
  * @see mock()
  * @see will_return_count()
  */
-void will_return(#function, void *value);
+void will_return(#function, LargestIntegralType value);
 #else
 #define will_return(function, value) \
     _will_return(#function, __FILE__, __LINE__, \
@@ -279,7 +310,7 @@ void will_return(#function, void *value);
  *
  * @see mock()
  */
-void will_return_count(#function, void *value, int count);
+void will_return_count(#function, LargestIntegralType value, int count);
 #else
 #define will_return_count(function, value, count) \
     _will_return(#function, __FILE__, __LINE__, \
@@ -292,7 +323,7 @@ void will_return_count(#function, void *value, int count);
  *
  * @param[in]  #function  The function which should return the given value.
  *
- * @param[in]  value The value to be returned by mock().
+ * @param[in]  #value The value to be returned by mock().
  *
  * This is equivalent to:
  * @code
@@ -302,7 +333,7 @@ void will_return_count(#function, void *value, int count);
  * @see will_return_count()
  * @see mock()
  */
-void will_return_always(#function, void *value);
+void will_return_always(#function, LargestIntegralType value);
 #else
 #define will_return_always(function, value) \
     will_return_count(function, (value), -1)
@@ -368,10 +399,10 @@ void will_return_always(#function, void *value);
  * by this function. If the parameter is provided it must be allocated on the
  * heap and doesn't need to be deallocated by the caller.
  *
- * @param[in]  #function  The fuction to add a custom paramater checking function
- *                        for.
+ * @param[in]  #function  The function to add a custom parameter checking
+ *                        function for.
  *
- * @param[in]  #parameter The parametes passed to the function.
+ * @param[in]  #parameter The parameters passed to the function.
  *
  * @param[in]  #check_function  The check function to call.
  *
@@ -381,10 +412,10 @@ void expect_check(#function, #parameter, #check_function, const void *check_data
 #else
 #define expect_check(function, parameter, check_function, check_data) \
     _expect_check(#function, #parameter, __FILE__, __LINE__, check_function, \
-                  cast_to_largest_integral_type(check_data), NULL, 0)
+                  cast_to_largest_integral_type(check_data), NULL, 1)
 #endif
 
-#if DOXYGEN
+#ifdef DOXYGEN
 /**
  * @brief Add an event to check if the parameter value is part of the provided
  *        array.
@@ -399,13 +430,13 @@ void expect_check(#function, #parameter, #check_function, const void *check_data
  *
  * @see check_expected().
  */
-void expect_in_set(#function, #parameter, uintmax_t value_array[]);
+void expect_in_set(#function, #parameter, LargestIntegralType value_array[]);
 #else
 #define expect_in_set(function, parameter, value_array) \
     expect_in_set_count(function, parameter, value_array, 1)
 #endif
 
-#if DOXYGEN
+#ifdef DOXYGEN
 /**
  * @brief Add an event to check if the parameter value is part of the provided
  *        array.
@@ -424,14 +455,14 @@ void expect_in_set(#function, #parameter, uintmax_t value_array[]);
  *
  * @see check_expected().
  */
-void expect_in_set_count(#function, #parameter, uintmax_t value_array[], size_t count);
+void expect_in_set_count(#function, #parameter, LargestIntegralType value_array[], size_t count);
 #else
 #define expect_in_set_count(function, parameter, value_array, count) \
     _expect_in_set(#function, #parameter, __FILE__, __LINE__, value_array, \
                    sizeof(value_array) / sizeof((value_array)[0]), count)
 #endif
 
-#if DOXYGEN
+#ifdef DOXYGEN
 /**
  * @brief Add an event to check if the parameter value is not part of the
  *        provided array.
@@ -446,13 +477,13 @@ void expect_in_set_count(#function, #parameter, uintmax_t value_array[], size_t 
  *
  * @see check_expected().
  */
-void expect_not_in_set(#function, #parameter, uintmax_t value_array[]);
+void expect_not_in_set(#function, #parameter, LargestIntegralType value_array[]);
 #else
 #define expect_not_in_set(function, parameter, value_array) \
     expect_not_in_set_count(function, parameter, value_array, 1)
 #endif
 
-#if DOXYGEN
+#ifdef DOXYGEN
 /**
  * @brief Add an event to check if the parameter value is not part of the
  *        provided array.
@@ -471,7 +502,7 @@ void expect_not_in_set(#function, #parameter, uintmax_t value_array[]);
  *
  * @see check_expected().
  */
-void expect_not_in_set_count(#function, #parameter, uintmax_t value_array[], size_t count);
+void expect_not_in_set_count(#function, #parameter, LargestIntegralType value_array[], size_t count);
 #else
 #define expect_not_in_set_count(function, parameter, value_array, count) \
     _expect_not_in_set( \
@@ -480,7 +511,7 @@ void expect_not_in_set_count(#function, #parameter, uintmax_t value_array[], siz
 #endif
 
 
-#if DOXYGEN
+#ifdef DOXYGEN
 /**
  * @brief Add an event to check a parameter is inside a numerical range.
  * The check would succeed if minimum <= value <= maximum.
@@ -497,13 +528,13 @@ void expect_not_in_set_count(#function, #parameter, uintmax_t value_array[], siz
  *
  * @see check_expected().
  */
-void expect_in_range(#function, #parameter, uintmax_t minimum, uintmax_t maximum);
+void expect_in_range(#function, #parameter, LargestIntegralType minimum, LargestIntegralType maximum);
 #else
 #define expect_in_range(function, parameter, minimum, maximum) \
     expect_in_range_count(function, parameter, minimum, maximum, 1)
 #endif
 
-#if DOXYGEN
+#ifdef DOXYGEN
 /**
  * @brief Add an event to repeatedly check a parameter is inside a
  * numerical range. The check would succeed if minimum <= value <= maximum.
@@ -524,14 +555,14 @@ void expect_in_range(#function, #parameter, uintmax_t minimum, uintmax_t maximum
  *
  * @see check_expected().
  */
-void expect_in_range_count(#function, #parameter, uintmax_t minimum, uintmax_t maximum, size_t count);
+void expect_in_range_count(#function, #parameter, LargestIntegralType minimum, LargestIntegralType maximum, size_t count);
 #else
 #define expect_in_range_count(function, parameter, minimum, maximum, count) \
     _expect_in_range(#function, #parameter, __FILE__, __LINE__, minimum, \
                      maximum, count)
 #endif
 
-#if DOXYGEN
+#ifdef DOXYGEN
 /**
  * @brief Add an event to check a parameter is outside a numerical range.
  * The check would succeed if minimum > value > maximum.
@@ -548,13 +579,13 @@ void expect_in_range_count(#function, #parameter, uintmax_t minimum, uintmax_t m
  *
  * @see check_expected().
  */
-void expect_not_in_range(#function, #parameter, uintmax_t minimum, uintmax_t maximum);
+void expect_not_in_range(#function, #parameter, LargestIntegralType minimum, LargestIntegralType maximum);
 #else
 #define expect_not_in_range(function, parameter, minimum, maximum) \
     expect_not_in_range_count(function, parameter, minimum, maximum, 1)
 #endif
 
-#if DOXYGEN
+#ifdef DOXYGEN
 /**
  * @brief Add an event to repeatedly check a parameter is outside a
  * numerical range. The check would succeed if minimum > value > maximum.
@@ -575,7 +606,7 @@ void expect_not_in_range(#function, #parameter, uintmax_t minimum, uintmax_t max
  *
  * @see check_expected().
  */
-void expect_not_in_range_count(#function, #parameter, uintmax_t minimum, uintmax_t maximum, size_t count);
+void expect_not_in_range_count(#function, #parameter, LargestIntegralType minimum, LargestIntegralType maximum, size_t count);
 #else
 #define expect_not_in_range_count(function, parameter, minimum, maximum, \
                                   count) \
@@ -583,7 +614,7 @@ void expect_not_in_range_count(#function, #parameter, uintmax_t minimum, uintmax
                          minimum, maximum, count)
 #endif
 
-#if DOXYGEN
+#ifdef DOXYGEN
 /**
  * @brief Add an event to check if a parameter is the given value.
  *
@@ -597,13 +628,13 @@ void expect_not_in_range_count(#function, #parameter, uintmax_t minimum, uintmax
  *
  * @see check_expected().
  */
-void expect_value(#function, #parameter, uintmax_t value);
+void expect_value(#function, #parameter, LargestIntegralType value);
 #else
 #define expect_value(function, parameter, value) \
     expect_value_count(function, parameter, value, 1)
 #endif
 
-#if DOXYGEN
+#ifdef DOXYGEN
 /**
  * @brief Add an event to repeatedly check if a parameter is the given value.
  *
@@ -621,14 +652,14 @@ void expect_value(#function, #parameter, uintmax_t value);
  *
  * @see check_expected().
  */
-void expect_value_count(#function, #parameter, uintmax_t value, size_t count);
+void expect_value_count(#function, #parameter, LargestIntegralType value, size_t count);
 #else
 #define expect_value_count(function, parameter, value, count) \
     _expect_value(#function, #parameter, __FILE__, __LINE__, \
                   cast_to_largest_integral_type(value), count)
 #endif
 
-#if DOXYGEN
+#ifdef DOXYGEN
 /**
  * @brief Add an event to check if a parameter isn't the given value.
  *
@@ -642,13 +673,13 @@ void expect_value_count(#function, #parameter, uintmax_t value, size_t count);
  *
  * @see check_expected().
  */
-void expect_not_value(#function, #parameter, uintmax_t value);
+void expect_not_value(#function, #parameter, LargestIntegralType value);
 #else
 #define expect_not_value(function, parameter, value) \
     expect_not_value_count(function, parameter, value, 1)
 #endif
 
-#if DOXYGEN
+#ifdef DOXYGEN
 /**
  * @brief Add an event to repeatedly check if a parameter isn't the given value.
  *
@@ -666,14 +697,14 @@ void expect_not_value(#function, #parameter, uintmax_t value);
  *
  * @see check_expected().
  */
-void expect_not_value_count(#function, #parameter, uintmax_t value, size_t count);
+void expect_not_value_count(#function, #parameter, LargestIntegralType value, size_t count);
 #else
 #define expect_not_value_count(function, parameter, value, count) \
     _expect_not_value(#function, #parameter, __FILE__, __LINE__, \
                       cast_to_largest_integral_type(value), count)
 #endif
 
-#if DOXYGEN
+#ifdef DOXYGEN
 /**
  * @brief Add an event to check if the parameter value is equal to the
  *        provided string.
@@ -694,7 +725,7 @@ void expect_string(#function, #parameter, const char *string);
     expect_string_count(function, parameter, string, 1)
 #endif
 
-#if DOXYGEN
+#ifdef DOXYGEN
 /**
  * @brief Add an event to check if the parameter value is equal to the
  *        provided string.
@@ -720,7 +751,7 @@ void expect_string_count(#function, #parameter, const char *string, size_t count
                    (const char*)(string), count)
 #endif
 
-#if DOXYGEN
+#ifdef DOXYGEN
 /**
  * @brief Add an event to check if the parameter value isn't equal to the
  *        provided string.
@@ -741,7 +772,7 @@ void expect_not_string(#function, #parameter, const char *string);
     expect_not_string_count(function, parameter, string, 1)
 #endif
 
-#if DOXYGEN
+#ifdef DOXYGEN
 /**
  * @brief Add an event to check if the parameter value isn't equal to the
  *        provided string.
@@ -767,7 +798,7 @@ void expect_not_string_count(#function, #parameter, const char *string, size_t c
                        (const char*)(string), count)
 #endif
 
-#if DOXYGEN
+#ifdef DOXYGEN
 /**
  * @brief Add an event to check if the parameter does match an area of memory.
  *
@@ -789,7 +820,7 @@ void expect_memory(#function, #parameter, void *memory, size_t size);
     expect_memory_count(function, parameter, memory, size, 1)
 #endif
 
-#if DOXYGEN
+#ifdef DOXYGEN
 /**
  * @brief Add an event to repeatedly check if the parameter does match an area
  *        of memory.
@@ -817,7 +848,7 @@ void expect_memory_count(#function, #parameter, void *memory, size_t size, size_
                    (const void*)(memory), size, count)
 #endif
 
-#if DOXYGEN
+#ifdef DOXYGEN
 /**
  * @brief Add an event to check if the parameter doesn't match an area of
  *        memory.
@@ -840,7 +871,7 @@ void expect_not_memory(#function, #parameter, void *memory, size_t size);
     expect_not_memory_count(function, parameter, memory, size, 1)
 #endif
 
-#if DOXYGEN
+#ifdef DOXYGEN
 /**
  * @brief Add an event to repeatedly check if the parameter doesn't match an
  *        area of memory.
@@ -869,7 +900,7 @@ void expect_not_memory_count(#function, #parameter, void *memory, size_t size, s
 #endif
 
 
-#if DOXYGEN
+#ifdef DOXYGEN
 /**
  * @brief Add an event to check if a parameter (of any value) has been passed.
  *
@@ -887,7 +918,7 @@ void expect_any(#function, #parameter);
     expect_any_count(function, parameter, 1)
 #endif
 
-#if DOXYGEN
+#ifdef DOXYGEN
 /**
  * @brief Add an event to repeatedly check if a parameter (of any value) has
  *        been passed.
@@ -910,7 +941,7 @@ void expect_any_count(#function, #parameter, size_t count);
     _expect_any(#function, #parameter, __FILE__, __LINE__, count)
 #endif
 
-#if DOXYGEN
+#ifdef DOXYGEN
 /**
  * @brief Determine whether a function parameter is correct.
  *
@@ -926,6 +957,24 @@ void check_expected(#parameter);
 #define check_expected(parameter) \
     _check_expected(__func__, #parameter, __FILE__, __LINE__, \
                     cast_to_largest_integral_type(parameter))
+#endif
+
+#ifdef DOXYGEN
+/**
+ * @brief Determine whether a function parameter is correct.
+ *
+ * This ensures the next value queued by one of the expect_*() macros matches
+ * the specified variable.
+ *
+ * This function needs to be called in the mock object.
+ *
+ * @param[in]  #parameter  The pointer to check.
+ */
+void check_expected_ptr(#parameter);
+#else
+#define check_expected_ptr(parameter) \
+    _check_expected(__func__, #parameter, __FILE__, __LINE__, \
+                    cast_ptr_to_largest_integral_type(parameter))
 #endif
 
 /** @} */
@@ -988,6 +1037,28 @@ void assert_false(scalar expression);
 
 #ifdef DOXYGEN
 /**
+ * @brief Assert that the return_code is greater than or equal to 0.
+ *
+ * The function prints an error message to standard error and terminates the
+ * test by calling fail() if the return code is smaller than 0. If the function
+ * you check sets an errno if it fails you can pass it to the function and
+ * it will be printed as part of the error message.
+ *
+ * @param[in]  rc       The return code to evaluate.
+ *
+ * @param[in]  error    Pass errno here or 0.
+ */
+void assert_return_code(int rc, int error);
+#else
+#define assert_return_code(rc, error) \
+    _assert_return_code(cast_to_largest_integral_type(rc), \
+                        sizeof(rc), \
+                        cast_to_largest_integral_type(error), \
+                        #rc, __FILE__, __LINE__)
+#endif
+
+#ifdef DOXYGEN
+/**
  * @brief Assert that the given pointer is non-NULL.
  *
  * The function prints an error message to standard error and terminates the
@@ -1018,6 +1089,44 @@ void assert_null(void *pointer);
 #else
 #define assert_null(c) _assert_true(!(cast_ptr_to_largest_integral_type(c)), #c, \
 __FILE__, __LINE__)
+#endif
+
+#ifdef DOXYGEN
+/**
+ * @brief Assert that the two given pointers are equal.
+ *
+ * The function prints an error message and terminates the test by calling
+ * fail() if the pointers are not equal.
+ *
+ * @param[in]  a        The first pointer to compare.
+ *
+ * @param[in]  b        The pointer to compare against the first one.
+ */
+void assert_ptr_equal(void *a, void *b);
+#else
+#define assert_ptr_equal(a, b) \
+    _assert_int_equal(cast_ptr_to_largest_integral_type(a), \
+                      cast_ptr_to_largest_integral_type(b), \
+                      __FILE__, __LINE__)
+#endif
+
+#ifdef DOXYGEN
+/**
+ * @brief Assert that the two given pointers are not equal.
+ *
+ * The function prints an error message and terminates the test by calling
+ * fail() if the pointers are equal.
+ *
+ * @param[in]  a        The first pointer to compare.
+ *
+ * @param[in]  b        The pointer to compare against the first one.
+ */
+void assert_ptr_not_equal(void *a, void *b);
+#else
+#define assert_ptr_not_equal(a, b) \
+    _assert_int_not_equal(cast_ptr_to_largest_integral_type(a), \
+                          cast_ptr_to_largest_integral_type(b), \
+                          __FILE__, __LINE__)
 #endif
 
 #ifdef DOXYGEN
@@ -1142,8 +1251,8 @@ void assert_memory_not_equal(const void *a, const void *b, size_t size);
 
 #ifdef DOXYGEN
 /**
- * @brief Assert that the specified value is bigger than the minimum and
- * smaller than the maximum.
+ * @brief Assert that the specified value is not smaller than the minimum
+ * and and not greater than the maximum.
  *
  * The function prints an error message to standard error and terminates the
  * test by calling fail() if value is not in range.
@@ -1154,7 +1263,7 @@ void assert_memory_not_equal(const void *a, const void *b, size_t size);
  *
  * @param[in]  maximum  The maximum value allowed.
  */
-void assert_in_range(uintmax_t value, uintmax_t minimum, uintmax_t maximum);
+void assert_in_range(LargestIntegralType value, LargestIntegralType minimum, LargestIntegralType maximum);
 #else
 #define assert_in_range(value, minimum, maximum) \
     _assert_in_range( \
@@ -1165,8 +1274,8 @@ void assert_in_range(uintmax_t value, uintmax_t minimum, uintmax_t maximum);
 
 #ifdef DOXYGEN
 /**
- * @brief Assert that the specified value is smaller than the minimum and
- * bigger than the maximum.
+ * @brief Assert that the specified value is smaller than the minimum or
+ * greater than the maximum.
  *
  * The function prints an error message to standard error and terminates the
  * test by calling fail() if value is in range.
@@ -1177,7 +1286,7 @@ void assert_in_range(uintmax_t value, uintmax_t minimum, uintmax_t maximum);
  *
  * @param[in]  maximum  The maximum value to compare.
  */
-void assert_not_in_range(uintmax_t value, uintmax_t minimum, uintmax_t maximum);
+void assert_not_in_range(LargestIntegralType value, LargestIntegralType minimum, LargestIntegralType maximum);
 #else
 #define assert_not_in_range(value, minimum, maximum) \
     _assert_not_in_range( \
@@ -1199,7 +1308,7 @@ void assert_not_in_range(uintmax_t value, uintmax_t minimum, uintmax_t maximum);
  *
  * @param[in]  count  The size of the values array.
  */
-void assert_in_set(uintmax_t value, uintmax_t values[], size_t count);
+void assert_in_set(LargestIntegralType value, LargestIntegralType values[], size_t count);
 #else
 #define assert_in_set(value, values, number_of_values) \
     _assert_in_set(value, values, number_of_values, __FILE__, __LINE__)
@@ -1218,7 +1327,7 @@ void assert_in_set(uintmax_t value, uintmax_t values[], size_t count);
  *
  * @param[in]  count  The size of the values array.
  */
-void assert_not_in_set(uintmax_t value, uintmax_t values[], size_t count);
+void assert_not_in_set(LargestIntegralType value, LargestIntegralType values[], size_t count);
 #else
 #define assert_not_in_set(value, values, number_of_values) \
     _assert_not_in_set(value, values, number_of_values, __FILE__, __LINE__)
@@ -1240,12 +1349,12 @@ void assert_not_in_set(uintmax_t value, uintmax_t values[], size_t count);
  *
  * int main(void)
  * {
- *     const UnitTest tests[] = {
- *         unit_test(Test0),
- *         unit_test(Test1),
+ *     const struct CMUnitTest tests[] = {
+ *         cmocka_unit_test(Test0),
+ *         cmocka_unit_test(Test1),
  *     };
  *
- *     return run_tests(tests);
+ *     return cmocka_run_group_tests(tests, NULL, NULL);
  * }
  * @endcode
  *
@@ -1263,7 +1372,27 @@ void fail(void);
 
 #ifdef DOXYGEN
 /**
+ * @brief Forces the test to not be executed, but marked as skipped
+ */
+void skip(void);
+#else
+#define skip() _skip(__FILE__, __LINE__)
+#endif
+
+#ifdef DOXYGEN
+/**
  * @brief Forces the test to fail immediately and quit, printing the reason.
+ *
+ * @code
+ * fail_msg("This is some error message for test");
+ * @endcode
+ *
+ * or
+ *
+ * @code
+ * char *error_msg = "This is some error message for test";
+ * fail_msg("%s", error_msg);
+ * @endcode
  */
 void fail_msg(const char *msg, ...);
 #else
@@ -1276,6 +1405,8 @@ void fail_msg(const char *msg, ...);
 #ifdef DOXYGEN
 /**
  * @brief Generic method to run a single test.
+ *
+ * @deprecated This function was deprecated in favor of cmocka_run_group_tests
  *
  * @param[in]  #function The function to test.
  *
@@ -1296,54 +1427,116 @@ int run_test(#function);
 #define run_test(f) _run_test(#f, f, NULL, UNIT_TEST_FUNCTION_TYPE_TEST, NULL)
 #endif
 
-/** Initializes a UnitTest structure. */
+static inline void _unit_test_dummy(void **state) {
+    (void)state;
+}
+
+/** Initializes a UnitTest structure.
+ *
+ * @deprecated This function was deprecated in favor of cmocka_unit_test
+ */
 #define unit_test(f) { #f, f, UNIT_TEST_FUNCTION_TYPE_TEST }
 
 #define _unit_test_setup(test, setup) \
     { #test "_" #setup, setup, UNIT_TEST_FUNCTION_TYPE_SETUP }
 
-/** Initializes a UnitTest structure with a setup function. */
+/** Initializes a UnitTest structure with a setup function.
+ *
+ * @deprecated This function was deprecated in favor of cmocka_unit_test_setup
+ */
 #define unit_test_setup(test, setup) \
     _unit_test_setup(test, setup), \
-    unit_test(test)
+    unit_test(test), \
+    _unit_test_teardown(test, _unit_test_dummy)
 
 #define _unit_test_teardown(test, teardown) \
     { #test "_" #teardown, teardown, UNIT_TEST_FUNCTION_TYPE_TEARDOWN }
 
-/** Initializes a UnitTest structure with a teardown function. */
+/** Initializes a UnitTest structure with a teardown function.
+ *
+ * @deprecated This function was deprecated in favor of cmocka_unit_test_teardown
+ */
 #define unit_test_teardown(test, teardown) \
+    _unit_test_setup(test, _unit_test_dummy), \
     unit_test(test), \
     _unit_test_teardown(test, teardown)
+
+/** Initializes a UnitTest structure for a group setup function.
+ *
+ * @deprecated This function was deprecated in favor of cmocka_run_group_tests
+ */
+#define group_test_setup(setup) \
+    { "group_" #setup, setup, UNIT_TEST_FUNCTION_TYPE_GROUP_SETUP }
+
+/** Initializes a UnitTest structure for a group teardown function.
+ *
+ * @deprecated This function was deprecated in favor of cmocka_run_group_tests
+ */
+#define group_test_teardown(teardown) \
+    { "group_" #teardown, teardown, UNIT_TEST_FUNCTION_TYPE_GROUP_TEARDOWN }
 
 /**
  * Initialize an array of UnitTest structures with a setup function for a test
  * and a teardown function.  Either setup or teardown can be NULL.
+ *
+ * @deprecated This function was deprecated in favor of
+ * cmocka_unit_test_setup_teardown
  */
 #define unit_test_setup_teardown(test, setup, teardown) \
     _unit_test_setup(test, setup), \
     unit_test(test), \
     _unit_test_teardown(test, teardown)
 
+
+/** Initializes a CMUnitTest structure. */
+#define cmocka_unit_test(f) { #f, f, NULL, NULL }
+
+/** Initializes a CMUnitTest structure with a setup function. */
+#define cmocka_unit_test_setup(f, setup) { #f, f, setup, NULL }
+
+/** Initializes a CMUnitTest structure with a teardown function. */
+#define cmocka_unit_test_teardown(f, teardown) { #f, f, NULL, teardown }
+
+/**
+ * Initialize an array of CMUnitTest structures with a setup function for a test
+ * and a teardown function. Either setup or teardown can be NULL.
+ */
+#define cmocka_unit_test_setup_teardown(f, setup, teardown) { #f, f, setup, teardown }
+
+#define run_tests(tests) _run_tests(tests, sizeof(tests) / sizeof(tests)[0])
+#define run_group_tests(tests) _run_group_tests(tests, sizeof(tests) / sizeof(tests)[0])
+
 #ifdef DOXYGEN
 /**
- * @brief Run tests specified by an array of UnitTest structures.
+ * @brief Run tests specified by an array of CMUnitTest structures.
  *
- * @param[in]  tests[] The array of unit tests to execute.
+ * @param[in]  group_tests[]  The array of unit tests to execute.
  *
- * @return 0 on success, 1 if an error occured.
+ * @param[in]  group_setup    The setup function which should be called before
+ *                            all unit tests are executed.
+ *
+ * @param[in]  group_teardown The teardown function to be called after all
+ *                            tests have finished.
+ *
+ * @return 0 on success, or the number of failed tests.
  *
  * @code
- * static void setup(void **state) {
+ * static int setup(void **state) {
  *      int *answer = malloc(sizeof(int));
- *      assert_non_null(answer);
- *
+ *      if (*answer == NULL) {
+ *          return -1;
+ *      }
  *      *answer = 42;
  *
  *      *state = answer;
+ *
+ *      return 0;
  * }
  *
- * static void teardown(void **state) {
+ * static int teardown(void **state) {
  *      free(*state);
+ *
+ *      return 0;
  * }
  *
  * static void null_test_success(void **state) {
@@ -1356,23 +1549,95 @@ int run_test(#function);
  * }
  *
  * int main(void) {
- *     const UnitTest tests[] = {
- *         unit_test(null_test_success),
- *         unit_test_setup_teardown(int_test_success, setup, teardown),
+ *     const struct CMUnitTest tests[] = {
+ *         cmocka_unit_test(null_test_success),
+ *         cmocka_unit_test_setup_teardown(int_test_success, setup, teardown),
  *     };
  *
- *     return run_tests(tests);
+ *     return cmocka_run_group_tests(tests, NULL, NULL);
  * }
  * @endcode
  *
- * @see unit_test
- * @see unit_test_setup
- * @see unit_test_teardown
- * @see unit_test_setup_teardown
+ * @see cmocka_unit_test
+ * @see cmocka_unit_test_setup
+ * @see cmocka_unit_test_teardown
+ * @see cmocka_unit_test_setup_teardown
  */
-int run_tests(const UnitTest tests[]);
+int cmocka_run_group_tests(const struct CMUnitTest group_tests[],
+                           CMFixtureFunction group_setup,
+                           CMFixtureFunction group_teardown);
 #else
-#define run_tests(tests) _run_tests(tests, sizeof(tests) / sizeof(tests)[0])
+# define cmocka_run_group_tests(group_tests, group_setup, group_teardown) \
+        _cmocka_run_group_tests(#group_tests, group_tests, sizeof(group_tests) / sizeof(group_tests)[0], group_setup, group_teardown)
+#endif
+
+#ifdef DOXYGEN
+/**
+ * @brief Run tests specified by an array of CMUnitTest structures and specify
+ *        a name.
+ *
+ * @param[in]  group_name     The name of the group test.
+ *
+ * @param[in]  group_tests[]  The array of unit tests to execute.
+ *
+ * @param[in]  group_setup    The setup function which should be called before
+ *                            all unit tests are executed.
+ *
+ * @param[in]  group_teardown The teardown function to be called after all
+ *                            tests have finished.
+ *
+ * @return 0 on success, or the number of failed tests.
+ *
+ * @code
+ * static int setup(void **state) {
+ *      int *answer = malloc(sizeof(int));
+ *      if (*answer == NULL) {
+ *          return -1;
+ *      }
+ *      *answer = 42;
+ *
+ *      *state = answer;
+ *
+ *      return 0;
+ * }
+ *
+ * static int teardown(void **state) {
+ *      free(*state);
+ *
+ *      return 0;
+ * }
+ *
+ * static void null_test_success(void **state) {
+ *     (void) state;
+ * }
+ *
+ * static void int_test_success(void **state) {
+ *      int *answer = *state;
+ *      assert_int_equal(*answer, 42);
+ * }
+ *
+ * int main(void) {
+ *     const struct CMUnitTest tests[] = {
+ *         cmocka_unit_test(null_test_success),
+ *         cmocka_unit_test_setup_teardown(int_test_success, setup, teardown),
+ *     };
+ *
+ *     return cmocka_run_group_tests_name("success_test", tests, NULL, NULL);
+ * }
+ * @endcode
+ *
+ * @see cmocka_unit_test
+ * @see cmocka_unit_test_setup
+ * @see cmocka_unit_test_teardown
+ * @see cmocka_unit_test_setup_teardown
+ */
+int cmocka_run_group_tests_name(const char *group_name,
+                                const struct CMUnitTest group_tests[],
+                                CMFixtureFunction group_setup,
+                                CMFixtureFunction group_teardown);
+#else
+# define cmocka_run_group_tests_name(group_name, group_tests, group_setup, group_teardown) \
+        _cmocka_run_group_tests(group_name, group_tests, sizeof(group_tests) / sizeof(group_tests)[0], group_setup, group_teardown)
 #endif
 
 /** @} */
@@ -1409,7 +1674,7 @@ int run_tests(const UnitTest tests[]);
  * @return A pointer to the allocated memory or NULL on error.
  *
  * @code
- * #if UNIT_TESTING
+ * #ifdef UNIT_TESTING
  * extern void* _test_malloc(const size_t size, const char* file, const int line);
  *
  * #define malloc(size) _test_malloc(size, __FILE__, __LINE__)
@@ -1449,6 +1714,22 @@ void *test_calloc(size_t nmemb, size_t size);
 
 #ifdef DOXYGEN
 /**
+ * @brief Test function overriding realloc which detects buffer overruns
+ *        and memoery leaks.
+ *
+ * @param[in]  ptr   The memory block which should be changed.
+ *
+ * @param[in]  size  The bytes which should be allocated.
+ *
+ * @return           The newly allocated memory block, NULL on error.
+ */
+void *test_realloc(void *ptr, size_t size);
+#else
+#define test_realloc(ptr, size) _test_realloc(ptr, size, __FILE__, __LINE__)
+#endif
+
+#ifdef DOXYGEN
+/**
  * @brief Test function overriding free(3).
  *
  * @param[in]  ptr  The pointer to the memory space to free.
@@ -1461,8 +1742,9 @@ void test_free(void *ptr);
 #endif
 
 /* Redirect malloc, calloc and free to the unit test allocators. */
-#if UNIT_TESTING
+#ifdef UNIT_TESTING
 #define malloc test_malloc
+#define realloc test_realloc
 #define calloc test_calloc
 #define free test_free
 #endif /* UNIT_TESTING */
@@ -1502,7 +1784,7 @@ void test_free(void *ptr);
  * @param[in]  line  The line mock_assert() is called.
  *
  * @code
- * #if UNIT_TESTING
+ * #ifdef UNIT_TESTING
  * extern void mock_assert(const int result, const char* const expression,
  *                         const char * const file, const int line);
  *
@@ -1579,6 +1861,8 @@ typedef enum UnitTestFunctionType {
     UNIT_TEST_FUNCTION_TYPE_TEST = 0,
     UNIT_TEST_FUNCTION_TYPE_SETUP,
     UNIT_TEST_FUNCTION_TYPE_TEARDOWN,
+    UNIT_TEST_FUNCTION_TYPE_GROUP_SETUP,
+    UNIT_TEST_FUNCTION_TYPE_GROUP_TEARDOWN,
 } UnitTestFunctionType;
 
 /*
@@ -1592,6 +1876,25 @@ typedef struct UnitTest {
     UnitTestFunctionType function_type;
 } UnitTest;
 
+typedef struct GroupTest {
+    UnitTestFunction setup;
+    UnitTestFunction teardown;
+    const UnitTest *tests;
+    const size_t number_of_tests;
+} GroupTest;
+
+/* Function prototype for test functions. */
+typedef void (*CMUnitTestFunction)(void **state);
+
+/* Function prototype for setup and teardown functions. */
+typedef int (*CMFixtureFunction)(void **state);
+
+struct CMUnitTest {
+    const char *name;
+    CMUnitTestFunction test_func;
+    CMFixtureFunction setup_func;
+    CMFixtureFunction teardown_func;
+};
 
 /* Location within some source code. */
 typedef struct SourceLocation {
@@ -1684,6 +1987,12 @@ void _will_return(const char * const function_name, const char * const file,
 void _assert_true(const LargestIntegralType result,
                   const char* const expression,
                   const char * const file, const int line);
+void _assert_return_code(const LargestIntegralType result,
+                         size_t rlen,
+                         const LargestIntegralType error,
+                         const char * const expression,
+                         const char * const file,
+                         const int line);
 void _assert_int_equal(
     const LargestIntegralType a, const LargestIntegralType b,
     const char * const file, const int line);
@@ -1714,22 +2023,56 @@ void _assert_not_in_set(
     const size_t number_of_values, const char* const file, const int line);
 
 void* _test_malloc(const size_t size, const char* file, const int line);
+void* _test_realloc(void *ptr, const size_t size, const char* file, const int line);
 void* _test_calloc(const size_t number_of_elements, const size_t size,
                    const char* file, const int line);
 void _test_free(void* const ptr, const char* file, const int line);
 
 void _fail(const char * const file, const int line);
+
+void _skip(const char * const file, const int line);
+
 int _run_test(
     const char * const function_name, const UnitTestFunction Function,
     void ** const volatile state, const UnitTestFunctionType function_type,
     const void* const heap_check_point);
-int _run_tests(const UnitTest * const tests, const size_t number_of_tests);
+CMOCKA_DEPRECATED int _run_tests(const UnitTest * const tests,
+                                 const size_t number_of_tests);
+CMOCKA_DEPRECATED int _run_group_tests(const UnitTest * const tests,
+                                       const size_t number_of_tests);
+
+/* Test runner */
+int _cmocka_run_group_tests(const char *group_name,
+                            const struct CMUnitTest * const tests,
+                            const size_t num_tests,
+                            CMFixtureFunction group_setup,
+                            CMFixtureFunction group_teardown);
 
 /* Standard output and error print methods. */
-void print_message(const char* const format, ...) PRINTF_ATTRIBUTE(1, 2);
-void print_error(const char* const format, ...) PRINTF_ATTRIBUTE(1, 2);
-void vprint_message(const char* const format, va_list args) PRINTF_ATTRIBUTE(1, 0);
-void vprint_error(const char* const format, va_list args) PRINTF_ATTRIBUTE(1, 0);
+void print_message(const char* const format, ...) CMOCKA_PRINTF_ATTRIBUTE(1, 2);
+void print_error(const char* const format, ...) CMOCKA_PRINTF_ATTRIBUTE(1, 2);
+void vprint_message(const char* const format, va_list args) CMOCKA_PRINTF_ATTRIBUTE(1, 0);
+void vprint_error(const char* const format, va_list args) CMOCKA_PRINTF_ATTRIBUTE(1, 0);
+
+enum cm_message_output {
+    CM_OUTPUT_STDOUT,
+    CM_OUTPUT_SUBUNIT,
+    CM_OUTPUT_TAP,
+    CM_OUTPUT_XML,
+};
+
+/**
+ * @brief Function to set the output format for a test.
+ *
+ * The ouput format for the test can either be set globally using this
+ * function or overriden with environment variable CMOCKA_MESSAGE_OUTPUT.
+ *
+ * The environment variable can be set to either STDOUT, SUBUNIT, TAP or XML.
+ *
+ * @param[in] output    The output format to use for the test.
+ *
+ */
+void cmocka_set_message_output(enum cm_message_output output);
 
 /** @} */
 

@@ -54,10 +54,10 @@ extern int perform_operation(
         int ** const intermediate_values, int * const error_occurred);
 extern int example_main(int argc, char *argv[]);
 
-int example_test_fprintf(FILE* const file, const char *format, ...) PRINTF_ATTRIBUTE(2, 3);
-int example_test_printf(const char *format, ...) PRINTF_ATTRIBUTE(1, 2);
+int example_test_fprintf(FILE* const file, const char *format, ...) CMOCKA_PRINTF_ATTRIBUTE(2, 3);
+int example_test_printf(const char *format, ...) CMOCKA_PRINTF_ATTRIBUTE(1, 2);
 
-char temporary_buffer[256];
+static char temporary_buffer[256];
 
 /* A mock fprintf function that checks the value of strings printed to the
  * standard error stream. */
@@ -68,7 +68,7 @@ int example_test_fprintf(FILE* const file, const char *format, ...) {
 	va_start(args, format);
 	return_value = vsnprintf(temporary_buffer, sizeof(temporary_buffer),
 	                         format, args);
-	check_expected(temporary_buffer);
+	check_expected_ptr(temporary_buffer);
 	va_end(args);
 	return return_value;
 }
@@ -81,7 +81,7 @@ int example_test_printf(const char *format, ...) {
 	va_start(args, format);
 	return_value = vsnprintf(temporary_buffer, sizeof(temporary_buffer),
 	                         format, args);
-	check_expected(temporary_buffer);
+	check_expected_ptr(temporary_buffer);
 	va_end(args);
 	return return_value;
 }
@@ -159,7 +159,7 @@ static void test_find_operator_function_by_string_null_string(void **state) {
 static void test_find_operator_function_by_string_valid_null_functions(void **state) {
         (void) state; /* unused */
 
-  assert_int_equal(find_operator_function_by_string(0, NULL, "test"), NULL);
+	assert_null(find_operator_function_by_string(0, NULL, "test"));
 }
 
 /* Ensure find_operator_function_by_string() returns NULL when searching for
@@ -173,9 +173,8 @@ static void test_find_operator_function_by_string_not_found(void **state) {
 
         (void) state; /* unused */
 
-	assert_int_equal(find_operator_function_by_string(
-	        array_length(operator_functions), operator_functions, "test"),
-	        NULL);
+	assert_null(find_operator_function_by_string(
+	        array_length(operator_functions), operator_functions, "test"));
 }
 
 /* Ensure find_operator_function_by_string() returns the correct function when
@@ -189,8 +188,11 @@ static void test_find_operator_function_by_string_found(void **state) {
 
         (void) state; /* unused */
 
-	assert_int_equal(find_operator_function_by_string(
-	        array_length(operator_functions), operator_functions, "-"),
+	assert_int_equal(
+            cast_ptr_to_largest_integral_type(
+                find_operator_function_by_string(array_length(operator_functions),
+                                                 operator_functions,
+                                                 "-")),
 	    0xDEADBEEF);
 }
 
@@ -392,7 +394,7 @@ static void test_perform_operation(void **state) {
 		"1", "+", "3", "*", "10",
 	};
 	int number_of_intermediate_values;
-	int *intermediate_values;
+	int *intermediate_values = NULL;
 	int error_occurred;
 
         (void) state; /* unused */
@@ -414,7 +416,7 @@ static void test_perform_operation(void **state) {
 	    &intermediate_values, &error_occurred), 40);
 	assert_int_equal(error_occurred, 0);
 
-	assert_true(intermediate_values);
+	assert_non_null(intermediate_values);
 	assert_int_equal(intermediate_values[0], 4);
 	assert_int_equal(intermediate_values[1], 40);
 	test_free(intermediate_values);
@@ -452,29 +454,29 @@ static void test_example_main(void **state) {
 
 
 int main(void) {
-	UnitTest tests[] = {
-		unit_test(test_add),
-		unit_test(test_subtract),
-		unit_test(test_multiply),
-		unit_test(test_divide),
-		unit_test(test_divide_by_zero),
-		unit_test(test_find_operator_function_by_string_null_functions),
-		unit_test(test_find_operator_function_by_string_null_string),
-		unit_test(test_find_operator_function_by_string_valid_null_functions),
-		unit_test(test_find_operator_function_by_string_not_found),
-		unit_test(test_find_operator_function_by_string_found),
-		unit_test(test_perform_operation_null_args),
-		unit_test(test_perform_operation_null_operator_functions),
-		unit_test(test_perform_operation_null_number_of_intermediate_values),
-		unit_test(test_perform_operation_null_intermediate_values),
-		unit_test(test_perform_operation_no_arguments),
-		unit_test(test_perform_operation_first_arg_not_integer),
-		unit_test(test_perform_operation_unknown_operator),
-		unit_test(test_perform_operation_missing_argument),
-		unit_test(test_perform_operation_no_integer_after_operator),
-		unit_test(test_perform_operation),
-		unit_test(test_example_main_no_args),
-		unit_test(test_example_main),
+	const struct CMUnitTest tests[] = {
+		cmocka_unit_test(test_add),
+		cmocka_unit_test(test_subtract),
+		cmocka_unit_test(test_multiply),
+		cmocka_unit_test(test_divide),
+		cmocka_unit_test(test_divide_by_zero),
+		cmocka_unit_test(test_find_operator_function_by_string_null_functions),
+		cmocka_unit_test(test_find_operator_function_by_string_null_string),
+		cmocka_unit_test(test_find_operator_function_by_string_valid_null_functions),
+		cmocka_unit_test(test_find_operator_function_by_string_not_found),
+		cmocka_unit_test(test_find_operator_function_by_string_found),
+		cmocka_unit_test(test_perform_operation_null_args),
+		cmocka_unit_test(test_perform_operation_null_operator_functions),
+		cmocka_unit_test(test_perform_operation_null_number_of_intermediate_values),
+		cmocka_unit_test(test_perform_operation_null_intermediate_values),
+		cmocka_unit_test(test_perform_operation_no_arguments),
+		cmocka_unit_test(test_perform_operation_first_arg_not_integer),
+		cmocka_unit_test(test_perform_operation_unknown_operator),
+		cmocka_unit_test(test_perform_operation_missing_argument),
+		cmocka_unit_test(test_perform_operation_no_integer_after_operator),
+		cmocka_unit_test(test_perform_operation),
+		cmocka_unit_test(test_example_main_no_args),
+		cmocka_unit_test(test_example_main),
 	};
-	return run_tests(tests);
+	return cmocka_run_group_tests(tests, NULL, NULL);
 }
