@@ -41,16 +41,7 @@
     f(struct gbm_surface *, gbm_surface_create           , (struct gbm_device *gbm, uint32_t width, uint32_t height, uint32_t format, uint32_t flags)) \
     f(void                , gbm_surface_destroy          , (struct gbm_surface *surface)) \
     f(struct gbm_bo *     , gbm_surface_lock_front_buffer, (struct gbm_surface *surface)) \
-    f(void                , gbm_surface_release_buffer   , (struct gbm_surface *surface, struct gbm_bo *bo)) \
-    f(struct gbm_bo *     , gbm_bo_create                , (struct gbm_device *gbm, uint32_t width, uint32_t height, uint32_t format, uint32_t flags)) \
-    f(void                , gbm_bo_destroy               , (struct gbm_bo *bo)) \
-    f(int                 , gbm_bo_get_fd                , (struct gbm_bo *bo)) \
-    f(uint32_t            , gbm_bo_get_width             , (struct gbm_bo *bo)) \
-    f(uint32_t            , gbm_bo_get_height            , (struct gbm_bo *bo)) \
-    f(uint32_t            , gbm_bo_get_stride            , (struct gbm_bo *bo)) \
-    f(uint32_t            , gbm_bo_get_format            , (struct gbm_bo *bo)) \
-    f(union gbm_bo_handle , gbm_bo_get_handle            , (struct gbm_bo *bo)) \
-    f(struct gbm_device * , gbm_bo_get_device            , (struct gbm_bo *bo))
+    f(void                , gbm_surface_release_buffer   , (struct gbm_surface *surface, struct gbm_bo *bo))
 
 struct linux_platform;
 
