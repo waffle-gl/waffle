@@ -595,9 +595,10 @@ test_glXX_fwdcompat(21, ERROR_BAD_ATTRIBUTE)
 
 
 //
-// List of linux (glx, wayland and x11_egl) and windows (wgl) specific tests.
+// Most of the following tests will return ERROR_UNSUPPORTED_ON_PLATFORM
+// on Apple/CGL, where NO_ERROR is expected.
+// This is safe, as the test is skipped when the said error occurs.
 //
-#if defined(WAFFLE_HAS_GLX) || defined(WAFFLE_HAS_WAYLAND) || defined(WAFFLE_HAS_X11_EGL) || defined(WAFFLE_HAS_WGL)
 
 test_XX_fwdcompat(gl, OPENGL, ERROR_BAD_ATTRIBUTE)
 test_gl_debug(NO_ERROR)
@@ -624,19 +625,37 @@ test_glXX_compat(43, NO_ERROR)
 
 test_XX_rgb(gles1, OPENGL_ES1, NO_ERROR)
 test_XX_rgba(gles1, OPENGL_ES1, NO_ERROR)
-test_XX_fwdcompat(gles1, OPENGL_ES1, ERROR_BAD_ATTRIBUTE)
 test_glesXX(1, 10, NO_ERROR)
 test_glesXX(1, 11, NO_ERROR)
 
 test_XX_rgb(gles2, OPENGL_ES2, NO_ERROR)
 test_XX_rgba(gles2, OPENGL_ES2, NO_ERROR)
-test_XX_fwdcompat(gles2, OPENGL_ES2, ERROR_BAD_ATTRIBUTE)
 test_glesXX(2, 20, NO_ERROR)
 
 test_XX_rgb(gles3, OPENGL_ES3, NO_ERROR)
 test_XX_rgba(gles3, OPENGL_ES3, NO_ERROR)
-test_XX_fwdcompat(gles3, OPENGL_ES3, ERROR_BAD_ATTRIBUTE)
 test_glesXX(3, 30, NO_ERROR)
+
+//
+// As BAD_ATTRIBUTE takes greater precedence over UNSUPPORTED_ON_PLATFORM,
+// we have to split the ESx + fwdcompat tests into "CGL and everyone else".
+//
+
+#if defined(WAFFLE_HAS_GLX) || \
+    defined(WAFFLE_HAS_WAYLAND) || \
+    defined(WAFFLE_HAS_X11_EGL) || \
+    defined(WAFFLE_HAS_WGL)
+
+test_XX_fwdcompat(gles1, OPENGL_ES1, ERROR_BAD_ATTRIBUTE)
+test_XX_fwdcompat(gles2, OPENGL_ES2, ERROR_BAD_ATTRIBUTE)
+test_XX_fwdcompat(gles3, OPENGL_ES3, ERROR_BAD_ATTRIBUTE)
+
+#elif defined(WAFFLE_HAS_CGL)
+
+test_XX_fwdcompat(gles1, OPENGL_ES1, ERROR_UNSUPPORTED_ON_PLATFORM)
+test_XX_fwdcompat(gles2, OPENGL_ES2, ERROR_UNSUPPORTED_ON_PLATFORM)
+test_XX_fwdcompat(gles3, OPENGL_ES3, ERROR_UNSUPPORTED_ON_PLATFORM)
+
 #endif
 
 #if 0
@@ -645,32 +664,6 @@ TEST(gl_basic, cgl_init)
 {
     gl_basic_init(WAFFLE_PLATFORM_CGL);
 }
-
-test_XX_fwdcompat(gl, OPENGL, ERROR_BAD_ATTRIBUTE)
-test_gl_debug(ERROR_UNSUPPORTED_ON_PLATFORM)
-
-test_glXX(30, ERROR_UNSUPPORTED_ON_PLATFORM)
-test_glXX_fwdcompat(30, ERROR_UNSUPPORTED_ON_PLATFORM)
-test_glXX(31, NO_ERROR)
-test_glXX_fwdcompat(31, ERROR_UNSUPPORTED_ON_PLATFORM)
-
-test_glXX_core(32, NO_ERROR)
-test_glXX_core_fwdcompat(32, ERROR_UNSUPPORTED_ON_PLATFORM)
-test_glXX_core(33, ERROR_UNSUPPORTED_ON_PLATFORM)
-test_glXX_core(40, ERROR_UNSUPPORTED_ON_PLATFORM)
-test_glXX_core(41, ERROR_UNSUPPORTED_ON_PLATFORM)
-test_glXX_core(42, ERROR_UNSUPPORTED_ON_PLATFORM)
-test_glXX_core(43, ERROR_UNSUPPORTED_ON_PLATFORM)
-
-test_glXX_compat(32, ERROR_UNSUPPORTED_ON_PLATFORM)
-test_glXX_compat(33, ERROR_UNSUPPORTED_ON_PLATFORM)
-test_glXX_compat(40, ERROR_UNSUPPORTED_ON_PLATFORM)
-test_glXX_compat(41, ERROR_UNSUPPORTED_ON_PLATFORM)
-test_glXX_compat(42, ERROR_UNSUPPORTED_ON_PLATFORM)
-test_glXX_compat(43, ERROR_UNSUPPORTED_ON_PLATFORM)
-
-test_glesXX(1, 10, ERROR_UNSUPPORTED_ON_PLATFORM)
-test_glesXX(2, 20, ERROR_UNSUPPORTED_ON_PLATFORM)
 
 static void
 testsuite_cgl(void)
