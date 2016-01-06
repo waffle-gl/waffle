@@ -46,7 +46,6 @@ Makefile
 /libcmocka.a
 /src/waffle/libwaffle_static.a
 /tests/functional/gl_basic_test
-/tests/waffle_test/libwaffle_test.dylib
 /tests/unittests/waffle-unittest
 /tests/wcore_attrib_list_unittest
 /tests/wcore_config_attrs_unittest
