@@ -658,58 +658,16 @@ test_XX_fwdcompat(gles3, OPENGL_ES3, ERROR_UNSUPPORTED_ON_PLATFORM)
 
 #endif
 
-#if 0
 #ifdef WAFFLE_HAS_CGL
-TEST(gl_basic, cgl_init)
-{
-    gl_basic_init(WAFFLE_PLATFORM_CGL);
-}
 
-static void
-testsuite_cgl(void)
-{
-    TEST_RUN(gl_basic, cgl_init);
+#define unit_test_make(name)                                            \
+    cmocka_unit_test_setup_teardown(name, setup_cgl, gl_basic_fini)
 
-    TEST_RUN(gl_basic, gl_rgb);
-    TEST_RUN(gl_basic, gl_rgba);
-    TEST_RUN(gl_basic, gl_fwdcompat);
-    TEST_RUN(gl_basic, gl_debug);
+CREATE_TESTSUITE(WAFFLE_PLATFORM_CGL, cgl)
 
-    TEST_RUN(gl_basic, gl10);
-    TEST_RUN(gl_basic, gl11);
-    TEST_RUN(gl_basic, gl12);
-    TEST_RUN(gl_basic, gl13);
-    TEST_RUN(gl_basic, gl14);
-    TEST_RUN(gl_basic, gl15);
-    TEST_RUN(gl_basic, gl20);
-    TEST_RUN(gl_basic, gl21);
-    TEST_RUN(gl_basic, gl21_fwdcompat);
+#undef unit_test_make
 
-    TEST_RUN(gl_basic, gl30);
-    TEST_RUN(gl_basic, gl30_fwdcompat);
-    TEST_RUN(gl_basic, gl31);
-    TEST_RUN(gl_basic, gl31_fwdcompat);
-
-    TEST_RUN(gl_basic, gl32_core);
-    TEST_RUN(gl_basic, gl32_core_fwdcompat);
-    TEST_RUN(gl_basic, gl33_core);
-    TEST_RUN(gl_basic, gl40_core);
-    TEST_RUN(gl_basic, gl41_core);
-    TEST_RUN(gl_basic, gl42_core);
-    TEST_RUN(gl_basic, gl43_core);
-
-    TEST_RUN(gl_basic, gl32_compat);
-    TEST_RUN(gl_basic, gl33_compat);
-    TEST_RUN(gl_basic, gl40_compat);
-    TEST_RUN(gl_basic, gl41_compat);
-    TEST_RUN(gl_basic, gl42_compat);
-    TEST_RUN(gl_basic, gl43_compat);
-
-    TEST_RUN(gl_basic, gles10);
-    TEST_RUN(gl_basic, gles20);
-}
 #endif // WAFFLE_HAS_CGL
-#endif // 0
 
 #ifdef WAFFLE_HAS_GLX
 
@@ -929,13 +887,10 @@ main(int argc, char *argv[])
         exit(EXIT_FAILURE);
 
     switch (platform) {
-#if 0
 #ifdef WAFFLE_HAS_CGL
     case WAFFLE_PLATFORM_CGL:
-        run_testsuite(testsuite_cgl);
-        break;
+        return testsuite_cgl();
 #endif
-#endif // 0
 #ifdef WAFFLE_HAS_GLX
     case WAFFLE_PLATFORM_GLX:
         return testsuite_glx();
