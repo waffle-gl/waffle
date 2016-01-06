@@ -752,69 +752,15 @@ CREATE_TESTSUITE(WAFFLE_PLATFORM_X11_EGL, x11_egl)
 #endif // WAFFLE_HAS_X11_EGL
 
 #ifdef WAFFLE_HAS_WGL
-TEST(gl_basic, wgl_init)
-{
-    gl_basic_init(WAFFLE_PLATFORM_WGL);
-}
 
-static void
-testsuite_wgl(void)
-{
-    TEST_RUN(gl_basic, wgl_init);
+#define unit_test_make(name)                                            \
+    cmocka_unit_test_setup_teardown(name, setup_wgl, gl_basic_fini)
 
-    TEST_RUN(gl_basic, gl_rgb);
-    TEST_RUN(gl_basic, gl_rgba);
-    TEST_RUN(gl_basic, gl_fwdcompat);
-    TEST_RUN(gl_basic, gl_debug);
+CREATE_TESTSUITE(WAFFLE_PLATFORM_WGL, wgl)
 
-    TEST_RUN(gl_basic, gl10);
-    TEST_RUN(gl_basic, gl11);
-    TEST_RUN(gl_basic, gl12);
-    TEST_RUN(gl_basic, gl13);
-    TEST_RUN(gl_basic, gl14);
-    TEST_RUN(gl_basic, gl15);
-    TEST_RUN(gl_basic, gl20);
-    TEST_RUN(gl_basic, gl21);
-    TEST_RUN(gl_basic, gl21_fwdcompat);
+#undef unit_test_make
 
-    TEST_RUN(gl_basic, gl30);
-    TEST_RUN(gl_basic, gl30_fwdcompat);
-    TEST_RUN(gl_basic, gl31);
-    TEST_RUN(gl_basic, gl31_fwdcompat);
-
-    TEST_RUN(gl_basic, gl32_core);
-    TEST_RUN(gl_basic, gl32_core_fwdcompat);
-    TEST_RUN(gl_basic, gl33_core);
-    TEST_RUN(gl_basic, gl40_core);
-    TEST_RUN(gl_basic, gl41_core);
-    TEST_RUN(gl_basic, gl42_core);
-    TEST_RUN(gl_basic, gl43_core);
-
-    TEST_RUN(gl_basic, gl32_compat);
-    TEST_RUN(gl_basic, gl33_compat);
-    TEST_RUN(gl_basic, gl40_compat);
-    TEST_RUN(gl_basic, gl41_compat);
-    TEST_RUN(gl_basic, gl42_compat);
-    TEST_RUN(gl_basic, gl43_compat);
-
-    TEST_RUN(gl_basic, gles1_rgb);
-    TEST_RUN(gl_basic, gles1_rgba);
-    TEST_RUN(gl_basic, gles1_fwdcompat);
-    TEST_RUN(gl_basic, gles10);
-    TEST_RUN(gl_basic, gles11);
-
-    TEST_RUN(gl_basic, gles2_rgb);
-    TEST_RUN(gl_basic, gles2_rgba);
-    TEST_RUN(gl_basic, gles2_fwdcompat);
-    TEST_RUN(gl_basic, gles20);
-
-    TEST_RUN(gl_basic, gles3_rgb);
-    TEST_RUN(gl_basic, gles3_rgba);
-    TEST_RUN(gl_basic, gles3_fwdcompat);
-    TEST_RUN(gl_basic, gles30);
-}
 #endif // WAFFLE_HAS_WGL
-#endif // 0
 
 #undef test_glesXX
 
@@ -1005,13 +951,10 @@ main(int argc, char *argv[])
     case WAFFLE_PLATFORM_WAYLAND:
         return testsuite_wayland();
 #endif
-#if 0
 #ifdef WAFFLE_HAS_WGL
     case WAFFLE_PLATFORM_WGL:
-        run_testsuite(testsuite_wgl);
-        break;
+        return testsuite_wgl();
 #endif
-#endif // 0
 #ifdef WAFFLE_HAS_X11_EGL
     case WAFFLE_PLATFORM_X11_EGL:
         return testsuite_x11_egl();
