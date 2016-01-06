@@ -40,15 +40,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <getopt.h>
-#if !defined(_WIN32)
-#include <unistd.h>
-#else
-#include <windows.h>
-#endif
-
 #include <sys/types.h>
 #if !defined(_WIN32)
+#include <unistd.h>
 #include <sys/wait.h>
+#else
+#include <windows.h>
 #endif
 
 #include "waffle.h"
