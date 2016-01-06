@@ -641,7 +641,8 @@ test_glesXX(3, 30, NO_ERROR)
 // we have to split the ESx + fwdcompat tests into "CGL and everyone else".
 //
 
-#if defined(WAFFLE_HAS_GLX) || \
+#if defined(WAFFLE_HAS_GBM) || \
+    defined(WAFFLE_HAS_GLX) || \
     defined(WAFFLE_HAS_WAYLAND) || \
     defined(WAFFLE_HAS_X11_EGL) || \
     defined(WAFFLE_HAS_WGL)
@@ -668,6 +669,17 @@ CREATE_TESTSUITE(WAFFLE_PLATFORM_CGL, cgl)
 #undef unit_test_make
 
 #endif // WAFFLE_HAS_CGL
+
+#ifdef WAFFLE_HAS_GBM
+
+#define unit_test_make(name)                                            \
+    cmocka_unit_test_setup_teardown(name, setup_gbm, gl_basic_fini)
+
+CREATE_TESTSUITE(WAFFLE_PLATFORM_GBM, gbm)
+
+#undef unit_test_make
+
+#endif // WAFFLE_HAS_GBM
 
 #ifdef WAFFLE_HAS_GLX
 
@@ -735,7 +747,7 @@ static const char *usage_message =
     "\n"
     "Required Parameter:\n"
     "    -p, --platform\n"
-    "        One of: cgl, glx, wayland, wgl or x11_egl\n"
+    "        One of: cgl, gbm, glx, wayland, wgl or x11_egl\n"
     "\n"
     "Options:\n"
     "    -h, --help\n"
@@ -791,6 +803,7 @@ struct enum_map {
 
 static const struct enum_map platform_map[] = {
     {WAFFLE_PLATFORM_CGL,       "cgl",          },
+    {WAFFLE_PLATFORM_GBM,       "gbm"           },
     {WAFFLE_PLATFORM_GLX,       "glx"           },
     {WAFFLE_PLATFORM_WAYLAND,   "wayland"       },
     {WAFFLE_PLATFORM_WGL,       "wgl"           },
@@ -890,6 +903,10 @@ main(int argc, char *argv[])
 #ifdef WAFFLE_HAS_CGL
     case WAFFLE_PLATFORM_CGL:
         return testsuite_cgl();
+#endif
+#ifdef WAFFLE_HAS_GBM
+    case WAFFLE_PLATFORM_GBM:
+        return testsuite_gbm();
 #endif
 #ifdef WAFFLE_HAS_GLX
     case WAFFLE_PLATFORM_GLX:
