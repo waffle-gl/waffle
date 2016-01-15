@@ -85,6 +85,9 @@ static const char *usage_message =
     "    --debug-context\n"
     "        Create a debug context.\n"
     "\n"
+    "    -f, --format\n"
+    "        One of: original (default) or json.\n"
+    "\n"
     "    -h, --help\n"
     "        Print wflinfo usage information.\n"
     "\n"
@@ -104,6 +107,7 @@ enum {
     OPT_VERBOSE = 'v',
     OPT_DEBUG_CONTEXT,
     OPT_FORWARD_COMPATIBLE,
+    OPT_FORMAT = 'f',
     OPT_HELP = 'h',
 };
 
@@ -115,6 +119,7 @@ static const struct option get_opts[] = {
     { .name = "verbose",        .has_arg = no_argument,           .val = OPT_VERBOSE },
     { .name = "debug-context",  .has_arg = no_argument,           .val = OPT_DEBUG_CONTEXT },
     { .name = "forward-compatible", .has_arg = no_argument,       .val = OPT_FORWARD_COMPATIBLE },
+    { .name = "format",         .has_arg = required_argument,     .val = OPT_FORMAT },
     { .name = "help",           .has_arg = no_argument,           .val = OPT_HELP },
     { 0 },
 };
@@ -259,6 +264,8 @@ struct options {
 
     bool verbose;
 
+    enum format { FORMAT_ORIGINAL, FORMAT_JSON } format;
+
     bool context_forward_compatible;
     bool context_debug;
 
@@ -339,12 +346,13 @@ parse_args(int argc, char *argv[], struct options *opts)
     opts->context_profile = WAFFLE_NONE;
     opts->context_major = WAFFLE_DONT_CARE;
     opts->context_minor = WAFFLE_DONT_CARE;
+    opts->format = FORMAT_ORIGINAL;
 
     // prevent getopt_long from printing an error message
     opterr = 0;
 
     while (loop_get_opt) {
-        int opt = getopt_long(argc, argv, "a:hp:vV:", get_opts, NULL);
+        int opt = getopt_long(argc, argv, "a:f:hp:vV:", get_opts, NULL);
         switch (opt) {
             case -1:
                 loop_get_opt = false;
@@ -391,6 +399,15 @@ parse_args(int argc, char *argv[], struct options *opts)
                 } else {
                     usage_error_printf("'%s' is not a valid OpenGL profile",
                                        optarg);
+                }
+                break;
+            case OPT_FORMAT:
+                if (strcmp(optarg, "original") == 0) {
+                    opts->format = FORMAT_ORIGINAL;
+                } else if (strcmp(optarg, "json") == 0) {
+                    opts->format = FORMAT_JSON;
+                } else {
+                    usage_error_printf("'%s' is not a valid format", optarg);
                 }
                 break;
             case OPT_VERBOSE:
@@ -568,6 +585,110 @@ print_context_flags(void)
         }
     }
     printf("\n");
+}
+
+static void
+json_print_extensions(bool use_stringi)
+{
+    // Print extensions in JSON format
+    printf("        \"extensions\": [\n");
+    if (use_stringi) {
+        GLint count = 0, i;
+        const char *ext;
+
+        glGetIntegerv(GL_NUM_EXTENSIONS, &count);
+        if (glGetError() != GL_NO_ERROR) {
+            printf("        \"WFLINFO_GL_ERROR\"");
+        } else {
+            for (i = 0; i < count; i++) {
+                ext = (const char *) glGetStringi(GL_EXTENSIONS, i);
+                if (glGetError() != GL_NO_ERROR)
+                    ext = "WFLINFO_GL_ERROR";
+                printf("            \"%s\"%s\n", ext, (i + 1) < count ? "," : "");
+            }
+        }
+    } else {
+        const char *extensions = (const char *) glGetString(GL_EXTENSIONS);
+
+        if (glGetError() != GL_NO_ERROR || !extensions) {
+            printf("            \"WFLINFO_GL_ERROR\"");
+        } else {
+            // Copy the string because strtok() is destructive.
+            char *splitter = strdup(extensions);
+            if (!splitter)
+                error_oom();
+
+            splitter = strtok(splitter, " ");
+
+            // The JSON doesn't strictly need to be newline seperated, but it
+            // makes it much easier to read. Split the lines and add commas
+            // correctly.
+            while (splitter) {
+                printf("       \"%s\"", splitter);
+                splitter = strtok(NULL, " ");
+                if (splitter) {
+                    printf(",\n");
+                }
+            }
+        }
+        printf("\n");
+    }
+    printf("        ]\n");
+}
+
+/// @brief Print JSON formatted OpenGL (ES) information
+static bool
+print_json(const struct options *opts)
+{
+    while( glGetError() != GL_NO_ERROR ) {
+        /* Clear all errors */
+    }
+
+    const char *vendor =  get_vendor();
+    const char *renderer = get_renderer();
+    const char *version_str = get_version();
+
+    const char *platform = enum_map_to_str(platform_map, opts->platform);
+    assert(platform != NULL);
+
+    const char *api = enum_map_to_str(context_api_map, opts->context_api);
+    assert(api != NULL);
+
+    // OpenGL and OpenGL ES >= 3.0 support glGetStringi(GL_EXTENSION, i).
+    const int version = parse_version(version_str);
+    const bool use_getstringi = version >= 30;
+
+    if (!glGetStringi && use_getstringi) {
+        error_get_gl_symbol("glGetStringi");
+    }
+    // See the equivalent section in print_wflinfo() for mor info
+    const char *language_str = "None";
+    if ((opts->context_api == WAFFLE_CONTEXT_OPENGL && version >= 20)
+         || opts->context_api == WAFFLE_CONTEXT_OPENGL_ES2
+         || opts->context_api == WAFFLE_CONTEXT_OPENGL_ES3) {
+        language_str = (const char *) glGetString(GL_SHADING_LANGUAGE_VERSION);
+        if (glGetError() != GL_NO_ERROR || language_str == NULL) {
+            language_str = "WFLINFO_GL_ERROR";
+        }
+    }
+
+    printf("{\n");
+    printf("    \"waffle\": {\n");
+    printf("        \"platform\": \"%s\",\n", platform);
+    printf("        \"api\": \"%s\"\n", api);
+    printf("    },\n");
+    printf("    \"OpenGL\": {\n");
+    printf("        \"vendor string\": \"%s\",\n", vendor);
+    printf("        \"renderer string\": \"%s\",\n", renderer);
+    printf("        \"version string\": \"%s\",\n", version_str);
+    printf("        \"shading language version string\": \"%s\",\n", language_str);
+
+    json_print_extensions(use_getstringi);
+
+    printf("    }\n");
+    printf("}\n");
+
+    return true;
 }
 
 /// @brief Print out information about the context that was created.
@@ -1148,7 +1269,14 @@ main(int argc, char **argv)
         glGetStringi = waffle_get_proc_address("glGetStringi");
     }
 
-    ok = print_wflinfo(&opts);
+    switch (opts.format) {
+        case FORMAT_ORIGINAL:
+            ok = print_wflinfo(&opts);
+            break;
+        case FORMAT_JSON:
+            ok = print_json(&opts);
+            break;
+    }
     if (!ok)
         error_waffle();
 
