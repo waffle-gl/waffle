@@ -59,6 +59,10 @@ if (NOT MSVC)
         waffle_add_c_flag("-Werror=missing-prototypes" WERROR_MISSING_PROTOTYPES)
     endif()
 
+    if(egl_FOUND)
+        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${egl_CFLAGS_OTHER}")
+    endif(egl_FOUND)
+
     if(MINGW)
         # Avoid depending on MinGW runtime DLLs
         check_c_compiler_flag(-static-libgcc HAVE_STATIC_LIBGCC_FLAG)
