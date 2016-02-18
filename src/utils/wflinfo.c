@@ -64,7 +64,7 @@ static const char *usage_message =
     "\n"
     "Required Parameters:\n"
     "    -p, --platform\n"
-    "        One of: android, cgl, gbm, glx, wayland, wgl or x11_egl\n"
+    "        One of: android, cgl, gbm, glx, wayland, wgl or x11_egl, headless_egl\n"
     "\n"
     "    -a, --api\n"
     "        One of: gl, gles1, gles2 or gles3\n"
@@ -272,6 +272,7 @@ static const struct enum_map platform_map[] = {
     {WAFFLE_PLATFORM_WAYLAND,   "wayland"       },
     {WAFFLE_PLATFORM_WGL,       "wgl"           },
     {WAFFLE_PLATFORM_X11_EGL,   "x11_egl"       },
+    {WAFFLE_PLATFORM_HEADLESS_EGL, "headless_egl" },
     {0,                         0               },
 };
 
