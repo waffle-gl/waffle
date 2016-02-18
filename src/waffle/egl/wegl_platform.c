@@ -112,6 +112,9 @@ wegl_platform_init(struct wegl_platform *self)
     RETRIEVE_EGL_SYMBOL(eglDestroySurface);
     RETRIEVE_EGL_SYMBOL(eglSwapBuffers);
 
+    // pixelbuffer surface
+    RETRIEVE_EGL_SYMBOL(eglCreatePbufferSurface);
+
 #undef OPTIONAL_EGL_SYMBOL
 #undef RETRIEVE_EGL_SYMBOL
 

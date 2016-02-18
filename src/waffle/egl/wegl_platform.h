@@ -70,6 +70,9 @@ struct wegl_platform {
     EGLBoolean (*eglDestroySurface)(EGLDisplay dpy, EGLSurface surface);
     EGLBoolean (*eglSwapBuffers)(EGLDisplay dpy, EGLSurface surface);
 
+    // pixelbuffer surface
+    EGLSurface (*eglCreatePbufferSurface) (EGLDisplay dpy, EGLConfig config, const EGLint *attrib_list);
+
     EGLImageKHR (*eglCreateImageKHR) (EGLDisplay dpy, EGLContext ctx, EGLenum target, EGLClientBuffer buffer, const EGLint *attrib_list);
     EGLBoolean (*eglDestroyImageKHR)(EGLDisplay dpy, EGLImageKHR image);
 };
