@@ -28,6 +28,7 @@ if(waffle_on_linux)
     option(waffle_has_wayland "Build support for Wayland" ${wayland_default})
     option(waffle_has_x11_egl "Build support for X11/EGL" ${x11_egl_default})
     option(waffle_has_gbm "Build support for GBM" ${gbm_default})
+    option(waffle_has_headless_egl "Build support for headless EGL" ${egl_FOUND})
     option(waffle_has_nacl "Build support for NaCl" OFF)
 
     # NaCl specific settings.

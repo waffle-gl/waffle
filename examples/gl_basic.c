@@ -61,7 +61,7 @@ removeXcodeArgs(int *argc, char **argv);
 
 static const char *usage_message =
     "usage:\n"
-    "    gl_basic --platform=android|cgl|gbm|glx|wayland|wgl|x11_egl\n"
+    "    gl_basic --platform=android|cgl|gbm|glx|wayland|wgl|x11_egl|headless_egl\n"
     "             --api=gl|gles1|gles2|gles3\n"
     "             [--version=MAJOR.MINOR]\n"
     "             [--profile=core|compat|none]\n"
@@ -253,6 +253,7 @@ static const struct enum_map platform_map[] = {
     {WAFFLE_PLATFORM_WAYLAND,   "wayland"       },
     {WAFFLE_PLATFORM_WGL,       "wgl"           },
     {WAFFLE_PLATFORM_X11_EGL,   "x11_egl"       },
+    {WAFFLE_PLATFORM_HEADLESS_EGL,  "headless_egl"  },
     {0,                         0               },
 };
 

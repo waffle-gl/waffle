@@ -136,3 +136,7 @@ endif()
 if(waffle_on_windows)
     add_definitions(-DWAFFLE_HAS_WGL)
 endif()
+
+if (waffle_has_headless_egl)
+    add_definitions(-DWAFFLE_HAS_HEADLESS_EGL)
+endif()

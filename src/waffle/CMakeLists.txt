@@ -190,6 +190,14 @@ if(waffle_has_nacl)
         )
 endif()
 
+if(waffle_has_headless_egl)
+    list(APPEND waffle_sources
+        headless_egl/headless_display.c
+        headless_egl/headless_platform.c
+        headless_egl/headless_window.c
+        )
+endif()
+
 # CMake will pass to the C compiler only C sources. CMake does not recognize the
 # .m extension and ignores any such files in the source lists. To coerce CMake
 # to pass .m files to the compiler, we must lie and claim that they are

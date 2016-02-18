@@ -119,6 +119,7 @@ enum waffle_enum {
         WAFFLE_PLATFORM_GBM                                     = 0x0016,
         WAFFLE_PLATFORM_WGL                                     = 0x0017,
         WAFFLE_PLATFORM_NACL                                    = 0x0018,
+        WAFFLE_PLATFORM_HEADLESS_EGL                            = 0x0019,
 
     // ------------------------------------------------------------------
     // For waffle_config_choose()
