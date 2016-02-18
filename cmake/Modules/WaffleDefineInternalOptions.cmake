@@ -1,4 +1,4 @@
-if(waffle_has_wayland OR waffle_has_x11_egl OR waffle_has_gbm)
+if(waffle_has_wayland OR waffle_has_x11_egl OR waffle_has_gbm OR waffle_on_android OR waffle_has_headless_egl)
     set(waffle_has_egl TRUE)
 else(waffle_has_wayland OR waffle_has_x11_egl)
     set(waffle_has_egl FALSE)

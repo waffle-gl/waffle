@@ -47,12 +47,12 @@ endif()
 if(waffle_on_linux)
     if(NOT waffle_has_glx AND NOT waffle_has_wayland AND
        NOT waffle_has_x11_egl AND NOT waffle_has_gbm AND
-       NOT waffle_has_nacl)
+       NOT waffle_has_headless_egl AND NOT waffle_has_nacl)
         message(FATAL_ERROR
                 "Must enable at least one of: "
                 "waffle_has_glx, waffle_has_wayland, "
                 "waffle_has_x11_egl, waffle_has_gbm, "
-                "waffle_has_nacl.")
+                "waffle_has_headless_egl, waffle_has_nacl.")
     endif()
     if(waffle_has_nacl)
         if(NOT EXISTS ${nacl_sdk_path})
