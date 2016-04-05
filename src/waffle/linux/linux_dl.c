@@ -49,7 +49,11 @@ linux_dl_get_name(int32_t waffle_dl)
 {
     switch (waffle_dl) {
         case WAFFLE_DL_OPENGL:
+#ifdef WAFFLE_HAS_ANDROID
+            return NULL;
+#else
             return "libGL.so.1";
+#endif
         case WAFFLE_DL_OPENGL_ES1:
 #ifdef WAFFLE_HAS_ANDROID
             return "libGLESv1_CM.so";
