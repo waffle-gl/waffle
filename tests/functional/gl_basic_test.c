@@ -34,6 +34,7 @@
 ///     4. Verify the window contents with glReadPixels.
 ///     5. Tear down all waffle state.
 
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -103,6 +104,7 @@ typedef float               GLclampf;   /* single precision float in [0,1] */
 typedef double              GLdouble;   /* double precision float */
 typedef double              GLclampd;   /* double precision float in [0,1] */
 
+#define GL_VERSION                  0x1F02
 #define GL_UNSIGNED_BYTE            0x1401
 #define GL_UNSIGNED_INT             0x1405
 #define GL_FLOAT                    0x1406
@@ -123,6 +125,7 @@ typedef double              GLclampd;   /* double precision float in [0,1] */
 #endif
 
 static GLenum (APIENTRY *glGetError)(void);
+static const GLubyte *(APIENTRY *glGetString)(GLenum name);
 static void (APIENTRY *glGetIntegerv)(GLenum pname, GLint *params);
 static void (APIENTRY *glClearColor)(GLclampf red,
                                      GLclampf green,
@@ -301,20 +304,35 @@ gl_basic_draw__(struct gl_basic_draw_args__ args)
     ASSERT_TRUE(glGetError      = waffle_dl_sym(libgl, "glGetError"));
     ASSERT_TRUE(glGetIntegerv   = waffle_dl_sym(libgl, "glGetIntegerv"));
     ASSERT_TRUE(glReadPixels    = waffle_dl_sym(libgl, "glReadPixels"));
+    ASSERT_TRUE(glGetString     = waffle_dl_sym(libgl, "glGetString"));
 
     ASSERT_TRUE(waffle_make_current(dpy, window, ctx));
 
-    GLint context_flags = 0;
-    if (context_forward_compatible || context_debug) {
-        glGetIntegerv(GL_CONTEXT_FLAGS, &context_flags);
-    }
+    const char *version_str;
+    int major, dummy, count;
 
-    if (context_forward_compatible) {
-        ASSERT_TRUE(context_flags & GL_CONTEXT_FLAG_FORWARD_COMPATIBLE_BIT);
-    }
+    ASSERT_GL(version_str = (const char *) glGetString(GL_VERSION));
+    ASSERT_TRUE(version_str != NULL);
 
-    if (context_debug) {
-        ASSERT_TRUE(context_flags & GL_CONTEXT_FLAG_DEBUG_BIT);
+    while (*version_str != '\0' && !isdigit(*version_str))
+        version_str++;
+
+    count = sscanf(version_str, "%d.%d", &major, &dummy);
+    ASSERT_TRUE(count == 2);
+
+    if (waffle_context_api == WAFFLE_CONTEXT_OPENGL && major >= 3) {
+        GLint context_flags = 0;
+        if (context_forward_compatible || context_debug) {
+            glGetIntegerv(GL_CONTEXT_FLAGS, &context_flags);
+        }
+
+        if (context_forward_compatible) {
+            ASSERT_TRUE(context_flags & GL_CONTEXT_FLAG_FORWARD_COMPATIBLE_BIT);
+        }
+
+        if (context_debug) {
+            ASSERT_TRUE(context_flags & GL_CONTEXT_FLAG_DEBUG_BIT);
+        }
     }
 
     // Draw.
