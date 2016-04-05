@@ -78,27 +78,25 @@ check_keys(const int32_t attrib_list[])
 }
 
 static bool
-parse_bool(const int32_t attrib_list[],
-		   int32_t attrib_name,
-		   bool *value,
-		   bool default_value)
+parse_bool(const int32_t attrib_list[], int32_t attrib_name,
+           bool *value, bool default_value)
 {
-	int32_t raw_value;
+    int32_t raw_value;
 
-	wcore_attrib_list32_get_with_default(attrib_list, attrib_name,
+    wcore_attrib_list32_get_with_default(attrib_list, attrib_name,
                                        &raw_value, default_value);
 
-	if (raw_value == WAFFLE_DONT_CARE) {
-		*value = default_value;
-	} else if (raw_value == true || raw_value == false) {
-		*value = raw_value;
-	} else {
-		wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
-					 "%s has bad value 0x%x. "
-					 "Must be true(1), false(0), or WAFFLE_DONT_CARE(-1)",
-					 wcore_enum_to_string(attrib_name), raw_value);
-		return false;
-	}
+    if (raw_value == WAFFLE_DONT_CARE) {
+        *value = default_value;
+    } else if (raw_value == true || raw_value == false) {
+        *value = raw_value;
+    } else {
+        wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
+                    "%s has bad value 0x%x. "
+                    "Must be true(1), false(0), or WAFFLE_DONT_CARE(-1)",
+                    wcore_enum_to_string(attrib_name), raw_value);
+        return false;
+    }
 
     return true;
 }
