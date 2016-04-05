@@ -451,21 +451,6 @@ test_wcore_config_attrs_gles11(void **state) {
 }
 
 static void
-test_wcore_config_attrs_gles12_is_bad(void **state) {
-    struct test_state_wcore_config_attrs *ts = *state;
-
-    const int32_t attrib_list[] = {
-        WAFFLE_CONTEXT_API,             WAFFLE_CONTEXT_OPENGL_ES1,
-        WAFFLE_CONTEXT_MAJOR_VERSION,   1,
-        WAFFLE_CONTEXT_MINOR_VERSION,   2,
-        0,
-    };
-
-    assert_false(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
-    assert_int_equal(wcore_error_get_code(), WAFFLE_ERROR_BAD_ATTRIBUTE);
-}
-
-static void
 test_wcore_config_attrs_gles20(void **state) {
     struct test_state_wcore_config_attrs *ts = *state;
 
@@ -498,21 +483,6 @@ test_wcore_config_attrs_gles21(void **state) {
 }
 
 static void
-test_wcore_config_attrs_gles2_with_version_30(void **state) {
-    struct test_state_wcore_config_attrs *ts = *state;
-
-    const int32_t attrib_list[] = {
-        WAFFLE_CONTEXT_API,             WAFFLE_CONTEXT_OPENGL_ES2,
-        WAFFLE_CONTEXT_MAJOR_VERSION,   3,
-        WAFFLE_CONTEXT_MINOR_VERSION,   0,
-        0,
-    };
-
-    assert_false(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
-    assert_int_equal(wcore_error_get_code(), WAFFLE_ERROR_BAD_ATTRIBUTE);
-}
-
-static void
 test_wcore_config_attrs_gles30(void **state) {
     struct test_state_wcore_config_attrs *ts = *state;
 
@@ -542,36 +512,6 @@ test_wcore_config_attrs_gles31(void **state) {
     assert_true(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
     assert_int_equal(ts->actual_attrs.context_major_version, 3);
     assert_int_equal(ts->actual_attrs.context_minor_version, 1);
-}
-
-static void
-test_wcore_config_attrs_gles3_with_version_20(void **state) {
-    struct test_state_wcore_config_attrs *ts = *state;
-
-    const int32_t attrib_list[] = {
-        WAFFLE_CONTEXT_API,             WAFFLE_CONTEXT_OPENGL_ES3,
-        WAFFLE_CONTEXT_MAJOR_VERSION,   2,
-        WAFFLE_CONTEXT_MINOR_VERSION,   0,
-        0,
-    };
-
-    assert_false(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
-    assert_int_equal(wcore_error_get_code(), WAFFLE_ERROR_BAD_ATTRIBUTE);
-}
-
-static void
-test_wcore_config_attrs_gles3_with_version_40(void **state) {
-    struct test_state_wcore_config_attrs *ts = *state;
-
-    const int32_t attrib_list[] = {
-        WAFFLE_CONTEXT_API,             WAFFLE_CONTEXT_OPENGL_ES3,
-        WAFFLE_CONTEXT_MAJOR_VERSION,   4,
-        WAFFLE_CONTEXT_MINOR_VERSION,   0,
-        0,
-    };
-
-    assert_false(wcore_config_attrs_parse(attrib_list, &ts->actual_attrs));
-    assert_int_equal(wcore_error_get_code(), WAFFLE_ERROR_BAD_ATTRIBUTE);
 }
 
 static void
@@ -1175,14 +1115,10 @@ main(void) {
         unit_test_make(test_wcore_config_attrs_negative_minor_version),
         unit_test_make(test_wcore_config_attrs_gles10),
         unit_test_make(test_wcore_config_attrs_gles11),
-        unit_test_make(test_wcore_config_attrs_gles12_is_bad),
         unit_test_make(test_wcore_config_attrs_gles20),
         unit_test_make(test_wcore_config_attrs_gles21),
-        unit_test_make(test_wcore_config_attrs_gles2_with_version_30),
         unit_test_make(test_wcore_config_attrs_gles30),
         unit_test_make(test_wcore_config_attrs_gles31),
-        unit_test_make(test_wcore_config_attrs_gles3_with_version_20),
-        unit_test_make(test_wcore_config_attrs_gles3_with_version_40),
         unit_test_make(test_wcore_config_attrs_color_buffer_size),
         unit_test_make(test_wcore_config_attrs_double_buffered_is_true),
         unit_test_make(test_wcore_config_attrs_double_buffered_is_false),

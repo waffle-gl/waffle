@@ -180,51 +180,6 @@ parse_context_version(struct wcore_config_attrs *attrs,
                      "WAFFLE_CONTEXT_MINOR_VERSION must be >= 0");
         return false;
     }
-
-    switch (attrs->context_api) {
-        case WAFFLE_CONTEXT_OPENGL:
-            if (wcore_config_attrs_version_lt(attrs, 10)) {
-                wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
-                             "for OpenGL, the requested context version "
-                             "must be >= 1.0");
-                return false;
-            }
-            break;
-
-        case WAFFLE_CONTEXT_OPENGL_ES1:
-            if (!wcore_config_attrs_version_eq(attrs, 10) &&
-                !wcore_config_attrs_version_eq(attrs, 11)) {
-                wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
-                             "for OpenGL ES1, the requested context version "
-                             "must be 1.0 or 1.1");
-                return false;
-            }
-            break;
-
-        case WAFFLE_CONTEXT_OPENGL_ES2:
-            if (attrs->context_major_version != 2) {
-                wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
-                             "for OpenGL ES2, the requested major context "
-                             "version must be 2");
-                return false;
-            }
-            break;
-
-        case WAFFLE_CONTEXT_OPENGL_ES3:
-            if (attrs->context_major_version != 3) {
-                wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
-                             "for OpenGL ES3, the requested major context "
-                             "version must be 3");
-                return false;
-            }
-            break;
-
-        default:
-            wcore_error_internal("attrs->context_api has bad value 0x%x",
-                                 attrs->context_api);
-            return false;
-    }
-
     return true;
 }
 
