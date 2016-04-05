@@ -109,10 +109,6 @@ wgl_config_check_context_attrs(struct wgl_display *dpy,
             return true;
 
         case WAFFLE_CONTEXT_OPENGL_ES1:
-            assert(wcore_config_attrs_version_eq(attrs, 10) ||
-                   wcore_config_attrs_version_eq(attrs, 11));
-            assert(!attrs->context_forward_compatible);
-
             if (!dpy->EXT_create_context_es_profile) {
                 wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
                              "WGL_EXT_create_context_es_profile is required "
@@ -123,9 +119,6 @@ wgl_config_check_context_attrs(struct wgl_display *dpy,
             return true;
 
         case WAFFLE_CONTEXT_OPENGL_ES2:
-            assert(attrs->context_major_version == 2);
-            assert(!attrs->context_forward_compatible);
-
             if (!dpy->EXT_create_context_es2_profile
                 && !dpy->EXT_create_context_es_profile) {
                 wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
@@ -138,8 +131,6 @@ wgl_config_check_context_attrs(struct wgl_display *dpy,
             return true;
 
         case WAFFLE_CONTEXT_OPENGL_ES3:
-            assert(attrs->context_major_version == 3);
-
             if (!dpy->EXT_create_context_es_profile) {
                 wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
                              "WGL_EXT_create_context_es_profile is required "
