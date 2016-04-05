@@ -75,9 +75,7 @@ cgl_display_supports_context_api(struct wcore_display *wc_self,
         case WAFFLE_CONTEXT_OPENGL:
             return true;
         case WAFFLE_CONTEXT_OPENGL_ES1:
-            return false;
         case WAFFLE_CONTEXT_OPENGL_ES2:
-            return false;
         case WAFFLE_CONTEXT_OPENGL_ES3:
             return false;
         default:
