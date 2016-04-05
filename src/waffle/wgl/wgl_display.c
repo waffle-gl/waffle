@@ -269,8 +269,7 @@ wgl_display_supports_context_api(struct wcore_display *wc_self,
         case WAFFLE_CONTEXT_OPENGL_ES3:
             return self->EXT_create_context_es_profile;
         default:
-            wcore_error_internal("waffle_context_api has bad value %#x",
-                                 context_api);
+            assert(false);
             return false;
     }
 }

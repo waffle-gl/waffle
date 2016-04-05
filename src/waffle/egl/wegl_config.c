@@ -124,8 +124,7 @@ check_context_attrs(struct wegl_display *dpy,
             return true;
 
         default:
-            wcore_error_internal("context_api has bad value %#x",
-                                 attrs->context_api);
+            assert(false);
             return false;
     }
 }
@@ -189,8 +188,7 @@ choose_real_config(struct wegl_display *dpy,
             attrib_list[renderable_index] = EGL_OPENGL_ES3_BIT_KHR;
             break;
         default:
-            wcore_error_internal("waffle_context_api has bad value %#x",
-                                 attrs->context_api);
+            assert(false);
             return NULL;
     }
 

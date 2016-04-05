@@ -136,8 +136,7 @@ glx_config_check_context_attrs(struct glx_display *dpy,
             return true;
 
         default:
-            wcore_error_internal("context_api has bad value %#x",
-                                 attrs->context_api);
+            assert(false);
             return false;
     }
 }

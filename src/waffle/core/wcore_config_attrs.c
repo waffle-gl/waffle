@@ -152,8 +152,7 @@ set_context_version_default(struct wcore_config_attrs *attrs)
             attrs->context_minor_version = 0;
             return true;
         default:
-            wcore_error_internal("attrs->context_api has bad value 0x%x",
-                                 attrs->context_api);
+            assert(false);
             return false;
     }
 }

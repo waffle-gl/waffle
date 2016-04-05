@@ -49,8 +49,7 @@ bind_api(struct wegl_platform *plat, int32_t waffle_context_api)
             ok &= plat->eglBindAPI(EGL_OPENGL_ES_API);
             break;
         default:
-            wcore_error_internal("waffle_context_api has bad value #x%x",
-                                 waffle_context_api);
+            assert(false);
             return false;
     }
 
@@ -154,8 +153,7 @@ create_real_context(struct wegl_config *config,
             break;
 
         default:
-            wcore_error_internal("waffle_context_api has bad value %#x",
-                                 waffle_context_api);
+            assert(false);
             return EGL_NO_CONTEXT;
     }
 
