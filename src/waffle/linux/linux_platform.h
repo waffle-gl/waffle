@@ -38,12 +38,8 @@ linux_platform_destroy(struct linux_platform *self);
 
 /// @copydoc waffle_dl_can_open()
 bool
-linux_platform_dl_can_open(
-        struct linux_platform *self,
-        int32_t waffle_dl);
+linux_platform_dl_can_open(struct linux_platform *self, int32_t waffle_dl);
 
 void*
-linux_platform_dl_sym(
-        struct linux_platform *self,
-        int32_t waffle_dl,
-        const char *name);
+linux_platform_dl_sym(struct linux_platform *self, int32_t waffle_dl,
+                      const char *name);

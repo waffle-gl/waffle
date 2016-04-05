@@ -62,16 +62,14 @@ linux_platform_destroy(struct linux_platform *self)
 }
 
 static struct linux_dl*
-linux_platform_get_dl(
-        struct linux_platform *self,
-        int32_t waffle_dl)
+linux_platform_get_dl(struct linux_platform *self, int32_t waffle_dl)
 {
     struct linux_dl **dl;
 
     switch (waffle_dl) {
         case WAFFLE_DL_OPENGL:     dl = &self->libgl;    break;
         case WAFFLE_DL_OPENGL_ES1: dl = &self->libgles1; break;
-        case WAFFLE_DL_OPENGL_ES2: dl = &self->libgles2; break;
+        case WAFFLE_DL_OPENGL_ES2:
         case WAFFLE_DL_OPENGL_ES3: dl = &self->libgles2; break;
         default:
             assert(false);
@@ -85,9 +83,7 @@ linux_platform_get_dl(
 }
 
 bool
-linux_platform_dl_can_open(
-        struct linux_platform *self,
-        int32_t waffle_dl)
+linux_platform_dl_can_open(struct linux_platform *self, int32_t waffle_dl)
 {
     struct linux_dl *dl = NULL;
     WCORE_ERROR_DISABLED({
@@ -97,10 +93,8 @@ linux_platform_dl_can_open(
 }
 
 void*
-linux_platform_dl_sym(
-        struct linux_platform *self,
-        int32_t waffle_dl,
-        const char *name)
+linux_platform_dl_sym(struct linux_platform *self, int32_t waffle_dl,
+                      const char *name)
 {
     struct linux_dl *dl = linux_platform_get_dl(self, waffle_dl);
     if (!dl)
