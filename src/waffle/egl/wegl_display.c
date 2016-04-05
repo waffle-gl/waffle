@@ -40,7 +40,7 @@ get_extensions(struct wegl_display *dpy)
     const char *extensions = plat->eglQueryString(dpy->egl, EGL_EXTENSIONS);
 
     if (!extensions) {
-        wegl_emit_error(plat, "eglQueryString(EGL_EXTENSIONS");
+        wegl_emit_error(plat, "eglQueryString(EGL_EXTENSIONS)");
         return false;
     }
 
