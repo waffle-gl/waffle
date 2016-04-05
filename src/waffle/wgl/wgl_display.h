@@ -67,7 +67,7 @@ struct wgl_display {
 static inline struct wgl_display*
 wgl_display(struct wcore_display *wcore)
 {
-	return (struct wgl_display*)wcore;
+    return (struct wgl_display*)wcore;
 }
 
 struct wcore_display*

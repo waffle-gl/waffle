@@ -49,7 +49,7 @@ struct wgl_config {
 static inline struct wgl_config*
 wgl_config(struct wcore_config *wcore)
 {
-	return (struct wgl_config *)wcore;
+    return (struct wgl_config *)wcore;
 }
 
 struct wcore_config*

@@ -42,7 +42,7 @@ struct wgl_window {
 static inline struct wgl_window*
 wgl_window(struct wcore_window *wcore)
 {
-	return (struct wgl_window*)wcore;
+    return (struct wgl_window*)wcore;
 }
 
 struct wcore_window*

@@ -42,7 +42,7 @@ struct wgl_context {
 static inline struct wgl_context*
 wgl_context(struct wcore_context *wcore)
 {
-	return (struct wgl_context *)wcore;
+    return (struct wgl_context *)wcore;
 }
 
 struct wcore_context*

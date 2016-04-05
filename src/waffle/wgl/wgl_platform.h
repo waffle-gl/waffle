@@ -46,7 +46,7 @@ struct wgl_platform {
 static inline struct wgl_platform*
 wgl_platform(struct wcore_platform *wcore)
 {
-	return (struct wgl_platform*)wcore;
+    return (struct wgl_platform*)wcore;
 }
 
 struct wcore_platform*
