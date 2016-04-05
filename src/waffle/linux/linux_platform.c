@@ -23,6 +23,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#include <assert.h>
 #include <stdlib.h>
 
 #include "wcore_error.h"
@@ -73,7 +74,7 @@ linux_platform_get_dl(
         case WAFFLE_DL_OPENGL_ES2: dl = &self->libgles2; break;
         case WAFFLE_DL_OPENGL_ES3: dl = &self->libgles2; break;
         default:
-            wcore_error_internal("waffle_dl has bad value %#x", waffle_dl);
+            assert(false);
             return NULL;
     }
 

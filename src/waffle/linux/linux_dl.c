@@ -23,6 +23,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#include <assert.h>
 #include <stdbool.h>
 #include <stdlib.h>
 
@@ -69,7 +70,7 @@ linux_dl_get_name(int32_t waffle_dl)
             return "libGLESv2.so.2";
 #endif
         default:
-            wcore_error_internal("waffle_dl has bad value %#x", waffle_dl);
+            assert(false);
             return NULL;
     }
 }
