@@ -412,6 +412,30 @@ struct waffle_config;
       </varlistentry>
 
       <varlistentry>
+        <term><constant>WAFFLE_CONTEXT_ROBUST_ACCESS</constant></term>
+        <listitem>
+          <para>
+            Feature test macro: <code>WAFFLE_API_VERSION >= 0x0106</code>.
+            (See <citerefentry><refentrytitle>waffle_feature_test_macros</refentrytitle><manvolnum>7</manvolnum></citerefentry>).
+          </para>
+          <para>
+            This attribute, if true, instructs
+            <citerefentry><refentrytitle><function>waffle_context_create</function></refentrytitle><manvolnum>3</manvolnum></citerefentry>
+            to create a robust access context.
+          </para>
+          <para>
+            Robust access contexts can implement additional runtime checks, such as bounds checks for various
+            operations.
+          </para>
+          <para>
+            This attribute is optional and its default value is false(0).
+
+            Valid values are true(1), false(0), and <constant>WAFFLE_DONT_CARE</constant>.
+          </para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
         <term><constant>WAFFLE_RED_SIZE</constant></term>
         <term><constant>WAFFLE_GREEN_SIZE</constant></term>
         <term><constant>WAFFLE_BLUE_SIZE</constant></term>

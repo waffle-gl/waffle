@@ -54,6 +54,7 @@ struct wcore_config_attrs {
 
     bool context_forward_compatible;
     bool context_debug;
+    bool context_robust;
     bool double_buffered;
     bool sample_buffers;
     bool accum_buffer;

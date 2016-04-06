@@ -142,6 +142,10 @@ enum waffle_enum {
     WAFFLE_CONTEXT_DEBUG                                        = 0x0216,
 #endif
 
+#if WAFFLE_API_VERSION >= 0x106
+    WAFFLE_CONTEXT_ROBUST_ACCESS                                = 0x0217,
+#endif
+
     WAFFLE_RED_SIZE                                             = 0x0201,
     WAFFLE_GREEN_SIZE                                           = 0x0202,
     WAFFLE_BLUE_SIZE                                            = 0x0203,
