@@ -63,6 +63,12 @@ nacl_config_choose(struct wcore_platform *wc_plat,
         goto error;
     }
 
+    if (attrs->context_robust) {
+        wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
+                     "NaCl does not support robust contexts.");
+        goto error;
+    }
+
     unsigned attr = 0;
 
     // Max amount of attribs is hardcoded in nacl_config.h (64)
