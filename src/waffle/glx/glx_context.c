@@ -151,6 +151,10 @@ glx_context_fill_attrib_list(struct glx_config *config,
         context_flags |= GLX_CONTEXT_DEBUG_BIT_ARB;
     }
 
+    if (attrs->context_robust) {
+        context_flags |= GLX_CONTEXT_ROBUST_ACCESS_BIT_ARB;
+    }
+
     if (context_flags != 0) {
         attrib_list[i++] = GLX_CONTEXT_FLAGS_ARB;
         attrib_list[i++] = context_flags;

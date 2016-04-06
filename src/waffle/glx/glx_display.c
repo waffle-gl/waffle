@@ -63,6 +63,7 @@ glx_display_set_extensions(struct glx_display *self)
 
     self->ARB_create_context                     = waffle_is_extension_in_string(s, "GLX_ARB_create_context");
     self->ARB_create_context_profile             = waffle_is_extension_in_string(s, "GLX_ARB_create_context_profile");
+    self->ARB_create_context_robustness          = waffle_is_extension_in_string(s, "GLX_ARB_create_context_robustness");
     self->EXT_create_context_es_profile          = waffle_is_extension_in_string(s, "GLX_EXT_create_context_es_profile");
 
     // The GLX_EXT_create_context_es2_profile spec, version 4 2012/03/28,
