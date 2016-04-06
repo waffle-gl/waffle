@@ -82,6 +82,12 @@ cgl_config_check_attrs(const struct cgl_platform *plat,
         return false;
     }
 
+    if (attrs->context_robust) {
+        wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
+                     "CGL does not support robust contexts");
+        return false;
+    }
+
     // Emulate EGL_KHR_create_context, which allows the implementation to
     // return a context of the latest supported flavor that is
     // backwards-compatibile with the requested flavor.
