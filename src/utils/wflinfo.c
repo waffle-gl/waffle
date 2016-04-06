@@ -264,7 +264,10 @@ struct options {
 
     bool verbose;
 
-    enum format { FORMAT_ORIGINAL, FORMAT_JSON } format;
+    enum format {
+        FORMAT_ORIGINAL,
+        FORMAT_JSON,
+    } format;
 
     bool context_forward_compatible;
     bool context_debug;
@@ -593,14 +596,14 @@ json_print_extensions(bool use_stringi)
     // Print extensions in JSON format
     printf("        \"extensions\": [\n");
     if (use_stringi) {
-        GLint count = 0, i;
+        GLint count = 0;
         const char *ext;
 
         glGetIntegerv(GL_NUM_EXTENSIONS, &count);
         if (glGetError() != GL_NO_ERROR) {
             printf("        \"WFLINFO_GL_ERROR\"");
         } else {
-            for (i = 0; i < count; i++) {
+            for (int i = 0; i < count; i++) {
                 ext = (const char *) glGetStringi(GL_EXTENSIONS, i);
                 if (glGetError() != GL_NO_ERROR)
                     ext = "WFLINFO_GL_ERROR";
@@ -631,8 +634,10 @@ json_print_extensions(bool use_stringi)
                 }
             }
         }
+
         printf("\n");
     }
+
     printf("        ]\n");
 }
 
@@ -640,7 +645,7 @@ json_print_extensions(bool use_stringi)
 static bool
 print_json(const struct options *opts)
 {
-    while( glGetError() != GL_NO_ERROR ) {
+    while (glGetError() != GL_NO_ERROR) {
         /* Clear all errors */
     }
 
@@ -661,7 +666,8 @@ print_json(const struct options *opts)
     if (!glGetStringi && use_getstringi) {
         error_get_gl_symbol("glGetStringi");
     }
-    // See the equivalent section in print_wflinfo() for mor info
+
+    // See the equivalent section in print_wflinfo() for more info
     const char *language_str = "None";
     if ((opts->context_api == WAFFLE_CONTEXT_OPENGL && version >= 20)
          || opts->context_api == WAFFLE_CONTEXT_OPENGL_ES2
@@ -695,7 +701,7 @@ print_json(const struct options *opts)
 static bool
 print_wflinfo(const struct options *opts)
 {
-    while(glGetError() != GL_NO_ERROR) {
+    while (glGetError() != GL_NO_ERROR) {
         /* Clear all errors */
     }
 
@@ -1277,6 +1283,7 @@ main(int argc, char **argv)
             ok = print_json(&opts);
             break;
     }
+
     if (!ok)
         error_waffle();
 
