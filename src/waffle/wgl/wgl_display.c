@@ -153,6 +153,7 @@ wgl_display_set_extensions(struct wgl_display *dpy)
 
     dpy->ARB_create_context                     = waffle_is_extension_in_string(extensions, "WGL_ARB_create_context");
     dpy->ARB_create_context_profile             = waffle_is_extension_in_string(extensions, "WGL_ARB_create_context_profile");
+    dpy->ARB_create_context_robustness          = waffle_is_extension_in_string(extensions, "WGL_ARB_create_context_robustness");
     dpy->EXT_create_context_es_profile          = waffle_is_extension_in_string(extensions, "WGL_EXT_create_context_es_profile");
 
     // The WGL_EXT_create_context_es2_profile spec, version 5 2012/04/06,

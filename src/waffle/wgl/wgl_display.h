@@ -55,6 +55,7 @@ struct wgl_display {
 
     bool ARB_create_context;
     bool ARB_create_context_profile;
+    bool ARB_create_context_robustness;
     bool EXT_create_context_es_profile;
     bool EXT_create_context_es2_profile;
     bool ARB_pixel_format;

@@ -71,6 +71,13 @@ wgl_config_check_context_attrs(struct wgl_display *dpy,
         return false;
     }
 
+    if (attrs->context_robust && !dpy->ARB_create_context_robustness) {
+        wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
+                     "WGL_ARB_create_context_robustness is required in order to "
+                     "request a robust access context");
+        return false;
+    }
+
     switch (attrs->context_api) {
         case WAFFLE_CONTEXT_OPENGL:
             if (!wcore_config_attrs_version_eq(attrs, 10) && !dpy->ARB_create_context) {
