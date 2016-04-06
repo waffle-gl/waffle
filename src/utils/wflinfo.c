@@ -134,6 +134,13 @@ strneq(const char *a, const char *b, size_t n)
 #endif
 
 static void NORETURN
+error_oom(void)
+{
+    fprintf(stderr, "out of memory\n");
+    exit(EXIT_FAILURE);
+}
+
+static void NORETURN
 error_printf(const char *module, const char *fmt, ...)
 {
     va_list ap;
