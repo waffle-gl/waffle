@@ -37,6 +37,7 @@ struct wcore_display;
 struct wegl_display {
     struct wcore_display wcore;
     EGLDisplay egl;
+    bool EXT_create_context_robustness;
     bool KHR_create_context;
 };
 

@@ -95,6 +95,11 @@ create_real_context(struct wegl_config *config,
                 context_flags |= EGL_CONTEXT_OPENGL_FORWARD_COMPATIBLE_BIT_KHR;
             }
 
+            if (attrs->context_robust) {
+                assert(dpy->KHR_create_context);
+                context_flags |= EGL_CONTEXT_OPENGL_ROBUST_ACCESS_BIT_KHR;
+            }
+
             if (wcore_config_attrs_version_ge(attrs, 32))  {
                 assert(dpy->KHR_create_context);
                 switch (attrs->context_profile) {
@@ -128,6 +133,10 @@ create_real_context(struct wegl_config *config,
                 assert(attrs->context_minor_version == 0);
             }
 
+            if (attrs->context_robust) {
+                attrib_list[i++] = EGL_CONTEXT_OPENGL_ROBUST_ACCESS_EXT;
+                attrib_list[i++] = EGL_TRUE;
+            }
             break;
 
         default:
