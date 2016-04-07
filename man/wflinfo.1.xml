@@ -148,6 +148,19 @@
         </listitem>
       </varlistentry>
       <varlistentry>
+        <term><option>-f <replaceable class="parameter">format</replaceable></option></term>
+        <term><option>--format=<replaceable class="parameter">format</replaceable></option></term>
+        <listitem>
+          <para>
+            Choose the output format. Supported formats are 'original' (the default) and 'json'.
+          </para>
+          <para>
+            The JSON format is backwards-compatible across Waffle versions.
+            Future Waffle versions may add new entries to the JSON output, but will not remove existing entries.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
         <term><option>-h</option></term>
         <term><option>--help</option></term>
         <listitem>
