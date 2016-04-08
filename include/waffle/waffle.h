@@ -192,6 +192,17 @@ waffle_make_current(struct waffle_display *dpy,
                     struct waffle_window *window,
                     struct waffle_context *ctx);
 
+#if WAFFLE_API_VERSION >= 0x0106
+struct waffle_display *
+waffle_get_current_display(void);
+
+struct waffle_window *
+waffle_get_current_window(void);
+
+struct waffle_context *
+waffle_get_current_context(void);
+#endif
+
 void*
 waffle_get_proc_address(const char *name);
 

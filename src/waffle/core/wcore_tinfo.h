@@ -26,11 +26,63 @@
 #pragma once
 
 struct wcore_error_tinfo;
+struct wcore_context;
+struct wcore_display;
+struct wcore_window;
 
 /// @brief Thread-local info for all of Waffle.
+///
+/// A note on the current display and context:
+///
+///   EGL allows a thread to have current one the below combinations of display,
+///   context, and surface.
+///
+///     a. No display, no context, no surface.
+///
+///        This case occurs when the thread has not previously called
+///        eglMakeCurrent(), or when the thread has calls
+///        eglMakeCurrent(EGL_DISPLAY_NONE, EGL_NO_SURFACE, EGL_NO_SURFACE,
+///        EGL_NO_CONTEXT). Note that the EGL 1.5 specification mandates that
+///        calling eglMakeCurrent() with EGL_DISPLAY_NONE generate an error,
+///        but some implementations allow it anyway according to the footnote
+///        in the EGL 1.5 specification (2014.08.27), p59:
+///
+///          Some implementations have chosen to allow EGL_NO_DISPLAY as
+///          a valid dpy parameter for eglMakeCurrent. This behavior is not
+///          portable to all EGL implementations, and should be considered as
+///          an undocumented vendor extension.
+///
+///     b. One display, no context, no surface.
+///
+///        This case occurs when the thread calls eglMakeCurrent() with
+///        a valid display but no context.
+///
+///     c. One display, one context, no surface.
+///
+///        Supported by EGL 1.5, EGL_KHR_surfaceless_context, and
+///        EGL_KHR_create_context.
+///
+///     d. One display; one context, and both a draw and read surface.
+///
+///        The classic case.
+///
+///    EGL permits a context to be current to at most one thread. Same for
+///    surfaces.  However, a display may be current to multiple threads.
+///
+///    Therefore, to support waffle_get_current(), Waffle must track all three
+///    objects (display, context, and waffle_window) in thread-specific storage.
+///    It is insufficient to maintain a reference to the current context and
+///    window in the current display, as there may exist multiple contexts and
+///    surfaces, each current in different threads, but all children to the same
+///    display.
+///
 struct wcore_tinfo {
     /// @brief Info for @ref wcore_error.
     struct wcore_error_tinfo *error;
+
+    struct wcore_display *current_display;
+    struct wcore_window *current_window;
+    struct wcore_context *current_context;
 
     bool is_init;
 };

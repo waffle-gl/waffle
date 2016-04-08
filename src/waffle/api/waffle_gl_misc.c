@@ -33,6 +33,7 @@
 #include "wcore_display.h"
 #include "wcore_error.h"
 #include "wcore_platform.h"
+#include "wcore_tinfo.h"
 #include "wcore_window.h"
 
 WAFFLE_API bool
@@ -81,9 +82,11 @@ waffle_make_current(
     struct wcore_display *wc_dpy = wcore_display(dpy);
     struct wcore_window *wc_window = wcore_window(window);
     struct wcore_context *wc_ctx = wcore_context(ctx);
+    struct wcore_tinfo *tinfo;
 
     const struct api_object *obj_list[3];
     int len = 0;
+    bool ok;
 
     obj_list[len++] = wc_dpy ? &wc_dpy->api : NULL;
     if (wc_window)
@@ -94,10 +97,35 @@ waffle_make_current(
     if (!api_check_entry(obj_list, len))
         return false;
 
-    return api_platform->vtbl->make_current(api_platform,
-                                            wc_dpy,
-                                            wc_window,
-                                            wc_ctx);
+    ok = api_platform->vtbl->make_current(api_platform, wc_dpy, wc_window,
+                                          wc_ctx);
+    if (!ok)
+        return false;
+
+    tinfo = wcore_tinfo_get();
+    tinfo->current_display = wc_dpy;
+    tinfo->current_window = wc_window;
+    tinfo->current_context = wc_ctx;
+
+    return true;
+}
+
+WAFFLE_API struct waffle_display *
+waffle_get_current_display(void)
+{
+    return waffle_display(wcore_tinfo_get()->current_display);
+}
+
+WAFFLE_API struct waffle_window *
+waffle_get_current_window(void)
+{
+    return waffle_window(wcore_tinfo_get()->current_window);
+}
+
+WAFFLE_API struct waffle_context *
+waffle_get_current_context(void)
+{
+    return waffle_context(wcore_tinfo_get()->current_context);
 }
 
 WAFFLE_API void*

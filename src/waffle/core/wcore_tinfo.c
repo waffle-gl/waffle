@@ -105,6 +105,10 @@ wcore_tinfo_init(struct wcore_tinfo *tinfo)
     if (!tinfo->error)
         wcore_tinfo_abort_init();
 
+    tinfo->current_display = NULL;
+    tinfo->current_window = NULL;
+    tinfo->current_context = NULL;
+
     tinfo->is_init = true;
 
 #ifdef WAFFLE_HAS_TLS

@@ -22,7 +22,10 @@
 
   <refnamediv>
     <refname>waffle_make_current</refname>
-    <refpurpose>Bind a context for rendering</refpurpose>
+    <refname>waffle_get_current_display</refname>
+    <refname>waffle_get_current_window</refname>
+    <refname>waffle_get_current_context</refname>
+    <refpurpose>set and get resources current to the thread</refpurpose>
   </refnamediv>
 
   <refentryinfo>
@@ -45,6 +48,18 @@
         <paramdef>struct waffle_display *<parameter>display</parameter></paramdef>
         <paramdef>struct waffle_window *<parameter>window</parameter></paramdef>
         <paramdef>struct waffle_context *<parameter>context</parameter></paramdef>
+      </funcprototype>
+
+      <funcprototype>
+        <funcdef>struct waffle_display *<function>waffle_get_current_display</function></funcdef><void/>
+      </funcprototype>
+
+      <funcprototype>
+        <funcdef>struct waffle_window *<function>waffle_get_current_window</function></funcdef><void/>
+      </funcprototype>
+
+      <funcprototype>
+        <funcdef>struct waffle_context *<function>waffle_get_current_context</function></funcdef><void/>
       </funcprototype>
 
     </funcsynopsis>
@@ -82,6 +97,57 @@
         </listitem>
       </varlistentry>
 
+      <varlistentry>
+        <term><function>waffle_get_current_display()</function></term>
+        <listitem>
+          <para>
+            Get the display bound to the current thread,
+            as previously bound by <function>waffle_make_current()</function>.
+            If no display is bound, then return NULL.
+          </para>
+
+          <para>
+            This function is analogous to
+            <citerefentry><refentrytitle><function>glXGetCurrentDisplay</function></refentrytitle><manvolnum>3</manvolnum></citerefentry> and
+            <citerefentry><refentrytitle><function>eglGetCurrentDisplay</function></refentrytitle><manvolnum>3</manvolnum></citerefentry>.
+          </para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><function>waffle_get_current_window()</function></term>
+        <listitem>
+          <para>
+            Get the window bound to the current thread,
+            as previously bound by <function>waffle_make_current()</function>.
+            If no window is bound, then return NULL.
+          </para>
+
+          <para>
+            This function is analogous to
+            <citerefentry><refentrytitle><function>glXGetCurrentDrawable</function></refentrytitle><manvolnum>3</manvolnum></citerefentry> and
+            <citerefentry><refentrytitle><function>eglGetCurrentSurface</function></refentrytitle><manvolnum>3</manvolnum></citerefentry>.
+          </para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><function>waffle_get_current_context()</function></term>
+        <listitem>
+          <para>
+            Get the context bound to the current thread,
+            as previously bound by <function>waffle_make_current()</function>.
+            If no context is bound, then return NULL.
+          </para>
+
+          <para>
+            This function is analogous to
+            <citerefentry><refentrytitle><function>glXGetCurrentContext</function></refentrytitle><manvolnum>3</manvolnum></citerefentry> and
+            <citerefentry><refentrytitle><function>eglGetCurrentContext</function></refentrytitle><manvolnum>3</manvolnum></citerefentry>.
+          </para>
+        </listitem>
+      </varlistentry>
+
     </variablelist>
   </refsect1>
 
@@ -97,6 +163,17 @@
 
     <para>
       No errors are specific to any functions listed in this manual page.
+    </para>
+  </refsect1>
+
+  <refsect1>
+    <title>Bugs</title>
+    <para>
+      Mixing calls to <function>waffle_make_current()</function>
+      and the native platform's <function>MakeCurrent()</function>
+      on the same thread do not interact well.
+      After calling the native platform's <function>MakeCurrent()</function>,
+      future Waffle function calls on the same thread are likely to behave incorrectly.
     </para>
   </refsect1>
 
