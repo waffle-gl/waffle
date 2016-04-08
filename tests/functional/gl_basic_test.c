@@ -308,6 +308,10 @@ gl_basic_draw__(struct gl_basic_draw_args__ args)
 
     ASSERT_TRUE(waffle_make_current(dpy, window, ctx));
 
+    ASSERT_TRUE(waffle_get_current_display() == dpy);
+    ASSERT_TRUE(waffle_get_current_window() == window);
+    ASSERT_TRUE(waffle_get_current_context() == ctx);
+
     const char *version_str;
     int major, minor, count;
 
@@ -364,6 +368,11 @@ gl_basic_draw__(struct gl_basic_draw_args__ args)
 
     // Teardown.
     ABORT_IF(!waffle_make_current(dpy, NULL, NULL));
+
+    ASSERT_TRUE(waffle_get_current_display() == dpy);
+    ASSERT_TRUE(waffle_get_current_window() == NULL);
+    ASSERT_TRUE(waffle_get_current_context() == NULL);
+
     ASSERT_TRUE(waffle_window_destroy(window));
     ASSERT_TRUE(waffle_context_destroy(ctx));
     ASSERT_TRUE(waffle_config_destroy(config));
