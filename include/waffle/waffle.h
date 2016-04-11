@@ -137,14 +137,9 @@ enum waffle_enum {
         WAFFLE_CONTEXT_CORE_PROFILE                             = 0x0211,
         WAFFLE_CONTEXT_COMPATIBILITY_PROFILE                    = 0x0212,
 
-#if WAFFLE_API_VERSION >= 0x0103
     WAFFLE_CONTEXT_FORWARD_COMPATIBLE                           = 0x0215,
     WAFFLE_CONTEXT_DEBUG                                        = 0x0216,
-#endif
-
-#if WAFFLE_API_VERSION >= 0x106
     WAFFLE_CONTEXT_ROBUST_ACCESS                                = 0x0217,
-#endif
 
     WAFFLE_RED_SIZE                                             = 0x0201,
     WAFFLE_GREEN_SIZE                                           = 0x0202,
