@@ -211,6 +211,7 @@ static int window_height = 240;
 
 static void (APIENTRY *glClearColor)(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha);
 static void (APIENTRY *glClear)(GLbitfield mask);
+static GLenum (APIENTRY *glGetError)(void);
 static void (APIENTRY *glGetIntegerv)(GLenum pname, GLint *params);
 static void (APIENTRY *glReadPixels)(GLint x, GLint y, GLsizei width, GLsizei height,
                                      GLenum format, GLenum type, GLvoid* data);
@@ -611,6 +612,10 @@ main(int argc, char **argv)
     if (!glClearColor)
         error_get_gl_symbol("glClearColor");
 
+    glGetError = waffle_dl_sym(opts.dl, "glGetError");
+    if (!glGetError)
+        error_get_gl_symbol("glGetError");
+
     glGetIntegerv = waffle_dl_sym(opts.dl, "glGetIntegerv");
     if (!glGetIntegerv)
         error_get_gl_symbol("glGetIntegerv");
@@ -694,6 +699,9 @@ main(int argc, char **argv)
     if (opts.context_forward_compatible || opts.context_debug) {
         glGetIntegerv(GL_CONTEXT_FLAGS, &context_flags);
     }
+
+    if (glGetError())
+        error_printf("glGetIntegerv(GL_CONTEXT_FLAGS) failed");
 
     if (opts.context_forward_compatible
         && !(context_flags & GL_CONTEXT_FLAG_FORWARD_COMPATIBLE_BIT)) {
