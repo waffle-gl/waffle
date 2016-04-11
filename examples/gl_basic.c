@@ -67,6 +67,7 @@ static const char *usage_message =
     "             [--profile=core|compat|none]\n"
     "             [--forward-compatible]\n"
     "             [--debug]\n"
+    "             [--robust]\n"
     "             [--resize-window]\n"
     "             [--window-size=WIDTHxHEIGHT | --fullscreen]\n"
     "\n"
@@ -85,6 +86,9 @@ static const char *usage_message =
     "    --debug\n"
     "        Create a debug context.\n"
     "\n"
+    "    --robust\n"
+    "        Create a robust context.\n"
+    "\n"
     "    --resize-window\n"
     "        Resize the window between each draw call.\n"
     "\n"
@@ -99,6 +103,7 @@ enum {
     OPT_PROFILE,
     OPT_DEBUG,
     OPT_FORWARD_COMPATIBLE,
+    OPT_ROBUST,
     OPT_RESIZE_WINDOW,
     OPT_WINDOW_SIZE,
     OPT_FULLSCREEN,
@@ -111,6 +116,7 @@ static const struct option get_opts[] = {
     { .name = "profile",        .has_arg = required_argument,     .val = OPT_PROFILE },
     { .name = "debug",          .has_arg = no_argument,           .val = OPT_DEBUG },
     { .name = "forward-compatible", .has_arg = no_argument,       .val = OPT_FORWARD_COMPATIBLE },
+    { .name = "robust",         .has_arg = no_argument,           .val = OPT_ROBUST },
     { .name = "resize-window",  .has_arg = no_argument,           .val = OPT_RESIZE_WINDOW },
     { .name = "window-size",    .has_arg = required_argument,     .val = OPT_WINDOW_SIZE },
     { .name = "fullscreen",     .has_arg = no_argument,           .val = OPT_FULLSCREEN },
@@ -196,6 +202,7 @@ enum {
     GL_CONTEXT_FLAGS = 0x821e,
     GL_CONTEXT_FLAG_FORWARD_COMPATIBLE_BIT = 0x00000001,
     GL_CONTEXT_FLAG_DEBUG_BIT              = 0x00000002,
+    GL_CONTEXT_FLAG_ROBUST_ACCESS_BIT      = 0x00000004 ,
 };
 
 static int window_width = 320;
@@ -232,6 +239,7 @@ struct options {
 
     bool context_forward_compatible;
     bool context_debug;
+    bool context_robust;
 
     bool resize_window;
 
@@ -356,6 +364,9 @@ parse_args(int argc, char *argv[], struct options *opts)
                 break;
             case OPT_DEBUG:
                 opts->context_debug = true;
+                break;
+            case OPT_ROBUST:
+                opts->context_robust = true;
                 break;
             case OPT_RESIZE_WINDOW:
                 opts->resize_window = true;
@@ -654,6 +665,11 @@ main(int argc, char **argv)
         config_attrib_list[i++] = true;
     }
 
+    if (opts.context_robust) {
+        config_attrib_list[i++] = WAFFLE_CONTEXT_ROBUST_ACCESS,
+        config_attrib_list[i++] = true;
+    }
+
     config_attrib_list[i++] = WAFFLE_RED_SIZE;
     config_attrib_list[i++] = 8;
     config_attrib_list[i++] = WAFFLE_GREEN_SIZE;
@@ -712,6 +728,11 @@ main(int argc, char **argv)
         && !(context_flags & GL_CONTEXT_FLAG_DEBUG_BIT)) {
         error_printf("context is not a debug context");
     }
+
+    // Don't verify if the context is robust because that pollutes this simple
+    // example program with hairy GL logic. The method of verifying if
+    // a context is robust varies on the combination of context profile,
+    // context version, and supported extensions.
 
     ok = draw(window, opts.resize_window);
     if (!ok)
