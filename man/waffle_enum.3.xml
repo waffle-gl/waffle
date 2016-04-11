@@ -23,7 +23,6 @@
   <refnamediv>
     <refname>waffle_enum</refname>
     <refname>waffle_enum_to_string</refname>
-    <refpurpose>Listing of non-error enums and associated utility functions</refpurpose>
   </refnamediv>
 
   <refentryinfo>
@@ -69,90 +68,6 @@ enum waffle_enum {...};
             This function always sets the error code to <constant>WAFFLE_NO_ERROR</constant>.
             It can be called before waffle has been successfully initialized with
             <citerefentry><refentrytitle><function>waffle_init</function></refentrytitle><manvolnum>3</manvolnum></citerefentry>
-          </para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
-        <term><type>enum waffle_enum</type></term>
-        <listitem>
-          <para>
-            For reference, below is the complete list of waffle's non-error enums.
-
-            <programlisting>
-<![CDATA[
-enum waffle_enum {
-    // ------------------------------------------------------------------
-    // Generic
-    // ------------------------------------------------------------------
-
-    WAFFLE_DONT_CARE                                            = -1,
-    WAFFLE_NONE                                                 =  0,
-
-    // ------------------------------------------------------------------
-    // For waffle_init()
-    // ------------------------------------------------------------------
-
-    WAFFLE_PLATFORM                                             = 0x0010,
-        WAFFLE_PLATFORM_ANDROID                                 = 0x0011,
-        WAFFLE_PLATFORM_CGL                                     = 0x0012,
-        WAFFLE_PLATFORM_GLX                                     = 0x0013,
-        WAFFLE_PLATFORM_WAYLAND                                 = 0x0014,
-        WAFFLE_PLATFORM_X11_EGL                                 = 0x0015,
-        WAFFLE_PLATFORM_GBM                                     = 0x0016,
-        WAFFLE_PLATFORM_WGL                                     = 0x0017,
-        WAFFLE_PLATFORM_NACL                                    = 0x0018,
-
-    // ------------------------------------------------------------------
-    // For waffle_config_choose()
-    // ------------------------------------------------------------------
-
-    WAFFLE_CONTEXT_API                                          = 0x020a,
-        WAFFLE_CONTEXT_OPENGL                                   = 0x020b,
-        WAFFLE_CONTEXT_OPENGL_ES1                               = 0x020c,
-        WAFFLE_CONTEXT_OPENGL_ES2                               = 0x020d,
-        WAFFLE_CONTEXT_OPENGL_ES3                               = 0x0214,
-
-    WAFFLE_CONTEXT_MAJOR_VERSION                                = 0x020e,
-    WAFFLE_CONTEXT_MINOR_VERSION                                = 0x020f,
-
-    WAFFLE_CONTEXT_PROFILE                                      = 0x0210,
-        WAFFLE_CONTEXT_CORE_PROFILE                             = 0x0211,
-        WAFFLE_CONTEXT_COMPATIBILITY_PROFILE                    = 0x0212,
-
-    WAFFLE_RED_SIZE                                             = 0x0201,
-    WAFFLE_GREEN_SIZE                                           = 0x0202,
-    WAFFLE_BLUE_SIZE                                            = 0x0203,
-    WAFFLE_ALPHA_SIZE                                           = 0x0204,
-
-    WAFFLE_DEPTH_SIZE                                           = 0x0205,
-    WAFFLE_STENCIL_SIZE                                         = 0x0206,
-
-    WAFFLE_SAMPLE_BUFFERS                                       = 0x0207,
-    WAFFLE_SAMPLES                                              = 0x0208,
-
-    WAFFLE_DOUBLE_BUFFERED                                      = 0x0209,
-
-    WAFFLE_ACCUM_BUFFER                                         = 0x0213,
-
-    // ------------------------------------------------------------------
-    // For waffle_dl_sym()
-    // ------------------------------------------------------------------
-
-    WAFFLE_DL_OPENGL                                            = 0x0301,
-    WAFFLE_DL_OPENGL_ES1                                        = 0x0302,
-    WAFFLE_DL_OPENGL_ES2                                        = 0x0303,
-
-    // ------------------------------------------------------------------
-    // For waffle_window
-    // ------------------------------------------------------------------
-
-    WAFFLE_WINDOW_WIDTH                                         = 0x0310,
-    WAFFLE_WINDOW_HEIGHT                                        = 0x0311,
-    WAFFLE_WINDOW_FULLSCREEN                                    = 0x0312,
-};
-]]>
-            </programlisting>
           </para>
         </listitem>
       </varlistentry>
