@@ -26,6 +26,8 @@
 #pragma once
 
 #include <stdbool.h>
+
+#include "wayland-version.h"
 #include "wayland-util.h"
 
 bool
@@ -75,6 +77,13 @@ struct wl_proxy *
                                     const struct wl_interface *interface,
                                     ...);
 
+struct wl_proxy *
+(*wfl_wl_proxy_marshal_constructor_versioned)(struct wl_proxy *proxy,
+					      uint32_t opcode,
+					      const struct wl_interface *interface,
+					      uint32_t version,
+					      ...);
+
 #ifdef _WAYLAND_CLIENT_H
 #error Do not include wayland-client.h ahead of wayland_wrapper.h
 #endif
@@ -92,3 +101,4 @@ struct wl_proxy *
 #define wl_proxy_add_listener (*wfl_wl_proxy_add_listener)
 #define wl_proxy_marshal (*wfl_wl_proxy_marshal)
 #define wl_proxy_marshal_constructor (*wfl_wl_proxy_marshal_constructor)
+#define wl_proxy_marshal_constructor_versioned (*wfl_wl_proxy_marshal_constructor_versioned)
