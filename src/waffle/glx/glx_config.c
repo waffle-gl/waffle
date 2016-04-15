@@ -32,6 +32,7 @@
 #include "wcore_error.h"
 
 #include "glx_config.h"
+#include "glx_context.h"
 #include "glx_display.h"
 #include "glx_platform.h"
 #include "glx_wrappers.h"
@@ -77,11 +78,11 @@ glx_config_check_context_attrs(struct glx_display *dpy,
 
     switch (attrs->context_api) {
         case WAFFLE_CONTEXT_OPENGL:
-            if (!wcore_config_attrs_version_eq(attrs, 10) && !dpy->ARB_create_context) {
+            if (glx_context_needs_arb_create_context(attrs) &&
+                !dpy->ARB_create_context) {
                 wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
                              "GLX_ARB_create_context is required in order to "
-                             "request an OpenGL version not equal to the default "
-                             "value 1.0");
+                             "request an OpenGL version greater or equal than 3.2");
                 return false;
             }
             else if (wcore_config_attrs_version_ge(attrs, 32) && !dpy->ARB_create_context_profile) {
