@@ -309,7 +309,7 @@ gl_basic_draw__(struct gl_basic_draw_args__ args)
     ASSERT_TRUE(waffle_make_current(dpy, window, ctx));
 
     const char *version_str;
-    int major, dummy, count;
+    int major, minor, count;
 
     ASSERT_GL(version_str = (const char *) glGetString(GL_VERSION));
     ASSERT_TRUE(version_str != NULL);
@@ -317,10 +317,15 @@ gl_basic_draw__(struct gl_basic_draw_args__ args)
     while (*version_str != '\0' && !isdigit(*version_str))
         version_str++;
 
-    count = sscanf(version_str, "%d.%d", &major, &dummy);
+    count = sscanf(version_str, "%d.%d", &major, &minor);
     ASSERT_TRUE(count == 2);
+    ASSERT_TRUE(major >= 0);
+    ASSERT_TRUE(minor >= 0 && minor < 10);
 
-    if (waffle_context_api == WAFFLE_CONTEXT_OPENGL && major >= 3) {
+    int version_10x = 10 * major + minor;
+
+    if ((waffle_context_api == WAFFLE_CONTEXT_OPENGL && version_10x >= 30) ||
+        (waffle_context_api != WAFFLE_CONTEXT_OPENGL && version_10x >= 32)) {
         GLint context_flags = 0;
         if (context_forward_compatible || context_debug) {
             glGetIntegerv(GL_CONTEXT_FLAGS, &context_flags);
