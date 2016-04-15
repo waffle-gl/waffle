@@ -27,6 +27,7 @@
 
 #include <stdbool.h>
 
+#include "wcore_config_attrs.h"
 #include "wcore_context.h"
 #include "wcore_util.h"
 
@@ -51,3 +52,17 @@ wgl_context_create(struct wcore_platform *wc_plat,
 
 bool
 wgl_context_destroy(struct wcore_context *wc_self);
+
+static inline bool
+wgl_context_needs_arb_create_context(const struct wcore_config_attrs *attrs)
+{
+    if (attrs->context_api == WAFFLE_CONTEXT_OPENGL &&
+        (wcore_config_attrs_version_ge(attrs, 32) ||
+         attrs->context_forward_compatible))
+        return true;
+
+    if (attrs->context_debug)
+        return true;
+
+    return false;
+}
