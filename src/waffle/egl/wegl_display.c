@@ -64,7 +64,6 @@ wegl_display_init(struct wegl_display *dpy,
 {
     struct wegl_platform *plat = wegl_platform(wc_plat);
     bool ok;
-    EGLint major, minor;
 
     ok = wcore_display_init(&dpy->wcore, wc_plat);
     if (!ok)
@@ -76,7 +75,7 @@ wegl_display_init(struct wegl_display *dpy,
         goto fail;
     }
 
-    ok = plat->eglInitialize(dpy->egl, &major, &minor);
+    ok = plat->eglInitialize(dpy->egl, &dpy->major_version, &dpy->minor_version);
     if (!ok) {
         wegl_emit_error(plat, "eglInitialize");
         goto fail;

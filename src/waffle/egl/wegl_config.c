@@ -56,17 +56,20 @@ check_context_attrs(struct wegl_display *dpy,
     }
 
     if (attrs->context_robust && !dpy->EXT_create_context_robustness &&
+        dpy->major_version == 1 && dpy->minor_version < 5 &&
         attrs->context_api != WAFFLE_CONTEXT_OPENGL) {
         wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
-                     "EGL_EXT_create_context_robustness is required in order to "
-                     "request a robust access context for OpenGL ES");
+                     "EGL_EXT_create_context_robustness or EGL 1.5 is "
+                     "required in order to request a robust access context "
+                     "for OpenGL ES");
         return false;
     }
 
     if (attrs->context_robust && !dpy->KHR_create_context &&
+        dpy->major_version == 1 && dpy->minor_version < 5 &&
         attrs->context_api == WAFFLE_CONTEXT_OPENGL) {
         wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
-                     "EGL_KHR_create_context is required in order to "
+                     "EGL_KHR_create_context or EGL 1.5 is required in order to "
                      "request a robust access context for OpenGL");
         return false;
     }

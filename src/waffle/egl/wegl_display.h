@@ -39,6 +39,8 @@ struct wegl_display {
     EGLDisplay egl;
     bool EXT_create_context_robustness;
     bool KHR_create_context;
+    EGLint major_version;
+    EGLint minor_version;
 };
 
 DEFINE_CONTAINER_CAST_FUNC(wegl_display,

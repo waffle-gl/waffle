@@ -96,8 +96,16 @@ create_real_context(struct wegl_config *config,
             }
 
             if (attrs->context_robust) {
-                assert(dpy->KHR_create_context);
-                context_flags |= EGL_CONTEXT_OPENGL_ROBUST_ACCESS_BIT_KHR;
+                if (dpy->major_version > 1 || dpy->minor_version >= 5) {
+                    // Use the token from EGL 1.5, not
+                    // EGL_CONTEXT_OPENGL_ROBUST_ACCESS_EXT. Their values
+                    // differ.
+                    attrib_list[i++] = EGL_CONTEXT_OPENGL_ROBUST_ACCESS;
+                    attrib_list[i++] = EGL_TRUE;
+                } else {
+                    assert(dpy->KHR_create_context);
+                    context_flags |= EGL_CONTEXT_OPENGL_ROBUST_ACCESS_BIT_KHR;
+                }
             }
 
             if (wcore_config_attrs_version_ge(attrs, 32))  {
