@@ -106,6 +106,7 @@ wayland_wrapper_init(void)
     RETRIEVE_WL_CLIENT_SYMBOL(wl_proxy_add_listener);
     RETRIEVE_WL_CLIENT_SYMBOL(wl_proxy_marshal);
     RETRIEVE_WL_CLIENT_SYMBOL(wl_proxy_marshal_constructor);
+    RETRIEVE_WL_CLIENT_SYMBOL(wl_proxy_marshal_constructor_versioned);
 #undef RETRIEVE_WL_CLIENT_SYMBOL
 
 error:
