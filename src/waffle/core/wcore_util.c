@@ -68,6 +68,24 @@ wcore_calloc(size_t size)
     return p;
 }
 
+void*
+wcore_realloc(void *ptr, size_t size)
+{
+    void *p = realloc(ptr, size);
+    if (p == NULL)
+        wcore_error(WAFFLE_ERROR_BAD_ALLOC);
+    return p;
+}
+
+char*
+wcore_strdup(const char *str)
+{
+    char *p = strdup(str);
+    if (p == NULL)
+        wcore_error(WAFFLE_ERROR_BAD_ALLOC);
+    return p;
+}
+
 const char*
 wcore_enum_to_string(int32_t e)
 {

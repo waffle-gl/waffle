@@ -26,6 +26,7 @@
 #pragma once
 
 #include <stddef.h>
+#include <string.h>
 #include "c99_compat.h"
 
 #ifdef __cplusplus
@@ -90,6 +91,14 @@ wcore_malloc(size_t size);
 /// easy to use incorrectly.
 void*
 wcore_calloc(size_t size);
+
+/// @brief Wrapper around realloc() that emits error if allocation fails.
+void*
+wcore_realloc(void *ptr, size_t size);
+
+/// @brief Wrapper around strdup() that emits error if allocation fails.
+char*
+wcore_strdup(const char *str);
 
 /// @brief Create one of `union waffle_native_*`.
 ///
