@@ -142,8 +142,14 @@ create_real_context(struct wegl_config *config,
             }
 
             if (attrs->context_robust) {
-                attrib_list[i++] = EGL_CONTEXT_OPENGL_ROBUST_ACCESS_EXT;
-                attrib_list[i++] = EGL_TRUE;
+                // The EGL 1.5 token and the EXT token have different values.
+                if (dpy->major_version > 1 || dpy->minor_version >= 5) {
+                    attrib_list[i++] = EGL_CONTEXT_OPENGL_ROBUST_ACCESS;
+                    attrib_list[i++] = EGL_TRUE;
+                } else {
+                    attrib_list[i++] = EGL_CONTEXT_OPENGL_ROBUST_ACCESS_EXT;
+                    attrib_list[i++] = EGL_TRUE;
+                }
             }
             break;
 
