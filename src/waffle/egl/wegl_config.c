@@ -41,8 +41,6 @@ static bool
 check_context_attrs(struct wegl_display *dpy,
                     const struct wcore_config_attrs *attrs)
 {
-    struct wcore_platform *plat = dpy->wcore.platform;
-
     if (attrs->context_forward_compatible) {
         assert(attrs->context_api == WAFFLE_CONTEXT_OPENGL);
         assert(wcore_config_attrs_version_ge(attrs, 30));
@@ -76,6 +74,14 @@ check_context_attrs(struct wegl_display *dpy,
 
     switch (attrs->context_api) {
         case WAFFLE_CONTEXT_OPENGL:
+            if (!(dpy->api_mask & WEGL_OPENGL_API)) {
+                wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
+                             "EGL 1.4 and eglQueryString(EGL_CLIENT_APIS) "
+                             "advertising \"OpenGL\" are required in order to "
+                             "request an OpenGL context.");
+                return false;
+            }
+
             if (!wcore_config_attrs_version_eq(attrs, 10) && !dpy->KHR_create_context) {
                 wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
                              "KHR_EXT_create_context is required in order to "
@@ -96,43 +102,22 @@ check_context_attrs(struct wegl_display *dpy,
                 return false;
             }
 
-            if (!plat->vtbl->dl_can_open(plat, WAFFLE_DL_OPENGL)) {
-                wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
-                             "failed to open the OpenGL library");
-                return false;
-            }
-
             return true;
 
         case WAFFLE_CONTEXT_OPENGL_ES1:
-            if (!plat->vtbl->dl_can_open(plat, WAFFLE_DL_OPENGL_ES1)) {
-                wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
-                             "failed to open the OpenGL ES1 library");
-                return false;
-            }
-
-            return true;
-
         case WAFFLE_CONTEXT_OPENGL_ES2:
-            if (!plat->vtbl->dl_can_open(plat, WAFFLE_DL_OPENGL_ES2)) {
+        case WAFFLE_CONTEXT_OPENGL_ES3:
+            if (!(dpy->api_mask & WEGL_OPENGL_ES_API)) {
                 wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
-                             "failed to open the OpenGL ES2 library");
+                             "eglQueryString(EGL_CLIENT_APIS) does not"
+                             "advertise OpenGL_ES.");
                 return false;
             }
-
-            return true;
-
-        case WAFFLE_CONTEXT_OPENGL_ES3:
-            if (!dpy->KHR_create_context) {
+            if (attrs->context_api == WAFFLE_CONTEXT_OPENGL_ES3 &&
+                !dpy->KHR_create_context) {
                 wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
                              "EGL_KHR_create_context is required to request "
                              "an OpenGL ES3 context");
-                return false;
-            }
-
-            if (!plat->vtbl->dl_can_open(plat, WAFFLE_DL_OPENGL_ES3)) {
-                wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
-                             "failed to open the OpenGL ES3 library");
                 return false;
             }
 

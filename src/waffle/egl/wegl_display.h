@@ -34,9 +34,15 @@
 
 struct wcore_display;
 
+enum wegl_supported_api {
+    WEGL_OPENGL_API = 1 << 0,
+    WEGL_OPENGL_ES_API = 1 << 1,
+};
+
 struct wegl_display {
     struct wcore_display wcore;
     EGLDisplay egl;
+    enum wegl_supported_api api_mask;
     bool EXT_create_context_robustness;
     bool KHR_create_context;
     EGLint major_version;
