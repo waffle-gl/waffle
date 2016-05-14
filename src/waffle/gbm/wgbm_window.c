@@ -67,7 +67,6 @@ wgbm_window_create(struct wcore_platform *wc_plat,
     struct wgbm_display *dpy = wgbm_display(wc_config->display);
     struct wgbm_platform *plat = wgbm_platform(wegl_platform(wc_plat));
     struct wgbm_window *self;
-    uint32_t gbm_format;
     bool ok = true;
 
     if (width == -1 && height == -1) {
@@ -85,11 +84,9 @@ wgbm_window_create(struct wcore_platform *wc_plat,
     if (self == NULL)
         return NULL;
 
-    gbm_format = wgbm_config_get_gbm_format(wc_plat, wc_config->display,
-                                            wc_config);
-    assert(gbm_format != 0);
     self->gbm_surface = plat->gbm_surface_create(dpy->gbm_device,
-                                                 width, height, gbm_format,
+                                                 width, height,
+                                                 wegl_config(wc_config)->visual,
                                                  GBM_BO_USE_RENDERING);
     if (!self->gbm_surface) {
         wcore_errorf(WAFFLE_ERROR_UNKNOWN,

@@ -189,7 +189,7 @@ static const struct wcore_platform_vtbl wgbm_platform_vtbl = {
     },
 
     .config = {
-        .choose = wgbm_config_choose,
+        .choose = wegl_config_choose,
         .destroy = wegl_config_destroy,
         .get_native = wgbm_config_get_native,
     },

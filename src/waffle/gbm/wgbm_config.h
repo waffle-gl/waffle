@@ -34,15 +34,5 @@
 
 union waffle_native_config;
 
-struct wcore_config*
-wgbm_config_choose(struct wcore_platform *wc_plat,
-                   struct wcore_display *wc_dpy,
-                   const struct wcore_config_attrs *attrs);
-
-uint32_t
-wgbm_config_get_gbm_format(struct wcore_platform *wc_plat,
-                           struct wcore_display *wc_dpy,
-                           struct wcore_config *wc_config);
-
 union waffle_native_config*
 wgbm_config_get_native(struct wcore_config *wc_config);

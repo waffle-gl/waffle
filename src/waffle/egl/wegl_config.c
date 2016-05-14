@@ -214,6 +214,7 @@ wegl_config_choose(struct wcore_platform *wc_plat,
                    struct wcore_display *wc_dpy,
                    const struct wcore_config_attrs *attrs)
 {
+    struct wegl_platform *plat = wegl_platform(wc_plat);
     struct wegl_display *dpy = wegl_display(wc_dpy);
     struct wegl_config *config;
     bool ok;
@@ -233,6 +234,12 @@ wegl_config_choose(struct wcore_platform *wc_plat,
 
     config->egl = choose_real_config(dpy, attrs);
     if (!config->egl)
+        goto fail;
+
+    ok = plat->eglGetConfigAttrib(dpy->egl, config->egl,
+                                  EGL_NATIVE_VISUAL_ID, &config->visual);
+
+    if (!ok)
         goto fail;
 
     return &config->wcore;

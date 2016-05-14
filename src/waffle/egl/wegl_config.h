@@ -40,6 +40,7 @@ struct wcore_config_attrs;
 struct wegl_config {
     struct wcore_config wcore;
     EGLConfig egl;
+    EGLint visual;
 };
 
 DEFINE_CONTAINER_CAST_FUNC(wegl_config,

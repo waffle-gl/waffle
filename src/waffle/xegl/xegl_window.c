@@ -63,8 +63,6 @@ xegl_window_create(struct wcore_platform *wc_plat,
     struct xegl_window *self;
     struct xegl_display *dpy = xegl_display(wc_config->display);
     struct wegl_config *config = wegl_config(wc_config);
-    struct wegl_platform *plat = wegl_platform(wc_plat);
-    xcb_visualid_t visual;
     bool ok = true;
 
     if (width == -1 && height == -1) {
@@ -81,18 +79,9 @@ xegl_window_create(struct wcore_platform *wc_plat,
     if (self == NULL)
         return NULL;
 
-    ok = plat->eglGetConfigAttrib(dpy->wegl.egl,
-                                  config->egl,
-                                  EGL_NATIVE_VISUAL_ID,
-                                  (EGLint*) &visual);
-    if (!ok) {
-        wegl_emit_error(plat, "eglGetConfigAttrib(EGL_NATIVE_VISUAL_ID)");
-        goto error;
-    }
-
     ok = x11_window_init(&self->x11,
                          &dpy->x11,
-                         visual,
+                         (xcb_visualid_t) config->visual,
                          width,
                          height);
     if (!ok)
