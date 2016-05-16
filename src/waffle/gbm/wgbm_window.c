@@ -32,8 +32,10 @@
 
 #include "wcore_attrib_list.h"
 #include "wcore_error.h"
+#include "wcore_tinfo.h"
 
 #include "wegl_config.h"
+#include "wegl_util.h"
 
 #include "wgbm_config.h"
 #include "wgbm_display.h"
@@ -92,6 +94,7 @@ wgbm_window_init(struct wgbm_window *self,
     if (!ok)
         return false;
 
+    self->wc_config = wc_config;
     return true;
 }
 
@@ -155,6 +158,46 @@ wgbm_window_swap_buffers(struct wcore_window *wc_self)
     return true;
 }
 
+bool
+wgbm_window_resize(struct wcore_window *wc_self,
+                   int32_t width, int32_t height)
+{
+    struct wcore_display *wc_dpy = wc_self->display;
+    struct wcore_platform *wc_plat = wc_self->display->platform;
+    struct wgbm_window *self = wgbm_window(wc_self);
+    struct wgbm_window backup_self;
+    struct wcore_context *wc_ctx;
+    struct wcore_tinfo *tinfo;
+    bool ok = true;
+
+    // Backup the old window/surface so that we can restore it upon failure.
+    backup_self = *self;
+
+    ok = wgbm_window_init(self, wc_plat, self->wc_config, width, height);
+    if (!ok)
+        goto error;
+
+    tinfo = wcore_tinfo_get();
+    wc_ctx = tinfo->current_context;
+
+    // XXX: Can/should we use waffle_make_current() here ?
+    ok = wegl_make_current(wc_plat, wc_dpy, wc_self, wc_ctx);
+    if (!ok)
+        goto error;
+
+    // We don't need to set current_display or current_window
+    tinfo->current_context = wc_ctx;
+
+    // Everything went fine, so teardown the old window.
+    wgbm_window_teardown(&backup_self);
+    return true;
+
+error:
+    // Nuke the new window and restore the old one.
+    wgbm_window_teardown(self);
+    *self = backup_self;
+    return false;
+}
 
 union waffle_native_window*
 wgbm_window_get_native(struct wcore_window *wc_self)
