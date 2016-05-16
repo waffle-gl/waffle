@@ -40,21 +40,59 @@
 #include "wgbm_platform.h"
 #include "wgbm_window.h"
 
+static bool
+wgbm_window_teardown(struct wgbm_window *self)
+{
+    struct wcore_platform *wc_plat = self->wegl.wcore.display->platform;
+    struct wgbm_platform *plat = wgbm_platform(wegl_platform(wc_plat));
+    bool ok;
+
+    ok = wegl_surface_teardown(&self->wegl);
+    plat->gbm_surface_destroy(self->gbm_surface);
+
+    return ok;
+}
+
 bool
 wgbm_window_destroy(struct wcore_window *wc_self)
 {
-    struct wcore_platform *wc_plat = wc_self->display->platform;
-    struct wgbm_platform *plat = wgbm_platform(wegl_platform(wc_plat));
     struct wgbm_window *self = wgbm_window(wc_self);
     bool ok = true;
 
     if (!self)
         return ok;
 
-    ok &= wegl_surface_teardown(&self->wegl);
-    plat->gbm_surface_destroy(self->gbm_surface);
+    ok &= wgbm_window_teardown(self);
     free(self);
     return ok;
+}
+
+static bool
+wgbm_window_init(struct wgbm_window *self,
+                 struct wcore_platform *wc_plat,
+                 struct wcore_config *wc_config,
+                 int32_t width, int32_t height)
+{
+    struct wgbm_display *dpy = wgbm_display(wc_config->display);
+    struct wgbm_platform *plat = wgbm_platform(wegl_platform(wc_plat));
+    bool ok = true;
+
+    self->gbm_surface = plat->gbm_surface_create(dpy->gbm_device,
+                                                 width, height,
+                                                 wegl_config(wc_config)->visual,
+                                                 GBM_BO_USE_RENDERING);
+    if (!self->gbm_surface) {
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN,
+                     "gbm_surface_create failed");
+        return false;
+    }
+
+    ok = wegl_window_init(&self->wegl, wc_config,
+                          (intptr_t) self->gbm_surface);
+    if (!ok)
+        return false;
+
+    return true;
 }
 
 struct wcore_window*
@@ -64,8 +102,6 @@ wgbm_window_create(struct wcore_platform *wc_plat,
                    int32_t height,
                    const intptr_t attrib_list[])
 {
-    struct wgbm_display *dpy = wgbm_display(wc_config->display);
-    struct wgbm_platform *plat = wgbm_platform(wegl_platform(wc_plat));
     struct wgbm_window *self;
     bool ok = true;
 
@@ -84,26 +120,13 @@ wgbm_window_create(struct wcore_platform *wc_plat,
     if (self == NULL)
         return NULL;
 
-    self->gbm_surface = plat->gbm_surface_create(dpy->gbm_device,
-                                                 width, height,
-                                                 wegl_config(wc_config)->visual,
-                                                 GBM_BO_USE_RENDERING);
-    if (!self->gbm_surface) {
-        wcore_errorf(WAFFLE_ERROR_UNKNOWN,
-                     "gbm_surface_create failed");
-        goto error;
+    ok = wgbm_window_init(self, wc_plat, wc_config, width, height);
+    if (!ok) {
+        wgbm_window_destroy(&self->wegl.wcore);
+        return NULL;
     }
 
-    ok = wegl_window_init(&self->wegl, wc_config,
-                          (intptr_t) self->gbm_surface);
-    if (!ok)
-        goto error;
-
     return &self->wegl.wcore;
-
-error:
-    wgbm_window_destroy(&self->wegl.wcore);
-    return NULL;
 }
 
 
