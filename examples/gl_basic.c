@@ -37,6 +37,7 @@
 #define WAFFLE_API_VERSION 0x0106
 #define WAFFLE_API_EXPERIMENTAL
 
+#include <assert.h>
 #include <getopt.h>
 #include <stdarg.h>
 #include <stdbool.h>
@@ -425,6 +426,29 @@ error_unrecognized_arg:
     usage_error_printf("unrecognized option '%s'", optarg);
 }
 
+// The rules that dictate how to properly query a GL symbol are complex. The
+// rules depend on the OS, on the winsys API, and even on the particular driver
+// being used. The rules differ between EGL 1.4 and EGL 1.5; differ between
+// Linux, Windows, and Mac; and differ between Mesa and Mali.
+//
+// This function hides that complexity with a naive heuristic: try, then try
+// again.
+static void *
+get_gl_symbol(const struct options *opts, const const char *name)
+{
+    void *sym = NULL;
+
+    if (waffle_dl_can_open(opts->dl)) {
+        sym = waffle_dl_sym(opts->dl, name);
+    }
+
+    if (!sym) {
+        sym = waffle_get_proc_address(name);
+    }
+
+    return sym;
+}
+
 static bool
 draw(struct waffle_window *window, bool resize)
 {
@@ -615,27 +639,27 @@ main(int argc, char **argv)
                      waffle_enum_to_string(opts.context_api));
     }
 
-    glClear = waffle_dl_sym(opts.dl, "glClear");
+    glClear = get_gl_symbol(&opts, "glClear");
     if (!glClear)
         error_get_gl_symbol("glClear");
 
-    glClearColor = waffle_dl_sym(opts.dl, "glClearColor");
+    glClearColor = get_gl_symbol(&opts, "glClearColor");
     if (!glClearColor)
         error_get_gl_symbol("glClearColor");
 
-    glGetError = waffle_dl_sym(opts.dl, "glGetError");
+    glGetError = get_gl_symbol(&opts, "glGetError");
     if (!glGetError)
         error_get_gl_symbol("glGetError");
 
-    glGetIntegerv = waffle_dl_sym(opts.dl, "glGetIntegerv");
+    glGetIntegerv = get_gl_symbol(&opts, "glGetIntegerv");
     if (!glGetIntegerv)
         error_get_gl_symbol("glGetIntegerv");
 
-    glReadPixels = waffle_dl_sym(opts.dl, "glReadPixels");
+    glReadPixels = get_gl_symbol(&opts, "glReadPixels");
     if (!glReadPixels)
         error_get_gl_symbol("glReadPixels");
 
-    glViewport = waffle_dl_sym(opts.dl, "glViewport");
+    glViewport = get_gl_symbol(&opts, "glViewport");
     if (!glViewport)
         error_get_gl_symbol("glViewport");
 
