@@ -50,4 +50,5 @@ Makefile
 /tests/wcore_attrib_list_unittest
 /tests/wcore_config_attrs_unittest
 /tests/wcore_error_unittest
+/third_party/cmocka/config.h
 /waffle-1.pc
