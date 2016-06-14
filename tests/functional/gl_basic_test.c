@@ -169,19 +169,36 @@ teardown(void **state)
     return 0;
 }
 
-static int32_t
-libgl_from_context_api(int32_t waffle_context_api)
+// The rules that dictate how to properly query a GL symbol are complex. The
+// rules depend on the OS, on the winsys API, and even on the particular driver
+// being used. The rules differ between EGL 1.4 and EGL 1.5; differ between
+// Linux, Windows, and Mac; and differ between Mesa and Mali.
+//
+// This function hides that complexity with a naive heuristic: try, then try
+// again.
+static void *
+get_gl_symbol(enum waffle_enum context_api, const char *name)
 {
-    switch (waffle_context_api) {
-        case WAFFLE_CONTEXT_OPENGL:     return WAFFLE_DL_OPENGL;
-        case WAFFLE_CONTEXT_OPENGL_ES1: return WAFFLE_DL_OPENGL_ES1;
-        case WAFFLE_CONTEXT_OPENGL_ES2: return WAFFLE_DL_OPENGL_ES2;
-        case WAFFLE_CONTEXT_OPENGL_ES3: return WAFFLE_DL_OPENGL_ES3;
+    void *sym = NULL;
+    enum waffle_enum dl = 0;
 
-        default:
-            assert_true(0);
-            return 0;
+    switch (context_api) {
+        case WAFFLE_CONTEXT_OPENGL: dl = WAFFLE_DL_OPENGL; break;
+        case WAFFLE_CONTEXT_OPENGL_ES1: dl = WAFFLE_DL_OPENGL_ES1; break;
+        case WAFFLE_CONTEXT_OPENGL_ES2: dl = WAFFLE_DL_OPENGL_ES2; break;
+        case WAFFLE_CONTEXT_OPENGL_ES3: dl = WAFFLE_DL_OPENGL_ES3; break;
+        default: assert_true(0); break;
     }
+
+    if (waffle_dl_can_open(dl)) {
+        sym = waffle_dl_sym(dl, name);
+    }
+
+    if (!sym) {
+        sym = waffle_get_proc_address(name);
+    }
+
+    return sym;
 }
 
 static int
@@ -270,8 +287,6 @@ gl_basic_draw__(void **state, struct gl_basic_draw_args__ args)
     bool context_debug = args.debug;
     bool alpha = args.alpha;
 
-    int32_t libgl;
-
     int32_t config_attrib_list[64];
     int i;
 
@@ -280,8 +295,6 @@ gl_basic_draw__(void **state, struct gl_basic_draw_args__ args)
         WAFFLE_WINDOW_HEIGHT,   WINDOW_HEIGHT,
         0,
     };
-
-    libgl = libgl_from_context_api(waffle_context_api);
 
     i = 0;
     config_attrib_list[i++] = WAFFLE_CONTEXT_API;
@@ -353,12 +366,12 @@ gl_basic_draw__(void **state, struct gl_basic_draw_args__ args)
     }
 
     // Get OpenGL functions.
-    assert_true(glClear         = waffle_dl_sym(libgl, "glClear"));
-    assert_true(glClearColor    = waffle_dl_sym(libgl, "glClearColor"));
-    assert_true(glGetError      = waffle_dl_sym(libgl, "glGetError"));
-    assert_true(glGetIntegerv   = waffle_dl_sym(libgl, "glGetIntegerv"));
-    assert_true(glReadPixels    = waffle_dl_sym(libgl, "glReadPixels"));
-    assert_true(glGetString     = waffle_dl_sym(libgl, "glGetString"));
+    assert_true(glClear         = get_gl_symbol(waffle_context_api, "glClear"));
+    assert_true(glClearColor    = get_gl_symbol(waffle_context_api, "glClearColor"));
+    assert_true(glGetError      = get_gl_symbol(waffle_context_api, "glGetError"));
+    assert_true(glGetIntegerv   = get_gl_symbol(waffle_context_api, "glGetIntegerv"));
+    assert_true(glReadPixels    = get_gl_symbol(waffle_context_api, "glReadPixels"));
+    assert_true(glGetString     = get_gl_symbol(waffle_context_api, "glGetString"));
 
     assert_true(waffle_make_current(ts->dpy, ts->window, ts->ctx));
 
