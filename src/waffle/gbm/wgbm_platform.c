@@ -137,11 +137,12 @@ wgbm_platform_create(void)
     if (self == NULL)
         return NULL;
 
-    if (wgbm_platform_init(self))
-        return &self->wegl.wcore;
+    if (!wgbm_platform_init(self)) {
+        wgbm_platform_destroy(&self->wegl.wcore);
+        return NULL;
+    }
 
-    wgbm_platform_destroy(&self->wegl.wcore);
-    return NULL;
+    return &self->wegl.wcore;
 }
 
 bool
