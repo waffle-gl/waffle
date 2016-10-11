@@ -33,6 +33,17 @@
 struct wegl_platform {
     struct wcore_platform wcore;
 
+    /// @brief Value of EGLConfig attribute EGL_SURFACE_TYPE
+    ///
+    /// When calling eglChooseConfig, Waffle sets the EGL_SURFACE_TYPE attribute
+    /// to this value.  Since most Waffle EGL platforms call
+    /// eglCreatePlatformWindowSurface() from waffle_window_create(),
+    /// wegl_platform_init() initializes this to EGL_WINDOW_BIT.
+    ///
+    /// This field exists because not all EGL platforms support EGL_WINDOW_BIT;
+    /// namely, Mesa's "surfaceless" platform.
+    EGLint egl_surface_type_mask;
+
     // EGL function pointers
     void *eglHandle;
 

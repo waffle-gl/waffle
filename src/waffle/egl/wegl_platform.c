@@ -63,6 +63,9 @@ wegl_platform_init(struct wegl_platform *self)
     if (!ok)
         goto error;
 
+    // Most Waffle platforms will call eglCreateWindowSurface.
+    self->egl_surface_type_mask = EGL_WINDOW_BIT;
+
     self->eglHandle = dlopen(libEGL_filename, RTLD_LAZY | RTLD_LOCAL);
     if (!self->eglHandle) {
         wcore_errorf(WAFFLE_ERROR_FATAL,

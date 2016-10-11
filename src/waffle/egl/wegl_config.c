@@ -168,9 +168,10 @@ choose_real_config(struct wegl_display *dpy,
         EGL_RENDERABLE_TYPE,        31415926,
 
         // According to the EGL 1.4 spec Table 3.4, the default value of
-        // EGL_SURFACE_BIT is EGL_WINDOW_BIT.  Explicitly set the default here for
-        // the sake of self-documentation.
-        EGL_SURFACE_TYPE,           EGL_WINDOW_BIT,
+        // EGL_SURFACE_BIT is EGL_WINDOW_BIT.  We explicitly set the attribute
+        // here because not all Waffle platforms require EGL_WINDOW_BIT.
+        EGL_SURFACE_TYPE,           plat->egl_surface_type_mask,
+
         EGL_NONE,
     };
 
