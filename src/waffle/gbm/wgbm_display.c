@@ -154,7 +154,7 @@ wgbm_display_connect(struct wcore_platform *wc_plat,
         goto error;
     }
 
-    ok = wegl_display_init(&self->wegl, wc_plat, (intptr_t) self->gbm_device);
+    ok = wegl_display_init(&self->wegl, wc_plat, self->gbm_device);
     if (!ok)
         goto error;
 

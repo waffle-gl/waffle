@@ -95,7 +95,7 @@ get_extensions(struct wegl_display *dpy)
 bool
 wegl_display_init(struct wegl_display *dpy,
                   struct wcore_platform *wc_plat,
-                  intptr_t native_display)
+                  void *native_display)
 {
     struct wegl_platform *plat = wegl_platform(wc_plat);
     bool ok;

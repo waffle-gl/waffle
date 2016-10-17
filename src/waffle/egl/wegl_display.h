@@ -57,7 +57,7 @@ DEFINE_CONTAINER_CAST_FUNC(wegl_display,
 bool
 wegl_display_init(struct wegl_display *dpy,
                   struct wcore_platform *wc_plat,
-                  intptr_t native_display);
+                  void *native_display);
 
 bool
 wegl_display_teardown(struct wegl_display *dpy);

@@ -51,8 +51,7 @@ droid_display_connect(struct wcore_platform *wc_plat,
     if (self->pSFContainer == NULL)
         goto error;
 
-    ok = wegl_display_init(&self->wegl, wc_plat,
-                           (intptr_t) EGL_DEFAULT_DISPLAY);
+    ok = wegl_display_init(&self->wegl, wc_plat, EGL_DEFAULT_DISPLAY);
     if (!ok)
         goto error;
 

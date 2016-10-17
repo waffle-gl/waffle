@@ -142,7 +142,7 @@ wayland_display_connect(struct wcore_platform *wc_plat,
         goto error;
     }
 
-    ok = wegl_display_init(&self->wegl, wc_plat, (intptr_t) self->wl_display);
+    ok = wegl_display_init(&self->wegl, wc_plat, self->wl_display);
     if (!ok)
         goto error;
 

@@ -62,7 +62,7 @@ xegl_display_connect(
     if (!ok)
         goto error;
 
-    ok = wegl_display_init(&self->wegl, wc_plat, (intptr_t) self->x11.xlib);
+    ok = wegl_display_init(&self->wegl, wc_plat, self->x11.xlib);
     if (!ok)
         goto error;
 
