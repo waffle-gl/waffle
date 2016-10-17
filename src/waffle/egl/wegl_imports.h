@@ -51,3 +51,29 @@
 #define EGL_CONTEXT_OPENGL_COMPATIBILITY_PROFILE_BIT_KHR    0x00000002
 #define EGL_OPENGL_ES3_BIT_KHR                              0x00000040
 #endif
+
+#ifndef EGL_KHR_platform_android
+#define EGL_KHR_platform_android 1
+#define EGL_PLATFORM_ANDROID_KHR          0x3141
+#endif /* EGL_KHR_platform_android */
+
+#ifndef EGL_KHR_platform_gbm
+#define EGL_KHR_platform_gbm 1
+#define EGL_PLATFORM_GBM_KHR              0x31D7
+#endif /* EGL_KHR_platform_gbm */
+
+#ifndef EGL_KHR_platform_wayland
+#define EGL_KHR_platform_wayland 1
+#define EGL_PLATFORM_WAYLAND_KHR          0x31D8
+#endif /* EGL_KHR_platform_wayland */
+
+#ifndef EGL_KHR_platform_x11
+#define EGL_KHR_platform_x11 1
+#define EGL_PLATFORM_X11_KHR              0x31D5
+#define EGL_PLATFORM_X11_SCREEN_KHR       0x31D6
+#endif /* EGL_KHR_platform_x11 */
+
+#ifndef EGL_MESA_platform_surfaceless
+#define EGL_MESA_platform_surfaceless 1
+#define EGL_PLATFORM_SURFACELESS_MESA     0x31DD
+#endif /* EGL_MESA_platform_surfaceless */

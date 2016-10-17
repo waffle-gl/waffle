@@ -30,6 +30,8 @@
 #include "wcore_platform.h"
 #include "wcore_util.h"
 
+#include "wegl_imports.h"
+
 struct wegl_platform {
     struct wcore_platform wcore;
 
