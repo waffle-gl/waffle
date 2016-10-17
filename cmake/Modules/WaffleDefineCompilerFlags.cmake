@@ -122,6 +122,10 @@ if(waffle_on_linux)
         add_definitions(-DWAFFLE_HAS_GBM)
     endif()
 
+    if(waffle_has_surfaceless_egl)
+        add_definitions(-DWAFFLE_HAS_SURFACELESS_EGL)
+    endif()
+
     if(waffle_has_tls)
         add_definitions(-DWAFFLE_HAS_TLS)
     endif()

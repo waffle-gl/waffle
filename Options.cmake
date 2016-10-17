@@ -23,11 +23,14 @@ if(waffle_on_linux)
         set(gbm_default OFF)
     endif()
 
+    set(surfaceless_egl_default ${egl_FOUND})
+
     # On Linux, you must enable at least one of the below options.
     option(waffle_has_glx "Build support for GLX" ${glx_default})
     option(waffle_has_wayland "Build support for Wayland" ${wayland_default})
     option(waffle_has_x11_egl "Build support for X11/EGL" ${x11_egl_default})
     option(waffle_has_gbm "Build support for GBM" ${gbm_default})
+    option(waffle_has_surfaceless_egl "Build support for EGL_MESA_platform_surfaceless" ${surfaceless_egl_default})
     option(waffle_has_nacl "Build support for NaCl" OFF)
 
     # NaCl specific settings.
