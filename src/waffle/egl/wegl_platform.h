@@ -70,6 +70,7 @@ struct wegl_platform {
                                    EGLContext share_context,
                                    const EGLint *attrib_list);
     EGLBoolean (*eglDestroyContext)(EGLDisplay dpy, EGLContext ctx);
+    EGLContext (*eglGetCurrentContext)();
 
     // window
     EGLBoolean (*eglGetConfigAttrib)(EGLDisplay dpy, EGLConfig config,

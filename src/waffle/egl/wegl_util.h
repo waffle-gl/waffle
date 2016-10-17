@@ -41,6 +41,12 @@ void
 wegl_emit_error(struct wegl_platform *plat, const char *egl_func_call);
 
 bool
+wegl_make_current2(struct wcore_platform *wc_plat,
+                   struct wcore_display *wc_dpy,
+                   struct wcore_window *wc_window,
+                   EGLContext wc_ctx);
+
+bool
 wegl_make_current(struct wcore_platform *wc_plat,
                   struct wcore_display *wc_dpy,
                   struct wcore_window *wc_window,
