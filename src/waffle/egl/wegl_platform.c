@@ -142,6 +142,9 @@ wegl_platform_init(struct wegl_platform *self, EGLenum egl_platform)
 
 #undef RETRIEVE_EGL_SYMBOL
 
+    self->client_extensions =
+        self->eglQueryString(EGL_NO_DISPLAY, EGL_EXTENSIONS);
+
     setup_env(self);
 
 error:

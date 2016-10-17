@@ -52,6 +52,9 @@ struct wegl_platform {
     // EGL function pointers
     void *eglHandle;
 
+    // See https://www.khronos.org/registry/egl/extensions/EXT/EGL_EXT_client_extensions.txt
+    const char *client_extensions;
+
     EGLBoolean (*eglMakeCurrent)(EGLDisplay dpy, EGLSurface draw,
                                  EGLSurface read, EGLContext ctx);
     __eglMustCastToProperFunctionPointerType
