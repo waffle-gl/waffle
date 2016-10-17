@@ -116,6 +116,25 @@ wegl_platform_init(struct wegl_platform *self, EGLenum egl_platform)
         goto error;                                                    \
     }
 
+    // Use eglGetProcAddress to get EGL 1.5 symbols, not dlsym, because the
+    // EGL 1.5 spec requires that implementors support eglGetProcAddress for
+    // all symbols.
+    //
+    // From the EGL 1.5 spec:
+    //
+    //   eglGetProcAddress may be queried for all EGL and client API functions
+    //   supported by the implementation (whether those functions are
+    //   extensions or not, and whether they are supported by the current
+    //   client API context or not).
+    //
+    //   For functions that are queryable with eglGetProcAddress,
+    //   implementations may choose to also export those functions statically
+    //   from the object libraries implementing those functions. However,
+    //   portable clients cannot rely on this behavior.
+    //
+#define RETRIEVE_EGL_SYMBOL_OPTIONAL(function) \
+    self->function = (void*) self->eglGetProcAddress(#function);
+
     RETRIEVE_EGL_SYMBOL(eglMakeCurrent);
     RETRIEVE_EGL_SYMBOL(eglGetProcAddress);
 
@@ -140,7 +159,11 @@ wegl_platform_init(struct wegl_platform *self, EGLenum egl_platform)
     RETRIEVE_EGL_SYMBOL(eglDestroySurface);
     RETRIEVE_EGL_SYMBOL(eglSwapBuffers);
 
+    // EGL 1.5
+    RETRIEVE_EGL_SYMBOL_OPTIONAL(eglGetPlatformDisplay);
+
 #undef RETRIEVE_EGL_SYMBOL
+#undef RETRIEVE_EGL_SYMBOL_OPTIONAL
 
     self->client_extensions =
         self->eglQueryString(EGL_NO_DISPLAY, EGL_EXTENSIONS);

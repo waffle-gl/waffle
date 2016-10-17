@@ -60,6 +60,10 @@ struct wegl_platform {
     __eglMustCastToProperFunctionPointerType
        (*eglGetProcAddress)(const char *procname);
 
+    // EGL 1.5
+    EGLDisplay (*eglGetPlatformDisplay)(EGLenum platform, void *native_display,
+                                        const EGLAttrib *attrib_list);
+
     // display
     EGLDisplay (*eglGetDisplay)(EGLNativeDisplayType display_id);
     EGLBoolean (*eglInitialize)(EGLDisplay dpy, EGLint *major, EGLint *minor);

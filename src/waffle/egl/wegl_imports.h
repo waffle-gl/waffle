@@ -35,6 +35,10 @@
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
 
+#ifndef EGL_VERSION_1_5
+typedef intptr_t EGLAttrib;
+#endif
+
 #ifndef EGL_KHR_create_context
 #define EGL_KHR_create_context 1
 #define EGL_CONTEXT_MAJOR_VERSION_KHR                       EGL_CONTEXT_CLIENT_VERSION
