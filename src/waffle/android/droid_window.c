@@ -93,7 +93,7 @@ droid_window_destroy(struct wcore_window *wc_self)
 
     dpy = droid_display(self->wegl.wcore.display);
 
-    ok &= wegl_window_teardown(&self->wegl);
+    ok &= wegl_surface_teardown(&self->wegl);
     droid_destroy_surface(dpy->pSFContainer, self->pANWContainer);
     free(self);
     return ok;

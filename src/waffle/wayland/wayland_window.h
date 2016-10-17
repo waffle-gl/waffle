@@ -41,14 +41,14 @@ struct wayland_window {
     struct wl_shell_surface *wl_shell_surface;
     struct wl_egl_window *wl_window;
 
-    struct wegl_window wegl;
+    struct wegl_surface wegl;
 };
 
 static inline struct wayland_window*
 wayland_window(struct wcore_window *wc_self)
 {
     if (wc_self) {
-        struct wegl_window *wegl_self = container_of(wc_self, struct wegl_window, wcore);
+        struct wegl_surface *wegl_self = container_of(wc_self, struct wegl_surface, wcore);
         return container_of(wegl_self, struct wayland_window, wegl);
     }
     else {

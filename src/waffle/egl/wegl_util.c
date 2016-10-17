@@ -76,7 +76,7 @@ wegl_make_current(struct wcore_platform *wc_plat,
                   struct wcore_context *wc_ctx)
 {
     struct wegl_platform *plat = wegl_platform(wc_plat);
-    EGLSurface surface = wc_window ? wegl_window(wc_window)->egl : NULL;
+    EGLSurface surface = wc_window ? wegl_surface(wc_window)->egl : NULL;
     bool ok;
 
     ok = plat->eglMakeCurrent(wegl_display(wc_dpy)->egl,

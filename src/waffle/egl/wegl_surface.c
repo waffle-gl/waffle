@@ -33,7 +33,7 @@
 /// On Linux, according to eglplatform.h, EGLNativeDisplayType and intptr_t
 /// have the same size regardless of platform.
 bool
-wegl_window_init(struct wegl_window *window,
+wegl_window_init(struct wegl_surface *surf,
                  struct wcore_config *wc_config,
                  intptr_t native_window)
 {
@@ -43,7 +43,7 @@ wegl_window_init(struct wegl_window *window,
     EGLint egl_render_buffer;
     bool ok;
 
-    ok = wcore_window_init(&window->wcore, wc_config);
+    ok = wcore_window_init(&surf->wcore, wc_config);
     if (!ok)
         goto fail;
 
@@ -57,12 +57,11 @@ wegl_window_init(struct wegl_window *window,
         EGL_NONE,
     };
 
-    window->egl = plat->eglCreateWindowSurface(dpy->egl,
-                                               config->egl,
-                                               (EGLNativeWindowType)
-                                                   native_window,
-                                               attrib_list);
-    if (!window->egl) {
+    surf->egl =
+        plat->eglCreateWindowSurface(dpy->egl, config->egl,
+                                     (EGLNativeWindowType) native_window,
+                                     attrib_list);
+    if (!surf->egl) {
         wegl_emit_error(plat, "eglCreateWindowSurface");
         goto fail;
     }
@@ -70,37 +69,37 @@ wegl_window_init(struct wegl_window *window,
     return true;
 
 fail:
-    wegl_window_teardown(window);
+    wegl_surface_teardown(surf);
     return false;
 }
 
 bool
-wegl_window_teardown(struct wegl_window *window)
+wegl_surface_teardown(struct wegl_surface *surf)
 {
-    struct wegl_display *dpy = wegl_display(window->wcore.display);
+    struct wegl_display *dpy = wegl_display(surf->wcore.display);
     struct wegl_platform *plat = wegl_platform(dpy->wcore.platform);
     bool result = true;
 
-    if (window->egl) {
-        bool ok = plat->eglDestroySurface(dpy->egl, window->egl);
+    if (surf->egl) {
+        bool ok = plat->eglDestroySurface(dpy->egl, surf->egl);
         if (!ok) {
             wegl_emit_error(plat, "eglDestroySurface");
             result = false;
         }
     }
 
-    result &= wcore_window_teardown(&window->wcore);
+    result &= wcore_window_teardown(&surf->wcore);
     return result;
 }
 
 bool
-wegl_window_swap_buffers(struct wcore_window *wc_window)
+wegl_surface_swap_buffers(struct wcore_window *wc_window)
 {
-    struct wegl_window *window = wegl_window(wc_window);
-    struct wegl_display *dpy = wegl_display(window->wcore.display);
+    struct wegl_surface *surf = wegl_surface(wc_window);
+    struct wegl_display *dpy = wegl_display(surf->wcore.display);
     struct wegl_platform *plat = wegl_platform(dpy->wcore.platform);
 
-    bool ok = plat->eglSwapBuffers(dpy->egl, window->egl);
+    bool ok = plat->eglSwapBuffers(dpy->egl, surf->egl);
     if (!ok)
         wegl_emit_error(plat, "eglSwapBuffers");
 

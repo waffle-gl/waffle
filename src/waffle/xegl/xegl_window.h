@@ -38,14 +38,14 @@ struct wcore_platform;
 
 struct xegl_window {
     struct x11_window x11;
-    struct wegl_window wegl;
+    struct wegl_surface wegl;
 };
 
 static inline struct xegl_window*
 xegl_window(struct wcore_window *wc_self)
 {
     if (wc_self) {
-        struct wegl_window *wegl_self = container_of(wc_self, struct wegl_window, wcore);
+        struct wegl_surface *wegl_self = container_of(wc_self, struct wegl_surface, wcore);
         return container_of(wegl_self, struct xegl_window, wegl);
     }
     else {

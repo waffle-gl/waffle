@@ -35,23 +35,23 @@
 struct wegl_config;
 struct wegl_display;
 
-struct wegl_window {
+struct wegl_surface {
     struct wcore_window wcore;
     EGLSurface egl;
 };
 
-DEFINE_CONTAINER_CAST_FUNC(wegl_window,
-                           struct wegl_window,
+DEFINE_CONTAINER_CAST_FUNC(wegl_surface,
+                           struct wegl_surface,
                            struct wcore_window,
                            wcore)
 
 bool
-wegl_window_init(struct wegl_window *window,
+wegl_window_init(struct wegl_surface *surf,
                  struct wcore_config *wc_config,
                  intptr_t native_window);
 
 bool
-wegl_window_teardown(struct wegl_window *window);
+wegl_surface_teardown(struct wegl_surface *surf);
 
 bool
-wegl_window_swap_buffers(struct wcore_window *wc_window);
+wegl_surface_swap_buffers(struct wcore_window *wc_window);

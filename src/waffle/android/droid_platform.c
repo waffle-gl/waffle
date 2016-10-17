@@ -133,7 +133,7 @@ static const struct wcore_platform_vtbl droid_platform_vtbl = {
         .create = droid_window_create,
         .destroy = droid_window_destroy,
         .show = droid_window_show,
-        .swap_buffers = wegl_window_swap_buffers,
+        .swap_buffers = wegl_surface_swap_buffers,
         .resize = droid_window_resize,
         .get_native = NULL,
     },

@@ -51,7 +51,7 @@ wgbm_window_destroy(struct wcore_window *wc_self)
     if (!self)
         return ok;
 
-    ok &= wegl_window_teardown(&self->wegl);
+    ok &= wegl_surface_teardown(&self->wegl);
     plat->gbm_surface_destroy(self->gbm_surface);
     free(self);
     return ok;
@@ -123,7 +123,7 @@ wgbm_window_swap_buffers(struct wcore_window *wc_self)
     struct wcore_platform *wc_plat = wc_self->display->platform;
     struct wgbm_platform *plat = wgbm_platform(wegl_platform(wc_plat));
 
-    if (!wegl_window_swap_buffers(wc_self))
+    if (!wegl_surface_swap_buffers(wc_self))
         return false;
 
     struct wgbm_window *self = wgbm_window(wc_self);

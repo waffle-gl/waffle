@@ -55,7 +55,7 @@ wayland_window_destroy(struct wcore_window *wc_self)
     if (!self)
         return ok;
 
-    ok &= wegl_window_teardown(&self->wegl);
+    ok &= wegl_surface_teardown(&self->wegl);
 
     if (self->wl_window)
         plat->wl_egl_window_destroy(self->wl_window);
@@ -200,7 +200,7 @@ wayland_window_swap_buffers(struct wcore_window *wc_self)
     struct wayland_display *dpy = wayland_display(wc_self->display);
     bool ok;
 
-    ok = wegl_window_swap_buffers(wc_self);
+    ok = wegl_surface_swap_buffers(wc_self);
     if (!ok)
         return false;
 

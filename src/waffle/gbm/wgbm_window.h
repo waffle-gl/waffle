@@ -34,14 +34,14 @@ struct gbm_surface;
 
 struct wgbm_window {
     struct gbm_surface *gbm_surface;
-    struct wegl_window wegl;
+    struct wegl_surface wegl;
 };
 
 static inline struct wgbm_window*
 wgbm_window(struct wcore_window *wc_self)
 {
     if (wc_self) {
-        struct wegl_window *wegl_self = container_of(wc_self, struct wegl_window, wcore);
+        struct wegl_surface *wegl_self = container_of(wc_self, struct wegl_surface, wcore);
         return container_of(wegl_self, struct wgbm_window, wegl);
     }
     else {

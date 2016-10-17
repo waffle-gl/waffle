@@ -34,14 +34,14 @@ struct wcore_platform;
 struct droid_window {
     /// Used by droid_surfaceflinger.cpp.
     struct droid_ANativeWindow_container *pANWContainer;
-    struct wegl_window wegl;
+    struct wegl_surface wegl;
 };
 
 static inline struct droid_window*
 droid_window(struct wcore_window *wc_self)
 {
     if (wc_self) {
-        struct wegl_window *wegl_self = container_of(wc_self, struct wegl_window, wcore);
+        struct wegl_surface *wegl_self = container_of(wc_self, struct wegl_surface, wcore);
         return container_of(wegl_self, struct droid_window, wegl);
     }
     else {

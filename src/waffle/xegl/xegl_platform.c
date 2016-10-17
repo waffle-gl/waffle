@@ -166,7 +166,7 @@ static const struct wcore_platform_vtbl xegl_platform_vtbl = {
         .destroy = xegl_window_destroy,
         .show = xegl_window_show,
         .resize = xegl_window_resize,
-        .swap_buffers = wegl_window_swap_buffers,
+        .swap_buffers = wegl_surface_swap_buffers,
         .get_native = xegl_window_get_native,
     },
 };
