@@ -90,7 +90,7 @@ wayland_platform_create(void)
     if (self == NULL)
         return NULL;
 
-    ok = wegl_platform_init(&self->wegl);
+    ok = wegl_platform_init(&self->wegl, EGL_PLATFORM_WAYLAND_KHR);
     if (!ok)
         goto error;
 

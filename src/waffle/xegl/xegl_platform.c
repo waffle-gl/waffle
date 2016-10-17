@@ -71,7 +71,7 @@ xegl_platform_create(void)
     if (self == NULL)
         return NULL;
 
-    ok = wegl_platform_init(&self->wegl);
+    ok = wegl_platform_init(&self->wegl, EGL_PLATFORM_X11_KHR);
     if (!ok)
         goto error;
 

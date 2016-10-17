@@ -92,7 +92,7 @@ wgbm_platform_init(struct wgbm_platform *self)
 {
     bool ok = true;
 
-    ok = wegl_platform_init(&self->wegl);
+    ok = wegl_platform_init(&self->wegl, EGL_PLATFORM_GBM_KHR);
     if (!ok)
         goto error;
 

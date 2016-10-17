@@ -54,14 +54,17 @@ wegl_platform_teardown(struct wegl_platform *self)
     ok &= wcore_platform_teardown(&self->wcore);
     return ok;
 }
+
 bool
-wegl_platform_init(struct wegl_platform *self)
+wegl_platform_init(struct wegl_platform *self, EGLenum egl_platform)
 {
     bool ok;
 
     ok = wcore_platform_init(&self->wcore);
     if (!ok)
         goto error;
+
+    self->egl_platform = egl_platform;
 
     // Most Waffle platforms will call eglCreateWindowSurface.
     self->egl_surface_type_mask = EGL_WINDOW_BIT;

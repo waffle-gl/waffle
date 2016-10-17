@@ -35,6 +35,9 @@
 struct wegl_platform {
     struct wcore_platform wcore;
 
+    // An EGL_PLATFORM_* enum, such as EGL_PLATFORM_GBM_KHR.
+    EGLenum egl_platform;
+
     /// @brief Value of EGLConfig attribute EGL_SURFACE_TYPE
     ///
     /// When calling eglChooseConfig, Waffle sets the EGL_SURFACE_TYPE attribute
@@ -92,4 +95,4 @@ bool
 wegl_platform_teardown(struct wegl_platform *self);
 
 bool
-wegl_platform_init(struct wegl_platform *self);
+wegl_platform_init(struct wegl_platform *self, EGLenum egl_platform);
