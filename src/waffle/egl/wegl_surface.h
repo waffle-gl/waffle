@@ -51,6 +51,11 @@ wegl_window_init(struct wegl_surface *surf,
                  intptr_t native_window);
 
 bool
+wegl_pbuffer_init(struct wegl_surface *surf,
+                  struct wcore_config *wc_config,
+                  int32_t width, int32_t height);
+
+bool
 wegl_surface_teardown(struct wegl_surface *surf);
 
 bool

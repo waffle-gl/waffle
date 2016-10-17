@@ -74,6 +74,48 @@ fail:
 }
 
 bool
+wegl_pbuffer_init(struct wegl_surface *surf,
+                  struct wcore_config *wc_config,
+                  int32_t width, int32_t height)
+{
+    struct wegl_config *config = wegl_config(wc_config);
+    struct wegl_display *dpy = wegl_display(wc_config->display);
+    struct wegl_platform *plat = wegl_platform(dpy->wcore.platform);
+    bool ok;
+
+    ok = wcore_window_init(&surf->wcore, wc_config);
+    if (!ok)
+        goto fail;
+
+    // Note on pbuffers and double-buffering: The EGL spec says that pbuffers
+    // are single-buffered.  But the spec also says that EGL_RENDER_BUFFER is
+    // always EGL_BACK_BUFFER for pbuffers. Because EGL is weird in its
+    // specification of pbuffers; and because most Piglit tests requests
+    // double-buffering (and we don't want to break Piglit); allow creation of
+    // pbuffers even if the user requested double-buffering.
+    (void) config->wcore.attrs.double_buffered;
+
+    EGLint attrib_list[] = {
+        EGL_WIDTH, width,
+        EGL_HEIGHT, height,
+        EGL_NONE,
+    };
+
+    surf->egl = plat->eglCreatePbufferSurface(dpy->egl, config->egl,
+                                              attrib_list);
+    if (!surf->egl) {
+        wegl_emit_error(plat, "eglCreatePbufferSurface");
+        goto fail;
+    }
+
+    return true;
+
+fail:
+    wegl_surface_teardown(surf);
+    return false;
+}
+
+bool
 wegl_surface_teardown(struct wegl_surface *surf)
 {
     struct wegl_display *dpy = wegl_display(surf->wcore.display);

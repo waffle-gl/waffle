@@ -159,6 +159,7 @@ wegl_platform_init(struct wegl_platform *self, EGLenum egl_platform)
     // window
     RETRIEVE_EGL_SYMBOL(eglGetConfigAttrib);
     RETRIEVE_EGL_SYMBOL(eglCreateWindowSurface);
+    RETRIEVE_EGL_SYMBOL(eglCreatePbufferSurface);
     RETRIEVE_EGL_SYMBOL(eglDestroySurface);
     RETRIEVE_EGL_SYMBOL(eglSwapBuffers);
 

@@ -89,6 +89,8 @@ struct wegl_platform {
     EGLSurface (*eglCreateWindowSurface)(EGLDisplay dpy, EGLConfig config,
                                          EGLNativeWindowType win,
                                          const EGLint *attrib_list);
+    EGLSurface (*eglCreatePbufferSurface)(EGLDisplay dpy, EGLConfig config,
+                                          const EGLint *attrib_list);
     EGLBoolean (*eglDestroySurface)(EGLDisplay dpy, EGLSurface surface);
     EGLBoolean (*eglSwapBuffers)(EGLDisplay dpy, EGLSurface surface);
 
