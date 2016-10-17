@@ -23,8 +23,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#define _POSIX_C_SOURCE 200112 // glib feature macro for unsetenv()
-
 #include <stdlib.h>
 #include <dlfcn.h>
 
@@ -54,8 +52,6 @@ wgbm_platform_teardown(struct wgbm_platform *self)
 
     if (!self)
         return true;
-
-    unsetenv("EGL_PLATFORM");
 
     if (self->linux)
         ok &= linux_platform_destroy(self->linux);
@@ -119,8 +115,6 @@ wgbm_platform_init(struct wgbm_platform *self)
     self->linux = linux_platform_create();
     if (!self->linux)
         goto error;
-
-    setenv("EGL_PLATFORM", "drm", true);
 
     self->wegl.wcore.vtbl = &wgbm_platform_vtbl;
     return true;

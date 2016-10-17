@@ -23,8 +23,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#define _POSIX_C_SOURCE 200112 // glib feature macro for unsetenv()
-
 #include <stdlib.h>
 
 #include "wcore_error.h"
@@ -51,8 +49,6 @@ xegl_platform_destroy(struct wcore_platform *wc_self)
     if (!self)
         return true;
 
-    unsetenv("EGL_PLATFORM");
-
     if (self->linux)
         ok &= linux_platform_destroy(self->linux);
 
@@ -78,8 +74,6 @@ xegl_platform_create(void)
     self->linux = linux_platform_create();
     if (!self->linux)
         goto error;
-
-    setenv("EGL_PLATFORM", "x11", true);
 
     self->wegl.wcore.vtbl = &xegl_platform_vtbl;
     return &self->wegl.wcore;

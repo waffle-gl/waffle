@@ -23,6 +23,8 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#define _POSIX_C_SOURCE 200112 // glib feature macro for unsetenv()
+
 #include <dlfcn.h>
 
 #include "wcore_error.h"
@@ -35,11 +37,37 @@ static const char *libEGL_filename = "libEGL.so";
 static const char *libEGL_filename = "libEGL.so.1";
 #endif
 
+static void
+setup_env(const struct wegl_platform *self)
+{
+    switch (self->egl_platform) {
+        case EGL_PLATFORM_ANDROID_KHR:
+            // Don't set EGL_PLATFORM because I don't know the impact doing so
+            // on Android. Does anything other than Mesa use it?
+            break;
+        case EGL_PLATFORM_GBM_KHR:
+            setenv("EGL_PLATFORM", "drm", true);
+            break;
+        case EGL_PLATFORM_WAYLAND_KHR:
+            setenv("EGL_PLATFORM", "wayland", true);
+            break;
+        case EGL_PLATFORM_X11_KHR:
+            setenv("EGL_PLATFORM", "x11", true);
+            break;
+        default:
+            assert(!"bad egl_platform enum");
+            break;
+    }
+}
+
 bool
 wegl_platform_teardown(struct wegl_platform *self)
 {
     bool ok = true;
     int error = 0;
+
+    if (self->egl_platform != EGL_PLATFORM_ANDROID_KHR)
+        unsetenv("EGL_PLATFORM");
 
     if (self->eglHandle) {
         error = dlclose(self->eglHandle);
@@ -113,6 +141,8 @@ wegl_platform_init(struct wegl_platform *self, EGLenum egl_platform)
     RETRIEVE_EGL_SYMBOL(eglSwapBuffers);
 
 #undef RETRIEVE_EGL_SYMBOL
+
+    setup_env(self);
 
 error:
     // On failure the caller of wegl_platform_init will trigger it's own
