@@ -66,8 +66,10 @@ wegl_platform_teardown(struct wegl_platform *self)
     bool ok = true;
     int error = 0;
 
-    if (self->egl_platform != EGL_PLATFORM_ANDROID_KHR)
+    if (!wegl_platform_can_use_eglGetPlatformDisplay(self)
+        && self->egl_platform != EGL_PLATFORM_ANDROID_KHR) {
         unsetenv("EGL_PLATFORM");
+    }
 
     if (self->eglHandle) {
         error = dlclose(self->eglHandle);
@@ -168,10 +170,40 @@ wegl_platform_init(struct wegl_platform *self, EGLenum egl_platform)
     self->client_extensions =
         self->eglQueryString(EGL_NO_DISPLAY, EGL_EXTENSIONS);
 
-    setup_env(self);
+    if (!wegl_platform_can_use_eglGetPlatformDisplay(self))
+        setup_env(self);
 
 error:
     // On failure the caller of wegl_platform_init will trigger it's own
     // destruction which will execute wegl_platform_teardown.
     return ok;
+}
+
+bool
+wegl_platform_can_use_eglGetPlatformDisplay(const struct wegl_platform *plat)
+{
+    const char *ext;
+
+    if (!plat->eglGetPlatformDisplay)
+        return false;
+
+    switch (plat->egl_platform) {
+        case EGL_PLATFORM_ANDROID_KHR:
+            ext = "EGL_KHR_platform_android";
+            break;
+        case EGL_PLATFORM_GBM_KHR:
+            ext = "EGL_KHR_platform_gbm";
+            break;
+        case EGL_PLATFORM_WAYLAND_KHR:
+            ext = "EGL_KHR_platform_wayland";
+            break;
+        case EGL_PLATFORM_X11_KHR:
+            ext = "EGL_KHR_platform_x11";
+            break;
+        default:
+            assert(!"bad egl_platform enum");
+            return false;
+    }
+
+    return waffle_is_extension_in_string(plat->client_extensions, ext);
 }

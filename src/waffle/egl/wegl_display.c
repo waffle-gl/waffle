@@ -104,10 +104,19 @@ wegl_display_init(struct wegl_display *dpy,
     if (!ok)
         goto fail;
 
-    dpy->egl = plat->eglGetDisplay((EGLNativeDisplayType) native_display);
-    if (!dpy->egl) {
-        wegl_emit_error(plat, "eglGetDisplay");
-        goto fail;
+    if (wegl_platform_can_use_eglGetPlatformDisplay(plat)) {
+        dpy->egl = plat->eglGetPlatformDisplay(plat->egl_platform,
+                                               native_display, NULL);
+        if (!dpy->egl) {
+            wegl_emit_error(plat, "eglGetPlatformDisplay");
+            goto fail;
+        }
+    } else {
+        dpy->egl = plat->eglGetDisplay((EGLNativeDisplayType) native_display);
+        if (!dpy->egl) {
+            wegl_emit_error(plat, "eglGetDisplay");
+            goto fail;
+        }
     }
 
     ok = plat->eglInitialize(dpy->egl, &dpy->major_version, &dpy->minor_version);

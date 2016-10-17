@@ -103,3 +103,11 @@ wegl_platform_teardown(struct wegl_platform *self);
 
 bool
 wegl_platform_init(struct wegl_platform *self, EGLenum egl_platform);
+
+
+// Can eglGetPlatformDisplay can be used for this platform?
+//
+// True if libEGL exposes the eglGetPlatformDisplay function; and if EGL
+// supports the needed platform extension.
+bool
+wegl_platform_can_use_eglGetPlatformDisplay(const struct wegl_platform *plat);
