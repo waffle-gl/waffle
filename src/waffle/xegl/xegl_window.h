@@ -32,7 +32,7 @@
 
 #include "x11_window.h"
 
-#include "wegl_window.h"
+#include "wegl_surface.h"
 
 struct wcore_platform;
 

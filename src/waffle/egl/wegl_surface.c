@@ -28,7 +28,7 @@
 #include "wegl_imports.h"
 #include "wegl_platform.h"
 #include "wegl_util.h"
-#include "wegl_window.h"
+#include "wegl_surface.h"
 
 /// On Linux, according to eglplatform.h, EGLNativeDisplayType and intptr_t
 /// have the same size regardless of platform.

@@ -102,7 +102,7 @@ if(waffle_has_egl)
         egl/wegl_display.c
         egl/wegl_platform.c
         egl/wegl_util.c
-        egl/wegl_window.c
+        egl/wegl_surface.c
         )
 endif()
 

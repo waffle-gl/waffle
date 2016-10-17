@@ -82,7 +82,7 @@ LOCAL_SRC_FILES := \
     src/waffle/egl/wegl_display.c \
     src/waffle/egl/wegl_platform.c \
     src/waffle/egl/wegl_util.c \
-    src/waffle/egl/wegl_window.c \
+    src/waffle/egl/wegl_surface.c \
     src/waffle/android/droid_platform.c \
     src/waffle/android/droid_display.c \
     src/waffle/android/droid_window.c \

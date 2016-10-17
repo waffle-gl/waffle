@@ -30,7 +30,7 @@
 #include "wegl_imports.h"
 #include "wegl_platform.h"
 #include "wegl_util.h"
-#include "wegl_window.h"
+#include "wegl_surface.h"
 
 void
 wegl_emit_error(struct wegl_platform *plat, const char *egl_func_call)
