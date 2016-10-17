@@ -130,6 +130,15 @@
                 </listitem>
               </varlistentry>
               <varlistentry>
+                <term><constant>WAFFLE_PLATFORM_SURFACELESS_EGL</constant></term>
+                <listitem>
+                  <para>
+                    [Linux] Use EGL's "surfaceless" platform,
+                    <ulink url="https://www.khronos.org/registry/egl/extensions/MESA/EGL_MESA_platform_surfaceless.txt">EGL_MESA_platform_surfaceless</ulink>.
+                  </para>
+                </listitem>
+              </varlistentry>
+              <varlistentry>
                 <term><constant>WAFFLE_PLATFORM_WAYLAND</constant></term>
                 <listitem>
                   <para>
