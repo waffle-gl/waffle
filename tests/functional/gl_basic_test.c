@@ -703,6 +703,17 @@ CREATE_TESTSUITE(WAFFLE_PLATFORM_GLX, glx)
 
 #endif // WAFFLE_HAS_GLX
 
+#ifdef WAFFLE_HAS_SURFACELESS_EGL
+
+#define unit_test_make(name)                                            \
+    cmocka_unit_test_setup_teardown(name, setup_surfaceless_egl, gl_basic_fini)
+
+CREATE_TESTSUITE(WAFFLE_PLATFORM_SURFACELESS_EGL, surfaceless_egl)
+
+#undef unit_test_make
+
+#endif // WAFFLE_HAS_GBM
+
 #ifdef WAFFLE_HAS_WAYLAND
 
 #define unit_test_make(name)                                            \
@@ -819,6 +830,8 @@ static const struct enum_map platform_map[] = {
     {WAFFLE_PLATFORM_WAYLAND,   "wayland"       },
     {WAFFLE_PLATFORM_WGL,       "wgl"           },
     {WAFFLE_PLATFORM_X11_EGL,   "x11_egl"       },
+    {WAFFLE_PLATFORM_SURFACELESS_EGL,   "surfaceless_egl"   },
+    {WAFFLE_PLATFORM_SURFACELESS_EGL,   "sl"                },
     {0,                         0               },
 };
 
@@ -922,6 +935,10 @@ main(int argc, char *argv[])
 #ifdef WAFFLE_HAS_GLX
     case WAFFLE_PLATFORM_GLX:
         return testsuite_glx();
+#endif
+#ifdef WAFFLE_HAS_SURFACELESS_EGL
+    case WAFFLE_PLATFORM_SURFACELESS_EGL:
+        return testsuite_surfaceless_egl();
 #endif
 #ifdef WAFFLE_HAS_WAYLAND
     case WAFFLE_PLATFORM_WAYLAND:
