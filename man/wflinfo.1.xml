@@ -75,6 +75,7 @@
               <member>cgl</member>
               <member>gbm</member>
               <member>glx</member>
+              <member>surfaceless_egl (or short alias 'sl')</member>
               <member>wayland</member>
               <member>wgl</member>
               <member>x11_egl</member>
