@@ -91,6 +91,10 @@ struct wegl_platform {
                                          const EGLint *attrib_list);
     EGLBoolean (*eglDestroySurface)(EGLDisplay dpy, EGLSurface surface);
     EGLBoolean (*eglSwapBuffers)(EGLDisplay dpy, EGLSurface surface);
+
+    // EGL_EXT_platform_display
+    EGLDisplay (*eglGetPlatformDisplayEXT)(EGLenum platform, void *native_display,
+                                           const EGLint *attrib_list);
 };
 
 DEFINE_CONTAINER_CAST_FUNC(wegl_platform,
@@ -111,3 +115,10 @@ wegl_platform_init(struct wegl_platform *self, EGLenum egl_platform);
 // supports the needed platform extension.
 bool
 wegl_platform_can_use_eglGetPlatformDisplay(const struct wegl_platform *plat);
+
+// Can eglGetPlatformDisplayEXT can be used for this platform?
+//
+// True if libEGL exposes the eglGetPlatformDisplayEXT function; and if EGL
+// supports the needed platform extension.
+bool
+wegl_platform_can_use_eglGetPlatformDisplayEXT(const struct wegl_platform *plat);
