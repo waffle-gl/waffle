@@ -33,3 +33,6 @@ EXPORTS
     waffle_attrib_list_get
     waffle_attrib_list_get_with_default
     waffle_attrib_list_update
+    waffle_get_current_display
+    waffle_get_current_window
+    waffle_get_current_context
