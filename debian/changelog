@@ -1,3 +1,9 @@
+waffle (1.5.2-3) UNRELEASED; urgency=low
+
+  * Add watch file (Closes: #786994).
+
+ -- Jordan Justen <jordan.l.justen@intel.com>  Sat, 11 Feb 2017 00:58:03 -0800
+
 waffle (1.5.2-2.1) unstable; urgency=medium
 
   * Non-maintainer upload.
