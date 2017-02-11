@@ -1,4 +1,4 @@
-waffle (1.5.2-3) UNRELEASED; urgency=low
+waffle (1.5.2-3) unstable; urgency=low
 
   * Add watch file (Closes: #786994).
 
