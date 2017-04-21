@@ -1,0 +1,62 @@
+# http://www.appveyor.com/docs/appveyor-yml
+
+version: '{build}'
+
+branches:
+  except:
+  - /^travis.*$/
+
+shallow_clone: true
+
+# https://www.appveyor.com/docs/build-environment/#build-worker-images
+os: Visual Studio 2015
+
+environment:
+  matrix:
+  - TOOLCHAIN: mingw32
+  - TOOLCHAIN: mingw64
+  - TOOLCHAIN: msvc32
+  - TOOLCHAIN: msvc64
+
+matrix:
+  fast_finish: true
+
+install:
+# Check CMake
+- cmake --version
+# Install Ninja
+- cinst -y ninja
+- ninja --version
+# Setup MinGW
+- if "%TOOLCHAIN%"=="mingw32" set MINGW_HOME=C:\mingw-w64\i686-6.3.0-posix-dwarf-rt_v5-rev1\mingw32
+- if "%TOOLCHAIN%"=="mingw64" set MINGW_HOME=C:\mingw-w64\x86_64-6.3.0-posix-seh-rt_v5-rev1\mingw64
+- if not "%MINGW_HOME%"=="" set Path=%MINGW_HOME%\bin;%Path%
+# Setup MSVC
+- if "%TOOLCHAIN%"=="msvc32" set MSVC_ARCH=x86
+- if "%TOOLCHAIN%"=="msvc64" set MSVC_ARCH=x86_amd64
+- if not "%MSVC_ARCH%"=="" call "%VS140COMNTOOLS%\..\..\VC\vcvarsall.bat" %MSVC_ARCH%
+# Get OpenGL extension headers
+- mkdir glext\GL
+- appveyor DownloadFile https://www.khronos.org/registry/OpenGL/api/GL/glext.h -FileName glext\GL\glext.h
+- appveyor DownloadFile https://www.khronos.org/registry/OpenGL/api/GL/wglext.h -FileName glext\GL\wglext.h
+
+before_build:
+- if "%APPVEYOR_REPO_TAG%"=="true" (set BUILD_TYPE=RelWithDebInfo) else (set BUILD_TYPE=Debug)
+
+build_script:
+# XXX: tests fail to build with MSVC
+- cmake -H. -Bbuild -G "Ninja" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DCMAKE_INSTALL_PREFIX=%CD%\publish -DGLEXT_INCLUDE_DIR=%CD%\glext -Dwaffle_build_tests=0 -Dwaffle_build_examples=1
+- ninja -C build
+
+after_build:
+# XXX: Unfortunately the "package" doesn't work for Windows, because
+# cmake/Modules/GNUInstallDirs.cmake hardcodes absolute CMAKE_INSTALL_PREFIX
+# into a bunched of CMAKE_INSTALL_* cached vars that don't get updated when
+# installing to the archive scratch directory.
+#- ninja -C build package
+- ninja -C build install
+- 7z a waffle-%TOOLCHAIN%.7z publish
+
+artifacts:
+#- path: build/waffle1-*.zip
+- path: waffle-*.7z
