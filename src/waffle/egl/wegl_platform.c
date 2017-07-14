@@ -172,6 +172,10 @@ wegl_platform_init(struct wegl_platform *self, EGLenum egl_platform)
     // EGL_EXT_platform_display
     RETRIEVE_EGL_SYMBOL_OPTIONAL(eglGetPlatformDisplayEXT);
 
+    // EGL_EXT_image_dma_buf_import_modifiers
+    RETRIEVE_EGL_SYMBOL_OPTIONAL(eglQueryDmaBufFormatsEXT);
+    RETRIEVE_EGL_SYMBOL_OPTIONAL(eglQueryDmaBufModifiersEXT);
+
 #undef RETRIEVE_EGL_SYMBOL
 #undef RETRIEVE_EGL_SYMBOL_OPTIONAL
 

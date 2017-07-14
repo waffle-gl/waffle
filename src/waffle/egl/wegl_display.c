@@ -89,6 +89,7 @@ get_extensions(struct wegl_display *dpy)
 
     CHECK_EXTENSION(EXT_create_context_robustness);
     CHECK_EXTENSION(KHR_create_context);
+    CHECK_EXTENSION(EXT_image_dma_buf_import_modifiers);
 
 #undef CHECK_EXTENSION
 
