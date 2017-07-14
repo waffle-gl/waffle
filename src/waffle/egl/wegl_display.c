@@ -84,8 +84,13 @@ get_extensions(struct wegl_display *dpy)
     // pending emission.
     assert(wcore_error_get_code() == 0);
 
-    dpy->EXT_create_context_robustness = waffle_is_extension_in_string(extensions, "EGL_EXT_create_context_robustness");
-    dpy->KHR_create_context = waffle_is_extension_in_string(extensions, "EGL_KHR_create_context");
+#define CHECK_EXTENSION(ext) \
+    dpy->ext = waffle_is_extension_in_string(extensions, "EGL_" #ext)
+
+    CHECK_EXTENSION(EXT_create_context_robustness);
+    CHECK_EXTENSION(KHR_create_context);
+
+#undef CHECK_EXTENSION
 
     return true;
 }
