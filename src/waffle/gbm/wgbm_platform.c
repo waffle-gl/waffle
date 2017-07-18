@@ -100,9 +100,9 @@ wgbm_platform_init(struct wgbm_platform *self)
         goto error;
     }
 
-#define RETRIEVE_GBM_SYMBOL(type, function, args)                                  \
+#define RETRIEVE_GBM_SYMBOL(type, function, required, args)            \
     self->function = dlsym(self->gbmHandle, #function);                \
-    if (!self->function) {                                             \
+    if (required && !self->function) {                                 \
         wcore_errorf(WAFFLE_ERROR_FATAL,                             \
                      "dlsym(\"%s\", \"" #function "\") failed: %s",    \
                      libgbm_filename, dlerror());                      \

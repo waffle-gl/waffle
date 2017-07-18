@@ -45,6 +45,7 @@ struct wegl_display {
     enum wegl_supported_api api_mask;
     bool EXT_create_context_robustness;
     bool KHR_create_context;
+    bool EXT_image_dma_buf_import_modifiers;
     EGLint major_version;
     EGLint minor_version;
 };

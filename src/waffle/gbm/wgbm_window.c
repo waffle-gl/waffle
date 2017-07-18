@@ -77,12 +77,44 @@ wgbm_window_init(struct wgbm_window *self,
 {
     struct wgbm_display *dpy = wgbm_display(wc_config->display);
     struct wgbm_platform *plat = wgbm_platform(wegl_platform(wc_plat));
+    uint32_t format = wegl_config(wc_config)->visual;
     bool ok = true;
 
-    self->gbm_surface = plat->gbm_surface_create(dpy->gbm_device,
-                                                 width, height,
-                                                 wegl_config(wc_config)->visual,
-                                                 GBM_BO_USE_RENDERING);
+    if (dpy->wegl.EXT_image_dma_buf_import_modifiers &&
+        plat->gbm_surface_create_with_modifiers) {
+        EGLint num_modifiers = 0;
+        uint64_t *modifiers;
+
+        if (!plat->wegl.eglQueryDmaBufModifiersEXT(dpy->wegl.egl, format,
+                                                   0, NULL,
+                                                   NULL, &num_modifiers)) {
+            wcore_errorf(WAFFLE_ERROR_UNKNOWN,
+                         "eglQueryDmaBufModifiersEXT failed");
+            return false;
+        }
+
+        modifiers = wcore_calloc(num_modifiers * sizeof(*modifiers));
+        if (!plat->wegl.eglQueryDmaBufModifiersEXT(dpy->wegl.egl, format,
+                                                   num_modifiers, modifiers,
+                                                   NULL, &num_modifiers)) {
+            wcore_errorf(WAFFLE_ERROR_UNKNOWN,
+                         "eglQueryDmaBufModifiersEXT failed");
+            free(modifiers);
+            return false;
+        }
+
+        self->gbm_surface =
+            plat->gbm_surface_create_with_modifiers(dpy->gbm_device,
+                                                    width, height, format,
+                                                    modifiers, num_modifiers);
+        free(modifiers);
+    } else {
+        self->gbm_surface =
+            plat->gbm_surface_create(dpy->gbm_device,
+                                     width, height, format,
+                                     GBM_BO_USE_RENDERING);
+    }
+
     if (!self->gbm_surface) {
         wcore_errorf(WAFFLE_ERROR_UNKNOWN,
                      "gbm_surface_create failed");

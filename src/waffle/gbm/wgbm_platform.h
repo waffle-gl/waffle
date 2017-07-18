@@ -35,13 +35,14 @@
 #include "wcore_util.h"
 
 #define GBM_FUNCTIONS(f) \
-    f(struct gbm_device * , gbm_create_device            , (int fd)) \
-    f(int                 , gbm_device_get_fd            , (struct gbm_device *dev)) \
-    f(void                , gbm_device_destroy           , (struct gbm_device *gbm)) \
-    f(struct gbm_surface *, gbm_surface_create           , (struct gbm_device *gbm, uint32_t width, uint32_t height, uint32_t format, uint32_t flags)) \
-    f(void                , gbm_surface_destroy          , (struct gbm_surface *surface)) \
-    f(struct gbm_bo *     , gbm_surface_lock_front_buffer, (struct gbm_surface *surface)) \
-    f(void                , gbm_surface_release_buffer   , (struct gbm_surface *surface, struct gbm_bo *bo))
+    f(struct gbm_device * , gbm_create_device                   ,  true, (int fd)) \
+    f(int                 , gbm_device_get_fd                ,  true, (struct gbm_device *dev)) \
+    f(void                , gbm_device_destroy               ,  true, (struct gbm_device *gbm)) \
+    f(struct gbm_surface *, gbm_surface_create               ,  true, (struct gbm_device *gbm, uint32_t width, uint32_t height, uint32_t format, uint32_t flags)) \
+    f(void                , gbm_surface_destroy              ,  true, (struct gbm_surface *surface)) \
+    f(struct gbm_bo *     , gbm_surface_lock_front_buffer    ,  true, (struct gbm_surface *surface)) \
+    f(void                , gbm_surface_release_buffer       ,  true, (struct gbm_surface *surface, struct gbm_bo *bo)) \
+    f(struct gbm_surface *, gbm_surface_create_with_modifiers, false, (struct gbm_device *gbm, uint32_t width, uint32_t height, uint32_t format, const uint64_t *modifiers, const unsigned int count))
 
 struct linux_platform;
 
@@ -52,7 +53,7 @@ struct wgbm_platform {
     // GBM function pointers
     void *gbmHandle;
 
-#define DECLARE(type, function, args) type (*function) args;
+#define DECLARE(type, function, required, args) type (*function) args;
     GBM_FUNCTIONS(DECLARE)
 #undef DECLARE
 };

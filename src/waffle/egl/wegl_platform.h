@@ -97,6 +97,17 @@ struct wegl_platform {
     // EGL_EXT_platform_display
     EGLDisplay (*eglGetPlatformDisplayEXT)(EGLenum platform, void *native_display,
                                            const EGLint *attrib_list);
+
+    // EGL_EXT_image_dma_buf_import_modifiers
+    EGLBoolean (*eglQueryDmaBufFormatsEXT)(EGLDisplay dpy,
+                                           EGLint max_formats,
+                                           EGLint *formats,
+                                           EGLint *num_formats);
+    EGLBoolean (*eglQueryDmaBufModifiersEXT)(EGLDisplay dpy, EGLint format,
+                                             EGLint max_modifiers,
+                                             EGLuint64KHR *modifiers,
+                                             EGLBoolean *external_only,
+                                             EGLint *num_modifiers);
 };
 
 DEFINE_CONTAINER_CAST_FUNC(wegl_platform,
