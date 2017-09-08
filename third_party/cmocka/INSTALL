@@ -21,7 +21,12 @@ GNU/Linux, MacOS X, MSYS/MinGW:
     cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Debug ..
     make
 
-On Windows you should choose a makefile gernerator with -G.
+On Windows you should choose a makefile gernerator with -G, for example:
+
+   cmake -G "Visual Studio 12 2013" -DCMAKE_BUILD_TYPE=Debug /path/to/source
+
+You can also use the CMake GUI which is shipped with CMake. It will list all
+available generators for MSVC on Windows.
 
 ### CMake standard options
 Here is a list of the most interesting options provided out of the box by
@@ -65,6 +70,28 @@ If you want to install cmocka after compilation run:
 The cmocka library can be found in the `build/src` directory.
 You can run the binaries in `build/examples/*` which is a
 are exsample tests.
+
+## Testing
+
+As mention above you can turn on the unit tests and make it possible to easily
+execute them:
+
+`cmake -DCMAKE_BUILD_TYPE=Debug -DUNIT_TESTING=ON ..`
+
+After that you can simply call `make test` in the build directory or if you
+want more output simply call `ctest -V`.
+
+If you want to enable the generation of coverage files you can do this by
+using the following options:
+
+`cmake -DCMAKE_BUILD_TYPE=Profiling -DUNIT_TESTING=ON ..`
+
+After building it you will see that you have several coverage options in
+
+`make help`
+
+You should have `make ExperimentalCoverage` and running it will create
+coverage files. The result is stored in Testing directory.
 
 ## About this document
 

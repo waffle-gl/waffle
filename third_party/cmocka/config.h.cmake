@@ -110,6 +110,9 @@
 /* Define to 1 if you have the `longjmp' function. */
 #cmakedefine HAVE_LONGJMP 1
 
+/* Define to 1 if you have the `siglongjmp' function. */
+#cmakedefine HAVE_SIGLONGJMP 1
+
 /* Define to 1 if you have the `malloc' function. */
 #cmakedefine HAVE_MALLOC 1
 
@@ -155,7 +158,7 @@
 #cmakedefine HAVE_MSVC_THREAD_LOCAL_STORAGE 1
 
 /* Check if we have CLOCK_REALTIME for clock_gettime() */
-#cmakedefine HAVE_CLOCK_GETTIME_REALTIME 1
+#cmakedefine HAVE_CLOCK_REALTIME 1
 
 /*************************** ENDIAN *****************************/
 
