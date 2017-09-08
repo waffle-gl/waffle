@@ -7,7 +7,7 @@ cmake_minimum_required(VERSION 2.6.0)
 set(APPLICATION_NAME ${PROJECT_NAME})
 
 set(APPLICATION_VERSION_MAJOR "1")
-set(APPLICATION_VERSION_MINOR "0")
+set(APPLICATION_VERSION_MINOR "1")
 set(APPLICATION_VERSION_PATCH "1")
 
 set(APPLICATION_VERSION "${APPLICATION_VERSION_MAJOR}.${APPLICATION_VERSION_MINOR}.${APPLICATION_VERSION_PATCH}")
@@ -19,7 +19,7 @@ set(APPLICATION_VERSION "${APPLICATION_VERSION_MAJOR}.${APPLICATION_VERSION_MINO
 #     Increment AGE. Set REVISION to 0
 #   If the source code was changed, but there were no interface changes:
 #     Increment REVISION.
-set(LIBRARY_VERSION "0.3.1")
+set(LIBRARY_VERSION "0.4.1")
 set(LIBRARY_SOVERSION "0")
 
 # where to look first for cmake modules, before ${CMAKE_ROOT}/Modules/ is checked
@@ -34,6 +34,7 @@ include(DefineCompilerFlags)
 include(DefineInstallationPaths)
 include(DefineOptions.cmake)
 include(CPackConfig.cmake)
+include(CheckSymbolExists)
 
 # disallow in-source build
 include(MacroEnsureOutOfSourceBuild)
@@ -42,6 +43,11 @@ macro_ensure_out_of_source_build("${PROJECT_NAME} requires an out of source buil
 # config.h checks
 include(ConfigureChecks.cmake)
 configure_file(config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+
+# MinGW DLL Naming Workaround
+if (MINGW)
+    set(CMAKE_SHARED_LIBRARY_PREFIX "")
+endif (MINGW)
 
 # check subdirectories
 add_subdirectory(doc)

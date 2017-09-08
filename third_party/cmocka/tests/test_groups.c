@@ -1,5 +1,5 @@
 /*
- * Copyright 2008 Google Inc.
+ * Copyright 2016 David Schneider <schneidav81@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,22 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/* Use the unit test allocators */
+#define UNIT_TESTING 1
+
 #include <stdarg.h>
 #include <stddef.h>
 #include <setjmp.h>
 #include <cmocka.h>
 
-static void setup(void **state) {
+static int setup(void **state) {
     int *answer = malloc(sizeof(int));
 
     assert_non_null(answer);
     *answer = 42;
 
     *state = answer;
+
+    return 0;
 }
 
-static void teardown(void **state) {
+static int teardown(void **state) {
     free(*state);
+
+    return 0;
 }
 
 /* A test case that does nothing and succeeds. */
@@ -45,10 +53,17 @@ static void int_test_success(void **state) {
 
 
 int main(void) {
-    const UnitTest tests[] = {
-        unit_test(null_test_success),
-        unit_test_setup_teardown(int_test_success, setup, teardown),
+    const struct CMUnitTest test_group1[] = {
+        cmocka_unit_test(null_test_success),
     };
 
-    return run_tests(tests);
+    const struct CMUnitTest test_group2[] = {
+        cmocka_unit_test_setup_teardown(int_test_success, setup, teardown),
+    };
+
+    int result = 0;
+    result += cmocka_run_group_tests(test_group1, NULL, NULL);
+    result += cmocka_run_group_tests(test_group2, NULL, NULL);
+
+    return result;
 }
