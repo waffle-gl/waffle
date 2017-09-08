@@ -760,6 +760,34 @@ CREATE_TESTSUITE(WAFFLE_PLATFORM_WGL, wgl)
 #undef test_XX_rgba
 #undef test_XX_rgb
 
+#ifdef __APPLE__
+
+static void
+removeArg(int index, int *argc, char **argv)
+{
+    --*argc;
+    for (; index < *argc; ++index)
+        argv[index] = argv[index + 1];
+}
+
+static void
+removeXcodeArgs(int *argc, char **argv)
+{
+    // Xcode sometimes adds additional arguments.
+    for (int i = 1; i < *argc; )
+    {
+        if (strcmp(argv[i], "-NSDocumentRevisionsDebugMode") == 0 ||
+            strcmp(argv[i], "-ApplePersistenceIgnoreState" ) == 0)
+        {
+            removeArg(i, argc, argv);
+            removeArg(i, argc, argv);
+        } else
+            ++i;
+    }
+}
+
+#endif // __APPLE__
+
 static const char *usage_message =
     "Usage:\n"
     "    gl_basic_test <Required Parameter> [Options]\n"
