@@ -2,6 +2,7 @@ waffle (1.5.2-4) UNRELEASED; urgency=low
 
   * Add 'Multi-arch: same' for libwaffle-1-0 and libwaffle-dev
   * Move Standards-Version to 4.1.1
+  * Change to https url to fix lintian vcs-field-uses-insecure-uri
 
  -- Jordan Justen <jordan.l.justen@intel.com>  Wed, 18 Oct 2017 17:07:59 -0700
 
