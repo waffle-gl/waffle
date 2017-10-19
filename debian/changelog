@@ -1,3 +1,9 @@
+waffle (1.5.2-4) UNRELEASED; urgency=low
+
+  * Start to changelog to fix multi-arch
+
+ -- Jordan Justen <jordan.l.justen@intel.com>  Wed, 18 Oct 2017 17:07:59 -0700
+
 waffle (1.5.2-3) unstable; urgency=low
 
   * Add watch file (Closes: #786994).
