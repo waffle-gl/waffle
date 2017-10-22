@@ -656,7 +656,8 @@ test_glesXX(3, 30, NO_ERROR)
     defined(WAFFLE_HAS_GLX) || \
     defined(WAFFLE_HAS_WAYLAND) || \
     defined(WAFFLE_HAS_X11_EGL) || \
-    defined(WAFFLE_HAS_WGL)
+    defined(WAFFLE_HAS_WGL) || \
+    defined(WAFFLE_HAS_SURFACELESS_EGL)
 
 test_XX_fwdcompat(gles1, OPENGL_ES1, ERROR_BAD_ATTRIBUTE)
 test_XX_fwdcompat(gles2, OPENGL_ES2, ERROR_BAD_ATTRIBUTE)
@@ -712,7 +713,7 @@ CREATE_TESTSUITE(WAFFLE_PLATFORM_SURFACELESS_EGL, surfaceless_egl)
 
 #undef unit_test_make
 
-#endif // WAFFLE_HAS_GBM
+#endif // WAFFLE_HAS_SURFACELESS_EGL
 
 #ifdef WAFFLE_HAS_WAYLAND
 
