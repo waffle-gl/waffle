@@ -73,8 +73,8 @@ If you choose to enable support for a given platform (for example,
 not installed. Listed below are the required packages for each platform.
 
 If you install Mesa from source, then Mesa must be configured with option
-`--with-egl-platforms=PLATFORM_LIST`, where PLATFORM_LIST is
-a comman-separated list of any combination of "x11", "wayland", and "drm".
+`--with-platforms=PLATFORM_LIST`, where PLATFORM_LIST is
+a comma-separated list of any combination of "x11", "wayland", and "drm".
 
     - GLX:
         - Archlinux: pacman -S libgl libxcb libx11
@@ -82,18 +82,18 @@ a comman-separated list of any combination of "x11", "wayland", and "drm".
         - Debian: apt-get install libgl1-mesa-dev libxcb1-dev libx11-dev
 
     - X11/EGL:
-        - all: If you choose to install Mesa from source, use --with-egl-platforms=x11.
+        - all: If you choose to install Mesa from source, use --with-platforms=x11.
         - Archlinux: pacman -S libegl libxcb libx11
         - Fedora 17: yum install mesa-libEGL-devel libxcb-devel libX11-devel
         - Debian: apt-get install libegl1-mesa-dev libxcb1-dev libx11-dev
 
     - Wayland:
         - all: Install wayland>=1.0 from source.
-        - all: Install mesa-9.1-devel from source. Use --with-egl-platforms=wayland.
+        - all: Install Mesa from source. Use --with-platforms=wayland.
         - Debian: apt-get install libwayland-dev
 
     - GBM:
-        - all: Install mesa-9.1-devel from source. Use --with-egl-platforms=drm.
+        - all: Install Mesa from source. Use --with-platforms=drm.
         - Archlinux: pacman -S systemd
         - Fedora 17: yum install libudev-devel
         - Debian: apt-get install libgbm-dev libudev-dev
