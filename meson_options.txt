@@ -1,0 +1,96 @@
+# Copyright © 2017 Dylan Baker
+# Copyright © 2018 Intel Corporation
+#
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# - Redistributions of source code must retain the above copyright notice, this
+#   list of conditions and the following disclaimer.
+#
+# - Redistributions in binary form must reproduce the above copyright notice,
+#   this list of conditions and the following disclaimer in the documentation
+#   and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+# Options specifically for Non-macOS *nix systems below
+option(
+  'glx',
+  type : 'feature',
+  description : 'Build support for GLX (only for *nix)'
+)
+option(
+  'wayland',
+  type : 'feature',
+  description : 'Build support for wayland (only for *nix)'
+)
+option(
+  'x11_egl',
+  type : 'feature',
+  description : 'Build support for X11/EGL (only for *nix)'
+)
+option(
+  'gbm',
+  type : 'feature',
+  description : 'Build support for GBM (only for mesa)'
+)
+option(
+  'surfaceless_egl',
+  type : 'feature',
+  description : 'Build support for EGL_MESA_platform_surfaceless'
+)
+
+# Options specifically for ChromeOS
+option(
+  'nacl',
+  type : 'boolean',
+  value : false,
+  description : 'Build support for ChromeOS NaCl'
+)
+option(
+  'nacl_sdk_path',
+  type : 'string',
+  description : 'Path for NaCl SDK')
+option(
+  'nacl_version',
+  type : 'string',
+  value : 'pepper_39',
+  description : 'Version of NaCL'
+)
+
+# Misc Options
+option(
+  'build-tests',
+  type : 'boolean',
+  value : false,
+  description : 'Build tests'
+)
+option(
+  'build-manpages',
+  type : 'boolean',
+  value : false,
+  description : 'Build manpages'
+)
+option(
+  'build-htmldocs',
+  type : 'boolean',
+  value : false,
+  description : 'Build html documentation'
+)
+option(
+  'build-examples',
+  type : 'boolean',
+  value : true,
+  description : 'Build example programs'
+)

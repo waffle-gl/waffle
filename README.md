@@ -46,16 +46,18 @@ Waffle, see the following:
 
 # Build Requirements
 
-Waffle uses CMake for its build system.
+Waffle has two build systems, a mature cmake build system and an new meson
+build system. We recommend using meson, but if you run into problems you may
+want to try cmake.
 
 ## Linux
 
-On Linux it's recommended to install the cmake package using your
+On Linux it's recommended to install the cmake or meson package using your
 distribution package manager.
 
-    Archlinux: pacman -S cmake
-    Fedora 17: yum install cmake
-    Debian: apt-get install cmake
+    Archlinux: pacman -S cmake meson
+    Fedora 17: yum install cmake meson
+    Debian: apt-get install cmake meson
 
 To build the manpages or html documentation, xsltproc and the Docbook XSL
 stylesheets are required.
@@ -99,27 +101,31 @@ a comma-separated list of any combination of "x11", "wayland", and "drm".
 
 ### cross-building under Linux
 
-Make sure that CMake is installed on your system.
+Make sure that CMake or meson is installed on your system.
 
-    Archlinux: pacman -S cmake
-    Fedora 17: yum install cmake
-    Debian: apt-get install cmake
+    Archlinux: pacman -S cmake meson
+    Fedora 17: yum install cmake meson
+    Debian: apt-get install cmake meson
 
 The MinGW-W64 cross-build toolchain is recommended and its CMake wrapper.
 
-    Archlinux: pacman -S mingw-w64-gcc mingw-w64-cmake (latter is in AUR)
+    Archlinux: aura -A mingw-w64-gcc mingw-w64-cmake (both are in the aur)
     Fedora 17: yum install FINISHME
     Debian: apt-get install FINISHME
+
+For meson you will need a mingw cross file.
 
 
 ### native builds
 
+Install Microsoft Visual Studio 2013 Update 4* or later.
+Install 'Visual C++' feature.
+
+### CMake
+
 Download and install the latest version CMake from the official website:
 
     http://cmake.org/
-
-Install Microsoft Visual Studio 2013 Update 4* or later.
-Install 'Visual C++' feature.
 
 Download OpenGL Core API and Extension Header Files.
 
@@ -129,11 +135,18 @@ Copy the header files to MSVC.
 
     C:\Program Files\Microsoft Visual Studio 12.0\VC\include\GL
 
+### Meson
 
-[*] Waffle heavily requires on features introduced by the C99 standard. As
-such only reasonable compiler (at the time of writing) from the Microsoft
-Visual Compiler series is MSVC 2013. Building with older versions is likely
-to be broken.
+Download and install the latest meson from github:
+
+    https://github.com/mesonbuild/meson/releases
+
+OR, install python 3.x (currently 3.5 or later is supported) and install meson using pip:
+
+    py -3 -m pip install meson
+
+There is no need to copy header files, meson uses a bundled copy
+
 
 ### CYGWIN
 Waffle is not tested to build under CYGWIN and is likely to be broken.
@@ -168,7 +181,9 @@ a dependeny into /usr/local, then:
     export PKG_CONFIG_PATH=/usr/local/share/pkgconfig:/usr/local/$libdir/pkgconfig:$PKG_CONFIG_PATH
 
 
-### Configure CMake
+## Building with CMake
+
+### Configuring
 
 #### Linux and Mac
 
@@ -307,3 +322,52 @@ it into a file called waffle1-VERSION-win32.zip.
     cd .\build\msvc32
     cmake --build .
     cpack
+
+
+## Building with Meson
+
+Once meson is installed you can configure the build with meson:
+
+    meson builddir
+
+The default buildtype for waffle is `debugoptimzed`, which has debugging
+symbols but is optimized. This is equivalent to the CMake builds `release`.
+Meson's release mode does not have debugging symbols. If you wish to pass your
+own flags via CFLAGS you should set buildtype to `plain`:
+
+    meson builddir -Dbuildtype=plain -Dc_args='-03 -march=native'
+
+__NOTE__: meson only read CFLAGS (and CXXFLAGS, etc) at initial configuration
+time. If you wish to change these flags you'll need to use the meson command
+line option `-D${lang}_args=` (such as `-Dc_args=`). This can be used at
+configure time as well. It is _highly_ recommended that you use -Dc_args
+instead of CFLAGS.
+
+You can check configuration options by:
+
+    meson configure builddir
+
+Meson will be default try to find dependencies and enables targets that have
+dependencies met. This behavior can be controlled using configure flags.
+
+Meson detects compilers from the environment, rather from a toolchain file like
+CMake does, the easiest way to set up MSVC is to launch a visual studio
+terminal prompt, and run meson from there. Meson supports using both ninja (the
+default) and msbuild on windows, to use msbuild add:
+
+    meson builddir -Dbackend=vs
+
+On mac there is an xcode backend for meson, but it is not very mature and is
+not recommended.
+
+To cross compile pass the location of a cross file, as described
+[here](http://mesonbuild.com/Cross-compilation.html).
+
+If you want to build tests and don't have cmocka installed, meson will download
+and build cmocka for you while building the rest of waffle. This works on
+windows, but due to the way that .dll files work on windows it is only
+supported if you add:
+
+    -Ddefault_library=static
+
+Which will also build libwaffle as a static library.
