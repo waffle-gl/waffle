@@ -120,6 +120,7 @@ enum waffle_enum {
         WAFFLE_PLATFORM_WGL                                     = 0x0017,
         WAFFLE_PLATFORM_NACL                                    = 0x0018,
         WAFFLE_PLATFORM_SURFACELESS_EGL                         = 0x0019,
+        WAFFLE_PLATFORM_QNX                                     = 0x001a,
 
     // ------------------------------------------------------------------
     // For waffle_config_choose()
