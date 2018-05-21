@@ -22,13 +22,14 @@
 # CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 if("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
     set(waffle_on_linux true)
 elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "Darwin")
     set(waffle_on_mac true)
 elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
     set(waffle_on_windows true)
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "QNX")
+    set(waffle_on_qnx true)
 else()
     message(FATAL_ERROR "Unrecognized CMAKE_SYSTEM_NAME=\"${CMAKE_SYSTEM_NAME}\"")
 endif()
