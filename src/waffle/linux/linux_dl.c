@@ -33,6 +33,7 @@
 #include "wcore_util.h"
 
 #include "linux_dl.h"
+#include "linux_platform_libs.h"
 
 struct linux_dl {
     /// @brief For example, "libGLESv2.so.2".
@@ -87,6 +88,49 @@ linux_dl_open(int32_t waffle_dl)
         return NULL;
 
     self->name = linux_dl_get_name(waffle_dl);
+    if (!self->name)
+        goto error;
+
+    self->dl = dlopen(self->name, RTLD_LAZY);
+    if (!self->dl) {
+        wcore_errorf(WAFFLE_ERROR_UNKNOWN,
+                     "dlopen(\"%s\") failed: %s", self->name, dlerror());
+        goto error;
+    }
+
+    return self;
+
+error:
+    free(self);
+    return NULL;
+}
+
+static const char*
+linux_dl_get_name2(int32_t waffle_dl, struct linux_platform_libs *lib_names)
+{
+    switch (waffle_dl) {
+        case WAFFLE_DL_OPENGL:
+            return lib_names->libgl;
+        case WAFFLE_DL_OPENGL_ES1:
+            return lib_names->libgles1;
+        case WAFFLE_DL_OPENGL_ES2:
+            return lib_names->libgles2;
+        case WAFFLE_DL_OPENGL_ES3:
+            return lib_names->libgles3;
+        default:
+            assert(false);
+            return NULL;
+    }
+}
+
+struct linux_dl*
+linux_dl_open2(int32_t waffle_dl, struct linux_platform_libs *lib_names)
+{
+    struct linux_dl *self = wcore_calloc(sizeof(*self));
+    if (self == NULL)
+        return NULL;
+
+    self->name = linux_dl_get_name2(waffle_dl, lib_names);
     if (!self->name)
         goto error;
 
