@@ -37,6 +37,7 @@ struct wcore_platform* wgbm_platform_create(void);
 struct wcore_platform* wgl_platform_create(void);
 struct wcore_platform* nacl_platform_create(void);
 struct wcore_platform* sl_platform_create(void);
+struct wcore_platform* qnx_platform_create(void);
 
 static bool
 waffle_init_parse_attrib_list(
@@ -118,6 +119,12 @@ waffle_init_parse_attrib_list(
                     CASE_UNDEFINED_PLATFORM(SURFACELESS_EGL)
 #endif
 
+#ifdef WAFFLE_HAS_QNX
+                    CASE_DEFINED_PLATFORM(QNX)
+#else
+                    CASE_UNDEFINED_PLATFORM(QNX)
+#endif
+
                     default:
                         wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
                                      "WAFFLE_PLATFORM has bad value 0x%x",
@@ -195,6 +202,11 @@ waffle_init_create_platform(int32_t waffle_platform)
 #ifdef WAFFLE_HAS_SURFACELESS_EGL
         case WAFFLE_PLATFORM_SURFACELESS_EGL:
             wc_platform = sl_platform_create();
+            break;
+#endif
+#ifdef WAFFLE_HAS_QNX
+        case WAFFLE_PLATFORM_QNX:
+            wc_platform = qnx_platform_create();
             break;
 #endif
         default:
