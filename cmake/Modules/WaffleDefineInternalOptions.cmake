@@ -1,5 +1,5 @@
 if(waffle_has_wayland OR waffle_has_x11_egl OR waffle_has_gbm OR
-   waffle_has_surfaceless_egl)
+   waffle_has_surfaceless_egl OR waffle_has_qnx)
     set(waffle_has_egl TRUE)
 else()
     set(waffle_has_egl FALSE)
