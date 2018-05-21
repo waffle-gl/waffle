@@ -144,3 +144,7 @@ endif()
 if(waffle_on_windows)
     add_definitions(-DWAFFLE_HAS_WGL)
 endif()
+
+if(waffle_on_qnx)
+    add_definitions(-DWAFFLE_HAS_QNX -D_QNX_SOURCE)
+endif()
