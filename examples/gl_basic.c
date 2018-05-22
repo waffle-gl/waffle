@@ -434,7 +434,7 @@ error_unrecognized_arg:
 // This function hides that complexity with a naive heuristic: try, then try
 // again.
 static void *
-get_gl_symbol(const struct options *opts, const const char *name)
+get_gl_symbol(const struct options *opts, const char *name)
 {
     void *sym = NULL;
 
