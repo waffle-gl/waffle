@@ -58,15 +58,29 @@ union waffle_native_context*
 glx_context_get_native(struct wcore_context *wc_self);
 
 
+// XXX: Keep in sync with glx_config_check_context_attrs()
 static inline bool
 glx_context_needs_arb_create_context(const struct wcore_config_attrs *attrs)
 {
-    if (attrs->context_api == WAFFLE_CONTEXT_OPENGL &&
-        (wcore_config_attrs_version_ge(attrs, 32) ||
-         attrs->context_forward_compatible))
+    // Any of the following require the ARB extension, since the data is
+    // passed as attributes.
+
+    // Using any GLES* profile,
+    if (attrs->context_api != WAFFLE_CONTEXT_OPENGL)
+        return true;
+
+    // explicitly requesting OpenGL version (>=3.2),
+    if (wcore_config_attrs_version_ge(attrs, 32))
+        return true;
+
+    // ... or any of the context flags.
+    if (attrs->context_forward_compatible)
         return true;
 
     if (attrs->context_debug)
+        return true;
+
+    if (attrs->context_robust)
         return true;
 
     return false;

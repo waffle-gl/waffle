@@ -170,20 +170,15 @@ glx_context_create_native(struct glx_config *config,
 {
     GLXContext ctx;
     GLXContext real_share_ctx = share_ctx ? share_ctx->glx : NULL;
+    const struct wcore_config_attrs *attrs = &config->wcore.attrs;
     struct glx_display *dpy = glx_display(config->wcore.display);
     struct glx_platform *platform = glx_platform(dpy->wcore.platform);
 
-    // Use ARB_create_context when we have
-    // - OpenGL version 1.0, or
-    // - OpenGL version 3.2 or greater, or
-    // - OpenGL with fwd_compat, or
-    // - Debug context
-    //
-    // The first one of the four is optional, the remainder hard requirement
-    // for the use of ARB_create_context.
+    // Optionally use ARB_create_context for OpenGL 1.0, if available.
     if (dpy->ARB_create_context &&
-        (wcore_config_attrs_version_eq(&config->wcore.attrs, 10) ||
-         glx_context_needs_arb_create_context(&config->wcore.attrs))) {
+        (glx_context_needs_arb_create_context(attrs) ||
+         (attrs->context_api == WAFFLE_CONTEXT_OPENGL &&
+          wcore_config_attrs_version_eq(attrs, 10)))) {
         bool ok;
 
         // Choose a large size to prevent accidental overflow.
