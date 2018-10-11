@@ -65,10 +65,31 @@ wgl_config_check_context_attrs(struct wgl_display *dpy,
         assert(wcore_config_attrs_version_ge(attrs, 30));
     }
 
-    if (attrs->context_debug && !dpy->ARB_create_context) {
+    if (!dpy->ARB_create_context &&
+        wgl_context_needs_arb_create_context(attrs)) {
+        const char *gl = "";
+        const char *fwd_compat = "";
+        const char *debug = "";
+        const char *robust = "";
+
+        // XXX: Keep in sync with glx_context_needs_arb_create_context()
+        if (attrs->context_api != WAFFLE_CONTEXT_OPENGL)
+	    gl = " - a OpenGL ES* context\n";
+        else if (wcore_config_attrs_version_ge(attrs, 32))
+            gl = " - a OpenGL 3.2+ context\n";
+
+        if (attrs->context_forward_compatible)
+            fwd_compat = " - a forward-compatible context\n";
+
+        if (attrs->context_debug)
+            debug = " - a debug context\n";
+
+        if (attrs->context_robust)
+            robust = " - a robust access context\n";
+
         wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
-                     "WGL_ARB_create_context is required in order to "
-                     "request a debug context");
+                     "WGL_ARB_create_context is required to create:\n"
+                     "%s%s%s%s", gl, fwd_compat, debug, robust);
         return false;
     }
 
@@ -81,14 +102,7 @@ wgl_config_check_context_attrs(struct wgl_display *dpy,
 
     switch (attrs->context_api) {
         case WAFFLE_CONTEXT_OPENGL:
-            if (wgl_context_needs_arb_create_context(attrs) &&
-                !dpy->ARB_create_context) {
-                wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
-                             "WGL_ARB_create_context is required in order to "
-                             "request an OpenGL version greater or equal than 3.2");
-                return false;
-            }
-            else if (wcore_config_attrs_version_ge(attrs, 32) && !dpy->ARB_create_context_profile) {
+            if (wcore_config_attrs_version_ge(attrs, 32) && !dpy->ARB_create_context_profile) {
                 wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
                              "WGL_ARB_create_context_profile is required "
                              "to create a context with version >= 3.2");
@@ -97,13 +111,6 @@ wgl_config_check_context_attrs(struct wgl_display *dpy,
             else if (wcore_config_attrs_version_ge(attrs, 32)) {
                 assert(attrs->context_profile == WAFFLE_CONTEXT_CORE_PROFILE ||
                        attrs->context_profile == WAFFLE_CONTEXT_COMPATIBILITY_PROFILE);
-            }
-
-            if (attrs->context_forward_compatible && !dpy->ARB_create_context) {
-                wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
-                             "WGL_ARB_create_context is required in order to "
-                             "request a forward-compatible context");
-                return false;
             }
 
             return true;

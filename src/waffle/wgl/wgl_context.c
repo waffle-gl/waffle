@@ -153,20 +153,15 @@ wgl_context_create_native(struct wgl_config *config,
                           struct wgl_context *share_ctx)
 {
     struct wgl_display *dpy = wgl_display(config->wcore.display);
+    const struct wcore_config_attrs *attrs = &config->wcore.attrs;
     HGLRC real_share_ctx = share_ctx ? share_ctx->hglrc : NULL;
     HGLRC hglrc;
 
-    // Use ARB_create_context when we have
-    // - OpenGL version 1.0, or
-    // - OpenGL version 3.2 or greater, or
-    // - OpenGL with fwd_compat, or
-    // - Debug context
-    //
-    // The first one of the four is optional, the remainder hard requirement
-    // for the use of ARB_create_context.
+    // Optionally use ARB_create_context for OpenGL 1.0, if available.
     if (dpy->ARB_create_context &&
-        (wcore_config_attrs_version_eq(&config->wcore.attrs, 10) ||
-         wgl_context_needs_arb_create_context(&config->wcore.attrs))) {
+        (wgl_context_needs_arb_create_context(attrs) ||
+         (attrs->context_api == WAFFLE_CONTEXT_OPENGL &&
+          wcore_config_attrs_version_eq(attrs, 10)))) {
         bool ok;
 
         // Choose a large size to prevent accidental overflow.
