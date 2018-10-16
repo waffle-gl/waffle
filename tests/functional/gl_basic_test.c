@@ -104,6 +104,7 @@ typedef float               GLclampf;   /* single precision float in [0,1] */
 typedef double              GLdouble;   /* double precision float */
 typedef double              GLclampd;   /* double precision float in [0,1] */
 
+#define GL_NO_ERROR                 0x0000
 #define GL_VERSION                  0x1F02
 #define GL_UNSIGNED_BYTE            0x1401
 #define GL_UNSIGNED_INT             0x1405
@@ -112,6 +113,7 @@ typedef double              GLclampd;   /* double precision float in [0,1] */
 #define GL_RGBA                     0x1908
 #define GL_COLOR_BUFFER_BIT         0x00004000
 #define GL_CONTEXT_FLAGS            0x821e
+#define GL_CONTEXT_ROBUST_ACCESS    0x90F3
 
 #define GL_CONTEXT_FLAG_FORWARD_COMPATIBLE_BIT 0x00000001
 #define GL_CONTEXT_FLAG_DEBUG_BIT              0x00000002
@@ -260,6 +262,7 @@ gl_basic_fini(void **state)
         .profile = WAFFLE_DONT_CARE, \
         .forward_compatible = false, \
         .debug = false, \
+        .robust = false, \
         .alpha = false, \
         .expect_error = WAFFLE_NO_ERROR, \
         __VA_ARGS__ \
@@ -272,6 +275,7 @@ struct gl_basic_draw_args__ {
     int32_t expect_error;
     bool forward_compatible;
     bool debug;
+    bool robust;
     bool alpha;
 };
 
@@ -285,6 +289,7 @@ gl_basic_draw__(void **state, struct gl_basic_draw_args__ args)
     int32_t expect_error = args.expect_error;
     bool context_forward_compatible = args.forward_compatible;
     bool context_debug = args.debug;
+    bool context_robust = args.robust;
     bool alpha = args.alpha;
 
     int32_t config_attrib_list[64];
@@ -315,6 +320,10 @@ gl_basic_draw__(void **state, struct gl_basic_draw_args__ args)
     }
     if (context_debug) {
         config_attrib_list[i++] = WAFFLE_CONTEXT_DEBUG;
+        config_attrib_list[i++] = true;
+    }
+    if (context_robust) {
+        config_attrib_list[i++] = WAFFLE_CONTEXT_ROBUST_ACCESS;
         config_attrib_list[i++] = true;
     }
     config_attrib_list[i++] = WAFFLE_RED_SIZE;
@@ -460,6 +469,21 @@ gl_basic_draw__(void **state, struct gl_basic_draw_args__ args)
         }
     }
 
+    // GL_ROBUST_ACCESS comes with the following extensions
+    // GL_ARB_robustness
+    // GL_EXT_robustness
+    // GL_KHR_robustness
+    //
+    // To keep it simple, assume the correct extension is there if
+    // glGetError is happy ;-)
+    if (context_robust) {
+        GLint robust_flag = 0;
+        glGetIntegerv(GL_CONTEXT_ROBUST_ACCESS, &robust_flag);
+
+        if (glGetError() == GL_NO_ERROR)
+            assert_true(robust_flag);
+    }
+
     // Draw.
     ASSERT_GL(glClearColor(RED_F, GREEN_F, BLUE_F, ALPHA_F));
     ASSERT_GL(glClear(GL_COLOR_BUFFER_BIT));
@@ -511,6 +535,15 @@ static void test_gl_basic_gl_debug(void **state)                        \
                   .expect_error=WAFFLE_##error);                        \
 }
 
+#define test_XX_robust(context_api, waffle_api, error)                  \
+static void test_gl_basic_##context_api##_robust(void **state)          \
+{                                                                       \
+    gl_basic_draw(state,                                                \
+                  .api=WAFFLE_CONTEXT_##waffle_api,                     \
+                  .robust=true,                                         \
+                  .expect_error=WAFFLE_##error);                        \
+}
+
 #define test_glXX(waffle_version, error)                                \
 static void test_gl_basic_gl##waffle_version(void **state)              \
 {                                                                       \
@@ -551,6 +584,17 @@ static void test_gl_basic_gl##waffle_version##_core_fwdcompat(void **state) \
                   .expect_error=WAFFLE_##error);                        \
 }
 
+#define test_glXX_core_robust(waffle_version, error)                    \
+static void test_gl_basic_gl##waffle_version##_core_robust(void **state) \
+{                                                                       \
+    gl_basic_draw(state,                                                \
+                  .api=WAFFLE_CONTEXT_OPENGL,                           \
+                  .version=waffle_version,                              \
+                  .profile=WAFFLE_CONTEXT_CORE_PROFILE,                 \
+                  .robust=true,                                         \
+                  .expect_error=WAFFLE_##error);                        \
+}
+
 #define test_glXX_compat(waffle_version, error)                         \
 static void test_gl_basic_gl##waffle_version##_compat(void **state)     \
 {                                                                       \
@@ -558,6 +602,17 @@ static void test_gl_basic_gl##waffle_version##_compat(void **state)     \
                   .api=WAFFLE_CONTEXT_OPENGL,                           \
                   .version=waffle_version,                              \
                   .profile=WAFFLE_CONTEXT_COMPATIBILITY_PROFILE,        \
+                  .expect_error=WAFFLE_##error);                        \
+}
+
+#define test_glXX_compat_robust(waffle_version, error)                  \
+static void test_gl_basic_gl##waffle_version##_compat_robust(void **state) \
+{                                                                       \
+    gl_basic_draw(state,                                                \
+                  .api=WAFFLE_CONTEXT_OPENGL,                           \
+                  .version=waffle_version,                              \
+                  .profile=WAFFLE_CONTEXT_COMPATIBILITY_PROFILE,        \
+                  .robust=true,                                         \
                   .expect_error=WAFFLE_##error);                        \
 }
 
@@ -588,6 +643,7 @@ testsuite_##platform(void)                                              \
         unit_test_make(test_gl_basic_gl_rgba),                          \
         unit_test_make(test_gl_basic_gl_fwdcompat),                     \
         unit_test_make(test_gl_basic_gl_debug),                         \
+        unit_test_make(test_gl_basic_gl_robust),                        \
                                                                         \
         unit_test_make(test_gl_basic_gl10),                             \
         unit_test_make(test_gl_basic_gl11),                             \
@@ -606,6 +662,7 @@ testsuite_##platform(void)                                              \
                                                                         \
         unit_test_make(test_gl_basic_gl32_core),                        \
         unit_test_make(test_gl_basic_gl32_core_fwdcompat),              \
+        unit_test_make(test_gl_basic_gl32_core_robust),                 \
         unit_test_make(test_gl_basic_gl33_core),                        \
         unit_test_make(test_gl_basic_gl40_core),                        \
         unit_test_make(test_gl_basic_gl41_core),                        \
@@ -613,6 +670,7 @@ testsuite_##platform(void)                                              \
         unit_test_make(test_gl_basic_gl43_core),                        \
                                                                         \
         unit_test_make(test_gl_basic_gl32_compat),                      \
+        unit_test_make(test_gl_basic_gl32_compat_robust),               \
         unit_test_make(test_gl_basic_gl33_compat),                      \
         unit_test_make(test_gl_basic_gl40_compat),                      \
         unit_test_make(test_gl_basic_gl41_compat),                      \
@@ -622,17 +680,20 @@ testsuite_##platform(void)                                              \
         unit_test_make(test_gl_basic_gles1_rgb),                        \
         unit_test_make(test_gl_basic_gles1_rgba),                       \
         unit_test_make(test_gl_basic_gles1_fwdcompat),                  \
+        unit_test_make(test_gl_basic_gles1_robust),                     \
         unit_test_make(test_gl_basic_gles10),                           \
         unit_test_make(test_gl_basic_gles11),                           \
                                                                         \
         unit_test_make(test_gl_basic_gles2_rgb),                        \
         unit_test_make(test_gl_basic_gles2_rgba),                       \
         unit_test_make(test_gl_basic_gles2_fwdcompat),                  \
+        unit_test_make(test_gl_basic_gles2_robust),                     \
         unit_test_make(test_gl_basic_gles20),                           \
                                                                         \
         unit_test_make(test_gl_basic_gles3_rgb),                        \
         unit_test_make(test_gl_basic_gles3_rgba),                       \
         unit_test_make(test_gl_basic_gles3_fwdcompat),                  \
+        unit_test_make(test_gl_basic_gles3_robust),                     \
         unit_test_make(test_gl_basic_gles30),                           \
                                                                         \
     };                                                                  \
@@ -662,6 +723,7 @@ test_glXX_fwdcompat(21, ERROR_BAD_ATTRIBUTE)
 
 test_XX_fwdcompat(gl, OPENGL, ERROR_BAD_ATTRIBUTE)
 test_gl_debug(NO_ERROR)
+test_XX_robust(gl, OPENGL, NO_ERROR)
 
 test_glXX(30, NO_ERROR)
 test_glXX_fwdcompat(30, NO_ERROR)
@@ -670,6 +732,7 @@ test_glXX_fwdcompat(31, NO_ERROR)
 
 test_glXX_core(32, NO_ERROR)
 test_glXX_core_fwdcompat(32, NO_ERROR)
+test_glXX_core_robust(32, NO_ERROR)
 test_glXX_core(33, NO_ERROR)
 test_glXX_core(40, NO_ERROR)
 test_glXX_core(41, NO_ERROR)
@@ -677,6 +740,7 @@ test_glXX_core(42, NO_ERROR)
 test_glXX_core(43, NO_ERROR)
 
 test_glXX_compat(32, NO_ERROR)
+test_glXX_compat_robust(32, NO_ERROR)
 test_glXX_compat(33, NO_ERROR)
 test_glXX_compat(40, NO_ERROR)
 test_glXX_compat(41, NO_ERROR)
@@ -685,15 +749,18 @@ test_glXX_compat(43, NO_ERROR)
 
 test_XX_rgb(gles1, OPENGL_ES1, NO_ERROR)
 test_XX_rgba(gles1, OPENGL_ES1, NO_ERROR)
+test_XX_robust(gles1, OPENGL_ES1, NO_ERROR)
 test_glesXX(1, 10, NO_ERROR)
 test_glesXX(1, 11, NO_ERROR)
 
 test_XX_rgb(gles2, OPENGL_ES2, NO_ERROR)
 test_XX_rgba(gles2, OPENGL_ES2, NO_ERROR)
+test_XX_robust(gles2, OPENGL_ES2, NO_ERROR)
 test_glesXX(2, 20, NO_ERROR)
 
 test_XX_rgb(gles3, OPENGL_ES3, NO_ERROR)
 test_XX_rgba(gles3, OPENGL_ES3, NO_ERROR)
+test_XX_robust(gles3, OPENGL_ES3, NO_ERROR)
 test_glesXX(3, 30, NO_ERROR)
 
 //
@@ -798,12 +865,15 @@ CREATE_TESTSUITE(WAFFLE_PLATFORM_WGL, wgl)
 
 #undef test_glesXX
 
+#undef test_glXX_compat_robust
 #undef test_glXX_compat
+#undef test_glXX_core_robust
 #undef test_glXX_core_fwdcompat
 #undef test_glXX_core
 #undef test_glXX_fwdcompat
 #undef test_glXX
 
+#undef test_XX_robust
 #undef test_gl_debug
 #undef test_XX_fwdcompat
 #undef test_XX_rgba
