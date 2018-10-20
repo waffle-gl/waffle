@@ -410,6 +410,30 @@ gl_basic_draw__(void **state, struct gl_basic_draw_args__ args)
     assert_true(major >= 0);
     assert_true(minor >= 0 && minor < 10);
 
+    const char *profile_suffix = "";
+
+    if (waffle_context_api == WAFFLE_CONTEXT_OPENGL) {
+        switch (context_profile) {
+        case WAFFLE_CONTEXT_CORE_PROFILE:
+            profile_suffix = " (Core Profile)";
+            break;
+        case WAFFLE_CONTEXT_COMPATIBILITY_PROFILE:
+            profile_suffix = " (Compatibility Profile)";
+            break;
+        case WAFFLE_DONT_CARE:
+            break;
+        default:
+            assert_true(0);
+            break;
+        }
+    }
+
+    char profile_str[30]; // 30 should be enough ;-)
+    sprintf(profile_str, "%d.%d%s", major, minor, profile_suffix);
+
+    const size_t profile_str_len = strlen(profile_str);
+    assert_true(strncmp(version_str, profile_str, profile_str_len) == 0);
+
     int version_10x = 10 * major + minor;
 
     if ((waffle_context_api == WAFFLE_CONTEXT_OPENGL && version_10x >= 30) ||
