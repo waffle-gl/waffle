@@ -379,14 +379,31 @@ gl_basic_draw__(void **state, struct gl_basic_draw_args__ args)
     assert_true(waffle_get_current_window() == ts->window);
     assert_true(waffle_get_current_context() == ts->ctx);
 
-    const char *version_str;
+    const char *version_str, *expected_version_str;
     int major, minor, count;
 
     ASSERT_GL(version_str = (const char *) glGetString(GL_VERSION));
     assert_true(version_str != NULL);
 
-    while (*version_str != '\0' && !isdigit(*version_str))
-        version_str++;
+    switch (waffle_context_api) {
+    case WAFFLE_CONTEXT_OPENGL:
+	expected_version_str = "";
+        break;
+    case WAFFLE_CONTEXT_OPENGL_ES1:
+	expected_version_str = "OpenGL ES-CM ";
+        break;
+    case WAFFLE_CONTEXT_OPENGL_ES2:
+    case WAFFLE_CONTEXT_OPENGL_ES3:
+	expected_version_str = "OpenGL ES ";
+        break;
+    default:
+        assert_true(0);
+        break;
+    }
+
+    const size_t version_str_len = strlen(expected_version_str);
+    assert_true(strncmp(version_str, expected_version_str, version_str_len) == 0);
+    version_str += version_str_len;
 
     count = sscanf(version_str, "%d.%d", &major, &minor);
     assert_true(count == 2);
