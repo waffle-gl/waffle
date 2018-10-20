@@ -410,6 +410,14 @@ gl_basic_draw__(void **state, struct gl_basic_draw_args__ args)
     assert_true(major >= 0);
     assert_true(minor >= 0 && minor < 10);
 
+    if (context_version != WAFFLE_DONT_CARE) {
+        int expected_major = context_version / 10;
+        int expected_minor = context_version % 10;
+
+        assert_true(major >= expected_major);
+        assert_true(minor >= expected_minor || major > expected_major);
+    }
+
     const char *profile_suffix = "";
 
     if (waffle_context_api == WAFFLE_CONTEXT_OPENGL) {
