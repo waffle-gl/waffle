@@ -25,9 +25,9 @@ For more information, visit to Waffle's website.
 Links
 =====
 
-source:         git://github.com/waffle-gl/waffle
-gitweb:         https://github.com/waffle-gl/waffle
-issue-tracker:  https://github.com/waffle-gl/waffle/issues
+source:         https://gitlab.freedesktop.org/mesa/waffle.git
+gitweb:         https://gitlab.freedesktop.org/mesa/waffle
+issue-tracker:  https://gitlab.freedesktop.org/mesa/waffle/issues
 website:        http://www.waffle-gl.org
 mailing-list:   waffle@lists.freedesktop.org
 license:        BSD [http://www.opensource.org/licenses/bsd-license.php]
@@ -41,7 +41,7 @@ For example code and makefiles that demonstrate how to use and build with
 Waffle, see the following:
 
     - The 'examples' directory in the source repository:
-      https://github.com/waffle-gl/waffle/tree/master/examples
+      https://gitlab.freedesktop.org/mesa/waffle/tree/master/examples
 
     - Installed examples at $PREFIX/share/doc/waffle-VERSION/examples, if
       Waffle is installed on your system.
@@ -152,7 +152,7 @@ Build and Installation
 0. Be in the correct directory
 ------------------------------
 
-    git clone git://github.com/waffle-gl/waffle
+    git clone https://gitlab.freedesktop.org/mesa/waffle.git
     cd waffle
 
 or
