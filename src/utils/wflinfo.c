@@ -65,7 +65,7 @@ static const char *usage_message =
     "Required Parameters:\n"
     "    -p, --platform <platform>\n"
     "        One of: android, cgl, gbm, glx, surfaceless_egl (or short\n"
-    "        alias 'sl'), wayland, wgl, or x11_egl.\n"
+    "        alias 'sl'), wayland, wgl, qnx or x11_egl.\n"
     "\n"
     "    -a, --api <api>\n"
     "        One of: gl, gles1, gles2 or gles3\n"
@@ -292,6 +292,7 @@ static const struct enum_map platform_map[] = {
     {WAFFLE_PLATFORM_X11_EGL,   "x11_egl"       },
     {WAFFLE_PLATFORM_SURFACELESS_EGL,   "surfaceless_egl" },
     {WAFFLE_PLATFORM_SURFACELESS_EGL,   "sl"              },
+    {WAFFLE_PLATFORM_QNX,       "qnx"           },
     {0,                         0               },
 };
 

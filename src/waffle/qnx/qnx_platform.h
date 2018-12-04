@@ -1,4 +1,4 @@
-// Copyright 2012 Intel Corporation
+// Copyright 2014 Intel Corporation
 //
 // All rights reserved.
 //
@@ -23,27 +23,21 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @file
-/// @brief Handlers for dynamic libraries on Linux, with error handling.
-
 #pragma once
 
-#include <stdbool.h>
-#include <stdint.h>
+#include "waffle.h"
+#include "wcore_util.h"
+#include "wcore_platform.h"
+#include "wegl_platform.h"
 
-struct linux_dl;
-struct linux_platform_libs;
+struct qnx_platform {
+    struct wegl_platform wegl;
+    struct linux_platform *linux;
+};
+DEFINE_CONTAINER_CAST_FUNC(qnx_platform,
+                           struct qnx_platform,
+                           struct wegl_platform,
+                           wegl)
 
-/// @brief Dynamically open an OpenGL library.
-/// @a waffle_dl must be one of `WAFFLE_DL_*`.
-struct linux_dl*
-linux_dl_open(int32_t waffle_dl);
-
-struct linux_dl*
-linux_dl_open2(int32_t waffle_dl, struct linux_platform_libs *lib_names);
-
-bool
-linux_dl_close(struct linux_dl *self);
-
-void*
-linux_dl_sym(struct linux_dl *self, const char *symbol);
+struct wcore_platform*
+qnx_platform_create(void);

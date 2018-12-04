@@ -1,4 +1,4 @@
-// Copyright 2012 Intel Corporation
+// Copyright 2014 Intel Corporation
 //
 // All rights reserved.
 //
@@ -23,27 +23,16 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @file
-/// @brief Handlers for dynamic libraries on Linux, with error handling.
-
 #pragma once
 
-#include <stdbool.h>
-#include <stdint.h>
+#include <screen/screen.h>
 
-struct linux_dl;
-struct linux_platform_libs;
+struct qnx_display_priv {
+    screen_context_t screen_ctx;
+};
 
-/// @brief Dynamically open an OpenGL library.
-/// @a waffle_dl must be one of `WAFFLE_DL_*`.
-struct linux_dl*
-linux_dl_open(int32_t waffle_dl);
-
-struct linux_dl*
-linux_dl_open2(int32_t waffle_dl, struct linux_platform_libs *lib_names);
+struct qnx_display_priv*
+qnx_display_priv_create(void);
 
 bool
-linux_dl_close(struct linux_dl *self);
-
-void*
-linux_dl_sym(struct linux_dl *self, const char *symbol);
+qnx_display_priv_destroy(struct qnx_display_priv*);

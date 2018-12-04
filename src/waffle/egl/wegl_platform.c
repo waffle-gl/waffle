@@ -57,6 +57,8 @@ setup_env(const struct wegl_platform *self)
         case EGL_PLATFORM_SURFACELESS_MESA:
             setenv("EGL_PLATFORM", "surfaceless", true);
             break;
+        case EGL_NONE:
+            break;
         default:
             assert(!"bad egl_platform enum");
             break;
@@ -217,6 +219,9 @@ wegl_platform_can_use_eglGetPlatformDisplay(const struct wegl_platform *plat)
         case EGL_PLATFORM_SURFACELESS_MESA:
             ext = "EGL_MESA_platform_surfaceless";
             break;
+        case EGL_NONE:
+            ext = NULL;
+            break;
         default:
             assert(!"bad egl_platform enum");
             return false;
@@ -248,6 +253,9 @@ wegl_platform_can_use_eglGetPlatformDisplayEXT(const struct wegl_platform *plat)
             break;
         case EGL_PLATFORM_SURFACELESS_MESA:
             ext = "EGL_MESA_platform_surfaceless";
+            break;
+        case EGL_NONE:
+            ext = NULL;
             break;
         default:
             assert(!"bad egl_platform enum");

@@ -1,4 +1,4 @@
-// Copyright 2012 Intel Corporation
+// Copyright 2014 Intel Corporation
 //
 // All rights reserved.
 //
@@ -23,27 +23,57 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @file
-/// @brief Handlers for dynamic libraries on Linux, with error handling.
-
-#pragma once
-
 #include <stdbool.h>
 #include <stdint.h>
+#include "wcore_util.h"
+#include "wcore_error.h"
+#include "qnx_display_priv.h"
 
-struct linux_dl;
-struct linux_platform_libs;
+struct qnx_display_priv*
+qnx_display_priv_create(void)
+{
+    int ndisplays = 0;
+    int rc;
+    struct qnx_display_priv *self;
 
-/// @brief Dynamically open an OpenGL library.
-/// @a waffle_dl must be one of `WAFFLE_DL_*`.
-struct linux_dl*
-linux_dl_open(int32_t waffle_dl);
+    self = wcore_calloc(sizeof(*self));
+    if (self == NULL)
+        return NULL;
 
-struct linux_dl*
-linux_dl_open2(int32_t waffle_dl, struct linux_platform_libs *lib_names);
+    rc = screen_create_context(&self->screen_ctx, SCREEN_APPLICATION_CONTEXT);
+    if (rc != 0) {
+        wcore_error_errno("screen_create_context failed");
+        goto error;
+    }
+
+    rc = screen_get_context_property_iv(self->screen_ctx,
+                                        SCREEN_PROPERTY_DISPLAY_COUNT,
+                                        &ndisplays
+                                       );
+    if (rc != 0) {
+        wcore_error_errno("SCREEN_PROPERTY_DISPLAY_COUNT failed");
+        goto error;
+    }
+
+    return self;
+error:
+    qnx_display_priv_destroy(self);
+    return NULL;
+}
 
 bool
-linux_dl_close(struct linux_dl *self);
+qnx_display_priv_destroy(struct qnx_display_priv* self)
+{
+    int rc = 0;
 
-void*
-linux_dl_sym(struct linux_dl *self, const char *symbol);
+    if (!self)
+        return true;
+
+    rc = screen_destroy_context(self->screen_ctx);
+    if (rc != 0) {
+        wcore_error_errno("screen_destroy_context failed");
+    }
+
+    free(self);
+    return (rc == 0);
+}

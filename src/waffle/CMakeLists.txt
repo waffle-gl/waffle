@@ -16,6 +16,7 @@ include_directories(
     glx
     linux
     nacl
+    qnx
     surfaceless_egl
     wayland
     wgl
@@ -32,6 +33,7 @@ include_directories(
     ${wayland-egl_INCLUDE_DIRS}
     ${x11-xcb_INCLUDE_DIRS}
     )
+
 
 # ----------------------------------------------------------------------------
 # Target: waffle (shared library)
@@ -196,6 +198,21 @@ if(waffle_has_nacl)
         )
     list(APPEND waffle_cxx_sources
         nacl/nacl_container.cpp
+        )
+endif()
+
+if(waffle_on_qnx)
+    list(APPEND waffle_sources
+        qnx/qnx_display.c
+        qnx/qnx_platform.c
+        qnx/qnx_window.c
+        qnx/qnx_display_priv.c
+        qnx/qnx_window_priv.c
+        linux/linux_dl.c
+        linux/linux_platform.c
+        )
+    list(APPEND waffle_libdeps
+        screen
         )
 endif()
 

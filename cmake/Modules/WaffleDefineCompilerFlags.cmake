@@ -60,7 +60,9 @@ if (NOT MSVC)
     endif()
 
     if(egl_FOUND)
-        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${egl_CFLAGS_OTHER}")
+        foreach(FLAG ${egl_CFLAGS_OTHER})
+            set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${FLAG}")
+        endforeach()
     endif(egl_FOUND)
 
     if(MINGW)
@@ -143,4 +145,8 @@ endif()
 
 if(waffle_on_windows)
     add_definitions(-DWAFFLE_HAS_WGL)
+endif()
+
+if(waffle_on_qnx)
+    add_definitions(-DWAFFLE_HAS_QNX -D_QNX_SOURCE)
 endif()

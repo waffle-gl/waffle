@@ -36,12 +36,26 @@ struct linux_platform {
     struct linux_dl *libgl;
     struct linux_dl *libgles1;
     struct linux_dl *libgles2;
+    struct linux_platform_libs *lib_names;
 };
 
 struct linux_platform*
 linux_platform_create(void)
 {
     return wcore_calloc(sizeof(struct linux_platform));
+}
+
+struct linux_platform*
+linux_platform_create2(struct linux_platform_libs *lib_names)
+{
+    struct linux_platform *self;
+
+    self = wcore_calloc(sizeof(*self));
+    if (self == NULL)
+        return NULL;
+
+    self->lib_names = lib_names;
+    return self;
 }
 
 bool
@@ -76,8 +90,13 @@ linux_platform_get_dl(struct linux_platform *self, int32_t waffle_dl)
             return NULL;
     }
 
-    if (*dl == NULL)
-        *dl = linux_dl_open(waffle_dl);
+    if (*dl == NULL) {
+        if (self->lib_names == NULL) {
+            *dl = linux_dl_open(waffle_dl);
+        } else {
+            *dl = linux_dl_open2(waffle_dl, self->lib_names);
+        }
+    }
 
     return *dl;
 }

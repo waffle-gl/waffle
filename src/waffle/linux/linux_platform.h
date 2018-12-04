@@ -29,9 +29,13 @@
 #include <stdint.h>
 
 struct linux_platform;
+struct linux_platform_libs;
 
 struct linux_platform*
 linux_platform_create(void);
+
+struct linux_platform*
+linux_platform_create2(struct linux_platform_libs *libs);
 
 bool
 linux_platform_destroy(struct linux_platform *self);

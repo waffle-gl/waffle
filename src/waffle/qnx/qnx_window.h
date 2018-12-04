@@ -1,4 +1,4 @@
-// Copyright 2012 Intel Corporation
+// Copyright 2014 Intel Corporation
 //
 // All rights reserved.
 //
@@ -23,27 +23,36 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @file
-/// @brief Handlers for dynamic libraries on Linux, with error handling.
-
 #pragma once
 
 #include <stdbool.h>
-#include <stdint.h>
+#include "wegl_surface.h"
 
-struct linux_dl;
-struct linux_platform_libs;
+struct qnx_window_priv;
 
-/// @brief Dynamically open an OpenGL library.
-/// @a waffle_dl must be one of `WAFFLE_DL_*`.
-struct linux_dl*
-linux_dl_open(int32_t waffle_dl);
+struct qnx_window {
+    struct wegl_surface wegl;
+    struct qnx_window_priv *priv;
+};
+DEFINE_CONTAINER_CAST_FUNC(qnx_window,
+                           struct qnx_window,
+                           struct wegl_surface,
+                           wegl)
 
-struct linux_dl*
-linux_dl_open2(int32_t waffle_dl, struct linux_platform_libs *lib_names);
+struct wcore_window*
+qnx_window_create(struct wcore_platform *wc_plat,
+                  struct wcore_config *wc_config,
+                  int32_t width,
+                  int32_t height,
+                  const intptr_t attrib_list[]);
 
 bool
-linux_dl_close(struct linux_dl *self);
+qnx_window_destroy(struct wcore_window *wc_self);
 
-void*
-linux_dl_sym(struct linux_dl *self, const char *symbol);
+bool
+qnx_window_show(struct wcore_window *wc_self);
+
+bool
+qnx_window_resize(struct wcore_window *wc_self,
+                  int32_t width,
+                  int32_t height);

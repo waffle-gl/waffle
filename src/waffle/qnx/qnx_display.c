@@ -1,4 +1,4 @@
-// Copyright 2012 Intel Corporation
+// Copyright 2014 Intel Corporation
 //
 // All rights reserved.
 //
@@ -23,27 +23,53 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// @file
-/// @brief Handlers for dynamic libraries on Linux, with error handling.
+#include "linux_platform.h"
+#include "qnx_platform.h"
+#include "wegl_platform.h"
+#include "qnx_display.h"
+#include "qnx_display_priv.h"
 
-#pragma once
+struct wcore_display*
+qnx_display_connect(struct wcore_platform *wc_plat,
+                    const char *name)
+{
+    bool ok = true;
+    struct qnx_display *self;
 
-#include <stdbool.h>
-#include <stdint.h>
+    (void) name;
 
-struct linux_dl;
-struct linux_platform_libs;
+    self = wcore_calloc(sizeof(*self));
+    if (self == NULL)
+        return NULL;
 
-/// @brief Dynamically open an OpenGL library.
-/// @a waffle_dl must be one of `WAFFLE_DL_*`.
-struct linux_dl*
-linux_dl_open(int32_t waffle_dl);
+    self->priv = qnx_display_priv_create();
+    if (self->priv == NULL)
+        goto error;
 
-struct linux_dl*
-linux_dl_open2(int32_t waffle_dl, struct linux_platform_libs *lib_names);
+    ok = wegl_display_init(&self->wegl, wc_plat, EGL_DEFAULT_DISPLAY);
+    if (!ok)
+        goto error;
+
+    return &self->wegl.wcore;
+
+error:
+    qnx_display_disconnect(&self->wegl.wcore);
+    return NULL;
+}
 
 bool
-linux_dl_close(struct linux_dl *self);
+qnx_display_disconnect(struct wcore_display *wc_self)
+{
+    bool ok = true;
+    struct qnx_display *self = qnx_display(wegl_display(wc_self));
 
-void*
-linux_dl_sym(struct linux_dl *self, const char *symbol);
+    if (!self)
+        return ok;
+
+    qnx_display_priv_destroy(self->priv);
+
+    ok &= wegl_display_teardown(&self->wegl);
+    free(self);
+
+    return ok;
+}

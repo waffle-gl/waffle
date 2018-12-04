@@ -109,7 +109,7 @@ check_context_attrs(struct wegl_display *dpy,
         case WAFFLE_CONTEXT_OPENGL_ES3:
             if (!(dpy->api_mask & WEGL_OPENGL_ES_API)) {
                 wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
-                             "eglQueryString(EGL_CLIENT_APIS) does not"
+                             "eglQueryString(EGL_CLIENT_APIS) does not "
                              "advertise OpenGL_ES.");
                 return false;
             }

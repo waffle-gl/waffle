@@ -38,6 +38,10 @@ if(waffle_on_linux)
     set(nacl_version "pepper_39" CACHE STRING "Set NaCl bundle here")
 endif()
 
+if(waffle_on_qnx)
+    option(waffle_has_qnx "Build support for QNX" ON)
+endif()
+
 option(waffle_build_tests "Build tests" ON)
 option(waffle_build_manpages "Build manpages" OFF)
 option(waffle_build_htmldocs "Build html documentation" OFF)
