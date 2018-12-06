@@ -8,18 +8,18 @@ OpenGL API and of window system until runtime. For example, on Linux, Waffle
 enables an application to select X11/EGL with an OpenGL 3.3 core profile,
 Wayland with OpenGL ES2, and other window system / API combinations.
 
-Waffle's immediate goal is to enable Piglit [1] to test multiple OpenGL
+Waffle's immediate goal is to enable [Piglit] to test multiple OpenGL
 flavors in a cross-platform way, and to allow each Piglit test to choose its
 OpenGL API and window system at runtime. A future goal is to enable the
-ability to record (with another tool such APITrace [2]) an application's
+ability to record (with another tool such [APITrace]) an application's
 OpenGL calls on one operating system or window system, and then replay
 that trace on a different system.
 
 For more information, visit to Waffle's website.
 
 
-[1] http://piglit.freedesktop.org
-[2] http://github.com/apitrace/apitrace#readme
+[Piglit]: http://piglit.freedesktop.org
+[APITrace]: http://github.com/apitrace/apitrace#readme
 
 
 Links
