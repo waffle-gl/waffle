@@ -175,7 +175,7 @@ install(
 
 install(
     FILES
-        "README.txt"
+        "README.md"
         "LICENSE.txt"
         "HACKING.txt"
     DESTINATION "${CMAKE_INSTALL_DOCDIR}"
