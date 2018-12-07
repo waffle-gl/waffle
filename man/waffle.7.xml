@@ -75,7 +75,7 @@ Link with -lwaffle-1.
       example source code that demonstrates how to use waffle at
       <filename>/usr/share/doc/waffle-${version}/examples</filename>.
       You can also find
-      <ulink url="https://github.com/waffle-gl/waffle/tree/master/examples">examples</ulink>
+      <ulink url="https://gitlab.freedesktop.org/mesa/waffle/tree/master/examples">examples</ulink>
       in Waffle's source repository.
     </para>
 
@@ -89,7 +89,7 @@ Link with -lwaffle-1.
     <para>
       <simplelist>
         <member>Website: http://www.waffle-gl.org</member>
-        <member>Source: git://github.com/waffle-gl/waffle</member>
+        <member>Source: https://gitlab.freedesktop.org/mesa/waffle</member>
       </simplelist>
     </para>
 

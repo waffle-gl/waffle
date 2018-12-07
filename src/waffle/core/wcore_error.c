@@ -212,7 +212,7 @@ _wcore_error_internal(const char *file, int line, const char *format, ...)
             return;
     }
 
-    snprintf(cur, end - cur, " ; Please report bug at https://github.com/waffle-gl/waffle/issues");
+    snprintf(cur, end - cur, " ; Please report bug at https://gitlab.freedesktop.org/mesa/waffle/issues");
 }
 
 enum waffle_error
