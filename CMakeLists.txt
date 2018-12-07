@@ -183,6 +183,23 @@ install(
     )
 
 # ------------------------------------------------------------------------------
+# Install shell completion
+# ------------------------------------------------------------------------------
+
+find_package(bash-completion)
+if (NOT BASH_COMPLETION_FOUND)
+    # Fallback default dir
+    set(BASH_COMPLETION_COMPLETIONSDIR
+        "${CMAKE_INSTALL_DATADIR}/bash-completion/completions/")
+endif()
+
+install(
+    FILES "shell-completion/bash/wflinfo"
+    DESTINATION "${BASH_COMPLETION_COMPLETIONSDIR}"
+    COMPONENT shell-completion
+    )
+
+# ------------------------------------------------------------------------------
 
 include(WafflePrintConfigurationSummary)
 
