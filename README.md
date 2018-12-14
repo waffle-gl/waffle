@@ -145,7 +145,7 @@ Linux notes in the relevant sections.
 
 ## Build and Installation
 
-### 0. Be in the correct directory
+### Be in the correct directory
 
     git clone https://gitlab.freedesktop.org/mesa/waffle.git
     cd waffle
@@ -156,7 +156,7 @@ or
     cd waffle-0.0.0
 
 
-### 1. Configure pkg-config
+### Configure pkg-config
 
 Compiling for Windows does require any additional dependencies, as such
 this step can be omitted.
@@ -168,9 +168,9 @@ a dependeny into /usr/local, then:
     export PKG_CONFIG_PATH=/usr/local/share/pkgconfig:/usr/local/$libdir/pkgconfig:$PKG_CONFIG_PATH
 
 
-### 2. Configure CMake
+### Configure CMake
 
-#### 2.1 Linux and Mac
+#### Linux and Mac
 
 On Linux and Mac, running CMake with no arguments as below will configure
 Waffle for a release build (optimized compiler flags and basic debug symbols)
@@ -200,7 +200,7 @@ build, require support for Wayland, and install into '/usr' instead of
           -Dwaffle_has_wayland=1 \
           .
 
-#### 2.2 Windows - cross-building under Linux
+#### Windows - cross-building under Linux
 
 The following sh snippet can be used to ease the configuration process.
 
@@ -223,7 +223,7 @@ Make sure to adjust _install_prefix to "" if the resulting library will
 not be used for further cross-building.
 
 
-#### 2.3 Windows - native builds
+#### Windows - native builds
 
 For native Windows builds, one must provide a generator argument and
 optionally a toolset if the resulting library must be compatible with
@@ -244,7 +244,7 @@ already-configured source tree, run the graphical Qt interface via:
 
     cmake-gui
 
-### 3. Build and Install
+### Build and Install
 
 The following commands build Waffle, run its tests, installs the project and
 creates a binary archive in a platform agnostic way.
@@ -262,7 +262,7 @@ Calling `cmake ... check` only runs unittests that do not access the native
 OpenGL platform. To run additional functional tests, which do access the
 native OpenGL platform, call `cmake ... check-func`.
 
-#### 3.1 Linux and Mac
+#### Linux and Mac
 
 On Linux and Mac the default CMake generator is Unix Makefiles, as such we
 can use an alternative version of the above commands:
@@ -274,7 +274,7 @@ can use an alternative version of the above commands:
     make package
 
 
-#### 3.2 Windows - cross-building under Linux
+#### Windows - cross-building under Linux
 
     _architectures="i686-w64-mingw32 x86_64-w64-mingw32"
     unset LDFLAGS
@@ -289,7 +289,7 @@ can use an alternative version of the above commands:
 Note: Running the tests (`make check` and/or `make check-func`) is not tested
 but may work if the appropriate environment is setup via wine.
 
-#### 3.3 Windows - native builds
+#### Windows - native builds
 
 One can manage the build/install/package process via Visual Studio's GUI
 or via the command line.
