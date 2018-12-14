@@ -1,7 +1,6 @@
 Waffle - a library for selecting an OpenGL API and window system at runtime
 
-Summary
-=======
+# Summary
 
 Waffle is a cross-platform library that allows one to defer selection of an
 OpenGL API and of window system until runtime. For example, on Linux, Waffle
@@ -22,8 +21,7 @@ For more information, visit to Waffle's website.
 [APITrace]: http://github.com/apitrace/apitrace#readme
 
 
-Links
-=====
+# Links
 
 - source:         https://gitlab.freedesktop.org/mesa/waffle.git
 - gitweb:         https://gitlab.freedesktop.org/mesa/waffle
@@ -34,8 +32,7 @@ Links
 - maintainer:     Chad Versace <chad.versace@linux.intel.com>
 
 
-Examples
-========
+# Examples
 
 For example code and makefiles that demonstrate how to use and build with
 Waffle, see the following:
@@ -47,13 +44,12 @@ Waffle, see the following:
       Waffle is installed on your system.
 
 
-Build Requirements
-==================
+# Build Requirements
 
 Waffle uses CMake for its build system.
 
-Linux
------
+## Linux
+
 On Linux it's recommended to install the cmake package using your
 distribution package manager.
 
@@ -99,8 +95,10 @@ a comma-separated list of any combination of "x11", "wayland", and "drm".
         - Debian: apt-get install libgbm-dev libudev-dev
 
 
-Windows - cross-building under Linux
-------------------------------------
+## Windows 
+
+### cross-building under Linux
+
 Make sure that CMake is installed on your system.
 
     Archlinux: pacman -S cmake
@@ -114,8 +112,8 @@ The MinGW-W64 cross-build toolchain is recommended and its CMake wrapper.
     Debian: apt-get install FINISHME
 
 
-Windows - native builds
------------------------
+### native builds
+
 Download and install the latest version CMake from the official website:
 
     http://cmake.org/
@@ -137,8 +135,7 @@ such only reasonable compiler (at the time of writing) from the Microsoft
 Visual Compiler series is MSVC 2013. Building with older versions is likely
 to be broken.
 
-Windows - CYGWIN
-----------------
+### CYGWIN
 Waffle is not tested to build under CYGWIN and is likely to be broken.
 Patches addressing it are more than welcome.
 
@@ -146,11 +143,9 @@ For build requirements, build and installation instructions, refer to the
 Linux notes in the relevant sections.
 
 
-Build and Installation
-======================
+## Build and Installation
 
-0. Be in the correct directory
-------------------------------
+### 0. Be in the correct directory
 
     git clone https://gitlab.freedesktop.org/mesa/waffle.git
     cd waffle
@@ -161,8 +156,8 @@ or
     cd waffle-0.0.0
 
 
-1. Configure pkg-config
------------------------
+### 1. Configure pkg-config
+
 Compiling for Windows does require any additional dependencies, as such
 this step can be omitted.
 
@@ -173,11 +168,10 @@ a dependeny into /usr/local, then:
     export PKG_CONFIG_PATH=/usr/local/share/pkgconfig:/usr/local/$libdir/pkgconfig:$PKG_CONFIG_PATH
 
 
-2. Configure CMake
-------------------
+### 2. Configure CMake
 
-2.1 Linux and Mac
------------------
+#### 2.1 Linux and Mac
+
 On Linux and Mac, running CMake with no arguments as below will configure
 Waffle for a release build (optimized compiler flags and basic debug symbols)
 and will auto-enable support for features whose dependencies are installed:
@@ -206,8 +200,8 @@ build, require support for Wayland, and install into '/usr' instead of
           -Dwaffle_has_wayland=1 \
           .
 
-2.2 Windows - cross-building under Linux
-----------------------------------------
+#### 2.2 Windows - cross-building under Linux
+
 The following sh snippet can be used to ease the configuration process.
 
     _architectures="i686-w64-mingw32 x86_64-w64-mingw32"
@@ -229,8 +223,7 @@ Make sure to adjust _install_prefix to "" if the resulting library will
 not be used for further cross-building.
 
 
-2.3 Windows - native builds
----------------------------
+#### 2.3 Windows - native builds
 
 For native Windows builds, one must provide a generator argument and
 optionally a toolset if the resulting library must be compatible with
@@ -251,8 +244,8 @@ already-configured source tree, run the graphical Qt interface via:
 
     cmake-gui
 
-3. Build and Install
---------------------
+### 3. Build and Install
+
 The following commands build Waffle, run its tests, installs the project and
 creates a binary archive in a platform agnostic way.
 
@@ -269,8 +262,8 @@ Calling `cmake ... check` only runs unittests that do not access the native
 OpenGL platform. To run additional functional tests, which do access the
 native OpenGL platform, call `cmake ... check-func`.
 
-3.1 Linux and Mac
------------------
+#### 3.1 Linux and Mac
+
 On Linux and Mac the default CMake generator is Unix Makefiles, as such we
 can use an alternative version of the above commands:
 
@@ -281,8 +274,7 @@ can use an alternative version of the above commands:
     make package
 
 
-3.2 Windows - cross-building under Linux
-----------------------------------------
+#### 3.2 Windows - cross-building under Linux
 
     _architectures="i686-w64-mingw32 x86_64-w64-mingw32"
     unset LDFLAGS
@@ -297,9 +289,8 @@ can use an alternative version of the above commands:
 Note: Running the tests (`make check` and/or `make check-func`) is not tested
 but may work if the appropriate environment is setup via wine.
 
+#### 3.3 Windows - native builds
 
-3.3 Windows - native builds
----------------------------
 One can manage the build/install/package process via Visual Studio's GUI
 or via the command line.
 
