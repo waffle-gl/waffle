@@ -1,5 +1,5 @@
 # Copyright © 2017 Dylan Baker
-# Copyright © 2018 Intel Corporation
+# Copyright © 2018-2019 Intel Corporation
 #
 # All rights reserved.
 #
@@ -64,7 +64,7 @@ files_libwaffle = files(
   'core/wcore_util.c',
 )
 
-if host_machine.system() == 'linux'
+if not ['darwin', 'windows'].contains(host_machine.system())
   files_libwaffle += files('linux/linux_dl.c', 'linux/linux_platform.c')
 endif
 
