@@ -79,11 +79,11 @@ if get_option('build-manpages')
       input : ['manpage.xsl', name + '.xml'],
       output : [name, extra_out],
       command : [prog_xslt, '-nonet', '--xinclude', '-o', '@OUTPUT0@', '@INPUT@'],
+      install : true,
+      install_dir : join_paths(get_option('mandir'), 'man' + s[0]),
       depend_files : files_man_common,
     )
   endforeach
-  
-  install_man(mans)
 endif
 
 if get_option('build-htmldocs')
