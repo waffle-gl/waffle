@@ -192,7 +192,7 @@ if cc.get_argument_syntax() == 'gcc'
       add_project_link_arguments('-static-libgcc', language : ['c', 'cpp'])
     endif
   endif
-if cc.get_argument_syntax() == 'msvc'
+elif cc.get_argument_syntax() == 'msvc'
   add_project_arguments(
     '/D_win32_WINNT=0x0601',
     '/DWINVER=0x0601',
