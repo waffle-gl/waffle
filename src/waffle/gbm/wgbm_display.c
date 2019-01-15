@@ -1,4 +1,4 @@
-// Copyright 2012 Intel Corporation
+// Copyright © 2012, 2019 Intel Corporation
 //
 // All rights reserved.
 //
@@ -33,7 +33,6 @@
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <linux/input.h>
 
 #include "wcore_error.h"
 
