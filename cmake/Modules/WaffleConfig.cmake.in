@@ -7,6 +7,16 @@
 
 @PACKAGE_INIT@
 
+# This should only be used for meson
+if (NOT DEFINED set_and_check)
+    macro(set_and_check _var _file)
+        set(${_var} "${_file}")
+        if(NOT EXISTS "${_file}")
+            message(FATAL_ERROR "File or directory ${_file} referenced by variable ${_var} does not exist !")
+        endif()
+    endmacro()
+endif()
+
 set_and_check(Waffle_INCLUDE_DIRS "@PACKAGE_CMAKE_INSTALL_INCLUDEDIR@/@waffle_libname@")
 set_and_check(Waffle_LIBRARY_DIRS "@PACKAGE_CMAKE_INSTALL_LIBDIR@")
 set(Waffle_LIBRARIES "@waffle_libname@")

@@ -211,6 +211,26 @@ pkg.generate(
   description : 'A library for selecting an OpenGL API and windows system at runtime.',
 )
 
+if meson.version().version_compare('>= 0.50')
+  cmake = import('cmake')
+  cmake.write_basic_package_version_file(
+    name : 'Waffle',
+    version : meson.project_version(),
+    compatibility : 'SameMajorVersion',
+  )
+
+  cmake_conf = configuration_data()
+  cmake_conf.set('waffle_libname', waffle_name)
+  cmake_conf.set('PACKAGE_CMAKE_INSTALL_INCLUDEDIR', join_paths('${PACKAGE_PREFIX_DIR}', get_option('includedir')))
+  cmake_conf.set('PACKAGE_CMAKE_INSTALL_LIBDIR', join_paths('${PACKAGE_PREFIX_DIR}', get_option('libdir')))
+
+  cmake.configure_package_config_file(
+    name : 'Waffle',
+    input : '../../cmake/Modules/WaffleConfig.cmake.in',
+    configuration : cmake_conf,
+  )
+endif
+
 if get_option('build-tests')
   if get_option('default_library') == 'shared'
     # The unit tests need to poke at internals of the library, but with a

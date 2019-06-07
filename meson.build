@@ -231,5 +231,3 @@ endif
 if get_option('build-examples')
   subdir('examples')
 endif
-
-# TODO:  CMake config file
