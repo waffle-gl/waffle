@@ -195,7 +195,7 @@ endif()
 
 install(
     FILES "shell-completion/bash/wflinfo"
-    DESTINATION "${BASH_COMPLETION_COMPLETIONSDIR}"
+    DESTINATION "${CMAKE_INSTALL_PREFIX}/${BASH_COMPLETION_COMPLETIONSDIR}"
     COMPONENT shell-completion
     )
 
