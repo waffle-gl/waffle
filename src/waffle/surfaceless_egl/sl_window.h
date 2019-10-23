@@ -33,6 +33,7 @@ struct wcore_platform;
 
 struct sl_window {
     struct wegl_surface wegl;
+    struct wcore_config *wc_config;
 };
 
 DEFINE_CONTAINER_CAST_FUNC(sl_window,
@@ -51,3 +52,7 @@ sl_window_destroy(struct wcore_window *wc_self);
 
 bool
 sl_window_show(struct wcore_window *wc_self);
+
+bool
+sl_window_resize(struct wcore_window *wc_self,
+                 int32_t width, int32_t height);

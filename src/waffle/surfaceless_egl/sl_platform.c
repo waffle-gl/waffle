@@ -138,6 +138,7 @@ static const struct wcore_platform_vtbl sl_platform_vtbl = {
         .create = sl_window_create,
         .destroy = sl_window_destroy,
         .show = sl_window_show,
+        .resize = sl_window_resize,
         .swap_buffers = wegl_surface_swap_buffers,
         .get_native = NULL, // unsupported by platform
     },

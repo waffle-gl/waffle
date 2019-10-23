@@ -28,8 +28,10 @@
 
 #include "wcore_attrib_list.h"
 #include "wcore_error.h"
+#include "wcore_tinfo.h"
 
 #include "wegl_config.h"
+#include "wegl_util.h"
 
 #include "sl_display.h"
 #include "sl_platform.h"
@@ -78,6 +80,8 @@ sl_window_create(struct wcore_platform *wc_plat,
     if (!ok)
         goto error;
 
+    self->wc_config = wc_config;
+
     return &self->wegl.wcore;
 
 error:
@@ -89,4 +93,38 @@ bool
 sl_window_show(struct wcore_window *wc_self)
 {
     return true;
+}
+
+bool
+sl_window_resize(struct wcore_window *wc_self,
+                 int32_t width, int32_t height)
+{
+    struct wcore_display *wc_dpy = wc_self->display;
+    struct wcore_platform *wc_plat = wc_self->display->platform;
+    struct sl_window *self = sl_window(wegl_surface(wc_self));
+    struct wegl_surface new_wegl;
+    struct wcore_context *wc_ctx;
+    struct wcore_tinfo *tinfo;
+    bool ok = true;
+
+    // Create a new pbuffer for the resized window.
+    ok = wegl_pbuffer_init(&new_wegl, self->wc_config, width, height);
+    if (!ok)
+        return false;
+
+    tinfo = wcore_tinfo_get();
+    wc_ctx = tinfo->current_context;
+
+    ok = wegl_make_current(wc_plat, wc_dpy, &new_wegl.wcore, wc_ctx);
+    if (!ok)
+        goto error;
+
+    // Everything went fine, so teardown the old pbuffer, and set the new one.
+    wegl_surface_teardown(&self->wegl);
+    self->wegl = new_wegl;
+    return true;
+
+error:
+    wegl_surface_teardown(&new_wegl);
+    return false;
 }
