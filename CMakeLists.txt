@@ -101,7 +101,7 @@ endif()
 
 include_directories(
     include
-    include/waffle
+    include/waffle-1
     src
     )
 

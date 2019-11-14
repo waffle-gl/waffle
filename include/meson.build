@@ -24,7 +24,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 inc_include = include_directories('.')
-inc_waffle = include_directories('waffle')
+inc_waffle = include_directories('waffle-1')
 
 ver = meson.project_version().split('.')
 data = configuration_data()
@@ -34,16 +34,16 @@ data.set('waffle_patch_version', ver[2])
 
 waffle_config_h = configure_file(
   configuration : data,
-  input : 'waffle/waffle_version.h.in',
+  input : 'waffle-1/waffle_version.h.in',
   output : 'waffle_version.h',
 )
 
 install_headers(
-  'waffle/waffle.h',
-  'waffle/waffle_gbm.h',
-  'waffle/waffle_glx.h',
-  'waffle/waffle_wayland.h',
-  'waffle/waffle_x11_egl.h',
+  'waffle-1/waffle.h',
+  'waffle-1/waffle_gbm.h',
+  'waffle-1/waffle_glx.h',
+  'waffle-1/waffle_wayland.h',
+  'waffle-1/waffle_x11_egl.h',
   waffle_config_h,
   subdir : waffle_name,
 )
