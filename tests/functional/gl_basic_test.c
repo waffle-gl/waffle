@@ -886,10 +886,11 @@ enum_map_translate_str(
 
 /// @return true on success.
 static bool
-parse_args(int argc, char *argv[], int *platform)
+parse_args(int argc, char *argv[], int *out_platform)
 {
     bool ok;
     bool loop_get_opt = true;
+    int platform = 0;
 
 #ifdef __APPLE__
     removeXcodeArgs(&argc, argv);
@@ -907,7 +908,7 @@ parse_args(int argc, char *argv[], int *platform)
             case '?':
                 goto error_unrecognized_arg;
             case OPT_PLATFORM:
-                ok = enum_map_translate_str(platform_map, optarg, platform);
+                ok = enum_map_translate_str(platform_map, optarg, &platform);
                 if (!ok) {
                     usage_error_printf("'%s' is not a valid platform",
                                        optarg);
@@ -926,10 +927,11 @@ parse_args(int argc, char *argv[], int *platform)
         goto error_unrecognized_arg;
     }
 
-    if (!*platform) {
+    if (!platform) {
         usage_error_printf("--platform is required");
     }
 
+    *out_platform = platform;
     return true;
 
 error_unrecognized_arg:
