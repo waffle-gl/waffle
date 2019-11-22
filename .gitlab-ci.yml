@@ -1,0 +1,106 @@
+variables:
+  UPSTREAM_REPO: mesa/waffle
+
+include:
+  - project: 'wayland/ci-templates'
+    ref: f69acac60d5dde0410124fd5674764600821b7a6
+    file: '/templates/debian.yml'
+
+stages:
+  - container
+  - build
+
+
+# When to automatically run the CI
+.ci-run-policy:
+  retry:
+    max: 2
+    when:
+      - runner_system_failure
+  # Cancel CI run if a newer commit is pushed to the same branch
+  interruptible: true
+
+
+# Debian 10 based x86 build image
+x86_build:
+  stage: container
+  extends:
+    - .debian@container-ifnot-exists
+    - .ci-run-policy
+  variables:
+    DEBIAN_VERSION: buster-slim
+    REPO_SUFFIX: $CI_JOB_NAME
+    # no need to pull the whole repo to build the container image
+    GIT_STRATEGY: none
+    DEBIAN_TAG: &x86_build "2019-11-22"
+    DEBIAN_DEBS: >-
+      bash-completion
+      ca-certificates
+      cmake
+      docbook-xsl
+      docbook-xml
+      g++
+      gcc
+      libcmocka-dev
+      libegl1-mesa-dev
+      libgbm-dev
+      libgl1-mesa-dev
+      libudev-dev
+      libwayland-dev
+      libx11-dev
+      libxcb1-dev
+      meson
+      pkg-config
+      xauth
+      xsltproc
+      xvfb
+.use-x86_build:
+  variables:
+    TAG: *x86_build
+  image: "$CI_REGISTRY_IMAGE/debian/x86_build:$TAG"
+  needs:
+    - x86_build
+
+
+# BUILD
+
+.build:
+  extends: .ci-run-policy
+  stage: build
+  variables:
+    GIT_DEPTH: 100
+
+meson:
+  extends:
+    - .build
+    - .use-x86_build
+  script:
+    - bash .gitlab-ci/build-meson.sh x11
+    - bash .gitlab-ci/build-meson.sh wayland
+    - bash .gitlab-ci/build-meson.sh gbm
+    - bash .gitlab-ci/build-meson.sh surfaceless
+  artifacts:
+    when: on_failure
+    paths:
+      - _build/meson-logs/*.txt
+
+cmake:
+  extends:
+    - .build
+    - .use-x86_build
+  script:
+    - cmake
+        -G Ninja
+        -S . -B _build
+        -DCMAKE_INSTALL_PREFIX=`pwd`/install
+        -DCMAKE_BUILD_TYPE=Debug
+        -Dwaffle_has_gbm=1
+        -Dwaffle_has_glx=1
+        -Dwaffle_has_x11_egl=1
+        -Dwaffle_has_wayland=1
+        -Dwaffle_build_manpages=1
+        -Dwaffle_build_htmldocs=1
+        -Dwaffle_build_examples=1
+    - ninja -C _build -j4
+    - ninja -C _build check
+    - ninja -C _build install
