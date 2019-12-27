@@ -9,6 +9,13 @@ WAFFLE_WAYLAND_SYM(int, wl_proxy_add_listener, (struct wl_proxy *proxy,
                                                 void (**implementation)(void),
                                                 void *data))
 
+WAFFLE_WAYLAND_SYM(void, wl_proxy_set_user_data, (struct wl_proxy *proxy,
+                                                  void *user_data))
+
+WAFFLE_WAYLAND_SYM(void *, wl_proxy_get_user_data, (struct wl_proxy *proxy))
+
+WAFFLE_WAYLAND_SYM(uint32_t, wl_proxy_get_version, (struct wl_proxy *proxy))
+
 WAFFLE_WAYLAND_SYM(void, wl_proxy_marshal, (struct wl_proxy *p,
                                             uint32_t opcode, ...))
 

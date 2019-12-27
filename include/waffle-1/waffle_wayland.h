@@ -41,13 +41,19 @@ struct wl_display;
 struct wl_egl_window;
 struct wl_shell;
 struct wl_shell_surface;
+struct xdg_wm_base;
 struct wl_surface;
 
 struct waffle_wayland_display {
     struct wl_display *wl_display;
     struct wl_compositor *wl_compositor;
+    // DEPRECATED: wl_shell will be NULL when compositor does not support the
+    // old wl_shell protocol
     struct wl_shell *wl_shell;
     EGLDisplay egl_display;
+    // xdg_wm_base introduced with 1.7. Will be NULL when compositor does not
+    // support the new xdg-shell protocol
+    struct xdg_wm_base *xdg_shell;
 };
 
 struct waffle_wayland_config {
@@ -63,9 +69,15 @@ struct waffle_wayland_context {
 struct waffle_wayland_window {
     struct waffle_wayland_display display;
     struct wl_surface *wl_surface;
+    // DEPRECATED: wl_shell_surface will be NULL when compositor does not
+    // support the old wl_shell protocol
     struct wl_shell_surface *wl_shell_surface;
     struct wl_egl_window *wl_window;
     EGLSurface egl_surface;
+    // xdg_surface and xdg_toplevel introduced with 1.7. Will be NULL when
+    // compositor does not support the new xdg-shell protocol
+    struct xdg_surface *xdg_surface;
+    struct xdg_toplevel *xdg_toplevel;
 };
 
 #ifdef __cplusplus

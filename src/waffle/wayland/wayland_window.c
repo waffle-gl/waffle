@@ -43,6 +43,7 @@
 #include "wayland_display.h"
 #include "wayland_platform.h"
 #include "wayland_window.h"
+#include "wl-xdg-shell-proto.h"
 
 bool
 wayland_window_destroy(struct wcore_window *wc_self)
@@ -63,12 +64,47 @@ wayland_window_destroy(struct wcore_window *wc_self)
     if (self->wl_shell_surface)
         wl_shell_surface_destroy(self->wl_shell_surface);
 
+    if (self->xdg_toplevel)
+        xdg_toplevel_destroy(self->xdg_toplevel);
+
+    if (self->xdg_surface)
+        xdg_surface_destroy(self->xdg_surface);
+
     if (self->wl_surface)
         wl_surface_destroy(self->wl_surface);
 
     free(self);
     return ok;
 }
+
+static void
+surface_handle_configure(void *data, struct xdg_surface *surface,
+                         uint32_t serial)
+{
+    xdg_surface_ack_configure(surface, serial);
+}
+
+static const struct xdg_surface_listener surface_listener = {
+    .configure = surface_handle_configure,
+};
+
+static void
+toplevel_handle_configure(void *data, struct xdg_toplevel *toplevel,
+                          int32_t width, int32_t height,
+                          struct wl_array *states)
+{
+    // NOTE: daniels: handle fullscreen/maximised events or fatal error
+}
+
+static void
+toplevel_handle_close(void *data, struct xdg_toplevel *xdg_toplevel)
+{
+}
+
+static const struct xdg_toplevel_listener toplevel_listener = {
+    .configure = toplevel_handle_configure,
+    .close = toplevel_handle_close,
+};
 
 static void
 shell_surface_listener_ping(void *data,
@@ -130,7 +166,7 @@ wayland_window_create(struct wcore_platform *wc_plat,
         wcore_errorf(WAFFLE_ERROR_UNKNOWN, "wayland compositor not found");
         goto error;
     }
-    if (!dpy->wl_shell) {
+    if (!dpy->xdg_shell && !dpy->wl_shell) {
         wcore_errorf(WAFFLE_ERROR_UNKNOWN, "wayland shell not found");
         goto error;
     }
@@ -142,17 +178,40 @@ wayland_window_create(struct wcore_platform *wc_plat,
         goto error;
     }
 
-    self->wl_shell_surface = wl_shell_get_shell_surface(dpy->wl_shell,
+    if (dpy->xdg_shell) {
+        self->xdg_surface = xdg_wm_base_get_xdg_surface(dpy->xdg_shell,
                                                         self->wl_surface);
-    if (!self->wl_shell_surface) {
-        wcore_errorf(WAFFLE_ERROR_UNKNOWN,
-                     "wl_shell_get_shell_surface failed");
-        goto error;
-    }
+        if (!self->xdg_surface) {
+            wcore_errorf(WAFFLE_ERROR_UNKNOWN,
+                         "xdg_wm_base_get_xdg_surface failed");
+            goto error;
+        }
 
-    wl_shell_surface_add_listener(self->wl_shell_surface,
-                                  &shell_surface_listener,
-                                  NULL);
+        xdg_surface_add_listener(self->xdg_surface, &surface_listener, self);
+
+        self->xdg_toplevel = xdg_surface_get_toplevel(self->xdg_surface);
+        if (!self->xdg_toplevel) {
+            wcore_errorf(WAFFLE_ERROR_UNKNOWN,
+                         "xdg_surface_get_toplevel failed");
+            goto error;
+        }
+
+        xdg_toplevel_add_listener(self->xdg_toplevel, &toplevel_listener, NULL);
+    }
+    else {
+        self->wl_shell_surface = wl_shell_get_shell_surface(dpy->wl_shell,
+                                                            self->wl_surface);
+
+        if (!self->wl_shell_surface) {
+            wcore_errorf(WAFFLE_ERROR_UNKNOWN,
+                         "wl_shell_get_shell_surface failed");
+            goto error;
+        }
+
+        wl_shell_surface_add_listener(self->wl_shell_surface,
+                                      &shell_surface_listener,
+                                      NULL);
+    }
 
     self->wl_window = plat->wl_egl_window_create(self->wl_surface,
                                                  width, height);
@@ -184,7 +243,10 @@ wayland_window_show(struct wcore_window *wc_self)
     struct wayland_display *dpy = wayland_display(wc_self->display);
     bool ok = true;
 
-    wl_shell_surface_set_toplevel(self->wl_shell_surface);
+    if (dpy->xdg_shell)
+        wl_surface_commit(self->wl_surface);
+    else
+        wl_shell_surface_set_toplevel(self->wl_shell_surface);
 
     ok = wayland_display_sync(dpy);
     if (!ok)
@@ -243,6 +305,8 @@ wayland_window_get_native(struct wcore_window *wc_self)
 
     wayland_display_fill_native(dpy, &n_window->wayland->display);
     n_window->wayland->wl_surface = self->wl_surface;
+    n_window->wayland->xdg_surface = self->xdg_surface;
+    n_window->wayland->xdg_toplevel = self->xdg_toplevel;
     n_window->wayland->wl_shell_surface = self->wl_shell_surface;
     n_window->wayland->wl_window = self->wl_window;
     n_window->wayland->egl_surface = self->wegl.egl;

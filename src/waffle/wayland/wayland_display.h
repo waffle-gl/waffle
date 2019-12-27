@@ -39,11 +39,13 @@ struct wcore_platform;
 struct wl_display;
 struct wl_compositor;
 struct wl_shell;
+struct xdg_wm_base;
 
 struct wayland_display {
     struct wl_display *wl_display;
     struct wl_registry *wl_registry;
     struct wl_compositor *wl_compositor;
+    struct xdg_wm_base *xdg_shell;
     struct wl_shell *wl_shell;
 
     struct wegl_display wegl;

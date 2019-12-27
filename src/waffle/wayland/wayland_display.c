@@ -39,6 +39,7 @@
 
 #include "wayland_display.h"
 #include "wayland_platform.h"
+#include "wl-xdg-shell-proto.h"
 
 bool
 wayland_display_destroy(struct wcore_display *wc_self)
@@ -59,6 +60,16 @@ wayland_display_destroy(struct wcore_display *wc_self)
 }
 
 static void
+xdg_wm_base_ping(void *data, struct xdg_wm_base *shell, uint32_t serial)
+{
+       xdg_wm_base_pong(shell, serial);
+}
+
+static const struct xdg_wm_base_listener wm_base_listener = {
+       .ping = xdg_wm_base_ping,
+};
+
+static void
 registry_listener_global(void *data,
                          struct wl_registry *registry,
                          uint32_t name,
@@ -70,6 +81,11 @@ registry_listener_global(void *data,
     if (!strncmp(interface, "wl_compositor", 14)) {
         self->wl_compositor = wl_registry_bind(self->wl_registry, name,
                                                &wl_compositor_interface, 1);
+    }
+    else if (!strncmp(interface, "xdg_wm_base", 12)) {
+        self->xdg_shell = wl_registry_bind(self->wl_registry, name,
+                                           &xdg_wm_base_interface, 1);
+        xdg_wm_base_add_listener(self->xdg_shell, &wm_base_listener, NULL);
     }
     else if (!strncmp(interface, "wl_shell", 9)) {
         self->wl_shell = wl_registry_bind(self->wl_registry, name,
@@ -135,7 +151,7 @@ wayland_display_connect(struct wcore_platform *wc_plat,
         goto error;
     }
 
-    if (!self->wl_shell) {
+    if (!self->xdg_shell && !self->wl_shell) {
         wcore_errorf(WAFFLE_ERROR_UNKNOWN, "failed to bind to the wayland "
                      "shell");
         goto error;
@@ -160,6 +176,7 @@ wayland_display_fill_native(struct wayland_display *self,
     n_dpy->wl_compositor = self->wl_compositor;
     n_dpy->wl_shell = self->wl_shell;
     n_dpy->egl_display = self->wegl.egl;
+    n_dpy->xdg_shell = self->xdg_shell;
 }
 
 union waffle_native_display*

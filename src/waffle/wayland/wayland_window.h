@@ -38,6 +38,8 @@ struct wcore_platform;
 
 struct wayland_window {
     struct wl_surface *wl_surface;
+    struct xdg_surface *xdg_surface;
+    struct xdg_toplevel *xdg_toplevel;
     struct wl_shell_surface *wl_shell_surface;
     struct wl_egl_window *wl_window;
 
