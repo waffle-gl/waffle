@@ -113,7 +113,7 @@ if dep_bash.found()
     'shell-completion/bash/wflinfo',
     install_dir : dep_bash.get_pkgconfig_variable(
       'completionsdir',
-      define_variable : ['prefix', get_option('prefix')]),
+      define_variable : ['datadir', get_option('datadir')]),
   )
 endif
 
