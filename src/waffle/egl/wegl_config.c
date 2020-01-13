@@ -41,11 +41,6 @@ static bool
 check_context_attrs(struct wegl_display *dpy,
                     const struct wcore_config_attrs *attrs)
 {
-    if (attrs->context_forward_compatible) {
-        assert(attrs->context_api == WAFFLE_CONTEXT_OPENGL);
-        assert(wcore_config_attrs_version_ge(attrs, 30));
-    }
-
     if (attrs->context_debug && !dpy->KHR_create_context) {
         wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
                      "EGL_KHR_create_context is required in order to "
@@ -88,11 +83,6 @@ check_context_attrs(struct wegl_display *dpy,
                              "request an OpenGL version not equal to the default "
                              "value 1.0");
                 return false;
-            }
-
-            if (wcore_config_attrs_version_ge(attrs, 32)) {
-                assert(attrs->context_profile == WAFFLE_CONTEXT_CORE_PROFILE ||
-                       attrs->context_profile == WAFFLE_CONTEXT_COMPATIBILITY_PROFILE);
             }
 
             if (attrs->context_forward_compatible && !dpy->KHR_create_context) {
