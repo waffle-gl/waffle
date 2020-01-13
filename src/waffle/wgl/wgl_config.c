@@ -107,32 +107,14 @@ wgl_config_check_context_attrs(struct wgl_display *dpy,
             return true;
 
         case WAFFLE_CONTEXT_OPENGL_ES1:
-            if (!dpy->EXT_create_context_es_profile) {
-                wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
-                             "WGL_EXT_create_context_es_profile is required "
-                             "to create an OpenGL ES1 context");
-                return false;
-            }
-
-            return true;
-
         case WAFFLE_CONTEXT_OPENGL_ES2:
-            if (!dpy->EXT_create_context_es2_profile
-                && !dpy->EXT_create_context_es_profile) {
+        case WAFFLE_CONTEXT_OPENGL_ES3:
+            if (!dpy->EXT_create_context_es_profile &&
+                !dpy->EXT_create_context_es2_profile) {
                 wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
                              "WGL_EXT_create_context_es_profile or "
                              "WGL_EXT_create_context_es2_profile is required "
-                             "to create an OpenGL ES2 context");
-                return false;
-            }
-
-            return true;
-
-        case WAFFLE_CONTEXT_OPENGL_ES3:
-            if (!dpy->EXT_create_context_es_profile) {
-                wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
-                             "WGL_EXT_create_context_es_profile is required "
-                             "to create an OpenGL ES3 context");
+                             "to create an OpenGL ES* context");
                 return false;
             }
 
