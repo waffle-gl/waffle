@@ -60,11 +60,6 @@ static bool
 wgl_config_check_context_attrs(struct wgl_display *dpy,
                                const struct wcore_config_attrs *attrs)
 {
-    if (attrs->context_forward_compatible) {
-        assert(attrs->context_api == WAFFLE_CONTEXT_OPENGL);
-        assert(wcore_config_attrs_version_ge(attrs, 30));
-    }
-
     if (!dpy->ARB_create_context &&
         wgl_context_needs_arb_create_context(attrs)) {
         const char *gl = "";
@@ -107,10 +102,6 @@ wgl_config_check_context_attrs(struct wgl_display *dpy,
                              "WGL_ARB_create_context_profile is required "
                              "to create a context with version >= 3.2");
                 return false;
-            }
-            else if (wcore_config_attrs_version_ge(attrs, 32)) {
-                assert(attrs->context_profile == WAFFLE_CONTEXT_CORE_PROFILE ||
-                       attrs->context_profile == WAFFLE_CONTEXT_COMPATIBILITY_PROFILE);
             }
 
             return true;
