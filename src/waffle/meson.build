@@ -258,6 +258,7 @@ if get_option('build-tests')
         include_directories : [inc_waffle, inc_include],
         link_with : testwaffle,
       ),
+      suite : ['core'],
     )
   endforeach
 endif

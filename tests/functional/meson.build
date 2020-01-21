@@ -47,17 +47,42 @@ if build_cgl
   test('gl_basic (cgl)', gl_basic_test, args : ['--platform', 'cgl'])
 elif ['dragonfly', 'openbsd', 'netbsd', 'freebsd', 'linux'].contains(host_machine.system())
   if build_glx
-    test('gl_basic (glx)', gl_basic_test, args : ['--platform', 'glx'])
+    test(
+      'gl_basic (glx)',
+      gl_basic_test,
+      args : ['--platform', 'glx'],
+      suite : ['functional']
+    )
   endif
   if build_wayland
-    test('gl_basic (wayland)', gl_basic_test, args : ['--platform', 'wayland'])
+    test(
+      'gl_basic (wayland)',
+      gl_basic_test,
+      args : ['--platform', 'wayland'],
+      suite : ['functional'],
+    )
   endif
   if build_x11_egl
-    test('gl_basic (x11_egl)', gl_basic_test, args : ['--platform', 'x11_egl'])
+    test(
+      'gl_basic (x11_egl)',
+      gl_basic_test,
+      args : ['--platform', 'x11_egl'],
+      suite : ['functional'],
+    )
   endif
   if build_gbm
-    test('gl_basic (gbm)', gl_basic_test, args : ['--platform', 'gbm'])
+    test(
+      'gl_basic (gbm)',
+      gl_basic_test,
+      args : ['--platform', 'gbm'],
+      suite : ['functional'],
+    )
   endif
 elif host_machine.system() == 'windows' # cygwin?
-  test('gl_basic (wgl)', gl_basic_test, args : ['--platform', 'wgl'])
+  test(
+    'gl_basic (wgl)',
+    gl_basic_test,
+    args : ['--platform', 'wgl'],
+    suite : ['functional'],
+  )
 endif
