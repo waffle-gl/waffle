@@ -280,6 +280,24 @@ struct gl_basic_draw_args__ {
 };
 
 static void
+error_waffle(void)
+{
+    const struct waffle_error_info *info = waffle_error_get_info();
+    const char *code = waffle_error_to_string(info->code);
+
+    if (info->message_length > 0)
+        fprintf(stderr, "Waffle error: 0x%x %s: %s\n", info->code, code, info->message);
+    else
+        fprintf(stderr, "Waffle error: 0x%x %s\n", info->code, code);
+}
+
+#define assert_true_with_wfl_error(_arg) \
+    if (!(_arg)) { \
+        error_waffle(); \
+        assert_true(0); \
+    }
+
+static void
 gl_basic_draw__(void **state, struct gl_basic_draw_args__ args)
 {
     struct test_state_gl_basic *ts = *state;
@@ -291,6 +309,7 @@ gl_basic_draw__(void **state, struct gl_basic_draw_args__ args)
     bool context_debug = args.debug;
     bool context_robust = args.robust;
     bool alpha = args.alpha;
+    bool ret;
 
     int32_t config_attrib_list[64];
     int i;
@@ -337,7 +356,8 @@ gl_basic_draw__(void **state, struct gl_basic_draw_args__ args)
     config_attrib_list[i++] = 0;
 
     // Create objects.
-    assert_true(ts->dpy = waffle_display_connect(NULL));
+    ts->dpy = waffle_display_connect(NULL);
+    assert_true_with_wfl_error(ts->dpy);
 
     ts->config = waffle_config_choose(ts->dpy, config_attrib_list);
     if (expect_error) {
@@ -353,12 +373,15 @@ gl_basic_draw__(void **state, struct gl_basic_draw_args__ args)
             // config flavor.
             skip();
         default:
-            assert_true(0);
+            assert_true_with_wfl_error(ts->config);
         }
     }
 
-    assert_true(ts->window = waffle_window_create2(ts->config, window_attrib_list));
-    assert_true(waffle_window_show(ts->window));
+    ts->window = waffle_window_create2(ts->config, window_attrib_list);
+    assert_true_with_wfl_error(ts->window);
+
+    ret = waffle_window_show(ts->window);
+    assert_true_with_wfl_error(ret);
 
     ts->ctx = waffle_context_create(ts->config, NULL);
     if (ts->ctx == NULL) {
@@ -370,7 +393,7 @@ gl_basic_draw__(void **state, struct gl_basic_draw_args__ args)
             // context flavor.
             skip();
         default:
-            assert_true(0);
+            assert_true_with_wfl_error(ts->ctx);
         }
     }
 
@@ -382,7 +405,8 @@ gl_basic_draw__(void **state, struct gl_basic_draw_args__ args)
     assert_true(glReadPixels    = get_gl_symbol(waffle_context_api, "glReadPixels"));
     assert_true(glGetString     = get_gl_symbol(waffle_context_api, "glGetString"));
 
-    assert_true(waffle_make_current(ts->dpy, ts->window, ts->ctx));
+    ret = waffle_make_current(ts->dpy, ts->window, ts->ctx);
+    assert_true_with_wfl_error(ret);
 
     assert_true(waffle_get_current_display() == ts->dpy);
     assert_true(waffle_get_current_window() == ts->window);
@@ -490,7 +514,8 @@ gl_basic_draw__(void **state, struct gl_basic_draw_args__ args)
     ASSERT_GL(glReadPixels(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT,
                            GL_RGBA, GL_UNSIGNED_BYTE,
                            ts->actual_pixels));
-    assert_true(waffle_window_swap_buffers(ts->window));
+    ret = waffle_window_swap_buffers(ts->window);
+    assert_true_with_wfl_error(ret);
 
     assert_memory_equal(&ts->actual_pixels, &ts->expect_pixels,
                         sizeof(ts->expect_pixels));
