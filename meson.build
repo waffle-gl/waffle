@@ -80,7 +80,6 @@ if build_wgl
   endif
   dep_gl = cc.find_library('opengl32')
 elif build_cgl
-  # TODO: MacOS
   dep_cocoa = dependency('cocoa')
   dep_core_foundation = dependency('corefoundation')
   dep_gl = dependency('gl')

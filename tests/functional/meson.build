@@ -34,7 +34,6 @@ if build_cgl
   files_gl_basic_test += files('gl_basic_cocoa.m')
 endif
 
-# TODO: mac: needs cocoa
 gl_basic_test = executable(
   'gl_basic_test',
   [files_gl_basic_test, waffle_config_h],
