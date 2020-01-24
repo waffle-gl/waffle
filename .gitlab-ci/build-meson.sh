@@ -4,7 +4,7 @@ set -eu
 case $1 in
   x11)
     platform_option=(-Dglx=enabled -Dx11_egl=enabled)
-    test_wrapper=(xvfb-run -a)
+    test_wrapper=(xvfb-run -a -w10)
     ;;
   wayland)
     platform_option=(-Dwayland=enabled)
@@ -38,8 +38,6 @@ meson _build \
 
 ninja -C _build -j4
 
-# X11 connection to xvfb seems flaky; give it a second chance
-"${test_wrapper[@]}" ninja -C _build test ||
 "${test_wrapper[@]}" ninja -C _build test
 
 ninja -C _build install
