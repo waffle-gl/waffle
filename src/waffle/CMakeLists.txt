@@ -136,6 +136,15 @@ if(waffle_has_surfaceless_egl)
     )
 endif()
 
+macro(wayland_gen xml_file obj_name)
+    set(PROTO_FILE wl-${obj_name}-proto.c)
+    add_custom_command(
+        OUTPUT ${PROTO_FILE}
+        COMMAND ${WAYLAND_SCANNER} "private-code" ${xml_file} ${PROTO_FILE}
+    )
+    list(APPEND waffle_sources ${PROTO_FILE})
+endmacro()
+
 if(waffle_has_wayland)
     list(APPEND waffle_sources
         wayland/wayland_display.c
@@ -143,6 +152,7 @@ if(waffle_has_wayland)
         wayland/wayland_window.c
         wayland/wayland_wrapper.c
     )
+    wayland_gen(${wayland_core_xml} "core")
 endif()
 
 if(waffle_has_x11)

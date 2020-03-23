@@ -127,6 +127,11 @@ if(waffle_on_linux)
                 "${wayland_missing_deps} wayland-egl>=9.1"
                 )
         endif()
+        if(NOT wayland-scanner_FOUND)
+            set(wayland_missing_deps
+                "${wayland_missing_deps} wayland-scanner>=1.15"
+                )
+        endif()
         if(NOT egl_FOUND)
             set(wayland_missing_deps
                 "${wayland_missing_deps} egl"

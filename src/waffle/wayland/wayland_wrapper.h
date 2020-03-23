@@ -41,29 +41,18 @@ struct wl_proxy;
 struct wl_display;
 
 
-// Data symbols
-#define WAFFLE_WAYLAND_INTERFACE(iface) \
-    extern const struct wl_interface *wfl_##iface;
-
 // Functions
 #define WAFFLE_WAYLAND_SYM(rc, fn, params) \
     typedef rc (*pfn_##fn) params; \
     extern pfn_##fn wfl_##fn;
 #include "wayland_sym.h"
 #undef WAFFLE_WAYLAND_SYM
-#undef WAFFLE_WAYLAND_INTERFACE
 
 #ifdef _WAYLAND_CLIENT_H
 #error Do not include wayland-client.h ahead of wayland_wrapper.h
 #endif
 
 #include <wayland-client-core.h>
-
-#define wl_compositor_interface (*wfl_wl_compositor_interface)
-#define wl_registry_interface (*wfl_wl_registry_interface)
-#define wl_shell_interface (*wfl_wl_shell_interface)
-#define wl_shell_surface_interface (*wfl_wl_shell_surface_interface)
-#define wl_surface_interface (*wfl_wl_surface_interface)
 
 #define wl_display_connect (*wfl_wl_display_connect)
 #define wl_display_disconnect (*wfl_wl_display_disconnect)

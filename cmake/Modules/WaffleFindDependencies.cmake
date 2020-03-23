@@ -71,7 +71,12 @@ if(waffle_on_linux)
 
     # waffle_has_wayland
     waffle_pkg_config(wayland-client wayland-client>=1.10)
+    pkg_get_variable(WAYLAND_CORE_PROTOCOLS_DIR wayland-client pkgdatadir)
+    set(wayland_core_xml ${WAYLAND_CORE_PROTOCOLS_DIR}/wayland.xml)
+
     waffle_pkg_config(wayland-egl wayland-egl>=9.1)
+    waffle_pkg_config(wayland-scanner wayland-scanner>=1.15)
+    pkg_get_variable(WAYLAND_SCANNER wayland-scanner wayland_scanner)
 
     # waffle_has_x11
     waffle_pkg_config(x11-xcb x11-xcb)

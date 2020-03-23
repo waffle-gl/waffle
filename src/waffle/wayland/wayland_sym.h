@@ -1,10 +1,3 @@
-WAFFLE_WAYLAND_INTERFACE(wl_compositor_interface)
-WAFFLE_WAYLAND_INTERFACE(wl_registry_interface)
-WAFFLE_WAYLAND_INTERFACE(wl_shell_interface)
-WAFFLE_WAYLAND_INTERFACE(wl_shell_surface_interface)
-WAFFLE_WAYLAND_INTERFACE(wl_surface_interface)
-
-
 WAFFLE_WAYLAND_SYM(struct wl_display *, wl_display_connect, (const char *name))
 WAFFLE_WAYLAND_SYM(void, wl_display_disconnect, (struct wl_display *display))
 

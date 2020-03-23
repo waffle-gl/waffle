@@ -88,12 +88,22 @@ if build_surfaceless
 endif
 
 if build_wayland
+  wl_core_proto_c = custom_target(
+    'wl-core-proto.c',
+    input: wayland_core_xml,
+    output: 'wl-core-proto.c',
+    command: [prog_wayland_scanner, 'private-code', '@INPUT@', '@OUTPUT@'],
+  )
+
   files_libwaffle += files(
     'wayland/wayland_display.c',
     'wayland/wayland_platform.c',
     'wayland/wayland_window.c',
     'wayland/wayland_wrapper.c',
   )
+  files_libwaffle += [
+    wl_core_proto_c,
+  ]
 endif
 
 if build_gbm

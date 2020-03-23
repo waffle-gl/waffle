@@ -50,13 +50,10 @@ static void *dl_wl_client;
 
 static const char *libwl_client_filename = "libwayland-client.so.0";
 
-#define WAFFLE_WAYLAND_INTERFACE(iface) \
-    const struct wl_interface *wfl_##iface = NULL;
 #define WAFFLE_WAYLAND_SYM(rc, fn, params) \
     pfn_##fn wfl_##fn = NULL;
 #include "wayland_sym.h"
 #undef WAFFLE_WAYLAND_SYM
-#undef WAFFLE_WAYLAND_INTERFACE
 
 bool
 wayland_wrapper_teardown(void)
@@ -90,14 +87,6 @@ wayland_wrapper_init(void)
         return false;
     }
 
-#define WAFFLE_WAYLAND_INTERFACE(iface)                               \
-    wfl_##iface = (struct wl_interface *)dlsym(dl_wl_client, #iface); \
-    if (!wfl_##iface) {                                               \
-        wcore_errorf(WAFFLE_ERROR_FATAL,                              \
-                     "dlsym(\"%s\", \"" #iface "\") failed: %s",      \
-                     libwl_client_filename, dlerror());               \
-        return false;                                                 \
-    }
 #define WAFFLE_WAYLAND_SYM(rc, fn, params)                      \
     wfl_##fn = (pfn_##fn)dlsym(dl_wl_client, #fn);              \
     if (!wfl_##fn) {                                            \
@@ -108,7 +97,6 @@ wayland_wrapper_init(void)
     }
 #include "wayland_sym.h"
 #undef WAFFLE_WAYLAND_SYM
-#undef WAFFLE_WAYLAND_INTERFACE
 
     return true;
 }
