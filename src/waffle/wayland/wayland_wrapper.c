@@ -50,6 +50,14 @@ static void *dl_wl_client;
 
 static const char *libwl_client_filename = "libwayland-client.so.0";
 
+#define WAFFLE_WAYLAND_INTERFACE(iface) \
+    const struct wl_interface *wfl_##iface = NULL;
+#define WAFFLE_WAYLAND_SYM(rc, fn, params) \
+    pfn_##fn wfl_##fn = NULL;
+#include "wayland_sym.h"
+#undef WAFFLE_WAYLAND_SYM
+#undef WAFFLE_WAYLAND_INTERFACE
+
 bool
 wayland_wrapper_teardown(void)
 {
@@ -69,48 +77,38 @@ wayland_wrapper_teardown(void)
     return ok;
 }
 
+// On failure the caller of wayland_wrapper_init will trigger it's own
+// destruction which will execute wayland_wrapper_teardown.
 bool
 wayland_wrapper_init(void)
 {
-    bool ok = true;
-
     dl_wl_client = dlopen(libwl_client_filename, RTLD_LAZY | RTLD_LOCAL);
     if (!dl_wl_client) {
         wcore_errorf(WAFFLE_ERROR_FATAL,
                      "dlopen(\"%s\") failed: %s",
                      libwl_client_filename, dlerror());
-        ok = false;
-        goto error;
+        return false;
     }
 
-#define RETRIEVE_WL_CLIENT_SYMBOL(S)                            \
-    wfl_##S = (__typeof__(wfl_##S))dlsym(dl_wl_client, #S);     \
-    if (!wfl_##S) {                                             \
+#define WAFFLE_WAYLAND_INTERFACE(iface)                               \
+    wfl_##iface = (struct wl_interface *)dlsym(dl_wl_client, #iface); \
+    if (!wfl_##iface) {                                               \
+        wcore_errorf(WAFFLE_ERROR_FATAL,                              \
+                     "dlsym(\"%s\", \"" #iface "\") failed: %s",      \
+                     libwl_client_filename, dlerror());               \
+        return false;                                                 \
+    }
+#define WAFFLE_WAYLAND_SYM(rc, fn, params)                      \
+    wfl_##fn = (pfn_##fn)dlsym(dl_wl_client, #fn);              \
+    if (!wfl_##fn) {                                            \
         wcore_errorf(WAFFLE_ERROR_FATAL,                        \
-                     "dlsym(\"%s\", \"" #S "\") failed: %s",    \
+                     "dlsym(\"%s\", \"" #fn "\") failed: %s",   \
                      libwl_client_filename, dlerror());         \
-        ok = false;                                             \
-        goto error;                                             \
+        return false;                                           \
     }
+#include "wayland_sym.h"
+#undef WAFFLE_WAYLAND_SYM
+#undef WAFFLE_WAYLAND_INTERFACE
 
-    RETRIEVE_WL_CLIENT_SYMBOL(wl_compositor_interface);
-    RETRIEVE_WL_CLIENT_SYMBOL(wl_registry_interface);
-    RETRIEVE_WL_CLIENT_SYMBOL(wl_shell_interface);
-    RETRIEVE_WL_CLIENT_SYMBOL(wl_shell_surface_interface);
-    RETRIEVE_WL_CLIENT_SYMBOL(wl_surface_interface);
-
-    RETRIEVE_WL_CLIENT_SYMBOL(wl_display_connect);
-    RETRIEVE_WL_CLIENT_SYMBOL(wl_display_disconnect);
-    RETRIEVE_WL_CLIENT_SYMBOL(wl_display_roundtrip);
-    RETRIEVE_WL_CLIENT_SYMBOL(wl_proxy_destroy);
-    RETRIEVE_WL_CLIENT_SYMBOL(wl_proxy_add_listener);
-    RETRIEVE_WL_CLIENT_SYMBOL(wl_proxy_marshal);
-    RETRIEVE_WL_CLIENT_SYMBOL(wl_proxy_marshal_constructor);
-    RETRIEVE_WL_CLIENT_SYMBOL(wl_proxy_marshal_constructor_versioned);
-#undef RETRIEVE_WL_CLIENT_SYMBOL
-
-error:
-    // On failure the caller of wayland_wrapper_init will trigger it's own
-    // destruction which will execute wayland_wrapper_teardown.
-    return ok;
+    return true;
 }

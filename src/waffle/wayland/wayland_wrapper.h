@@ -36,56 +36,28 @@ bool
 wayland_wrapper_teardown(void);
 
 
-// Data symbols
-const struct wl_interface *wfl_wl_compositor_interface;
-const struct wl_interface *wfl_wl_registry_interface;
-const struct wl_interface *wfl_wl_shell_interface;
-const struct wl_interface *wfl_wl_shell_surface_interface;
-const struct wl_interface *wfl_wl_surface_interface;
-
-
 // Forward declaration of the structs required by the functions
 struct wl_proxy;
 struct wl_display;
 
 
+// Data symbols
+#define WAFFLE_WAYLAND_INTERFACE(iface) \
+    extern const struct wl_interface *wfl_##iface;
+
 // Functions
-struct wl_display *
-(*wfl_wl_display_connect)(const char *name);
-
-void
-(*wfl_wl_display_disconnect)(struct wl_display *display);
-
-int
-(*wfl_wl_display_roundtrip)(struct wl_display *display);
-
-
-void
-(*wfl_wl_proxy_destroy)(struct wl_proxy *proxy);
-
-int
-(*wfl_wl_proxy_add_listener)(struct wl_proxy *proxy,
-                             void (**implementation)(void), void *data);
-
-void
-(*wfl_wl_proxy_marshal)(struct wl_proxy *p, uint32_t opcode, ...);
-
-struct wl_proxy *
-(*wfl_wl_proxy_marshal_constructor)(struct wl_proxy *proxy,
-                                    uint32_t opcode,
-                                    const struct wl_interface *interface,
-                                    ...);
-
-struct wl_proxy *
-(*wfl_wl_proxy_marshal_constructor_versioned)(struct wl_proxy *proxy,
-					      uint32_t opcode,
-					      const struct wl_interface *interface,
-					      uint32_t version,
-					      ...);
+#define WAFFLE_WAYLAND_SYM(rc, fn, params) \
+    typedef rc (*pfn_##fn) params; \
+    extern pfn_##fn wfl_##fn;
+#include "wayland_sym.h"
+#undef WAFFLE_WAYLAND_SYM
+#undef WAFFLE_WAYLAND_INTERFACE
 
 #ifdef _WAYLAND_CLIENT_H
 #error Do not include wayland-client.h ahead of wayland_wrapper.h
 #endif
+
+#include <wayland-client-core.h>
 
 #define wl_compositor_interface (*wfl_wl_compositor_interface)
 #define wl_registry_interface (*wfl_wl_registry_interface)
@@ -101,3 +73,5 @@ struct wl_proxy *
 #define wl_proxy_marshal (*wfl_wl_proxy_marshal)
 #define wl_proxy_marshal_constructor (*wfl_wl_proxy_marshal_constructor)
 #define wl_proxy_marshal_constructor_versioned (*wfl_wl_proxy_marshal_constructor_versioned)
+
+#include <wayland-client-protocol.h>

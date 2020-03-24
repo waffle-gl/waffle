@@ -30,7 +30,6 @@
 
 // The wrapper must be included before wayland-client.h
 #include "wayland_wrapper.h"
-#include <wayland-client.h>
 #undef container_of
 
 #include "wcore_error.h"
