@@ -70,7 +70,7 @@ if(waffle_on_linux)
     waffle_pkg_config(gl gl)
 
     # waffle_has_wayland
-    waffle_pkg_config(wayland-client wayland-client>=1)
+    waffle_pkg_config(wayland-client wayland-client>=1.10)
     waffle_pkg_config(wayland-egl wayland-egl>=9.1)
 
     # waffle_has_x11

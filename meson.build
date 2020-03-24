@@ -87,7 +87,7 @@ else
   dep_gl = dependency('gl', required : get_option('glx'))
   dep_egl = dependency('egl', required : get_option('x11_egl'))
   dep_wayland_client = dependency(
-    'wayland-client', version : '>= 1.0', required : get_option('wayland'),
+    'wayland-client', version : '>= 1.10', required : get_option('wayland'),
   )
   dep_wayland_egl = dependency(
     'wayland-egl', version : '>= 9.1', required : get_option('wayland'),

@@ -119,7 +119,7 @@ if(waffle_on_linux)
     if(waffle_has_wayland)
         if(NOT wayland-client_FOUND)
             set(wayland_missing_deps
-                "${wayland_missing_deps} wayland-client>=1"
+                "${wayland_missing_deps} wayland-client>=1.10"
                 )
         endif()
         if(NOT wayland-egl_FOUND)

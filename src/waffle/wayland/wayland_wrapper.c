@@ -106,11 +106,7 @@ wayland_wrapper_init(void)
     RETRIEVE_WL_CLIENT_SYMBOL(wl_proxy_add_listener);
     RETRIEVE_WL_CLIENT_SYMBOL(wl_proxy_marshal);
     RETRIEVE_WL_CLIENT_SYMBOL(wl_proxy_marshal_constructor);
-#if WAYLAND_VERSION_MAJOR == 1 && \
-    (WAYLAND_VERSION_MINOR > 9 || \
-     (WAYLAND_VERSION_MINOR == 9 && WAYLAND_VERSION_MICRO >= 91))
     RETRIEVE_WL_CLIENT_SYMBOL(wl_proxy_marshal_constructor_versioned);
-#endif
 #undef RETRIEVE_WL_CLIENT_SYMBOL
 
 error:

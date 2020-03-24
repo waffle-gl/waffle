@@ -27,7 +27,6 @@
 
 #include <stdbool.h>
 
-#include "wayland-version.h"
 #include "wayland-util.h"
 
 bool
