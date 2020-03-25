@@ -490,7 +490,11 @@ gl_basic_draw__(void **state, struct gl_basic_draw_args__ args)
             profile_suffix = " (Core Profile)";
             break;
         case WAFFLE_CONTEXT_COMPATIBILITY_PROFILE:
-            profile_suffix = " (Compatibility Profile)";
+            // HACK: seems like Mesa 19.3.3 at least will report
+            if (context_forward_compatible)
+                profile_suffix = " (Core Profile)";
+            else
+                profile_suffix = " (Compatibility Profile)";
             break;
         case WAFFLE_DONT_CARE:
             break;
@@ -518,7 +522,12 @@ gl_basic_draw__(void **state, struct gl_basic_draw_args__ args)
             assert_true(profile_mask & GL_CONTEXT_CORE_PROFILE_BIT);
             break;
         case WAFFLE_CONTEXT_COMPATIBILITY_PROFILE:
-            assert_true(profile_mask & GL_CONTEXT_COMPATIBILITY_PROFILE_BIT);
+            // HACK: seems like Mesa 19.3.3 at least will report
+            if (context_forward_compatible)
+                assert_true(profile_mask & GL_CONTEXT_CORE_PROFILE_BIT);
+            else
+                assert_true(profile_mask & GL_CONTEXT_COMPATIBILITY_PROFILE_BIT);
+            break;
         case WAFFLE_DONT_CARE:
             break;
         default:
