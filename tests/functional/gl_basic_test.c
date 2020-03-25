@@ -118,6 +118,10 @@ typedef double              GLclampd;   /* double precision float in [0,1] */
 #define GL_CONTEXT_FLAG_FORWARD_COMPATIBLE_BIT 0x00000001
 #define GL_CONTEXT_FLAG_DEBUG_BIT              0x00000002
 
+#define GL_CONTEXT_PROFILE_MASK     0x9126
+#define GL_CONTEXT_CORE_PROFILE_BIT            0x00000001
+#define GL_CONTEXT_COMPATIBILITY_PROFILE_BIT   0x00000002
+
 #ifndef _WIN32
 #define APIENTRY
 #else
@@ -503,6 +507,25 @@ gl_basic_draw__(void **state, struct gl_basic_draw_args__ args)
     assert_string_len_equal(version_str, profile_str, profile_str_len);
 
     int version_10x = 10 * major + minor;
+
+    // Another profile check
+    if (waffle_context_api == WAFFLE_CONTEXT_OPENGL && version_10x >= 32) {
+        GLint profile_mask = 0;
+        glGetIntegerv(GL_CONTEXT_PROFILE_MASK, &profile_mask);
+
+        switch (context_profile) {
+        case WAFFLE_CONTEXT_CORE_PROFILE:
+            assert_true(profile_mask & GL_CONTEXT_CORE_PROFILE_BIT);
+            break;
+        case WAFFLE_CONTEXT_COMPATIBILITY_PROFILE:
+            assert_true(profile_mask & GL_CONTEXT_COMPATIBILITY_PROFILE_BIT);
+        case WAFFLE_DONT_CARE:
+            break;
+        default:
+            assert_true(0);
+            break;
+        }
+    }
 
     if ((waffle_context_api == WAFFLE_CONTEXT_OPENGL && version_10x >= 30) ||
         (waffle_context_api != WAFFLE_CONTEXT_OPENGL && version_10x >= 32)) {
