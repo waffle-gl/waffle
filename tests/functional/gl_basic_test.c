@@ -885,7 +885,7 @@ CREATE_TESTSUITE(WAFFLE_PLATFORM_SURFACELESS_EGL, surfaceless_egl)
 
 #undef unit_test_make
 
-#endif // WAFFLE_HAS_GBM
+#endif // WAFFLE_HAS_SURFACELESS_EGL
 
 #ifdef WAFFLE_HAS_WAYLAND
 
