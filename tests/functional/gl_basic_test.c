@@ -821,28 +821,14 @@ test_XX_robust(gles3, OPENGL_ES3, NO_ERROR)
 test_glesXX(3, 30, NO_ERROR)
 
 //
-// As BAD_ATTRIBUTE takes greater precedence over UNSUPPORTED_ON_PLATFORM,
-// we have to split the ESx + fwdcompat tests into "CGL and everyone else".
+// As BAD_ATTRIBUTE (core validation) takes greater precedence over
+// UNSUPPORTED_ON_PLATFORM (platform specific one).
+// Thus we're safe to use the former here, eventhough CGL has support
+// for neither GLES* nor fwdcompa "CGL and everyone else".
 //
-
-#if defined(WAFFLE_HAS_GBM) || \
-    defined(WAFFLE_HAS_GLX) || \
-    defined(WAFFLE_HAS_SURFACELESS_EGL) || \
-    defined(WAFFLE_HAS_WAYLAND) || \
-    defined(WAFFLE_HAS_X11_EGL) || \
-    defined(WAFFLE_HAS_WGL)
-
 test_XX_fwdcompat(gles1, OPENGL_ES1, ERROR_BAD_ATTRIBUTE)
 test_XX_fwdcompat(gles2, OPENGL_ES2, ERROR_BAD_ATTRIBUTE)
 test_XX_fwdcompat(gles3, OPENGL_ES3, ERROR_BAD_ATTRIBUTE)
-
-#elif defined(WAFFLE_HAS_CGL)
-
-test_XX_fwdcompat(gles1, OPENGL_ES1, ERROR_UNSUPPORTED_ON_PLATFORM)
-test_XX_fwdcompat(gles2, OPENGL_ES2, ERROR_UNSUPPORTED_ON_PLATFORM)
-test_XX_fwdcompat(gles3, OPENGL_ES3, ERROR_UNSUPPORTED_ON_PLATFORM)
-
-#endif
 
 #ifdef WAFFLE_HAS_CGL
 
