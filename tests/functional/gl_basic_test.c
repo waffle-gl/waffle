@@ -827,6 +827,7 @@ test_glesXX(3, 30, NO_ERROR)
 
 #if defined(WAFFLE_HAS_GBM) || \
     defined(WAFFLE_HAS_GLX) || \
+    defined(WAFFLE_HAS_SURFACELESS_EGL) || \
     defined(WAFFLE_HAS_WAYLAND) || \
     defined(WAFFLE_HAS_X11_EGL) || \
     defined(WAFFLE_HAS_WGL)
