@@ -1,6 +1,6 @@
 variables:
   FDO_UPSTREAM_REPO: mesa/waffle
-  FDO_DISTRIBUTION_TAG: '2021-01-26'
+  FDO_DISTRIBUTION_TAG: '2021-01-26_2'
   FDO_DISTRIBUTION_VERSION: 'buster-slim'
 
 include:
@@ -47,6 +47,7 @@ container:
       libwayland-dev
       libx11-dev
       libxcb1-dev
+      make
       meson
       pkg-config
       wayland-protocols
@@ -85,7 +86,6 @@ cmake:
     - .build
   script:
     - cmake
-        -G Ninja
         -S . -B _build
         -DCMAKE_INSTALL_PREFIX=`pwd`/install
         -DCMAKE_BUILD_TYPE=Debug
@@ -97,9 +97,9 @@ cmake:
         -Dwaffle_build_manpages=1
         -Dwaffle_build_htmldocs=1
         -Dwaffle_build_examples=1
-    - ninja -C _build -j4
-    - ninja -C _build check
-    - ninja -C _build install
+    - make -C _build -j4
+    - make -C _build check
+    - make -C _build install
 
 
 pages:
