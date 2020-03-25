@@ -753,8 +753,21 @@ testsuite_##platform(void)                                              \
     return cmocka_run_group_tests_name(#platform, tests, NULL, NULL);   \
 }
 
+//
+// Most of the following tests will return ERROR_UNSUPPORTED_ON_PLATFORM
+// on Apple/CGL, where NO_ERROR is expected.
+// This is safe, as the test is skipped when the said error occurs.
+//
+// As BAD_ATTRIBUTE (core validation) takes greater precedence over
+// UNSUPPORTED_ON_PLATFORM (platform specific one).
+// Thus we're safe to use the former here, eventhough CGL has support
+// for neither GLES* nor fwdcompa "CGL and everyone else".
+//
 test_XX_rgb(gl, OPENGL, NO_ERROR)
 test_XX_rgba(gl, OPENGL, NO_ERROR)
+test_XX_fwdcompat(gl, OPENGL, ERROR_BAD_ATTRIBUTE)
+test_XX_debug(gl, OPENGL, NO_ERROR)
+test_XX_robust(gl, OPENGL, NO_ERROR)
 
 test_glXX(10, NO_ERROR)
 test_glXX(11, NO_ERROR)
@@ -765,18 +778,6 @@ test_glXX(15, NO_ERROR)
 test_glXX(20, NO_ERROR)
 test_glXX(21, NO_ERROR)
 test_glXX_fwdcompat(21, ERROR_BAD_ATTRIBUTE)
-
-
-//
-// Most of the following tests will return ERROR_UNSUPPORTED_ON_PLATFORM
-// on Apple/CGL, where NO_ERROR is expected.
-// This is safe, as the test is skipped when the said error occurs.
-//
-
-test_XX_fwdcompat(gl, OPENGL, ERROR_BAD_ATTRIBUTE)
-test_XX_debug(gl, OPENGL, NO_ERROR)
-test_XX_robust(gl, OPENGL, NO_ERROR)
-
 test_glXX(30, NO_ERROR)
 test_glXX_fwdcompat(30, NO_ERROR)
 test_glXX(31, NO_ERROR)
@@ -803,6 +804,7 @@ test_glXX_compat(43, NO_ERROR)
 
 test_XX_rgb(gles1, OPENGL_ES1, NO_ERROR)
 test_XX_rgba(gles1, OPENGL_ES1, NO_ERROR)
+test_XX_fwdcompat(gles1, OPENGL_ES1, ERROR_BAD_ATTRIBUTE)
 test_XX_debug(gles1, OPENGL_ES1, NO_ERROR)
 test_XX_robust(gles1, OPENGL_ES1, NO_ERROR)
 test_glesXX(1, 10, NO_ERROR)
@@ -810,25 +812,18 @@ test_glesXX(1, 11, NO_ERROR)
 
 test_XX_rgb(gles2, OPENGL_ES2, NO_ERROR)
 test_XX_rgba(gles2, OPENGL_ES2, NO_ERROR)
+test_XX_fwdcompat(gles2, OPENGL_ES2, ERROR_BAD_ATTRIBUTE)
 test_XX_debug(gles2, OPENGL_ES2, NO_ERROR)
 test_XX_robust(gles2, OPENGL_ES2, NO_ERROR)
 test_glesXX(2, 20, NO_ERROR)
 
 test_XX_rgb(gles3, OPENGL_ES3, NO_ERROR)
 test_XX_rgba(gles3, OPENGL_ES3, NO_ERROR)
+test_XX_fwdcompat(gles3, OPENGL_ES3, ERROR_BAD_ATTRIBUTE)
 test_XX_debug(gles3, OPENGL_ES3, NO_ERROR)
 test_XX_robust(gles3, OPENGL_ES3, NO_ERROR)
 test_glesXX(3, 30, NO_ERROR)
 
-//
-// As BAD_ATTRIBUTE (core validation) takes greater precedence over
-// UNSUPPORTED_ON_PLATFORM (platform specific one).
-// Thus we're safe to use the former here, eventhough CGL has support
-// for neither GLES* nor fwdcompa "CGL and everyone else".
-//
-test_XX_fwdcompat(gles1, OPENGL_ES1, ERROR_BAD_ATTRIBUTE)
-test_XX_fwdcompat(gles2, OPENGL_ES2, ERROR_BAD_ATTRIBUTE)
-test_XX_fwdcompat(gles3, OPENGL_ES3, ERROR_BAD_ATTRIBUTE)
 
 #ifdef WAFFLE_HAS_CGL
 
