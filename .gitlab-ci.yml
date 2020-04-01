@@ -9,6 +9,7 @@ include:
 stages:
   - container
   - build
+  - www
 
 
 # When to automatically run the CI
@@ -104,3 +105,29 @@ cmake:
     - ninja -C _build -j4
     - ninja -C _build check
     - ninja -C _build install
+
+
+pages:
+  stage: www
+  image: alpine
+  script:
+  - apk add --no-cache git git-lfs
+  - git lfs install
+  - mkdir public
+  - git checkout origin/website
+  - git log --oneline -1
+  - cp -r files man public
+  - git checkout origin/master
+  - git log --oneline -1
+  - cd www
+  - cp -r *.jpg *.html *.css ../public
+  artifacts:
+    paths:
+    - public
+  only:
+    refs:
+      - master
+# TODO: Trigger pages only when the `www` directory changes. But, with this
+# `changes` code, it never triggers the job.
+#    changes:
+#      - www/**

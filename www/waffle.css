@@ -1,0 +1,95 @@
+/*
+ * This CSS was originally taken from
+ * http://wayland.freedesktop.org/wayland.css.
+ */
+
+body {
+  font-family: "Bitstream Vera Sans", "DejaVu Sans", Tahoma, sans-serif;
+  color: #222222;
+  background: white;
+  font-size: 14px;
+  line-height: 16px;
+  padding: 0px 150px;
+}
+
+h1 {
+  margin: 40px 0px;
+  color: #aaa;
+}
+
+h1 img {
+  vertical-align: middle;
+  border-width: 0px;
+}
+
+h2,
+h2 > a:link,
+h2 > a:visited,
+h3,
+h3 > a:link,
+h3 > a:visited {
+  font-family: sans;
+  color: #444;
+}
+
+h2 > a:hover,
+h2 > a:active,
+h3 > a:hover,
+h3 > a:active {
+  color: #c90;
+}
+
+p {
+  margin: 20px 0px;
+}
+
+li {
+  margin: 10px 0px;
+}
+
+a {
+  text-decoration: none;
+}
+
+a:link,
+a:visited {
+  color: #028;
+}
+
+a:hover,
+a:active {
+  color: #c90;
+  text-decoration: underline;
+}
+
+/* Code */
+
+pre.code {
+  font-family: monospace;
+  color: #000000;
+  background-color: #ffffff;
+}
+
+.Statement {
+  color: #aa00aa;
+}
+
+.Type {
+  color: #00bb00;
+}
+
+.Constant {
+  color: #bb0000;
+}
+
+.PreProc {
+  color: #aa00aa;
+}
+
+.Comment {
+  color: #4040bb;
+}
+
+/*
+ * vim:et:sw=2:ts=2:
+ */

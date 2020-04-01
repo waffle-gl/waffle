@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>Waffle/Features</title>
+    <link href="waffle.css" rel="stylesheet" type="text/css">
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+  </head>
+
+  <body>
+    <h1><img src="waffle.jpg" alt="Yummy waffles"/></h1>
+
+    <h2><a href="index.html">Waffle</a>/Features</h2>
+
+    <h3>Supported Platforms</h3>
+
+    <p>Waffle supports the following OpenGL platforms.</p>
+
+    <ul>
+      <li>Linux Platforms
+        <ul>
+          <li>gbm</em></li>
+          <li>GLX</li>
+          <li>surfaceless</li>
+          <li>NACL</li>
+          <li>X11/EGL</li>
+          <li>Wayland</li>
+        </ul>
+      </li>
+      <li>Windows Platforms
+        <ul>
+          <li>WGL (experimental)</li>
+        </ul>
+      <li>Apple Platforms
+        <ul>
+          <li>MacOS CGL (experimental)</li>
+        </ul>
+      </li>
+      <li>Android (experimental)</li>
+    </ul>
+
+    <h3>OpenGL API's</h3>
+
+    <p>Waffle supports creating and managing contexts from the API's below
+
+    in a platform-independent manner.
+
+    Of course, the set of supported API's, and the available contexts that can be created for each,
+
+    are dependent on the native OpenGL platform.
+
+    For details on the relationship among native system, OpenGL API, and context creation,
+
+    see the manual page for
+
+    <a href="man/waffle_config.3.html">waffle_config(3)</a>. </p>
+
+    <ul>
+      <li>OpenGL</li>
+      <li>OpenGL ES1</li>
+      <li>OpenGL ES2</li>
+      <li>OpenGL ES3</li>
+    </ul>
+
+    <h3>Access to Backing Native Objects</h3>
+
+    <p>
+    For selected platforms (currently only Linux), Waffle allows clients to
+    access the backing native objects of each Waffle object. For example, if
+    you create a waffle_window on the X/EGL platform, then you can retrieve
+    the Xlib <tt>Display</tt>, Xlib <tt>Window</tt>, <tt>EGLDisplay</tt>, and
+    <tt>EGLSurface</tt>. Here is a small example for X/EGL:
+    </p>
+
+    <pre>
+    // Assume we've initialized the Waffle with X/EGL.
+    struct waffle_window *window = waffle_window_create(...);
+    struct waffle_x11_egl_window *n_window = waffle_window_get_native(window)->x11_egl;
+
+    Display *xlib_dpy = n_window->display.xlib_display;
+    EGLDisplay *egl_dpy = n_window->display.egl_display;
+    Window xlib_window = n_window->xlib_window;
+    EGLSurface egl_surface = n_window->egl_surface;</pre>
+
+    <p>
+    This feature allows clients to implement behvaior, such as input and
+    window manager hints, that is outside of Waffle's scope. Piglit currently
+    uses this feature to implement input for X windows.
+    </p>
+
+    <p>
+    In the future, Waffle will also support the inverse direction. It will
+    allow clients to create Waffle objects from pre-existing native objects.
+    </p>
+  </body>
+</html>
+
+<!--
+  vim:et sw=2 ts=2:
+-->
