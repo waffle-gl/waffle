@@ -1164,7 +1164,7 @@ wflinfo_create_context(struct waffle_display *dpy,
             return;
         }
 
-        printf("Wflinfo warn: Succesfully requested an OpenGL 3.1 context, but returned\n"
+        printf("Wflinfo warn: Successfully requested an OpenGL 3.1 context, but returned\n"
                "Wflinfo warn: context had the wrong profile.  Fallback to requesting an\n"
                "Wflinfo warn: OpenGL 3.2 context, which is guaranteed to have the correct\n"
                "Wflinfo warn: profile if context creation succeeds.\n");
