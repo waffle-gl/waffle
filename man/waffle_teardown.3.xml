@@ -82,7 +82,7 @@
         <term><errorcode>WAFFLE_ERROR_NOT_INITIALIZED</errorcode></term>
         <listitem>
           <para>
-            Waffle has not been initialized with a successfull call to <function>waffle_init()</function>
+            Waffle has not been initialized with a successful call to <function>waffle_init()</function>
             since the last call to <function>waffle_teardown()</function> or the start of the program.
           </para>
         </listitem>

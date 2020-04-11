@@ -191,7 +191,7 @@
         <term><errorcode>WAFFLE_ERROR_ALREADY_INITIALIZED</errorcode></term>
         <listitem>
           <para>
-            Waffle has already been initialized with a successfull call to <function>waffle_init()</function>.
+            Waffle has already been initialized with a successful call to <function>waffle_init()</function>.
           </para>
         </listitem>
       </varlistentry>
