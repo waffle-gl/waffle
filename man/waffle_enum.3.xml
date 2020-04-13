@@ -23,6 +23,7 @@
   <refnamediv>
     <refname>waffle_enum</refname>
     <refname>waffle_enum_to_string</refname>
+    <refpurpose>Utilities for waffle enums</refpurpose>
   </refnamediv>
 
   <refentryinfo>
