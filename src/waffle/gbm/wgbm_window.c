@@ -83,7 +83,7 @@ wgbm_window_init(struct wgbm_window *self,
     if (dpy->wegl.EXT_image_dma_buf_import_modifiers &&
         plat->gbm_surface_create_with_modifiers) {
         EGLint num_modifiers = 0;
-        uint64_t *modifiers;
+        uint64_t *modifiers = NULL;
 
         if (!plat->wegl.eglQueryDmaBufModifiersEXT(dpy->wegl.egl, format,
                                                    0, NULL,
@@ -93,14 +93,17 @@ wgbm_window_init(struct wgbm_window *self,
             return false;
         }
 
-        modifiers = wcore_calloc(num_modifiers * sizeof(*modifiers));
-        if (!plat->wegl.eglQueryDmaBufModifiersEXT(dpy->wegl.egl, format,
-                                                   num_modifiers, modifiers,
-                                                   NULL, &num_modifiers)) {
-            wcore_errorf(WAFFLE_ERROR_UNKNOWN,
-                         "eglQueryDmaBufModifiersEXT failed");
-            free(modifiers);
-            return false;
+        if (num_modifiers) {
+            modifiers = wcore_calloc(num_modifiers * sizeof(*modifiers));
+
+            if (!plat->wegl.eglQueryDmaBufModifiersEXT(dpy->wegl.egl, format,
+                                                       num_modifiers, modifiers,
+                                                       NULL, &num_modifiers)) {
+                wcore_errorf(WAFFLE_ERROR_UNKNOWN,
+                             "eglQueryDmaBufModifiersEXT failed");
+                free(modifiers);
+                return false;
+            }
         }
 
         self->gbm_surface =
