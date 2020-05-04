@@ -104,7 +104,7 @@ else()
 endif()
 
 if(waffle_on_mac)
-    add_definitions(-DWAFFLE_HAS_CGL)
+    add_definitions(-DWAFFLE_HAS_CGL -DGL_SILENCE_DEPRECATION)
 endif()
 
 if(waffle_on_linux)

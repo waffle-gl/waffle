@@ -120,7 +120,7 @@ endif
 if build_wgl
     add_project_arguments('-DWAFFLE_HAS_WGL', language : ['c', 'cpp'])
 elif build_cgl
-    add_project_arguments('-DWAFFLE_HAS_CGL', language : ['c', 'obj'])
+    add_project_arguments('-DWAFFLE_HAS_CGL -DGL_SILENCE_DEPRECATION', language : ['c', 'obj'])
 else
   if build_x11_egl
     add_project_arguments('-DWAFFLE_HAS_X11_EGL', language : ['c', 'cpp'])
