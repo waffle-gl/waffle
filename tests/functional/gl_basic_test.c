@@ -488,6 +488,11 @@ gl_basic_draw__(void **state, struct gl_basic_draw_args__ args)
         switch (context_profile) {
         case WAFFLE_CONTEXT_CORE_PROFILE:
             profile_suffix = " (Core Profile)";
+#ifdef __APPLE__
+            fprintf(stderr, "MacOS Core contexts, omit the \"%s\" suffix in glGetString(GL_VERSION)."
+                            "Applying workaround.\n", profile_suffix);
+            profile_suffix = "";
+#endif
             break;
         case WAFFLE_CONTEXT_COMPATIBILITY_PROFILE:
             // HACK: seems like Mesa 19.3.3 at least will report
