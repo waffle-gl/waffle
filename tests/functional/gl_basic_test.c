@@ -279,6 +279,32 @@ struct gl_basic_draw_args__ {
     bool alpha;
 };
 
+#define assert_int_equal_print(_a, _b) \
+    if (_a != _b) {\
+	fprintf(stderr, #_a " (%d) != " #_b "(%d)\n", _a, _b); \
+	assert_true(0 && "Integer comparison failed"); \
+    }
+
+#define assert_int_ge(_a, _b) \
+    if (_a < _b) {\
+	fprintf(stderr, #_a " (%d) < " #_b "(%d)\n", _a, _b); \
+	assert_true(0 && "Integer comparison failed"); \
+    }
+
+#define assert_in_range_print(_a, _min, _max) \
+    if (_a < _min || _a > _max) {\
+	fprintf(stderr, #_a " (%d) outside range " #_min "(%d) - " #_max "(%d)\n", \
+                _a, _min, _max); \
+	assert_true(0 && "Integer comparison failed"); \
+    }
+
+#define assert_string_len_equal(_actual, _expected, _len) \
+    if (strncmp(_actual, _expected, _len) != 0) {\
+	fprintf(stderr, "Expected (" #_expected "): \"%.*s\"\n", (int)_len, _expected); \
+	fprintf(stderr, "Received (" #_actual "): \"%.*s\"\n", (int)_len, _actual); \
+	assert_true(0 && "String comparison failed"); \
+    }
+
 static void
 error_waffle(void)
 {
@@ -435,20 +461,21 @@ gl_basic_draw__(void **state, struct gl_basic_draw_args__ args)
     }
 
     const size_t version_str_len = strlen(expected_version_str);
-    assert_true(strncmp(version_str, expected_version_str, version_str_len) == 0);
+    assert_string_len_equal(version_str, expected_version_str, version_str_len);
     version_str += version_str_len;
 
     count = sscanf(version_str, "%d.%d", &major, &minor);
-    assert_true(count == 2);
-    assert_true(major >= 0);
-    assert_true(minor >= 0 && minor < 10);
+    assert_int_equal_print(count, 2);
+    assert_int_ge(major, 0);
+    assert_in_range_print(minor, 0, 10);
 
     if (context_version != WAFFLE_DONT_CARE) {
         int expected_major = context_version / 10;
         int expected_minor = context_version % 10;
 
-        assert_true(major >= expected_major);
-        assert_true(minor >= expected_minor || major > expected_major);
+        assert_int_ge(major, expected_major);
+        if (major == expected_major)
+           assert_int_ge(minor, expected_minor);
     }
 
     const char *profile_suffix = "";
@@ -473,7 +500,7 @@ gl_basic_draw__(void **state, struct gl_basic_draw_args__ args)
     sprintf(profile_str, "%d.%d%s", major, minor, profile_suffix);
 
     const size_t profile_str_len = strlen(profile_str);
-    assert_true(strncmp(version_str, profile_str, profile_str_len) == 0);
+    assert_string_len_equal(version_str, profile_str, profile_str_len);
 
     int version_10x = 10 * major + minor;
 
