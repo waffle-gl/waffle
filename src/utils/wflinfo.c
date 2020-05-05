@@ -994,7 +994,11 @@ gl_has_extension_GetStringi(const char *name)
 static bool
 gl_has_extension(const char *name)
 {
-    if (gl_get_version() >= 30) {
+    // Use the new glGetStringi when possible.
+    //
+    // Due to the funky semantics of obtaining the function pointer, we can
+    // get here, even when it is NULL.
+    if (glGetStringi && gl_get_version() >= 30) {
         return gl_has_extension_GetStringi(name);
     } else {
         return gl_has_extension_GetString(name);
