@@ -1,16 +1,17 @@
 variables:
-  UPSTREAM_REPO: mesa/waffle
+  FDO_UPSTREAM_REPO: mesa/waffle
+  FDO_DISTRIBUTION_TAG: '2020-07-28'
+  FDO_DISTRIBUTION_VERSION: 'buster-slim'
 
 include:
-  - project: 'wayland/ci-templates'
-    ref: f69acac60d5dde0410124fd5674764600821b7a6
+  - project: 'freedesktop/ci-templates'
+    ref: &ci-templates-sha 52dd4a94044449c8481d18dcdc221a3c636366d2
     file: '/templates/debian.yml'
 
 stages:
   - container
   - build
   - www
-
 
 # When to automatically run the CI
 .ci-run-policy:
@@ -21,20 +22,16 @@ stages:
   # Cancel CI run if a newer commit is pushed to the same branch
   interruptible: true
 
-
-# Debian 10 based x86 build image
-x86_build:
+container:
   stage: container
   extends:
-    - .debian@container-ifnot-exists
+    - .fdo.container-build@debian
     - .ci-run-policy
   variables:
-    DEBIAN_VERSION: buster-slim
-    REPO_SUFFIX: $CI_JOB_NAME
     # no need to pull the whole repo to build the container image
     GIT_STRATEGY: none
-    DEBIAN_TAG: &x86_build "2019-11-22"
-    DEBIAN_DEBS: >-
+   
+    FDO_DISTRIBUTION_PACKAGES: >
       bash-completion
       ca-certificates
       cmake
@@ -55,26 +52,23 @@ x86_build:
       xauth
       xsltproc
       xvfb
-.use-x86_build:
-  variables:
-    TAG: *x86_build
-  image: "$CI_REGISTRY_IMAGE/debian/x86_build:$TAG"
-  needs:
-    - x86_build
-
 
 # BUILD
-
 .build:
-  extends: .ci-run-policy
+  extends: 
+    - .ci-run-policy
+    - .fdo.container-build@debian
   stage: build
   variables:
     GIT_DEPTH: 100
+  image: "$CI_REGISTRY_IMAGE/debian/$FDO_DISTRIBUTION_VERSION:$FDO_DISTRIBUTION_TAG"
+  needs:
+    - container
+    
 
 meson:
   extends:
     - .build
-    - .use-x86_build
   script:
     - bash .gitlab-ci/build-meson.sh x11
     - bash .gitlab-ci/build-meson.sh wayland
@@ -88,7 +82,6 @@ meson:
 cmake:
   extends:
     - .build
-    - .use-x86_build
   script:
     - cmake
         -G Ninja
@@ -131,3 +124,4 @@ pages:
 # `changes` code, it never triggers the job.
 #    changes:
 #      - www/**
+
