@@ -44,6 +44,8 @@ struct wayland_window {
     struct wl_egl_window *wl_window;
 
     struct wegl_surface wegl;
+
+    int32_t window_width, window_height;
 };
 
 static inline struct wayland_window*

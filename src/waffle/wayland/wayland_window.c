@@ -93,7 +93,35 @@ toplevel_handle_configure(void *data, struct xdg_toplevel *toplevel,
                           int32_t width, int32_t height,
                           struct wl_array *states)
 {
-    // NOTE: daniels: handle fullscreen/maximised events or fatal error
+    struct wcore_window *wc_self = data;
+    struct wayland_window *self = wayland_window(wc_self);
+    enum xdg_toplevel_state *state;
+    bool fullscreen = false, maximized = false;
+
+    wl_array_for_each(state, states) {
+        switch (*state) {
+        case XDG_TOPLEVEL_STATE_MAXIMIZED:
+            maximized = true;
+            break;
+        case XDG_TOPLEVEL_STATE_FULLSCREEN:
+            fullscreen = true;
+            break;
+        default:
+            break;
+        }
+    }
+
+    if (width > 0 && height > 0) {
+        if (!fullscreen && !maximized) {
+            self->window_width = width;
+            self->window_height = height;
+        }
+    } else if (!fullscreen && !maximized) {
+        width = self->window_width;
+        height = self->window_height;
+    }
+
+    wayland_window_resize(wc_self, width, height);
 }
 
 static void
@@ -145,9 +173,13 @@ wayland_window_create(struct wcore_platform *wc_plat,
     struct wayland_window *self;
     struct wayland_platform *plat = wayland_platform(wegl_platform(wc_plat));
     struct wayland_display *dpy = wayland_display(wc_config->display);
+    bool fullscreen = false;
     bool ok = true;
 
-    if (width == -1 && height == -1) {
+    if (width == -1 && height == -1)
+        fullscreen = true;
+
+    if (dpy->wl_shell && fullscreen) {
         wcore_errorf(WAFFLE_ERROR_UNSUPPORTED_ON_PLATFORM,
                      "fullscreen window not supported");
         return NULL;
@@ -196,7 +228,8 @@ wayland_window_create(struct wcore_platform *wc_plat,
             goto error;
         }
 
-        xdg_toplevel_add_listener(self->xdg_toplevel, &toplevel_listener, NULL);
+        xdg_toplevel_add_listener(self->xdg_toplevel, &toplevel_listener,
+                                 &self->wegl.wcore);
     }
     else {
         self->wl_shell_surface = wl_shell_get_shell_surface(dpy->wl_shell,
@@ -211,6 +244,11 @@ wayland_window_create(struct wcore_platform *wc_plat,
         wl_shell_surface_add_listener(self->wl_shell_surface,
                                       &shell_surface_listener,
                                       NULL);
+
+        width = (width == -1 ? 320 : width);
+        height = (height == -1 ? 240 : height);
+        self->window_width = width;
+        self->window_height = height;
     }
 
     self->wl_window = plat->wl_egl_window_create(self->wl_surface,
@@ -219,6 +257,9 @@ wayland_window_create(struct wcore_platform *wc_plat,
         wcore_errorf(WAFFLE_ERROR_UNKNOWN, "wl_egl_window_create failed");
         goto error;
     }
+
+    if (dpy->xdg_shell && fullscreen)
+        xdg_toplevel_set_fullscreen(self->xdg_toplevel, NULL);
 
     ok = wegl_window_init(&self->wegl, wc_config, (intptr_t) self->wl_window);
     if (!ok)
