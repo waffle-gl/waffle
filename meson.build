@@ -108,11 +108,11 @@ endif
 
 dep_bash = dependency('bash-completion', required : false)
 if dep_bash.found()
-  install_data(
-    'shell-completion/bash/wflinfo',
-    install_dir : dep_bash.get_pkgconfig_variable('completionsdir'),
-  )
+  bashcompletiondir = dep_bash.get_pkgconfig_variable('completionsdir')
+else
+  bashcompletiondir = join_paths(datadir, 'bash-completion/completions')
 endif
+install_data('shell-completion/bash/wflinfo', install_dir : bashcompletiondir)
 
 # Set pre-processor flags
 if build_wgl
