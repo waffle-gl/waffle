@@ -110,9 +110,7 @@ dep_bash = dependency('bash-completion', required : false)
 if dep_bash.found()
   install_data(
     'shell-completion/bash/wflinfo',
-    install_dir : dep_bash.get_pkgconfig_variable(
-      'completionsdir',
-      define_variable : ['datadir', get_option('datadir')]),
+    install_dir : dep_bash.get_pkgconfig_variable('completionsdir'),
   )
 endif
 
