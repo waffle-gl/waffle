@@ -85,25 +85,29 @@ elif build_cgl
   dep_gl = dependency('gl')
 else
   dep_gl = dependency('gl', required : get_option('glx'))
+  dep_x11_xcb = dependency('x11-xcb', required : get_option('glx'))
+  build_glx = dep_gl.found() and dep_x11_xcb.found()
+
   dep_egl = dependency('egl', required : get_option('x11_egl'))
+  dep_x11_xcb = dependency('x11-xcb', required : get_option('x11_egl'))
+  build_x11_egl = dep_egl.found() and dep_x11_xcb.found()
+
+  dep_egl = dependency('egl', required : get_option('gbm'))
+  dep_gbm = dependency('gbm', required : get_option('gbm'))
+  dep_udev = dependency('libudev', required : get_option('gbm'))
+  build_gbm = dep_egl.found() and dep_gbm.found() and dep_udev.found()
+
+  dep_egl = dependency('egl', required : get_option('surfaceless_egl'))
+  build_surfaceless = dep_egl.found()
+
+  dep_egl = dependency('egl', required : get_option('wayland'))
   dep_wayland_client = dependency(
     'wayland-client', version : '>= 1.10', required : get_option('wayland'),
   )
   dep_wayland_egl = dependency(
     'wayland-egl', version : '>= 9.1', required : get_option('wayland'),
   )
-  dep_x11_xcb = dependency('x11-xcb', required : get_option('glx'))
-  if not dep_x11_xcb.found()
-    dep_x11_xcb = dependency('x11-xcb', required : get_option('x11_egl'))
-  endif
-  dep_gbm = dependency('gbm', required : get_option('gbm'))
-  dep_udev = dependency('libudev', required : get_option('gbm'))
-
-  build_x11_egl = dep_egl.found()
-  build_wayland = dep_wayland_client.found() and dep_wayland_egl.found()
-  build_glx = dep_gl.found()
-  build_gbm = dep_gbm.found() and dep_udev.found()
-  build_surfaceless = dep_egl.found()
+  build_wayland = dep_egl.found() and dep_wayland_client.found() and dep_wayland_egl.found()
 endif
 
 dep_bash = dependency('bash-completion', required : false)
