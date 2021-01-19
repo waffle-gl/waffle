@@ -72,9 +72,13 @@ if(waffle_on_linux)
         add_functest(x11_egl)
     endif()
 
-#    if(waffle_has_gbm)
-#        add_functest(gbm)
-#    endif()
+    if(waffle_has_gbm)
+        add_functest(gbm)
+    endif()
+
+    if(waffle_has_surfaceless)
+        add_functest(surfaceless_egl)
+    endif()
 endif()
 
 if(waffle_on_windows)

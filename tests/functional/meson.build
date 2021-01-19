@@ -77,6 +77,14 @@ if build_gbm
     suite : ['functional'],
   )
 endif
+if build_surfaceless
+  test(
+    'gl_basic (surfaceless_egl)',
+    gl_basic_test,
+    args : ['--platform', 'surfaceless_egl'],
+    suite : ['functional'],
+  )
+endif
 if build_wgl
   test(
     'gl_basic (wgl)',
