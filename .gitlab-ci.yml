@@ -92,6 +92,7 @@ cmake:
         -Dwaffle_has_glx=1
         -Dwaffle_has_x11_egl=1
         -Dwaffle_has_wayland=1
+        -Dwaffle_has_surfaceless=1
         -Dwaffle_build_manpages=1
         -Dwaffle_build_htmldocs=1
         -Dwaffle_build_examples=1
