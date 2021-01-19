@@ -78,6 +78,10 @@ if(waffle_on_linux)
     waffle_pkg_config(wayland-scanner wayland-scanner>=1.15)
     pkg_get_variable(WAYLAND_SCANNER wayland-scanner wayland_scanner)
 
+    waffle_pkg_config(wayland-protocols wayland-protocols>=1.12)
+    pkg_get_variable(WAYLAND_PROTOCOLS_DIR wayland-protocols pkgdatadir)
+    set(wayland_xdg_shell_xml ${WAYLAND_PROTOCOLS_DIR}/stable/xdg-shell/xdg-shell.xml)
+
     # waffle_has_x11
     waffle_pkg_config(x11-xcb x11-xcb)
 

@@ -66,6 +66,7 @@ dep_egl = _dep_null
 dep_wayland_client = _dep_null
 dep_wayland_egl = _dep_null
 dep_wayland_scanner = _dep_null
+dep_wayland_proto = _dep_null
 dep_x11_xcb = _dep_null
 dep_gbm = _dep_null
 dep_udev = _dep_null
@@ -118,7 +119,14 @@ else
   if dep_wayland_scanner.found()
     prog_wayland_scanner = find_program(dep_wayland_scanner.get_pkgconfig_variable('wayland_scanner'))
   endif
-  build_wayland = dep_egl.found() and dep_wayland_client.found() and dep_wayland_egl.found() and dep_wayland_scanner.found()
+  dep_wayland_proto = dependency(
+    'wayland-protocols', version  : '>= 1.12', required : get_option('wayland'),
+  )
+  if dep_wayland_proto.found()
+    wayland_xdg_shell_xml = join_paths(dep_wayland_proto.get_pkgconfig_variable('pkgdatadir'),
+    'stable/xdg-shell/xdg-shell.xml')
+  endif
+  build_wayland = dep_egl.found() and dep_wayland_client.found() and dep_wayland_egl.found() and dep_wayland_scanner.found() and dep_wayland_proto.found()
 
   # We're interested only in the headers provided
   # FINISHME: make x11_xcb and udev compile-only dependency

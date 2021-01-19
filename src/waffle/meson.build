@@ -94,6 +94,18 @@ if build_wayland
     output: 'wl-core-proto.c',
     command: [prog_wayland_scanner, 'private-code', '@INPUT@', '@OUTPUT@'],
   )
+  wl_xdg_shell_proto_c = custom_target(
+    'wl-xdg-shell-proto.c',
+    input: wayland_xdg_shell_xml,
+    output: 'wl-xdg-shell-proto.c',
+    command: [prog_wayland_scanner, 'private-code', '@INPUT@', '@OUTPUT@'],
+  )
+  wl_xdg_shell_proto_h = custom_target(
+    'wl-xdg-shell-proto.h',
+    input: wayland_xdg_shell_xml,
+    output: 'wl-xdg-shell-proto.h',
+    command: [prog_wayland_scanner, 'client-header', '@INPUT@', '@OUTPUT@'],
+  )
 
   files_libwaffle += files(
     'wayland/wayland_display.c',
@@ -103,6 +115,8 @@ if build_wayland
   )
   files_libwaffle += [
     wl_core_proto_c,
+    wl_xdg_shell_proto_c,
+    wl_xdg_shell_proto_h,
   ]
 endif
 

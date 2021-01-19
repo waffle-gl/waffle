@@ -132,6 +132,11 @@ if(waffle_on_linux)
                 "${wayland_missing_deps} wayland-scanner>=1.15"
                 )
         endif()
+        if(NOT wayland-protocols_FOUND)
+            set(wayland_missing_deps
+                "${wayland_missing_deps} wayland-protocols>=1.12"
+                )
+        endif()
         if(NOT egl_FOUND)
             set(wayland_missing_deps
                 "${wayland_missing_deps} egl"

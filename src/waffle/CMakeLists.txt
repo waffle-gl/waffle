@@ -145,6 +145,16 @@ macro(wayland_gen xml_file obj_name)
     list(APPEND waffle_sources ${PROTO_FILE})
 endmacro()
 
+macro(wayland_gen_hdr xml_file obj_name)
+    set(HDR_FILE wl-${obj_name}-proto.h)
+    add_custom_target(wl_${obj_name}_proto_h ALL
+        COMMAND ${WAYLAND_SCANNER} "client-header" ${xml_file} ${HDR_FILE}
+    )
+    list(APPEND waffle_hdrdeps wl_${obj_name}_proto_h)
+    # Flip to enable -I builddir
+    set(CMAKE_INCLUDE_CURRENT_DIR ON)
+endmacro()
+
 if(waffle_has_wayland)
     list(APPEND waffle_sources
         wayland/wayland_display.c
@@ -153,6 +163,8 @@ if(waffle_has_wayland)
         wayland/wayland_wrapper.c
     )
     wayland_gen(${wayland_core_xml} "core")
+    wayland_gen(${wayland_xdg_shell_xml} "xdg-shell")
+    wayland_gen_hdr(${wayland_xdg_shell_xml} "xdg-shell")
 endif()
 
 if(waffle_has_x11)
@@ -266,6 +278,12 @@ set_target_properties(${waffle_libname}
     SOVERSION ${waffle_soversion}
     VERSION ${waffle_soversion}.${waffle_minor_version}.${waffle_patch_version}
     )
+
+if(waffle_has_wayland)
+    foreach(_hdr ${waffle_hdrdeps})
+        add_dependencies(${waffle_libname} ${_hdr})
+    endforeach()
+endif()
 
 if(waffle_on_windows)
     set_target_properties(${waffle_libname}

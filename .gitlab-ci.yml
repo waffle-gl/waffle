@@ -1,6 +1,6 @@
 variables:
   FDO_UPSTREAM_REPO: mesa/waffle
-  FDO_DISTRIBUTION_TAG: '2020-07-28'
+  FDO_DISTRIBUTION_TAG: '2021-01-26'
   FDO_DISTRIBUTION_VERSION: 'buster-slim'
 
 include:
@@ -49,6 +49,7 @@ container:
       libxcb1-dev
       meson
       pkg-config
+      wayland-protocols
       xauth
       xsltproc
       xvfb
