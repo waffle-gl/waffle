@@ -33,8 +33,6 @@ project(
   default_options : ['c_std=c99', 'buildtype=debugoptimized'],
 )
 
-python = import('python').find_installation('python3')
-
 waffle_name = meson.project_name() + '-1'
 docdir = join_paths(get_option('datadir'), 'doc', meson.project_name() + '1')
 
