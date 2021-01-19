@@ -108,6 +108,15 @@ else
     'wayland-egl', version : '>= 9.1', required : get_option('wayland'),
   )
   build_wayland = dep_egl.found() and dep_wayland_client.found() and dep_wayland_egl.found()
+
+  # We're interested only in the headers provided
+  # FINISHME: make x11_xcb and udev compile-only dependency
+  _include_deps = [ dep_gl, dep_egl, dep_gbm, dep_wayland_client, dep_wayland_egl ]
+  foreach d : _include_deps
+    if d.found()
+      d = d.partial_dependency(compile_args : true)
+    endif
+  endforeach
 endif
 
 dep_bash = dependency('bash-completion', required : false)
