@@ -33,7 +33,6 @@ deps_for_waffle = [
   dep_drm,
   dep_egl,
   dep_gbm,
-  dep_nacl,
   dep_wayland_client,
   dep_wayland_egl,
   dep_x11_xcb,
@@ -154,18 +153,6 @@ if build_glx
   )
 endif
 
-if build_nacl
-  files_libwaffle += files(
-    'nacl/nacl_config.c',
-    'nacl/nacl_context.c',
-    'nacl/nacl_display.c',
-    'nacl/nacl_dl.c',
-    'nacl/nacl_platform.c',
-    'nacl/nacl_window.c',
-    'nacl/nacl_container.cpp',
-  )
-endif
-
 if build_wgl
   files_libwaffle += files(
     'wgl/wgl_config.c',
@@ -192,7 +179,7 @@ if build_cgl
 endif
 
 include_libwaffle = include_directories(
-  'android', 'api', 'cgl', 'core', 'egl', 'glx', 'linux', 'nacl',
+  'android', 'api', 'cgl', 'core', 'egl', 'glx', 'linux',
   'surfaceless_egl', 'wayland', 'wgl', 'x11', 'xegl'
 )
 

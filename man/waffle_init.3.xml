@@ -122,14 +122,6 @@
                 </listitem>
               </varlistentry>
               <varlistentry>
-                <term><constant>WAFFLE_PLATFORM_NACL</constant></term>
-                <listitem>
-                  <para>
-                    [Linux only, other systems not yet supported]
-                  </para>
-                </listitem>
-              </varlistentry>
-              <varlistentry>
                 <term><constant>WAFFLE_PLATFORM_SURFACELESS_EGL</constant></term>
                 <listitem>
                   <para>

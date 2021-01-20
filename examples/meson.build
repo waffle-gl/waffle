@@ -36,7 +36,6 @@ if build_x11_egl
   )
 endif
 
-# TODO: nacl
 if build_cgl
   # We need to force wflinfo.c to be compiled as if it were objc, to do that we
   # copy it into the build directory as a .m file

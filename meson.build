@@ -42,13 +42,8 @@ build_wayland = false
 build_glx = false
 build_gbm = false
 build_surfaceless = false
-build_nacl = get_option('nacl')
 build_wgl = ['windows', 'cygwin'].contains(host_machine.system())
 build_cgl = host_machine.system() == 'darwin'
-
-if build_nacl
-  add_languages('cpp')
-endif
 
 if build_cgl
   add_languages('objc')
@@ -59,7 +54,6 @@ cc = meson.get_compiler('c')
 _dep_null = dependency('', required : false)
 dep_threads = dependency('threads')
 dep_dl = cc.find_library('dl', required : false)
-dep_nacl = _dep_null
 dep_gl = _dep_null
 dep_drm = _dep_null
 dep_egl = _dep_null
@@ -171,10 +165,6 @@ else
   endif
 endif
 
-if build_nacl
-  add_project_arguments('-DWAFFLE_HAS_NACL', language : ['c', 'cpp'])
-endif
-
 if cc.get_argument_syntax() == 'gcc'
   if cc.compiles('''
       static __thread int x;
@@ -200,15 +190,6 @@ if cc.get_argument_syntax() == 'gcc'
 
   add_project_arguments('-D_XOPEN_SOURCE=700', language : ['c', 'cpp'])
 
-  if not build_nacl
-    add_project_arguments(
-      cc.get_supported_arguments([
-        '-Werror=implicit-function-declaration',
-      ]),
-      language : ['c', 'cpp'],
-    )
-  endif
-
   add_project_arguments(
     cc.get_supported_arguments([
       '-Wno-unused-parameter',
@@ -227,7 +208,7 @@ if cc.get_argument_syntax() == 'gcc'
     ]),
     language : ['c', 'cpp'],
   )
-  
+
   if host_machine.system() == 'windows'
     if cc.has_argument('-static-libgcc')
       add_project_link_arguments('-static-libgcc', language : ['c', 'cpp'])
@@ -249,10 +230,6 @@ elif cc.get_argument_syntax() == 'msvc'
     '/DWAFFLE_API_VERSION=@0@'.format('0x0108'),
     '/DWAFFLE_API_EXPERIMENTAL',
   ]
-endif
-
-if build_nacl
-  add_project_arguments('-DWAFFLE_HAS_NACL', language : ['c', 'cpp'])
 endif
 
 install_data('README.md', 'LICENSE.txt', 'HACKING.txt', install_dir : docdir)

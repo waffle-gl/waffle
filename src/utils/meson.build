@@ -35,17 +35,15 @@ else
   files_wflinfo = files('wflinfo.c')
 endif
 
-if not build_nacl
-  wflinfo = executable(
-    'wflinfo',
-    files_wflinfo,
-    include_directories : [inc_waffle, inc_include],
-    link_with : libwaffle,
-    dependencies : [dep_cocoa, idep_getopt],
-    install : true,
-  )
+wflinfo = executable(
+  'wflinfo',
+  files_wflinfo,
+  include_directories : [inc_waffle, inc_include],
+  link_with : libwaffle,
+  dependencies : [dep_cocoa, idep_getopt],
+  install : true,
+)
 
-  if meson.version().version_compare('>= 0.46.0')
-    meson.override_find_program('wflinfo', wflinfo)
-  endif
+if meson.version().version_compare('>= 0.46.0')
+  meson.override_find_program('wflinfo', wflinfo)
 endif

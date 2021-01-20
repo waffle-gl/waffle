@@ -35,7 +35,6 @@ struct wcore_platform* wayland_platform_create(void);
 struct wcore_platform* xegl_platform_create(void);
 struct wcore_platform* wgbm_platform_create(void);
 struct wcore_platform* wgl_platform_create(void);
-struct wcore_platform* nacl_platform_create(void);
 struct wcore_platform* sl_platform_create(void);
 
 static bool
@@ -104,12 +103,6 @@ waffle_init_parse_attrib_list(
                     CASE_DEFINED_PLATFORM(WGL)
 #else
                     CASE_UNDEFINED_PLATFORM(WGL)
-#endif
-
-#ifdef WAFFLE_HAS_NACL
-                    CASE_DEFINED_PLATFORM(NACL)
-#else
-                    CASE_UNDEFINED_PLATFORM(NACL)
 #endif
 
 #ifdef WAFFLE_HAS_SURFACELESS_EGL
@@ -185,11 +178,6 @@ waffle_init_create_platform(int32_t waffle_platform)
 #ifdef WAFFLE_HAS_WGL
         case WAFFLE_PLATFORM_WGL:
             wc_platform = wgl_platform_create();
-            break;
-#endif
-#ifdef WAFFLE_HAS_NACL
-        case WAFFLE_PLATFORM_NACL:
-            wc_platform = nacl_platform_create();
             break;
 #endif
 #ifdef WAFFLE_HAS_SURFACELESS_EGL

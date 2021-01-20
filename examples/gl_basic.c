@@ -613,18 +613,9 @@ main(int argc, char **argv)
         cocoa_init();
     #endif
 
-    #ifdef __native_client__
-        // Fixed arguments for native client.
-        opts.context_api = WAFFLE_CONTEXT_OPENGL_ES2;
-        opts.platform = WAFFLE_PLATFORM_NACL;
-        opts.dl = WAFFLE_DL_OPENGL_ES2;
-        opts.context_profile = WAFFLE_NONE;
-        opts.context_version = -1;
-    #else
     ok = parse_args(argc, argv, &opts);
     if (!ok)
         exit(EXIT_FAILURE);
-    #endif
 
     i = 0;
     init_attrib_list[i++] = WAFFLE_PLATFORM;

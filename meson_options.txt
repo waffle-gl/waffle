@@ -51,24 +51,6 @@ option(
   description : 'Build support for EGL_MESA_platform_surfaceless'
 )
 
-# Options specifically for ChromeOS
-option(
-  'nacl',
-  type : 'boolean',
-  value : false,
-  description : 'Build support for ChromeOS NaCl'
-)
-option(
-  'nacl_sdk_path',
-  type : 'string',
-  description : 'Path for NaCl SDK')
-option(
-  'nacl_version',
-  type : 'string',
-  value : 'pepper_39',
-  description : 'Version of NaCL'
-)
-
 # Misc Options
 option(
   'build-tests',

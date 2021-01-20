@@ -124,7 +124,6 @@ enum waffle_enum {
         WAFFLE_PLATFORM_X11_EGL                                 = 0x0015,
         WAFFLE_PLATFORM_GBM                                     = 0x0016,
         WAFFLE_PLATFORM_WGL                                     = 0x0017,
-        WAFFLE_PLATFORM_NACL                                    = 0x0018,
         WAFFLE_PLATFORM_SURFACELESS_EGL                         = 0x0019,
 
     // ------------------------------------------------------------------

@@ -15,7 +15,6 @@ include_directories(
     egl
     glx
     linux
-    nacl
     surfaceless_egl
     wayland
     wgl
@@ -52,12 +51,6 @@ if(waffle_on_linux)
             ${libdrm_LDFLAGS}
             )
     endif()
-endif()
-
-if(waffle_has_nacl)
-    list(APPEND waffle_libdeps
-        ${nacl_LDFLAGS}
-        )
 endif()
 
 set(waffle_sources
@@ -204,20 +197,6 @@ if(waffle_on_windows)
 
     list(APPEND waffle_libdeps
         opengl32.lib
-        )
-endif()
-
-if(waffle_has_nacl)
-    list(APPEND waffle_sources
-        nacl/nacl_config.c
-        nacl/nacl_context.c
-        nacl/nacl_display.c
-        nacl/nacl_dl.c
-        nacl/nacl_platform.c
-        nacl/nacl_window.c
-        )
-    list(APPEND waffle_cxx_sources
-        nacl/nacl_container.cpp
         )
 endif()
 
