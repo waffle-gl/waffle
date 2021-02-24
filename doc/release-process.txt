@@ -1,0 +1,13 @@
+Updating website
+================
+
+Checkout the `website` branch. (This requires git-lfs.)
+
+Add new release files under the files directory. Update man html files
+under the man directory. Push the website branch. This will *not*
+trigger a website rebuild.
+
+On the `master` branch, update the www/releases.html file. Push the
+branch, triggering a website rebuild. The website rebuild will use the
+`website` branch, which is why the `website` branch should be pushed
+first.
