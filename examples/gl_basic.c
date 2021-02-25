@@ -52,7 +52,7 @@
 
 #ifdef __APPLE__
 #    import <Foundation/NSAutoreleasePool.h>
-#    import <Appkit/NSApplication.h>
+#    import <AppKit/NSApplication.h>
 
 static void
 removeXcodeArgs(int *argc, char **argv);
