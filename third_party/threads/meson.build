@@ -29,7 +29,11 @@ else
   files_threads = files('threads_posix.c')
 endif
 
-libthreads = static_library('threads', files_threads)
+libthreads = static_library(
+  'threads',
+  files_threads,
+  gnu_symbol_visibility : 'hidden',
+  )
 
 idep_threads = declare_dependency(
   link_with : libthreads,
