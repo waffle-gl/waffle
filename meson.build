@@ -27,7 +27,7 @@
 project(
   'waffle',
   ['c'],
-  version : '1.6.90',
+  version : '1.7.0',
   license : 'BSD2', 
   meson_version : '>= 0.49',
   default_options : ['c_std=c99', 'buildtype=debugoptimized'],
