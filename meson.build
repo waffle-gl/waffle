@@ -27,7 +27,7 @@
 project(
   'waffle',
   ['c'],
-  version : '1.7.0',
+  version : '1.7.90',
   license : 'BSD2', 
   meson_version : '>= 0.49',
   default_options : ['c_std=c99', 'buildtype=debugoptimized'],
@@ -237,7 +237,7 @@ install_data('README.md', 'LICENSE.txt', 'HACKING.txt', install_dir : docdir)
 install_subdir('doc/release-notes', install_dir : docdir)
 
 api_c_args = [
-  '-DWAFFLE_API_VERSION=@0@'.format('0x0107'),
+  '-DWAFFLE_API_VERSION=@0@'.format('0x0108'),
   '-DWAFFLE_API_EXPERIMENTAL',
 ]
 
