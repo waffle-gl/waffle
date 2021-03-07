@@ -239,7 +239,7 @@ install_data('README.md', 'LICENSE.txt', 'HACKING.txt', install_dir : docdir)
 install_subdir('doc/release-notes', install_dir : docdir)
 
 api_c_args = [
-  '-DWAFFLE_API_VERSION=@0@'.format('0x0106'),
+  '-DWAFFLE_API_VERSION=@0@'.format('0x0107'),
   '-DWAFFLE_API_EXPERIMENTAL',
 ]
 
