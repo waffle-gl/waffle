@@ -1,6 +1,6 @@
 variables:
   FDO_UPSTREAM_REPO: mesa/waffle
-  FDO_DISTRIBUTION_TAG: '2021-01-26_2'
+  FDO_DISTRIBUTION_TAG: '2021-01-26_4'
   FDO_DISTRIBUTION_VERSION: 'buster-slim'
 
 include:
@@ -49,6 +49,7 @@ container:
       libxcb1-dev
       make
       meson
+      mingw-w64
       pkg-config
       wayland-protocols
       xauth
@@ -101,6 +102,17 @@ cmake:
     - make -C _build check
     - make -C _build install
 
+cmake-mingw:
+  extends:
+    - .build
+  script:
+    - .gitlab-ci/build-cmake-mingw.sh
+  # TODO: Only create artifacts on certain builds.  See also:
+  # - https://docs.gitlab.com/ee/ci/yaml/README.html#artifactspaths
+  # - https://docs.gitlab.com/ee/ci/yaml/README.html#complete-example-for-release
+  artifacts:
+    paths:
+      - publish/*/waffle-*.zip
 
 pages:
   stage: www
