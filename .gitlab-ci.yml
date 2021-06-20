@@ -40,10 +40,10 @@ container:
       g++
       gcc
       libcmocka-dev
+      libdrm-dev
       libegl1-mesa-dev
       libgbm-dev
       libgl1-mesa-dev
-      libudev-dev
       libwayland-dev
       libx11-dev
       libxcb1-dev

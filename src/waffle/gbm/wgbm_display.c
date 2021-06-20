@@ -28,7 +28,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include <libudev.h>
+#include <xf86drm.h>
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -63,53 +63,40 @@ wgbm_display_destroy(struct wcore_display *wc_self)
     return ok;
 }
 
-int
-wgbm_get_default_fd_for_pattern(const char *pattern)
+static int
+wgbm_get_fd_for_node_type(drmDevicePtr *devs, int num_devs, int node_type)
 {
-    struct udev *ud;
-    struct udev_enumerate *en;
-    struct udev_list_entry *devices, *entry;
-    const char *path, *filename;
-    struct udev_device *device;
-    int fd;
+    for (int i = 0; i < num_devs; i++) {
+        if (!(devs[i]->available_nodes & 1 << node_type))
+            continue;
 
-    ud = udev_new();
-    en = udev_enumerate_new(ud);
-    udev_enumerate_add_match_subsystem(en, "drm");
-    udev_enumerate_add_match_sysname(en, pattern);
-    udev_enumerate_scan_devices(en);
-    devices = udev_enumerate_get_list_entry(en);
+        int fd = open(devs[i]->nodes[node_type], O_RDWR | O_CLOEXEC);
+        if (fd < 0)
+            continue;
 
-    udev_list_entry_foreach(entry, devices) {
-        path = udev_list_entry_get_name(entry);
-        device = udev_device_new_from_syspath(ud, path);
-        filename = udev_device_get_devnode(device);
-        fd = open(filename, O_RDWR | O_CLOEXEC);
-        udev_device_unref(device);
-        if (fd >= 0) {
-            udev_enumerate_unref(en);
-            udev_unref(ud);
-            return fd;
-        }
+        return fd;
     }
 
-    udev_enumerate_unref(en);
-    udev_unref(ud);
     return -1;
 }
 
 static int
-wgbm_get_default_fd(void)
+wgbm_get_default_fd(struct wgbm_platform *plat)
 {
-    int fd;
+    // Checking the first 64 devices is enough for now.
+    drmDevicePtr devs[64];
 
-    // Try opening render node first
-    fd = wgbm_get_default_fd_for_pattern("renderD[0-9]*");
-    if (fd >= 0)
-        return fd;
+#define ARRAY_SIZE(a) (sizeof(a) / sizeof(a[0]))
+    int ret = plat->drm.GetDevices2(0, devs, ARRAY_SIZE(devs));
+    if (ret < 0)
+        return ret;
 
-    // If render nodes are not supported, then fall back to the card
-    fd = wgbm_get_default_fd_for_pattern("card[0-9]*");
+    // Try opening render node first, then fall back to the primary
+    int fd = wgbm_get_fd_for_node_type(devs, ret, DRM_NODE_RENDER);
+    if (fd < 0)
+        fd = wgbm_get_fd_for_node_type(devs, ret, DRM_NODE_PRIMARY);
+
+    plat->drm.FreeDevices(devs, ret);
     return fd;
 }
 
@@ -138,7 +125,7 @@ wgbm_display_connect(struct wcore_platform *wc_plat,
             goto error;
         }
     } else {
-        fd = wgbm_get_default_fd();
+        fd = wgbm_get_default_fd(plat);
         if (fd < 0) {
             wcore_errorf(WAFFLE_ERROR_UNKNOWN, "open drm file for gbm failed");
             goto error;

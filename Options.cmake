@@ -17,7 +17,7 @@ if(waffle_on_linux)
         set(x11_egl_default OFF)
     endif()
 
-    if(gbm_FOUND AND libudev_FOUND AND egl_FOUND)
+    if(gbm_FOUND AND libdrm_FOUND AND egl_FOUND)
         set(gbm_default ON)
     else()
         set(gbm_default OFF)

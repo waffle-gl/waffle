@@ -28,6 +28,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <gbm.h>
+#include <xf86drm.h>
 
 #undef linux
 
@@ -56,6 +57,15 @@ struct wgbm_platform {
 #define DECLARE(type, function, required, args) type (*function) args;
     GBM_FUNCTIONS(DECLARE)
 #undef DECLARE
+
+    struct {
+        void *handle;
+
+        int (*GetDevices2)(uint32_t flags, drmDevicePtr devices[],
+                           int max_devices);
+
+        void (*FreeDevices)(drmDevicePtr devices[], int count);
+    } drm;
 };
 
 DEFINE_CONTAINER_CAST_FUNC(wgbm_platform,

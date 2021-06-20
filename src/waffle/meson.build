@@ -30,9 +30,9 @@
 # harm.
 deps_for_waffle = [
   dep_gl,
+  dep_drm,
   dep_egl,
   dep_gbm,
-  dep_udev,
   dep_nacl,
   dep_wayland_client,
   dep_wayland_egl,

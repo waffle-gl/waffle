@@ -111,7 +111,7 @@ struct waffle_display;
             <envar>WAFFLE_GBM_DEVICE</envar>.
 
             If <parameter>name</parameter> is null and <envar>WAFFLE_GBM_DEVICE</envar> is unset, then the function
-            iterates using udev through the set of card devices in the drm subsystem, which are usually located in
+            iterates using libdrm through the set of card devices in the drm subsystem, which are usually located in
             <filename>/dev/dri</filename>, and attempts to open each in turn with <code>open(O_RDWR | O_CLOEXEC)</code>
             until successful.
           </para>

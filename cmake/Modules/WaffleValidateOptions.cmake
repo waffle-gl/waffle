@@ -87,9 +87,9 @@ if(waffle_on_linux)
                 "${gbm_missing_deps} gbm"
                 )
         endif()
-        if(NOT libudev_FOUND)
+        if(NOT libdrm_FOUND)
             set(gbm_missing_deps
-                "${gbm_missing_deps} libudev"
+                "${gbm_missing_deps} libdrm"
                 )
         endif()
         if(NOT egl_FOUND)

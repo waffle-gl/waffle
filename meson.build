@@ -61,6 +61,7 @@ dep_threads = dependency('threads')
 dep_dl = cc.find_library('dl', required : false)
 dep_nacl = _dep_null
 dep_gl = _dep_null
+dep_drm = _dep_null
 dep_egl = _dep_null
 dep_wayland_client = _dep_null
 dep_wayland_egl = _dep_null
@@ -68,7 +69,6 @@ dep_wayland_scanner = _dep_null
 dep_wayland_proto = _dep_null
 dep_x11_xcb = _dep_null
 dep_gbm = _dep_null
-dep_udev = _dep_null
 dep_cocoa = _dep_null
 dep_core_foundation = _dep_null
 dep_gl_headers = _dep_null
@@ -93,10 +93,10 @@ else
   dep_x11_xcb = dependency('x11-xcb', required : get_option('x11_egl'))
   build_x11_egl = dep_egl.found() and dep_x11_xcb.found()
 
+  dep_drm = dependency('libdrm', required : get_option('gbm'))
   dep_egl = dependency('egl', required : get_option('gbm'))
   dep_gbm = dependency('gbm', required : get_option('gbm'))
-  dep_udev = dependency('libudev', required : get_option('gbm'))
-  build_gbm = dep_egl.found() and dep_gbm.found() and dep_udev.found()
+  build_gbm = dep_drm.found() and dep_egl.found() and dep_gbm.found()
 
   dep_egl = dependency('egl', required : get_option('surfaceless_egl'))
   build_surfaceless = dep_egl.found()
@@ -128,8 +128,8 @@ else
   build_wayland = dep_egl.found() and dep_wayland_client.found() and dep_wayland_egl.found() and dep_wayland_scanner.found() and dep_wayland_proto.found()
 
   # We're interested only in the headers provided
-  # FINISHME: make x11_xcb and udev compile-only dependency
-  _include_deps = [ dep_gl, dep_egl, dep_gbm, dep_wayland_client, dep_wayland_egl ]
+  # FINISHME: make x11_xcb compile-only dependency
+  _include_deps = [ dep_gl, dep_drm, dep_egl, dep_gbm, dep_wayland_client, dep_wayland_egl ]
   foreach d : _include_deps
     if d.found()
       d = d.partial_dependency(compile_args : true)

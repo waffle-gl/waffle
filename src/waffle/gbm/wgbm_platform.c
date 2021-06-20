@@ -41,6 +41,7 @@
 #include "wgbm_window.h"
 
 static const char *libgbm_filename = "libgbm.so.1";
+static const char *libdrm_filename = "libdrm.so.2";
 
 static const struct wcore_platform_vtbl wgbm_platform_vtbl;
 
@@ -55,6 +56,16 @@ wgbm_platform_teardown(struct wgbm_platform *self)
 
     if (self->linux)
         ok &= linux_platform_destroy(self->linux);
+
+    if (self->drm.handle) {
+        error = dlclose(self->drm.handle);
+        if (error) {
+            ok = false;
+            wcore_errorf(WAFFLE_ERROR_UNKNOWN,
+                         "dlclose(\"%s\") failed: %s",
+                         libdrm_filename, dlerror());
+        }
+    }
 
     if (self->gbmHandle) {
         error = dlclose(self->gbmHandle);
@@ -111,6 +122,27 @@ wgbm_platform_init(struct wgbm_platform *self)
 
     GBM_FUNCTIONS(RETRIEVE_GBM_SYMBOL);
 #undef RETRIEVE_GBM_SYMBOL
+
+    self->drm.handle = dlopen(libdrm_filename, RTLD_LAZY | RTLD_LOCAL);
+    if (!self->drm.handle) {
+        wcore_errorf(WAFFLE_ERROR_FATAL,
+                     "dlopen(\"%s\") failed: %s",
+                     libdrm_filename, dlerror());
+        goto error;
+    }
+
+#define RETRIEVE_DRM_SYMBOL(function)                                  \
+    self->drm.function = dlsym(self->drm.handle, "drm" #function);     \
+    if (!self->drm.function) {                                         \
+        wcore_errorf(WAFFLE_ERROR_FATAL,                               \
+                     "dlsym(\"%s\", \"%s\") failed: %s",               \
+                     libdrm_filename, "drm" #function, dlerror());     \
+        goto error;                                                    \
+    }
+
+    RETRIEVE_DRM_SYMBOL(GetDevices2);
+    RETRIEVE_DRM_SYMBOL(FreeDevices);
+#undef RETRIEVE_DRM_SYMBOL
 
     self->linux = linux_platform_create();
     if (!self->linux)

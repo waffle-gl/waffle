@@ -93,8 +93,8 @@ a comma-separated list of any combination of "x11", "wayland", and "drm".
     - GBM:
         - all: Install Mesa from source. Use -D platforms=drm
         - Archlinux: pacman -S systemd
-        - Fedora 17: yum install libudev-devel
-        - Debian: apt-get install libgbm-dev libudev-dev
+        - Fedora 17: yum install libdrm-devel
+        - Debian: apt-get install libgbm-dev libdrm-dev
 
 
 ## Windows 
