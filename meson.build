@@ -144,6 +144,9 @@ else
 endif
 install_data('shell-completion/bash/wflinfo', install_dir : bashcompletiondir)
 
+zshcompletiondir = join_paths(get_option('datadir'), 'zsh/site-functions')
+install_data('shell-completion/zsh/_wflinfo', install_dir : zshcompletiondir)
+
 # Set pre-processor flags
 if build_wgl
     add_project_arguments('-DWAFFLE_HAS_WGL', language : ['c', 'cpp'])
