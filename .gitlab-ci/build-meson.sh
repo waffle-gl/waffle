@@ -34,6 +34,7 @@ meson _build \
   -D build-manpages=true \
   -D build-htmldocs=true \
   -D build-examples=true \
+  -D werror=true \
   "${platform_option[@]}"
 
 ninja -C _build -j4
