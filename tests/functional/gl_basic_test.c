@@ -460,6 +460,8 @@ gl_basic_draw__(void **state, struct gl_basic_draw_args__ args)
 	expected_version_str = "OpenGL ES ";
         break;
     default:
+        // Explicitly initialize, to appease GCC
+        expected_version_str = "";
         assert_true(0);
         break;
     }
