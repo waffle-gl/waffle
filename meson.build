@@ -213,6 +213,7 @@ if cc.get_argument_syntax() == 'gcc'
       '-Werror=incompatible-pointer-types',
       '-Werror=int-conversion',
       '-Werror=missing-prototypes',  # TODO: breaks on MacOS?
+      '-Werror=pointer-arith',
       '-Werror=undef',
     ]),
     language : ['c', 'cpp'],
