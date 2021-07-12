@@ -30,7 +30,8 @@ project(
   version : '1.7.90',
   license : 'BSD2', 
   meson_version : '>= 0.49',
-  default_options : ['c_std=c99', 'buildtype=debugoptimized'],
+  # ubproject cmocka throws a Wclobbered ... make this a level=2 once it's fixed
+  default_options : ['c_std=c99', 'warning_level=1', 'buildtype=debugoptimized'],
 )
 
 waffle_name = meson.project_name() + '-1'
@@ -210,11 +211,15 @@ if cc.get_argument_syntax() == 'gcc'
 
   add_project_arguments(
     cc.get_supported_arguments([
+      '-Wno-unused-parameter',
       '-Werror=incompatible-pointer-types',
+      '-Werror=init-self',
       '-Werror=int-conversion',
+      '-Werror=missing-declarations',
       '-Werror=missing-prototypes',  # TODO: breaks on MacOS?
       '-Werror=pointer-arith',
       '-Werror=undef',
+      '-Werror=vla',
     ]),
     language : ['c', 'cpp'],
   )
