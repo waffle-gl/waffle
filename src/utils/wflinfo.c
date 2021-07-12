@@ -579,7 +579,7 @@ print_context_flags(void)
         return;
     }
 
-    for (int i = 0; i < ARRAY_SIZE(context_flags); i++) {
+    for (unsigned i = 0; i < ARRAY_SIZE(context_flags); i++) {
         if ((context_flags[i].flag & gl_context_flags) != 0) {
             printf(" %s", context_flags[i].str);
             gl_context_flags = gl_context_flags & ~context_flags[i].flag;
@@ -606,7 +606,7 @@ json_print_extensions(bool use_stringi)
         if (glGetError() != GL_NO_ERROR) {
             printf("        \"WFLINFO_GL_ERROR\"");
         } else {
-            for (int i = 0; i < count; i++) {
+            for (GLint i = 0; i < count; i++) {
                 ext = (const char *) glGetStringi(GL_EXTENSIONS, i);
                 if (glGetError() != GL_NO_ERROR)
                     ext = "WFLINFO_GL_ERROR";
