@@ -402,6 +402,9 @@ gl_basic_draw__(void **state, struct gl_basic_draw_args__ args)
             // Assume that the native platform rejected the requested
             // config flavor.
             skip();
+	    // XXX: skip() is not annotated as noreturn, leading to compiler
+	    // warning about implicit fallthrough
+	    break;
         default:
             assert_true_with_wfl_error(ts->config);
         }
@@ -422,6 +425,9 @@ gl_basic_draw__(void **state, struct gl_basic_draw_args__ args)
             // Assume that the native platform rejected the requested
             // context flavor.
             skip();
+	    // XXX: skip() is not annotated as noreturn, leading to compiler
+	    // warning about implicit fallthrough
+	    break;
         default:
             assert_true_with_wfl_error(ts->ctx);
         }
