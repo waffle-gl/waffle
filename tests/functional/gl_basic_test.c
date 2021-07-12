@@ -392,7 +392,7 @@ gl_basic_draw__(void **state, struct gl_basic_draw_args__ args)
     ts->config = waffle_config_choose(ts->dpy, config_attrib_list);
     if (expect_error) {
         assert_true(ts->config == NULL);
-        assert_true(waffle_error_get_code() == expect_error);
+        assert_true((int32_t)waffle_error_get_code() == expect_error);
         return;
     } else if (ts->config == NULL) {
         switch (waffle_error_get_code()) {
