@@ -174,7 +174,10 @@ wayland_display_fill_native(struct wayland_display *self,
 {
     n_dpy->wl_display = self->wl_display;
     n_dpy->wl_compositor = self->wl_compositor;
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     n_dpy->wl_shell = self->wl_shell;
+#pragma GCC diagnostic pop
     n_dpy->egl_display = self->wegl.egl;
     n_dpy->xdg_shell = self->xdg_shell;
 }

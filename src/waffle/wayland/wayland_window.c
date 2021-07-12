@@ -348,7 +348,10 @@ wayland_window_get_native(struct wcore_window *wc_self)
     n_window->wayland->wl_surface = self->wl_surface;
     n_window->wayland->xdg_surface = self->xdg_surface;
     n_window->wayland->xdg_toplevel = self->xdg_toplevel;
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     n_window->wayland->wl_shell_surface = self->wl_shell_surface;
+#pragma GCC diagnostic pop
     n_window->wayland->wl_window = self->wl_window;
     n_window->wayland->egl_surface = self->wegl.egl;
 
