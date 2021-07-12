@@ -32,7 +32,7 @@
 ///     2. Create an OpenGL context.
 ///     3. Print information about the context.
 
-#define WAFFLE_API_VERSION 0x0106
+#define WAFFLE_API_VERSION 0x0108
 
 #include <assert.h>
 #include <ctype.h>

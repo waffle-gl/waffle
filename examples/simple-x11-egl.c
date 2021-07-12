@@ -33,7 +33,7 @@
 /// This example is too simple; it does not perform proper error checking. For
 /// a complete example with error checking, see gl_basic.c.
 
-#define WAFFLE_API_VERSION 0x0106
+#define WAFFLE_API_VERSION 0x0108
 #define WAFFLE_API_EXPERIMENTAL
 
 #include <stdlib.h>
