@@ -72,7 +72,7 @@ static const char *usage_message =
     "\n"
     "Options:\n"
     "    -V, --version <version>\n"
-    "        For example --api=gl --version=3.2 would request OpenGL 3.2.\n"
+    "        For example --api gl --version 3.2 would request OpenGL 3.2.\n"
     "\n"
     "    --profile <profile>\n"
     "        One of: core, compat or none\n"
@@ -93,10 +93,10 @@ static const char *usage_message =
     "        Print wflinfo usage information.\n"
     "\n"
     "Examples:\n"
-    "    wflinfo --platform=glx --api=gl\n"
-    "    wflinfo --platform=x11_egl --api=gl --version=3.2 --profile=core\n"
-    "    wflinfo --platform=wayland --api=gles3\n"
-    "    wflinfo --platform=gbm --api=gl --version=3.2 --verbose\n"
+    "    wflinfo --platform glx --api gl\n"
+    "    wflinfo --platform x11_egl --api gl --version 3.2 --profile core\n"
+    "    wflinfo --platform wayland --api gles3\n"
+    "    wflinfo --platform gbm --api gl --version 3.2 --verbose\n"
     "    wflinfo -p gbm -a gl -V 3.2 -v\n"
     ;
 

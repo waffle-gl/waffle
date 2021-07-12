@@ -38,10 +38,10 @@
     <cmdsynopsis>
       <command>wflinfo</command>
       <arg choice="plain">
-        <option>--platform=<replaceable class="parameter">platform</replaceable></option>
+        <option>--platform</option> <replaceable class="parameter">platform</replaceable>
       </arg>
       <arg choice="plain">
-        <option>--api=<replaceable class="parameter">api</replaceable></option>
+        <option>--api</option> <replaceable class="parameter">api</replaceable>
       </arg>
       <arg choice="opt">
         <option><replaceable class="parameter">OPTIONS</replaceable></option>
@@ -65,7 +65,7 @@
     <variablelist>
       <varlistentry>
         <term><option>-p</option> <replaceable class="parameter">platform</replaceable></term>
-        <term><option>--platform=<replaceable class="parameter">platform</replaceable></option></term>
+        <term><option>--platform</option> <replaceable class="parameter">platform</replaceable></term>
         <listitem>
           <para>
             Where <replaceable class="parameter">platform</replaceable> is
@@ -85,7 +85,7 @@
       </varlistentry>
       <varlistentry>
         <term><option>-a</option> <replaceable class="parameter">api</replaceable></term>
-        <term><option>--api=<replaceable class="parameter">api</replaceable></option></term>
+        <term><option>--api</option> <replaceable class="parameter">api</replaceable></term>
         <listitem>
           <para>
             Where <replaceable class="parameter">api</replaceable> is
@@ -108,15 +108,15 @@
     <variablelist>
       <varlistentry>
         <term><option>-V</option> <replaceable class="parameter">MAJOR.MINOR</replaceable></term>
-        <term><option>--version=<replaceable class="parameter">MAJOR.MINOR</replaceable></option></term>
+        <term><option>--version</option> <replaceable class="parameter">MAJOR.MINOR</replaceable></term>
         <listitem>
           <para>
-            For example --api=gl --version=3.2 would request OpenGL 3.2
+            For example --api gl --version 3.2 would request OpenGL 3.2
           </para>
         </listitem>
       </varlistentry>
       <varlistentry>
-        <term><option>--profile=<replaceable class="parameter">profile</replaceable></option></term>
+        <term><option>--profile</option> <replaceable class="parameter">profile</replaceable></term>
         <listitem>
           <para>
             Where <replaceable class="parameter">profile</replaceable> is core, compat or none
@@ -149,8 +149,8 @@
         </listitem>
       </varlistentry>
       <varlistentry>
-        <term><option>-f <replaceable class="parameter">format</replaceable></option></term>
-        <term><option>--format=<replaceable class="parameter">format</replaceable></option></term>
+        <term><option>-f</option> <replaceable class="parameter">format</replaceable></term>
+      <term><option>--format</option> <replaceable class="parameter">format</replaceable></term>
         <listitem>
           <para>
             Choose the output format. Supported formats are 'original' (the default) and 'json'.
@@ -178,10 +178,10 @@
 
     <para>
       <simplelist>
-        <member>wflinfo --platform=glx --api=gl</member>
-        <member>wflinfo --platform=x11_egl --api=gl --version=3.2 --profile=core</member>
-        <member>wflinfo --platform=wayland --api=gles3</member>
-        <member>wflinfo --platform=gbm --api=gl --version=3.2 --verbose</member>
+        <member>wflinfo --platform glx --api gl</member>
+        <member>wflinfo --platform x11_egl --api gl --version 3.2 --profile core</member>
+        <member>wflinfo --platform wayland --api gles3</member>
+        <member>wflinfo --platform gbm --api gl --version 3.2 --verbose</member>
         <member>wflinfo -p gbm -a gl -V 3.2 -v</member>
       </simplelist>
     </para>
