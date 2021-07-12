@@ -148,7 +148,7 @@ struct thread_arg {
 };
 
 /// The start routine given to threads in test wcore_error.thread_local.
-static bool
+static int
 thread_start(struct thread_arg *a)
 {
     static const enum waffle_error error_codes[NUM_THREADS] = {
