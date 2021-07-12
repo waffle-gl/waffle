@@ -278,8 +278,10 @@ if get_option('build-tests')
       executable(
         '@0@_unittest'.format(t),
         'core/@0@_unittest.c'.format(t),
-        dependencies : [dep_cmocka, idep_threads],
         include_directories : [inc_waffle, inc_include],
+        c_args : api_c_args,
+        cpp_args : api_c_args,
+        dependencies : [dep_cmocka, idep_threads],
         link_with : testwaffle,
       ),
       suite : ['core'],

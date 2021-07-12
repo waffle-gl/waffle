@@ -213,6 +213,7 @@ if cc.get_argument_syntax() == 'gcc'
       '-Werror=incompatible-pointer-types',
       '-Werror=int-conversion',
       '-Werror=missing-prototypes',  # TODO: breaks on MacOS?
+      '-Werror=undef',
     ]),
     language : ['c', 'cpp'],
   )
@@ -222,6 +223,10 @@ if cc.get_argument_syntax() == 'gcc'
       add_project_link_arguments('-static-libgcc', language : ['c', 'cpp'])
     endif
   endif
+  api_c_args = [
+    '-DWAFFLE_API_VERSION=@0@'.format('0x0108'),
+    '-DWAFFLE_API_EXPERIMENTAL',
+  ]
 elif cc.get_argument_syntax() == 'msvc'
   add_project_arguments(
     '/D_win32_WINNT=0x0601',
@@ -230,6 +235,10 @@ elif cc.get_argument_syntax() == 'msvc'
     '/D_CRT_SECURE_NO_WARNINGS',
     language : ['c'],
   )
+  api_c_args = [
+    '/DWAFFLE_API_VERSION=@0@'.format('0x0108'),
+    '/DWAFFLE_API_EXPERIMENTAL',
+  ]
 endif
 
 if build_nacl
@@ -239,10 +248,6 @@ endif
 install_data('README.md', 'LICENSE.txt', 'HACKING.txt', install_dir : docdir)
 install_subdir('doc/release-notes', install_dir : docdir)
 
-api_c_args = [
-  '-DWAFFLE_API_VERSION=@0@'.format('0x0108'),
-  '-DWAFFLE_API_EXPERIMENTAL',
-]
 
 if get_option('build-tests')
   dep_cmocka = dependency('cmocka', fallback : ['cmocka', 'dep_cmocka'])
