@@ -4,7 +4,7 @@ set -eu
 case $1 in
   x11)
     platform_option=(-Dglx=enabled -Dx11_egl=enabled)
-    test_wrapper=(xvfb-run -a -w10)
+    test_wrapper=(xvfb-run -a --server-args='-noreset')
     ;;
   wayland)
     platform_option=(-Dwayland=enabled)
