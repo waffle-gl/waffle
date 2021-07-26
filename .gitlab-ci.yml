@@ -1,6 +1,6 @@
 variables:
   FDO_UPSTREAM_REPO: mesa/waffle
-  FDO_DISTRIBUTION_TAG: '2021-01-26_4'
+  FDO_DISTRIBUTION_TAG: '2021-07-26'
   FDO_DISTRIBUTION_VERSION: 'buster-slim'
 
 include:
@@ -10,6 +10,7 @@ include:
 
 stages:
   - container
+  - style-check
   - build
   - www
 
@@ -34,11 +35,14 @@ container:
     FDO_DISTRIBUTION_PACKAGES: >
       bash-completion
       ca-certificates
+      clang-format-7
       cmake
       docbook-xsl
       docbook-xml
       g++
       gcc
+      # w/a packaging bug: required for clang-format-7
+      git
       libcmocka-dev
       libdrm-dev
       libegl1-mesa-dev
@@ -55,6 +59,19 @@ container:
       xauth
       xsltproc
       xvfb
+
+clang-format:
+  extends:
+    - .ci-run-policy
+    - .fdo.container-build@debian
+  stage: style-check
+  variables:
+    GIT_DEPTH: 100
+  image: "$CI_REGISTRY_IMAGE/debian/$FDO_DISTRIBUTION_VERSION:$FDO_DISTRIBUTION_TAG"
+  needs:
+    - container
+  script:
+    - .gitlab-ci/clang-format.sh
 
 # BUILD
 .build:
