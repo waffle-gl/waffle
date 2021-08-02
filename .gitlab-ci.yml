@@ -32,6 +32,7 @@ container:
     # no need to pull the whole repo to build the container image
     GIT_STRATEGY: none
    
+    # clang-format-7 requires git, yet it's missing in the packaging
     FDO_DISTRIBUTION_PACKAGES: >
       bash-completion
       ca-certificates
@@ -41,7 +42,6 @@ container:
       docbook-xml
       g++
       gcc
-      # w/a packaging bug: required for clang-format-7
       git
       libcmocka-dev
       libdrm-dev
