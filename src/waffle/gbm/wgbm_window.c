@@ -160,7 +160,7 @@ wgbm_window_create(struct wcore_platform *wc_plat,
 
     ok = wgbm_window_init(self, wc_plat, wc_config, width, height);
     if (!ok) {
-        wgbm_window_destroy(&self->wegl.wcore);
+        free(self);
         return NULL;
     }
 
