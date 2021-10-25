@@ -44,4 +44,8 @@ if not build_nacl
     dependencies : [dep_cocoa, idep_getopt],
     install : true,
   )
+
+  if meson.version().version_compare('>= 0.46.0')
+    meson.override_find_program('wflinfo', wflinfo)
+  endif
 endif

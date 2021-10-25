@@ -227,6 +227,10 @@ ext_waffle = declare_dependency(
   include_directories : [inc_waffle, inc_include],
 )
 
+if meson.version().version_compare('>= 0.54.0')
+  meson.override_dependency(waffle_name, ext_waffle)
+endif
+
 pkg = import('pkgconfig')
 pkg.generate(
   libwaffle,
