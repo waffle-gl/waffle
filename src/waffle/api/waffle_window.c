@@ -65,9 +65,9 @@ waffle_window_create2(
     } else if (fullscreen != 0) {
         // Same error message as in wcore_config_attrs.c.
         wcore_errorf(WAFFLE_ERROR_BAD_ATTRIBUTE,
-                     "WAFFLE_WINDOW_FULLSCREEN has bad value 0x%x. "
+                     "WAFFLE_WINDOW_FULLSCREEN has bad value 0x%lx. "
                      "Must be true(1), false(0), or WAFFLE_DONT_CARE(-1)",
-                     fullscreen);
+                     (long)fullscreen);
         goto done;
     }
 
