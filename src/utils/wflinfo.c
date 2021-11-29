@@ -557,7 +557,7 @@ print_extensions(bool use_stringi)
     printf("\n");
 }
 
-static struct {
+static const struct {
     GLint flag;
     const char *str;
 } context_flags[] = {
