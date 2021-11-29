@@ -223,6 +223,7 @@ if cc.get_argument_syntax() == 'gcc'
       '-Werror=undef',
       '-Werror=vla',
       '-Wsuggest-attribute=format',
+      '-Wwrite-strings',
     ]),
     language : ['c', 'cpp'],
   )
