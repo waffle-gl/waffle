@@ -29,6 +29,12 @@
 
 #include "waffle.h"
 
+#if defined(__GNUC__)
+#define WCORE_PRINTFLIKE(f, a) __attribute__((__format__(__printf__, f, a)))
+#else
+#define WCORE_PRINTFLIKE(f, a)
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -56,16 +62,15 @@ wcore_error(enum waffle_error error);
 ///
 /// @param error is an `enum waffle_error`.
 /// @param format may be null.
-void
-wcore_errorf(enum waffle_error error, const char *format, ...);
+void WCORE_PRINTFLIKE(2, 3)
+    wcore_errorf(enum waffle_error error, const char *format, ...);
 
 /// @brief Emit error for errno.
 ///
 /// Set error code to WAFFLE_ERROR_UNKNOWN and place the output of
 /// strerror() in the error message. If \a format is not null,
 /// then prepend the strerror() message with "${format}: ".
-void
-wcore_error_errno(const char *format, ...);
+void WCORE_PRINTFLIKE(1, 2) wcore_error_errno(const char *format, ...);
 
 /// @brief Emit WAFFLE_ERROR_BAD_ATTRIBUTE with a default error message.
 void
@@ -91,8 +96,8 @@ wcore_error_get_code(void);
 const struct waffle_error_info*
 wcore_error_get_info(void);
 
-void
-_wcore_error_internal(const char *file, int line, const char *format, ...);
+void WCORE_PRINTFLIKE(3, 4)
+    _wcore_error_internal(const char *file, int line, const char *format, ...);
 
 void _wcore_error_enable(void);
 void _wcore_error_disable(void);

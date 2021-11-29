@@ -139,6 +139,12 @@ strneq(const char *a, const char *b, size_t n)
 #define NORETURN
 #endif
 
+#if defined(__GNUC__)
+#define PRINTFLIKE(f, a) __attribute__((__format__(__printf__, f, a)))
+#else
+#define PRINTFLIKE(f, a)
+#endif
+
 static void NORETURN
 error_oom(void)
 {
@@ -146,8 +152,8 @@ error_oom(void)
     exit(EXIT_FAILURE);
 }
 
-static void NORETURN
-error_printf(const char *module, const char *fmt, ...)
+static void NORETURN PRINTFLIKE(2, 3)
+    error_printf(const char *module, const char *fmt, ...)
 {
     va_list ap;
 
@@ -167,8 +173,7 @@ write_usage_and_exit(FILE *f, int exit_code)
     exit(exit_code);
 }
 
-static void NORETURN
-usage_error_printf(const char *fmt, ...)
+static void NORETURN PRINTFLIKE(1, 2) usage_error_printf(const char *fmt, ...)
 {
     fprintf(stderr, "Wflinfo usage error: ");
 

@@ -1083,6 +1083,12 @@ static const char *usage_message =
 #define NORETURN
 #endif
 
+#if defined(__GNUC__)
+#define PRINTFLIKE(f, a) __attribute__((__format__(__printf__, f, a)))
+#else
+#define PRINTFLIKE(f, a)
+#endif
+
 static void NORETURN
 write_usage_and_exit(FILE *f, int exit_code)
 {
@@ -1100,8 +1106,7 @@ static const struct option get_opts[] = {
     { .name = "help",           .has_arg = no_argument,           .val = OPT_HELP },
 };
 
-static void NORETURN
-usage_error_printf(const char *fmt, ...)
+static void NORETURN PRINTFLIKE(1, 2) usage_error_printf(const char *fmt, ...)
 {
     fprintf(stderr, "gl_basic_test usage error: ");
 

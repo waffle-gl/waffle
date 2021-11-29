@@ -132,8 +132,13 @@ static const struct option get_opts[] = {
 #define NORETURN
 #endif
 
-static void NORETURN
-error_printf(const char *fmt, ...)
+#if defined(__GNUC__)
+#define PRINTFLIKE(f, a) __attribute__((__format__(__printf__, f, a)))
+#else
+#define PRINTFLIKE(f, a)
+#endif
+
+static void NORETURN PRINTFLIKE(1, 2) error_printf(const char *fmt, ...)
 {
     va_list ap;
 
@@ -148,8 +153,7 @@ error_printf(const char *fmt, ...)
     exit(EXIT_FAILURE);
 }
 
-static void NORETURN
-usage_error_printf(const char *fmt, ...)
+static void NORETURN PRINTFLIKE(1, 2) usage_error_printf(const char *fmt, ...)
 {
     fflush(stdout);
     fprintf(stderr, "gl_basic: usage error");
