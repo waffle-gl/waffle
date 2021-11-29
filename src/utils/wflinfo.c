@@ -579,7 +579,7 @@ print_context_flags(void)
         return;
     }
 
-    if (context_flags == 0) {
+    if (gl_context_flags == 0) {
         printf(" 0x0\n");
         return;
     }
