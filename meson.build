@@ -212,6 +212,8 @@ if cc.get_argument_syntax() == 'gcc'
   add_project_arguments(
     cc.get_supported_arguments([
       '-Wno-unused-parameter',
+      '-Werror=format',
+      '-Werror=format-security',
       '-Werror=incompatible-pointer-types',
       '-Werror=init-self',
       '-Werror=int-conversion',
@@ -220,6 +222,7 @@ if cc.get_argument_syntax() == 'gcc'
       '-Werror=pointer-arith',
       '-Werror=undef',
       '-Werror=vla',
+      '-Wsuggest-attribute=format',
     ]),
     language : ['c', 'cpp'],
   )
