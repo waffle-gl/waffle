@@ -559,7 +559,7 @@ print_extensions(bool use_stringi)
 
 static struct {
     GLint flag;
-    char *str;
+    const char *str;
 } context_flags[] = {
     { GL_CONTEXT_FLAG_FORWARD_COMPATIBLE_BIT, "FORWARD_COMPATIBLE" },
     { GL_CONTEXT_FLAG_DEBUG_BIT, "DEBUG" },
