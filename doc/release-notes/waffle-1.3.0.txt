@@ -12,7 +12,7 @@ As usual, the release is available as a tarball
 
 Or as tag 'waffle-1.3.0' in the git repository
 
-    git://people.freedesktop.org/~chadversary/waffle.git refs/tags/waffle-1.3.0
+    https://gitlab.freedesktop.org/mesa/waffle.git refs/tags/waffle-1.3.0
 
 If you're using Archlinux, it's in the AUR as 'waffle'.
 

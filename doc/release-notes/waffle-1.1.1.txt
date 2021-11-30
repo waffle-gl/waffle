@@ -12,7 +12,7 @@ For the cautious, the SHA256 sum is:
 
 There is also  a signed waffle-1.1.1 tag in my git repo:
 
-    git://people.freedesktop.org/~chadversary/waffle
+    https://gitlab.freedesktop.org/mesa/waffle.git
 
 
 Bugfixes
