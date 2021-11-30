@@ -25,9 +25,11 @@
 
 files_man_common = files(
   'common/author-chad.versace.xml',
+  'common/author-emil.velikov.xml',
+  'common/author-jordan.l.justen.xml',
   'common/copyright.xml',
-  'common/issues.xml',
   'common/error-codes.xml',
+  'common/issues.xml',
   'common/legalnotice.xml',
   'common/return-value.xml',
 )
