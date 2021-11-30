@@ -8,7 +8,7 @@ version             1.4.1
 categories          devel
 platforms           darwin
 license             BSD
-maintainers         chad@chad-versace.us
+maintainers         emil.l.velikov@gmail.com
 description         A library for choosing window system and OpenGL API at runtime
 long_description    ${description}
 homepage            https://waffle.freedesktop.org/

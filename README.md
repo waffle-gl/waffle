@@ -29,7 +29,7 @@ For more information, visit to Waffle's website.
 - website:        https://waffle.freedesktop.org/
 - mailing-list:   waffle@lists.freedesktop.org
 - license:        BSD [http://www.opensource.org/licenses/bsd-license.php]
-- maintainer:     Chad Versace <chad.versace@linux.intel.com>
+- maintainer:     Emil Velikov <emil.l.velikov@gmail.com>
 
 
 # Examples
