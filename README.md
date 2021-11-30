@@ -26,7 +26,7 @@ For more information, visit to Waffle's website.
 - source:         https://gitlab.freedesktop.org/mesa/waffle.git
 - gitweb:         https://gitlab.freedesktop.org/mesa/waffle
 - issue-tracker:  https://gitlab.freedesktop.org/mesa/waffle/issues
-- website:        http://www.waffle-gl.org
+- website:        https://waffle.freedesktop.org/
 - mailing-list:   waffle@lists.freedesktop.org
 - license:        BSD [http://www.opensource.org/licenses/bsd-license.php]
 - maintainer:     Chad Versace <chad.versace@linux.intel.com>

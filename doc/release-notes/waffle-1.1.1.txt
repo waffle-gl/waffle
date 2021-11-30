@@ -5,7 +5,7 @@ Waffle 1.1.1 is a bugfix release. It fixes bugs discovered since 1.1.0.
 
 Downloads and documentation are available at:
 
-    http://people.freedesktop.org/~chadversary/waffle/releases.html#1.1.1
+    https://waffle.freedesktop.org/releases.html#1.1.1
 
 For the cautious, the SHA256 sum is:
     7219d2e02338f7f5410e83087a0465b0a59710e738b771b9b32c0d2b2305c596  waffle-1.1.1.tar.xz

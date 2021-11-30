@@ -11,7 +11,7 @@ license             BSD
 maintainers         chad@chad-versace.us
 description         A library for choosing window system and OpenGL API at runtime
 long_description    ${description}
-homepage            http://www.waffle-gl.org
+homepage            https://waffle.freedesktop.org/
 
 variant doc description {Install manpages and HTML documentation} {
     depends_build-append \
@@ -24,7 +24,7 @@ variant doc description {Install manpages and HTML documentation} {
 }
 
 use_xz              yes
-master_sites        http://www.waffle-gl.org/files/release/${name}-${version}/${name}-${version}.tar.xz
+master_sites        https://waffle.freedesktop.org/files/release/${name}-${version}/${name}-${version}.tar.xz
 checksums           sha256 66b3240b94abc30cd18c644ffc145024ad60e5b8a8a7d1e718c265b4c24351c9
 
 livecheck.type      regex

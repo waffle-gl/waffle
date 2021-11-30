@@ -62,7 +62,7 @@ Link with -lwaffle-1.
     </para>
 
     <para>
-      <ulink url="http://www.waffle-gl.org">waffle</ulink>'s website.
+      <ulink url="https://waffle.freedesktop.org">waffle</ulink>'s website.
     </para>
 
   </refsect1>
@@ -88,7 +88,7 @@ Link with -lwaffle-1.
 
     <para>
       <simplelist>
-        <member>Website: http://www.waffle-gl.org</member>
+        <member>Website: https://waffle.freedesktop.org/</member>
         <member>Source: https://gitlab.freedesktop.org/mesa/waffle</member>
       </simplelist>
     </para>

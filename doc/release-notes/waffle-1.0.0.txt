@@ -2,7 +2,7 @@ Waffle 1.0.0 - 22 Aug 2012
 ==========================
 
 Waffle 1.0.0 is now available. Downloads and documentation are available at
-    http://people.freedesktop.org/~chadversary/waffle/releases.html#1.0.0
+    https://waffle.freedesktop.org/releases.html#1.0.0
 
 Waffle is a cross-platform library that allows one to defer selection of GL
 API and of window system until runtime. For example, on Linux, Waffle enables

@@ -3,7 +3,7 @@ Waffle 1.0.1 - 29 Aug 2012
 
 Waffle 1.0.1 is a bugfix release. It fixes bugs discovered since the 1.0.0
 release. Downloads and documentation are available at
-    http://people.freedesktop.org/~chadversary/waffle/releases.html#1.0.1
+    https://waffle.freedesktop.org/releases.html#1.0.1
 
 
 Changes

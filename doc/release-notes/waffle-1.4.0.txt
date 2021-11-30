@@ -14,7 +14,7 @@ New Features
 
       The new 'wflinfo' utility reports information about the system's OpenGL
       capabilities, similar to 'glxinfo'.  See the documentation at
-      [man:wflinfo.1] or [http://www.waffle-gl.org/man/wflinfo.1.html].
+      [man:wflinfo.1] or [https://waffle.freedesktop.org/man/wflinfo.1.html].
 
       (Implemented by Jordan Justen. Chad Versace fixed some bugs and corner
       cases).
