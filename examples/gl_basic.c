@@ -173,7 +173,7 @@ static void NORETURN PRINTFLIKE(1, 2) usage_error_printf(const char *fmt, ...)
     exit(EXIT_FAILURE);
 }
 
-static void
+static void NORETURN
 error_waffle(void)
 {
     const struct waffle_error_info *info = waffle_error_get_info();
@@ -185,7 +185,7 @@ error_waffle(void)
         error_printf("%s", code);
 }
 
-static void
+static void NORETURN
 error_get_gl_symbol(const char *name)
 {
     error_printf("failed to get function pointer for %s", name);
