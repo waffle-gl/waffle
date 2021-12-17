@@ -26,3 +26,21 @@ WAFFLE_WAYLAND_SYM(struct wl_proxy *, wl_proxy_marshal_constructor,
 WAFFLE_WAYLAND_SYM(struct wl_proxy *, wl_proxy_marshal_constructor_versioned,
                    (struct wl_proxy *proxy, uint32_t opcode,
                     const struct wl_interface *interface, uint32_t version, ...))
+
+WAFFLE_WAYLAND_SYM(struct wl_proxy *,
+                   wl_proxy_marshal_flags,
+                   (struct wl_proxy * p,
+                    uint32_t opcode,
+                    const struct wl_interface *interface,
+                    uint32_t version,
+                    uint32_t flags,
+                    ...))
+
+WAFFLE_WAYLAND_SYM(struct wl_proxy *,
+                   wl_proxy_marshal_array_flags,
+                   (struct wl_proxy * p,
+                    uint32_t opcode,
+                    const struct wl_interface *interface,
+                    uint32_t version,
+                    uint32_t flags,
+                    union wl_argument *args))

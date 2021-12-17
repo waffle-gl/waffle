@@ -65,5 +65,7 @@ struct wl_display;
 #define wl_proxy_marshal (*wfl_wl_proxy_marshal)
 #define wl_proxy_marshal_constructor (*wfl_wl_proxy_marshal_constructor)
 #define wl_proxy_marshal_constructor_versioned (*wfl_wl_proxy_marshal_constructor_versioned)
+#define wl_proxy_marshal_flags (*wfl_wl_proxy_marshal_flags)
+#define wl_proxy_marshal_array_flags (*wfl_wl_proxy_marshal_array_flags)
 
 #include <wayland-client-protocol.h>
