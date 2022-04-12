@@ -128,3 +128,20 @@ error:
     wegl_surface_teardown(&new_wegl);
     return false;
 }
+
+union waffle_native_window *
+sl_window_get_native(struct wcore_window *wc_self)
+{
+    struct sl_window *self = sl_window(wegl_surface(wc_self));
+    struct sl_display *dpy = sl_display(wegl_display(wc_self->display));
+    union waffle_native_window *n_window;
+
+    WCORE_CREATE_NATIVE_UNION(n_window, surfaceless_egl);
+    if (n_window == NULL)
+        return NULL;
+
+    sl_display_fill_native(dpy, &n_window->surfaceless_egl->display);
+    n_window->surfaceless_egl->egl_surface = self->wegl.egl;
+
+    return n_window;
+}

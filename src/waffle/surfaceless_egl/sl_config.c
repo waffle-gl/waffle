@@ -1,4 +1,4 @@
-// Copyright 2016 Google
+// Copyright 2012 Intel Corporation
 //
 // All rights reserved.
 //
@@ -23,39 +23,27 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#pragma once
+#include "sl_config.h"
 
-#include <stdbool.h>
+#include "wcore_error.h"
 
-#include "wegl_surface.h"
+#include "wegl_platform.h"
 
-struct wcore_platform;
+#include "sl_display.h"
 
-struct sl_window {
-    struct wegl_surface wegl;
-    struct wcore_config *wc_config;
-};
+union waffle_native_config *
+sl_config_get_native(struct wcore_config *wc_config)
+{
+    struct sl_display *dpy = sl_display(wegl_display(wc_config->display));
+    struct wegl_config *config = wegl_config(wc_config);
+    union waffle_native_config *n_config;
 
-DEFINE_CONTAINER_CAST_FUNC(sl_window,
-                           struct sl_window,
-                           struct wegl_surface,
-                           wegl)
+    WCORE_CREATE_NATIVE_UNION(n_config, surfaceless_egl);
+    if (!n_config)
+        return NULL;
 
-struct wcore_window*
-sl_window_create(struct wcore_platform *wc_plat,
-                   struct wcore_config *wc_config,
-                   int32_t width,
-                   int32_t height,
-                   const intptr_t attrib_list[]);
-bool
-sl_window_destroy(struct wcore_window *wc_self);
+    sl_display_fill_native(dpy, &n_config->surfaceless_egl->display);
+    n_config->surfaceless_egl->egl_config = config->egl;
 
-bool
-sl_window_show(struct wcore_window *wc_self);
-
-bool
-sl_window_resize(struct wcore_window *wc_self,
-                 int32_t width, int32_t height);
-
-union waffle_native_window *
-sl_window_get_native(struct wcore_window *wc_self);
+    return n_config;
+}

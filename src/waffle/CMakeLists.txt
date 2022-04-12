@@ -123,6 +123,7 @@ endif()
 
 if(waffle_has_surfaceless_egl)
     list(APPEND waffle_sources
+        surfaceless_egl/sl_config.c
         surfaceless_egl/sl_display.c
         surfaceless_egl/sl_platform.c
         surfaceless_egl/sl_window.c

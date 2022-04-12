@@ -1,4 +1,4 @@
-// Copyright 2016 Google
+// Copyright 2022 Google
 //
 // All rights reserved.
 //
@@ -26,36 +26,33 @@
 #pragma once
 
 #include <stdbool.h>
+#include <stdint.h>
 
-#include "wegl_surface.h"
+#include <EGL/egl.h>
 
-struct wcore_platform;
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-struct sl_window {
-    struct wegl_surface wegl;
-    struct wcore_config *wc_config;
+struct waffle_surfaceless_egl_display {
+    EGLDisplay egl_display;
 };
 
-DEFINE_CONTAINER_CAST_FUNC(sl_window,
-                           struct sl_window,
-                           struct wegl_surface,
-                           wegl)
+struct waffle_surfaceless_egl_config {
+    struct waffle_surfaceless_egl_display display;
+    EGLConfig egl_config;
+};
 
-struct wcore_window*
-sl_window_create(struct wcore_platform *wc_plat,
-                   struct wcore_config *wc_config,
-                   int32_t width,
-                   int32_t height,
-                   const intptr_t attrib_list[]);
-bool
-sl_window_destroy(struct wcore_window *wc_self);
+struct waffle_surfaceless_egl_context {
+    struct waffle_surfaceless_egl_display display;
+    EGLContext egl_context;
+};
 
-bool
-sl_window_show(struct wcore_window *wc_self);
+struct waffle_surfaceless_egl_window {
+    struct waffle_surfaceless_egl_display display;
+    EGLSurface egl_surface;
+};
 
-bool
-sl_window_resize(struct wcore_window *wc_self,
-                 int32_t width, int32_t height);
-
-union waffle_native_window *
-sl_window_get_native(struct wcore_window *wc_self);
+#ifdef __cplusplus
+} // end extern "C"
+#endif

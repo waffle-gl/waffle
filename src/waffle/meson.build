@@ -80,6 +80,7 @@ endif
 
 if build_surfaceless
   files_libwaffle += files(
+    'surfaceless_egl/sl_config.c',
     'surfaceless_egl/sl_display.c',
     'surfaceless_egl/sl_platform.c',
     'surfaceless_egl/sl_window.c',

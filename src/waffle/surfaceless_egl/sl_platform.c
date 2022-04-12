@@ -23,8 +23,8 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include <stdlib.h>
 #include <dlfcn.h>
+#include <stdlib.h>
 
 #include "wcore_error.h"
 
@@ -35,6 +35,7 @@
 #include "wegl_platform.h"
 #include "wegl_util.h"
 
+#include "sl_config.h"
 #include "sl_display.h"
 #include "sl_platform.h"
 #include "sl_window.h"
@@ -100,12 +101,23 @@ sl_dl_sym(struct wcore_platform *wc_self,
     return linux_platform_dl_sym(self->linux, waffle_dl, name);
 }
 
-// [chadv] I regret the design of the get_native interface, and wish to
-// deprecate and replace it with the interface that Ian Romanick orignally
-// recommended: waffle_display_get_egl_display(),
-// waffle_display_get_gbm_device(), waffle_display_get_xlib_display(), etc.  As
-// a first step towards that goal, I choose to not support the interface on new
-// platforms.
+static union waffle_native_context *
+sl_context_get_native(struct wcore_context *wc_ctx)
+{
+    struct sl_display *dpy = sl_display(wegl_display(wc_ctx->display));
+    struct wegl_context *ctx = wegl_context(wc_ctx);
+    union waffle_native_context *n_ctx;
+
+    WCORE_CREATE_NATIVE_UNION(n_ctx, surfaceless_egl);
+    if (!n_ctx)
+        return NULL;
+
+    sl_display_fill_native(dpy, &n_ctx->surfaceless_egl->display);
+    n_ctx->surfaceless_egl->egl_context = ctx->egl;
+
+    return n_ctx;
+}
+
 static const struct wcore_platform_vtbl sl_platform_vtbl = {
     .destroy = sl_platform_destroy,
 
@@ -119,19 +131,19 @@ static const struct wcore_platform_vtbl sl_platform_vtbl = {
         .connect = sl_display_connect,
         .destroy = sl_display_destroy,
         .supports_context_api = wegl_display_supports_context_api,
-        .get_native = NULL, // unsupported by platform
+        .get_native = sl_display_get_native,
     },
 
     .config = {
         .choose = wegl_config_choose,
         .destroy = wegl_config_destroy,
-        .get_native = NULL, // unsupported by platform
+        .get_native = sl_config_get_native,
     },
 
     .context = {
         .create = wegl_context_create,
         .destroy = wegl_context_destroy,
-        .get_native = NULL, // unsupported by platform
+        .get_native = sl_context_get_native,
     },
 
     .window = {
@@ -140,6 +152,6 @@ static const struct wcore_platform_vtbl sl_platform_vtbl = {
         .show = sl_window_show,
         .resize = sl_window_resize,
         .swap_buffers = wegl_surface_swap_buffers,
-        .get_native = NULL, // unsupported by platform
+        .get_native = sl_window_get_native,
     },
 };

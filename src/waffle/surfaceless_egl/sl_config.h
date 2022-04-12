@@ -1,4 +1,4 @@
-// Copyright 2016 Google
+// Copyright 2012 Intel Corporation
 //
 // All rights reserved.
 //
@@ -26,36 +26,11 @@
 #pragma once
 
 #include <stdbool.h>
+#include <stdint.h>
 
-#include "wegl_surface.h"
+#include "wegl_config.h"
 
-struct wcore_platform;
+union waffle_native_config;
 
-struct sl_window {
-    struct wegl_surface wegl;
-    struct wcore_config *wc_config;
-};
-
-DEFINE_CONTAINER_CAST_FUNC(sl_window,
-                           struct sl_window,
-                           struct wegl_surface,
-                           wegl)
-
-struct wcore_window*
-sl_window_create(struct wcore_platform *wc_plat,
-                   struct wcore_config *wc_config,
-                   int32_t width,
-                   int32_t height,
-                   const intptr_t attrib_list[]);
-bool
-sl_window_destroy(struct wcore_window *wc_self);
-
-bool
-sl_window_show(struct wcore_window *wc_self);
-
-bool
-sl_window_resize(struct wcore_window *wc_self,
-                 int32_t width, int32_t height);
-
-union waffle_native_window *
-sl_window_get_native(struct wcore_window *wc_self);
+union waffle_native_config *
+sl_config_get_native(struct wcore_config *wc_config);

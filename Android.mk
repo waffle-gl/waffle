@@ -101,6 +101,7 @@ LOCAL_COPY_HEADERS := \
     include/waffle/waffle.h \
     include/waffle/waffle_gbm.h \
     include/waffle/waffle_glx.h \
+    include/waffle/waffle_surfaceless_egl.h \
     include/waffle/waffle_version.h \
     include/waffle/waffle_wayland.h \
     include/waffle/waffle_x11_egl.h

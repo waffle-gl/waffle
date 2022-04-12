@@ -68,3 +68,25 @@ fail:
     sl_display_destroy(&self->wegl.wcore);
     return NULL;
 }
+
+void
+sl_display_fill_native(struct sl_display *self,
+                       struct waffle_surfaceless_egl_display *n_dpy)
+{
+    n_dpy->egl_display = self->wegl.egl;
+}
+
+union waffle_native_display *
+sl_display_get_native(struct wcore_display *wc_self)
+{
+    struct sl_display *self = sl_display(wegl_display(wc_self));
+    union waffle_native_display *n_dpy;
+
+    WCORE_CREATE_NATIVE_UNION(n_dpy, surfaceless_egl);
+    if (n_dpy == NULL)
+        return NULL;
+
+    sl_display_fill_native(self, n_dpy->surfaceless_egl);
+
+    return n_dpy;
+}

@@ -27,6 +27,8 @@
 
 #include <stdbool.h>
 
+#include "waffle_surfaceless_egl.h"
+
 #include "wegl_display.h"
 
 struct sl_display {
@@ -43,3 +45,10 @@ sl_display_connect(struct wcore_platform *wc_plat, const char *name);
 
 bool
 sl_display_destroy(struct wcore_display *wc_self);
+
+union waffle_native_display *
+sl_display_get_native(struct wcore_display *wc_self);
+
+void
+sl_display_fill_native(struct sl_display *self,
+                       struct waffle_surfaceless_egl_display *n_dpy);
