@@ -1,3 +1,5 @@
+# NOTE: Project has moved to https://waffle.freedesktop.org
+
 Waffle - a library for selecting an OpenGL API and window system at runtime
 
 # Summary
